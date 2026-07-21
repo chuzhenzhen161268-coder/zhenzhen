@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>股票诊断报告 - 五粮液(000858)</title>
+<style>
+  :root {
+    --bg: #f5f6fa; --card-bg: #ffffff; --text-primary: #1a1a2e; --text-secondary: #5a5a7a;
+    --text-muted: #8e8ea8; --border: #eef0f5; --blue: #4a6cf7; --blue-bg: #eef1ff;
+    --green: #00b877; --green-bg: #e8faf2; --red: #f5475b; --red-bg: #fef0f1;
+    --orange: #f5a623; --orange-bg: #fff8e8; --purple: #8b5cf6; --purple-bg: #f3f0ff;
+    --teal: #0ea5e9; --teal-bg: #f0f9ff; --section-gap: 12px; --card-radius: 12px; --card-padding: 16px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text-primary); font-size: 14px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; padding-bottom: env(safe-area-inset-bottom, 20px); }
+  .report { max-width: 480px; margin: 0 auto; padding: 12px; }
+  .report-header { background: linear-gradient(135deg, #4a6cf7 0%, #6c5ce7 100%); color: #fff;
+    border-radius: var(--card-radius); padding: 20px var(--card-padding); margin-bottom: var(--section-gap); }
+  .report-header .title-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .report-header .stock-name { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  .report-header .stock-code { font-size: 15px; opacity: 0.85; font-weight: 500; }
+  .report-header .diag-label { font-size: 15px; opacity: 0.75; font-weight: 500; }
+  .report-header .price-row { display:flex; align-items:baseline; gap:10px; margin-top:10px; }
+  .report-header .px { font-size: 26px; font-weight: 700; }
+  .report-header .px-chg { font-size: 14px; font-weight: 600; background: rgba(255,255,255,.18); padding: 2px 8px; border-radius: 6px; }
+  .report-header .meta-row { display: flex; gap: 16px; font-size: 12px; opacity: 0.75; margin-top: 10px; flex-wrap:wrap; }
+  .card { background: var(--card-bg); border-radius: var(--card-radius); padding: var(--card-padding); margin-bottom: var(--section-gap); }
+  .card-title { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .card-title .icon { font-size: 18px; flex-shrink: 0; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+  .info-grid .info-item { display: flex; flex-direction: column; gap: 2px; }
+  .info-grid .info-label { font-size: 12px; color: var(--text-muted); }
+  .info-grid .info-value { font-size: 14px; font-weight: 500; color: var(--text-primary); word-break: break-all; }
+  .info-comment { margin-top: 10px; padding: 10px 12px; background: var(--blue-bg); border-radius: 8px;
+    font-size: 14px; color: var(--blue); line-height: 1.6; font-weight: 500; }
+  .detail-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .detail-section .section-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+  .detail-section .section-text { font-size: 14px; color: var(--text-primary); line-height: 1.7; }
+  .revenue-list { margin-top: 8px; padding: 0; list-style: none; }
+  .revenue-list li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0;
+    font-size: 13px; color: var(--text-primary); border-bottom: 1px solid var(--border); }
+  .revenue-list li:last-child { border-bottom: none; }
+  .revenue-list .revenue-name { color: var(--text-primary); font-weight: 500; }
+  .revenue-list .revenue-pct { color: var(--blue); font-weight: 600; white-space: nowrap; }
+  .chart-placeholder { background: #fafbfd; border: 1px dashed #d8dce6; border-radius: 8px; height: 160px;
+    display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 13px; margin-top: 8px; }
+  .focus-group { margin-bottom: 14px; } .focus-group:last-child { margin-bottom: 0; }
+  .focus-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .focus-tag.tech { background: var(--blue-bg); color: var(--blue); }
+  .focus-tag.news { background: var(--orange-bg); color: var(--orange); }
+  .focus-tag.capital { background: var(--green-bg); color: var(--green); }
+  .focus-tag.fundamental { background: var(--purple-bg); color: var(--purple); }
+  .focus-list { padding-left: 0; list-style: none; }
+  .focus-list li { position: relative; padding-left: 14px; margin-bottom: 6px; font-size: 14px; line-height: 1.7; color: var(--text-primary); }
+  .focus-list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: var(--text-muted); }
+  .corr-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+  .corr-badge.strong { background: var(--blue-bg); color: var(--blue); }
+  .corr-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; font-size: 14px; }
+  .corr-info .corr-target { color: var(--text-secondary); }
+  .analysis-block { margin-top: 12px; padding-top: 12px; }
+  .analysis-block .block-label { font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 6px; }
+  .sub-heading { font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 12px 0 6px 0; }
+  .section-text { font-size: 14px; color: var(--text-primary); line-height: 1.7; }
+  .hot-result { padding: 12px; border-radius: 8px; font-size: 14px; line-height: 1.7; }
+  .hot-result.not-hot { background: var(--orange-bg); }
+  .deficiency-section { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,.06); }
+  .deficiency-section .deficiency-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .deficiency-section .deficiency-list { list-style: none; padding: 0; }
+  .deficiency-section .deficiency-list li { position: relative; padding-left: 14px; margin-bottom: 4px; font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
+  .deficiency-section .deficiency-list li::before { content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: var(--text-muted); }
+  .better-sector { margin-top: 10px; padding: 10px 12px; background: var(--green-bg); border-radius: 8px; font-size: 13px; line-height: 1.7; }
+  .better-sector .better-label { font-weight: 600; color: var(--green); }
+  /* AI 信号 */
+  .signal-direction { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .signal-direction.buy { background: var(--red-bg); color: var(--red); }
+  .signal-direction.sell { background: var(--green-bg); color: var(--green); }
+  .signal-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .signal-price-item { background: var(--bg); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .signal-price-item .signal-price-label { font-size: 12px; color: var(--text-muted); }
+  .signal-price-item .signal-price-value { font-size: 16px; font-weight: 700; }
+  .signal-price-item .signal-price-value.buy-price { color: var(--red); }
+  .signal-price-item .signal-price-value.sell-price { color: var(--green); }
+  .data-note { font-size: 12px; color: var(--text-muted); line-height: 1.6; background:#fafbfd; border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin-top:4px; }
+  .disclaimer { text-align: center; padding: 16px 12px; font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+  .disclaimer .warn-icon { font-size: 14px; margin-right: 2px; }
+  .gj-tag { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 4px; font-size: 11px;
+    font-weight: 600; background: linear-gradient(135deg, #c9963b 0%, #e8b94a 100%); color: #fff; margin-left: 6px; letter-spacing: 0.5px; flex-shrink: 0; vertical-align: middle; }
+  .up { color: var(--red); } .down { color: var(--green); }
+  @media (max-width: 360px) { .report { padding: 8px; } .card { padding: 12px; } .report-header .stock-name { font-size: 19px; } .info-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="report">
+
+  <!-- ==================== Header ==================== -->
+  <div class="report-header">
+    <div class="title-row">
+      <span class="stock-name">五粮液</span>
+      <span class="stock-code">000858</span>
+      <span class="diag-label">个股诊断</span>
+    </div>
+    <div class="price-row">
+      <span class="px">84.89</span>
+      <span class="px-chg">+4.17%（+3.40）</span>
+    </div>
+    <div class="meta-row">
+      <span>诊断时间：2026-05-31</span>
+      <span>行情截至：2026-05-29</span>
+      <span>数据来源：公开数据（东方财富）</span>
+    </div>
+  </div>
+
+  <!-- ==================== 公司概况 ==================== -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🏢</span>公司概况</div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">所属行业（申万二级）</span>
+        <span class="info-value">白酒Ⅱ（食品饮料）</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">概念板块</span>
+        <span class="info-value">白酒、深股通（陆股通）、茅指数</span>
+      </div>
+    </div>
+    <div class="info-comment">💡 浓香型白酒龙头，2026Q1业绩同比大幅回升；股价中期处下行趋势，估值与股息率处历史相对低位。</div>
+
+    <div class="detail-section">
+      <div class="section-label">公司主营业务</div>
+      <div class="section-text">主营白酒生产与销售，核心为五粮液系列高端浓香型白酒，兼营系列酒及塑料包装等业务。</div>
+      <ul class="revenue-list">
+        <li><span class="revenue-name">酒类产品（白酒，2025年报）</span><span class="revenue-pct">占比 91.55%</span></li>
+        <li><span class="revenue-name">其他业务（塑料制品等）</span><span class="revenue-pct">占比 8.45%</span></li>
+        <li><span class="revenue-name">分地区：南部片区（2024年报口径）</span><span class="revenue-pct">占比 44.11%</span></li>
+      </ul>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-label">所处行业状况</div>
+      <div class="section-text">白酒行业处于深度调整期，需求与动销承压、库存及价格倒挂，行业分化加剧，高端龙头相对更具韧性。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 近期关注点 ==================== -->
+  <div class="card">
+    <div class="card-title"><span class="icon">📌</span>近期关注点</div>
+
+    <!-- 技术面 -->
+    <div class="focus-group">
+      <div class="focus-tag tech">▎技术面</div>
+      <ul class="focus-list">
+        <li>MA5/MA10/MA20/MA60 呈空头排列（83.55 / 84.40 / 88.19 / 97.67），股价低于MA60约13%，中期趋势向下</li>
+        <li>5月29日放量大涨 +4.17%，单日成交50.3亿元（约为近60日日均20.8亿的2.4倍），出现放量反弹</li>
+      </ul>
+    </div>
+
+    <!-- 消息面 -->
+    <div class="focus-group">
+      <div class="focus-tag news">▎消息面</div>
+      <ul class="focus-list">
+        <li>2026年一季报显示营收、归母净利润同比大幅回升（详见基本面）</li>
+        <li>年度利润分配方案：每10股派现25.78元（含税），对应股息率约3.0%（2026-04-30）</li>
+      </ul>
+    </div>
+
+    <!-- 资金面 -->
+    <div class="focus-group">
+      <div class="focus-tag capital">▎资金面</div>
+      <ul class="focus-list">
+        <li>5月29日主力（大单）净流入约5.31亿元，占当日成交额约10.6%；近5个交易日累计净流入约2.9亿元</li>
+      </ul>
+    </div>
+
+    <!-- 基本面 -->
+    <div class="focus-group">
+      <div class="focus-tag fundamental">▎基本面</div>
+      <ul class="focus-list">
+        <li>上一年度（2025年报）：营业总收入405.3亿元（yoy<span class="down">-54.6%</span>），归母净利润89.5亿元（yoy<span class="down">-71.9%</span>），毛利率77.5%，净利率约22.1%</li>
+        <li>本年度最新季度累积（2026Q1）：营业总收入228.4亿元（yoy<span class="up">+33.7%</span>），归母净利润80.6亿元（yoy<span class="up">+82.6%</span>），毛利率81.4%，净利率约35.3%</li>
+        <li>最新股息率约3.0%（高于2.5%）</li>
+        <li>2026Q1净利率同比提升约9个百分点（达F2正向阈值）</li>
+      </ul>
+    </div>
+
+    <div class="data-note">注：据公开数据源（东方财富），2025年度营收/利润同比降幅较大、2026Q1在低基数上大幅反弹，相关同比数据存在基数效应，请结合行业调整背景客观理解。</div>
+  </div>
+
+  <!-- ==================== 行业/概念关联度（强关联） ==================== -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🔗</span>行业/概念关联度<span class="gj-tag">国金特色</span></div>
+
+    <div class="corr-info">
+      <span class="corr-target">关联对象：白酒/酿酒行业（申万二级 白酒Ⅱ）</span>
+      <span class="corr-badge strong">强关联（r=0.72）</span>
+    </div>
+
+    <div class="analysis-block">
+      <div class="block-label">📈 公司与行业估值情况</div>
+
+      <div class="sub-heading">公司与行业估值情况</div>
+      <div class="section-text">公司与所在申万二级行业（白酒/酿酒）关联度较高，r=max(r_行业, r_概念)≈0.72（近30日日涨跌幅相关系数），走势受行业整体影响较大。</div>
+
+      <div class="chart-placeholder">📈 白酒/酿酒行业近一年日K线图（前端渲染）</div>
+
+      <div class="section-text" style="margin-top:8px;">参考近期市场数据，行业（酿酒）PE(TTM)约20.8倍。</div>
+
+      <div class="sub-heading">公司估值评价</div>
+      <div class="section-text">参考近期市场数据，公司PE(TTM)约10.2倍，低于行业（酿酒）均值（约20.8倍）；公开数据下公司PE处于近五年相对较低分位（估算）。</div>
+
+      <div class="data-note">说明：公开数据源中公司估值指标与2025年度利润口径存在不一致，PE(TTM)与历史分位为参考近期市场数据的估算值，仅供参考。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 热点判定（不属于热点） ==================== -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🔥</span>热点判定<span class="gj-tag">国金特色</span></div>
+
+    <div class="hot-result not-hot">
+      <strong>该标的不属于当下市场热点板块</strong>
+
+      <div class="deficiency-section">
+        <div class="deficiency-title">▎基本面客观指标</div>
+        <ul class="deficiency-list">
+          <li>上一年度（2025年报）营业收入同比下降约54.6%（达F1负向阈值&gt;20%）</li>
+          <li>上一年度（2025年报）归母净利润同比下降约71.9%（达F1负向阈值&gt;30%）</li>
+        </ul>
+      </div>
+
+      <div class="deficiency-section">
+        <div class="deficiency-title">▎技术面客观指标</div>
+        <ul class="deficiency-list">
+          <li>均线中期空头排列，股价低于MA60约13%</li>
+          <li>近20个交易日相对酿酒行业指数跑输约13个百分点（达T5负向阈值&gt;10%）</li>
+        </ul>
+      </div>
+
+      <div class="better-sector">
+        <span class="better-label">💡 对标改善方向：</span>可关注近期资金集中度更高、景气与量价结构更强的主流热点板块（具体对标板块需结合热门板块榜单数据，当前公开数据未覆盖，暂不列示）。
+      </div>
+    </div>
+  </div>
+
+  <!-- 股价驱动因素：个股中期处下行趋势（近20日 -15.3%），不满足上涨前提，判定为"无驱动"，按条件渲染规则不输出驱动卡片 -->
+
+  <!-- 风险事件：未从公开数据获取到经确认的风险事件（减持/质押/诉讼/处罚等），按条件渲染规则不输出风险事件卡片 -->
+
+  <!-- ==================== AI选好股信号（本股有信号） ==================== -->
+  <div class="card">
+    <div class="card-title"><span class="icon">📡</span>AI选好股信号</div>
+
+    <div class="signal-direction buy">信号方向：买入</div>
+
+    <div class="signal-price-grid">
+      <div class="signal-price-item">
+        <span class="signal-price-label">参考买入价格</span>
+        <span class="signal-price-value buy-price">50.00</span>
+      </div>
+      <div class="signal-price-item">
+        <span class="signal-price-label">参考卖出价格</span>
+        <span class="signal-price-value sell-price">55.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 风险提示 ==================== -->
+  <div class="disclaimer">
+    <span class="warn-icon">⚠️</span>本诊断仅供参考，不构成投资建议。投资有风险，入市需谨慎。
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<style>
+  @font-face { font-family: 'PF'; src: local('PingFang SC'); }
+  body { margin: 0; }
+  .h5-scroll::-webkit-scrollbar { display: none; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</helmet>
+<div style="width:375px;margin:0 auto;height:812px;background:linear-gradient(180deg,#eef1fb 0%,#f6f7fc 220px,#f6f7fc 100%);display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;position:relative;overflow:hidden;box-shadow:0 0 24px rgba(0,0,0,0.12)">
+
+  <div style="display:flex;align-items:center;gap:8px;padding:18px 16px 10px 16px;flex-shrink:0">
+    <div style="width:26px;height:26px;border-radius:50%;background:conic-gradient(from 200deg,#7c8cf8,#a78bfa,#60d0e0,#7c8cf8);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <div style="width:12px;height:12px;border-radius:50%;background:#fff"></div>
+    </div>
+    <div style="font-size:17px;font-weight:600;color:#1f2333">员工端智能助手</div>
+  </div>
+
+  <div style="margin:2px 12px 0 12px;background:#fff;border-radius:14px;box-shadow:0 4px 16px rgba(31,35,51,0.06);position:relative;padding:10px 14px 8px 14px;flex-shrink:0">
+    <div style="position:absolute;top:0;right:0;background:linear-gradient(90deg,#ffb15e,#ff8f6b);color:#fff;font-size:11px;font-weight:500;padding:5px 10px;border-radius:0 14px 0 12px">{{ trustStage }}</div>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+      <div style="font-size:16px;font-weight:600;color:#1f2333">{{ customer.name }}<span style="font-weight:400;color:#8a8fa3;margin-left:6px;font-size:14px">({{ customer.id }})</span></div>
+      <div style="display:flex;align-items:center;gap:2px;color:#5b7cf0;font-size:12px;cursor:pointer;user-select:none" onClick="{{ switchCustomer }}">
+        <span style="font-size:13px">⇌</span><span>切换</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+      <sc-for list="{{ mainTags }}" as="tag" hint-placeholder-count="5">
+        <div style="font-size:11.5px;padding:4px 9px;border-radius:6px;background:{{ tag.bg }};color:{{ tag.color }};white-space:nowrap">{{ tag.label }}</div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ tagsExpanded }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1">
+          <sc-for list="{{ subTags }}" as="stag" hint-placeholder-count="7">
+            <div style="font-size:11.5px;padding:4px 9px;border-radius:6px;background:{{ stag.active ? '#e8edff' : '#f4f5f8' }};color:{{ stag.active ? '#4f6bef' : '#6b7080' }}">{{ stag.label }}</div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:2px;color:#9096a8;font-size:12px;white-space:nowrap;cursor:pointer;user-select:none" onClick="{{ toggleTags }}">
+          <span>收起</span><span style="font-size:10px">⌃</span>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ !tagsExpanded }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:2px;color:#9096a8;font-size:12px;cursor:pointer;user-select:none" onClick="{{ toggleTags }}">
+          <span>展开</span><span style="font-size:10px">⌄</span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="display:flex;gap:8px;margin:10px 12px 0 12px;flex-shrink:0">
+    <sc-for list="{{ quickActions }}" as="qa" hint-placeholder-count="3">
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#fff;border-radius:10px;padding:10px 6px;box-shadow:0 2px 8px rgba(31,35,51,0.05);cursor:pointer" onClick="{{ qa.onClick }}">
+        <div style="width:18px;height:18px;border-radius:5px;background:{{ qa.iconBg }};color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ qa.icon }}</div>
+        <div style="font-size:12.5px;color:#3a3f52;white-space:nowrap">{{ qa.label }}</div>
+      </div>
+    </sc-for>
+    <div style="width:38px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(31,35,51,0.05);cursor:pointer" onClick="{{ toast }}">
+      <div style="display:grid;grid-template-columns:repeat(2,4px);gap:3px">
+        <div style="width:4px;height:4px;border-radius:1px;background:#8a8fa3"></div>
+        <div style="width:4px;height:4px;border-radius:1px;background:#8a8fa3"></div>
+        <div style="width:4px;height:4px;border-radius:1px;background:#8a8fa3"></div>
+        <div style="width:4px;height:4px;border-radius:1px;background:#8a8fa3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="h5-scroll" ref="{{ scrollRef }}" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ messages }}" as="msg" hint-placeholder-count="0">
+      <sc-if value="{{ msg.type === 'text' }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;justify-content:{{ msg.justify }}">
+          <div style="max-width:78%;padding:9px 12px;border-radius:14px;font-size:13.5px;line-height:1.5;background:{{ msg.bubbleBg }};color:{{ msg.bubbleColor }};box-shadow:{{ msg.bubbleShadow }}">{{ msg.text }}</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ msg.type === 'diagnosing' }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(31,35,51,0.06);padding:14px 16px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="color:#3d6bf0;font-size:14px">✓</div>
+            <div style="font-size:14.5px;font-weight:600;color:#1f2333">正在诊断「{{ msg.stockLabel }}」</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-top:12px">
+            <sc-for list="{{ msg.items }}" as="it" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:{{ it.textColor }}">
+                <span style="color:{{ it.color }};display:inline-block;{{ it.spinStyle }}">{{ it.icon }}</span><span>{{ it.label }}</span>
+              </div>
+            </sc-for>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#a5a9b8">
+              <span>⏳</span><span>{{ msg.statusText }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ msg.type === 'report' }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(31,35,51,0.06);padding:16px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <div style="font-size:15.5px;font-weight:700;color:#1f2333">{{ msg.report.name }} <span style="font-weight:400;color:#9096a8;font-size:12.5px">{{ msg.report.code }}</span></div>
+            <div style="font-size:11px;color:#a5a9b8">个股诊断·{{ msg.report.date }}</div>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-top:8px">
+            <div style="font-size:24px;font-weight:700;color:#1f2333">{{ msg.report.price }}</div>
+            <div style="font-size:12.5px;font-weight:600;color:#e0503c;background:#fdeceb;padding:2px 7px;border-radius:6px">{{ msg.report.change }}</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+            <sc-for list="{{ msg.report.tags }}" as="t" hint-placeholder-count="4">
+              <div style="font-size:11px;color:#6b7080;background:#f1f2f5;padding:4px 9px;border-radius:6px">{{ t }}</div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:6px;margin-top:16px">
+            <div style="width:3px;height:13px;background:#3d6bf0;border-radius:2px"></div>
+            <div style="font-size:13.5px;font-weight:600;color:#1f2333">关键关注点</div>
+          </div>
+          <div style="display:flex;background:#f7f8fa;border-radius:10px;margin-top:8px;padding:10px 12px">
+            <div style="flex:1">
+              <div style="font-size:11.5px;color:#9096a8">2026Q1 营收</div>
+              <div style="font-size:14px;font-weight:700;color:#e0503c;margin-top:2px">{{ msg.report.revenueYoy }}</div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:11.5px;color:#9096a8">净利润</div>
+              <div style="font-size:14px;font-weight:700;color:#e0503c;margin-top:2px">{{ msg.report.profitYoy }}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:0 2px">
+            <div style="font-size:12px;color:#6b7080">{{ msg.report.flowDate }} 主力净流入</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="font-size:13.5px;font-weight:700;color:#e0503c">{{ msg.report.flowAmount }}</div>
+              <div style="font-size:11px;color:#e0503c;background:#fdeceb;padding:2px 7px;border-radius:6px">{{ msg.report.volumeNote }}</div>
+            </div>
+          </div>
+
+          <div style="border:1px solid #e7ebf7;border-radius:10px;padding:12px;margin-top:16px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="color:#e0a53c;font-size:13px">☆</span>
+              <div style="font-size:13px;font-weight:600;color:#3d6bf0">AI选好股信号</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
+              <div style="font-size:12px;color:#6b7080">参考区间</div>
+              <div style="font-size:11px;font-weight:600;color:#e0503c;background:#fdeceb;padding:2px 8px;border-radius:6px">{{ msg.report.signalAction }}</div>
+              <div style="font-size:13.5px;font-weight:700;color:#3d6bf0">{{ msg.report.signalRange }}</div>
+            </div>
+            <div style="font-size:11px;color:#a5a9b8;margin-top:6px">{{ msg.report.signalNote }}</div>
+          </div>
+
+          <div style="background:#f7f8fa;border-radius:10px;padding:12px;margin-top:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:6px">
+                <div style="font-size:13px;font-weight:600;color:#1f2333">{{ msg.report.advisorName }}·跟进话术</div>
+                <div style="font-size:10.5px;color:#e08a3c;background:#fff2e0;padding:2px 6px;border-radius:5px">{{ msg.report.advisorTag }}</div>
+              </div>
+              <div style="color:#a5a9b8;font-size:13px">✉</div>
+            </div>
+            <div style="font-size:13px;line-height:1.6;color:#3a3f52;margin-top:8px">"{{ msg.report.script }}"</div>
+            <div style="display:flex;gap:10px;margin-top:12px">
+              <div style="flex:1;text-align:center;padding:9px 0;border-radius:8px;border:1px solid #d9dce6;color:#3a3f52;font-size:13px;cursor:pointer" onClick="{{ viewFullReport }}">查看完整报告</div>
+              <div style="flex:1;text-align:center;padding:9px 0;border-radius:8px;background:#3d6bf0;color:#fff;font-size:13px;cursor:pointer" onClick="{{ copyScript }}">⧉ 复制话术</div>
+            </div>
+          </div>
+
+          <div style="text-align:center;font-size:10.5px;color:#c1c4d0;margin-top:12px">* 数据来源于AI算法，仅供参考，不构成投资建议</div>
+        </div>
+      </sc-if>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ showSenseCard }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:12px;right:12px;top:{{ senseCardTop }}px;background:#fff;border-radius:16px;box-shadow:0 8px 28px rgba(31,35,51,0.16);padding:18px 16px;z-index:20;transition:opacity 0.35s ease,transform 0.35s ease;opacity:{{ senseCardVisible ? 1 : 0 }};transform:{{ senseCardVisible ? 'translateY(0)' : 'translateY(-12px)' }}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:20px;height:20px;border-radius:50%;background:#eaf1ff;display:flex;align-items:center;justify-content:center;color:#4f6bef;font-size:12px;font-weight:700;flex-shrink:0">✓</div>
+        <div style="font-size:15px;font-weight:600;color:#1f2333">智能感知</div>
+      </div>
+      <div style="font-size:14px;line-height:1.7;color:#2b2f3d;margin-top:12px">
+        监测到您正在与<span style="font-weight:600">{{ customer.name }}</span>的对话中提及「<span style="color:#4f6bef">{{ senseStock }}</span>」
+      </div>
+      <div style="font-size:14px;color:#2b2f3d;margin-top:8px">要立即进行个股诊断吗？</div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <div style="flex:1;text-align:center;padding:11px 0;border-radius:10px;background:#f1f2f5;color:#6b7080;font-size:14.5px;cursor:pointer" onClick="{{ ignoreSenseCard }}">忽略</div>
+        <div style="flex:1;text-align:center;padding:11px 0;border-radius:10px;background:#3d6bf0;color:#fff;font-size:14.5px;cursor:pointer" onClick="{{ diagnoseSenseCard }}">立即诊断</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:50%;top:340px;transform:translateX(-50%);background:rgba(30,32,44,0.88);color:#fff;font-size:13px;padding:10px 18px;border-radius:10px;z-index:40;white-space:nowrap">{{ toastText }}</div>
+  </sc-if>
+
+  <sc-if value="{{ showReportModal }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(20,22,34,0.45);z-index:30;display:flex;align-items:flex-end;transition:opacity 0.3s ease;opacity:{{ reportModalVisible ? 1 : 0 }}" onClick="{{ closeReportModal }}">
+      <div style="width:100%;height:88%;background:#f5f6fa;border-radius:18px 18px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,0.2);display:flex;flex-direction:column;overflow:hidden;transition:transform 0.32s ease;transform:{{ reportModalVisible ? 'translateY(0)' : 'translateY(100%)' }}" onClick="{{ stopPropagation }}">
+        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;padding:10px 0 6px 0">
+          <div style="width:36px;height:4px;border-radius:2px;background:#d9dce6"></div>
+          <div style="position:absolute;right:8px;top:2px;width:24px;height:24px;border-radius:50%;background:#eceef3;color:#6b7080;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer" onClick="{{ closeReportModal }}">✕</div>
+        </div>
+        <iframe src="{{ reportUrl }}" style="flex:1;border:none;width:100%;background:#f5f6fa"></iframe>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="flex-shrink:0;padding:8px 12px 14px 12px;background:linear-gradient(180deg,rgba(246,247,252,0),#f6f7fc 30%)">
+    <div style="display:flex;gap:8px;margin-bottom:8px;overflow-x:auto">
+      <sc-for list="{{ navChips }}" as="chip" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:5px;background:#fff;border-radius:16px;padding:7px 12px;box-shadow:0 2px 8px rgba(31,35,51,0.05);white-space:nowrap;cursor:pointer;flex-shrink:0" onClick="{{ chip.onClick }}">
+          <div style="width:16px;height:16px;border-radius:4px;background:{{ chip.iconBg }};flex-shrink:0"></div>
+          <div style="font-size:12.5px;color:#3a3f52">{{ chip.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:22px;padding:6px 6px 6px 12px;box-shadow:0 2px 10px rgba(31,35,51,0.07)">
+      <div style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#5b7cf0,#7c6bf0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;flex-shrink:0">✦</div>
+      <input placeholder="有什么问题尽管问我" value="{{ inputValue }}" onChange="{{ onInputChange }}" onKeyDown="{{ onKeyDown }}" style="flex:1;border:none;outline:none;font-size:13.5px;color:#2b2f3d;background:transparent" />
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5b7cf0,#7c6bf0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;cursor:pointer;flex-shrink:0" onClick="{{ sendMessage }}">↑</div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    tagsExpanded: true,
+    customerIdx: 0,
+    inputValue: '',
+    messages: [],
+    replyIdx: 0,
+    showSenseCard: false,
+    senseCardVisible: false,
+    showReportModal: false,
+    reportModalVisible: false,
+    toastText: '',
+    toastVisible: false,
+  };
+
+  componentDidMount() {
+    this._senseTimer = setTimeout(() => {
+      this.setState({ showSenseCard: true });
+      requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ senseCardVisible: true })));
+    }, 5000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._senseTimer);
+  }
+
+  hideSenseCard() {
+    this.setState({ senseCardVisible: false });
+    setTimeout(() => this.setState({ showSenseCard: false }), 350);
+  }
+
+  ignoreSenseCard = () => this.hideSenseCard();
+  diagnoseSenseCard = () => {
+    this.hideSenseCard();
+    setTimeout(() => this.startDiagnosis('五粮液', '000858'), 350);
+  };
+
+  customers = [
+    { name: '贾先志', id: '17890299' },
+    { name: '林晓婷', id: '20481133' },
+  ];
+
+  replies = [
+    '已为你调出该客户的近30天资产变动，整体呈稳健增长趋势。',
+    '根据风险测评，建议优先推荐债券、货币类稳健产品。',
+    '该客户近期无逾期待办，APP活跃度中等，建议本周内触达一次。',
+  ];
+
+  scrollRef = React.createRef();
+
+  toggleTags = () => this.setState(s => ({ tagsExpanded: !s.tagsExpanded }));
+  switchCustomer = () => this.setState(s => ({ customerIdx: (s.customerIdx + 1) % this.customers.length }));
+  toast = () => {};
+
+  onInputChange = (e) => this.setState({ inputValue: e.target.value });
+  onKeyDown = (e) => { if (e.key === 'Enter') this.sendMessage(); };
+
+  scrollToBottom() {
+    requestAnimationFrame(() => {
+      const el = this.scrollRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  }
+
+  makeTextMsg(role, text) {
+    const isUser = role === 'user';
+    return {
+      role, type: 'text', text,
+      justify: isUser ? 'flex-end' : 'flex-start',
+      bubbleBg: isUser ? 'linear-gradient(90deg,#5b7cf0,#7c6bf0)' : '#fff',
+      bubbleColor: isUser ? '#fff' : '#2b2f3d',
+      bubbleShadow: isUser ? 'none' : '0 2px 8px rgba(31,35,51,0.06)',
+    };
+  }
+
+  pushBotReply(text) {
+    this.setState(s => ({
+      messages: [...s.messages, this.makeTextMsg('bot', text)],
+      replyIdx: s.replyIdx + 1,
+    }), () => this.scrollToBottom());
+  }
+
+  sendMessage = () => {
+    const text = this.state.inputValue.trim();
+    if (!text) return;
+    this.setState(s => ({
+      messages: [...s.messages, this.makeTextMsg('user', text)],
+      inputValue: '',
+    }), () => {
+      this.scrollToBottom();
+      const reply = this.replies[this.state.replyIdx % this.replies.length];
+      setTimeout(() => this.pushBotReply(reply), 500);
+    });
+  };
+
+  quickAsk(text) {
+    this.setState(s => ({ messages: [...s.messages, this.makeTextMsg('user', text)] }), () => {
+      this.scrollToBottom();
+      const reply = this.replies[this.state.replyIdx % this.replies.length];
+      setTimeout(() => this.pushBotReply(reply), 500);
+    });
+  }
+
+  buildStockReport(name, code) {
+    return {
+      name, code,
+      date: '2026-06-09',
+      price: '84.89',
+      change: '+4.17%',
+      tags: ['中期下行', '非热点板块', '近日放量反弹', '白酒调整期'],
+      revenueYoy: '+33.7%',
+      profitYoy: '+82.6%',
+      flowDate: '5/29',
+      flowAmount: '5.31亿',
+      volumeNote: '放量大涨4.17%',
+      signalAction: '买入',
+      signalRange: '50.00 ~ 55.00',
+      signalNote: '综合技术&估值模型信号增强',
+      advisorName: this.customers[this.state.customerIdx].name,
+      advisorTag: 'C4·高客',
+      script: `${this.customers[this.state.customerIdx].name}老师，${name}一季报表现亮眼，业绩大幅反弹，今天主力资金也在明显介入。当前估值处于历史低位，您看是否有适当配置的意向？`,
+    };
+  }
+
+  diagnosisSteps = ['获取行情与财务数据', '技术面、资金面、消息面分析', '热点判定、行业关联度分析'];
+
+  buildDiagnosingItems(step) {
+    return this.diagnosisSteps.map((label, idx) => {
+      if (idx < step) return { label, icon: '✓', color: '#2fb35a', textColor: '#2b2f3d', spinStyle: '' };
+      if (idx === step) return { label, icon: '↻', color: '#4f6bef', textColor: '#4f6bef', spinStyle: 'animation:spin 1s linear infinite' };
+      return { label, icon: '○', color: '#c1c4d0', textColor: '#c1c4d0', spinStyle: '' };
+    });
+  }
+
+  startDiagnosis = (name, code) => {
+    const stockLabel = `${name}（${code}）`;
+    const steps = this.diagnosisSteps;
+    const stepDelay = 1200;
+    this.setState(s => ({
+      messages: [...s.messages, this.makeTextMsg('user', `诊断「${stockLabel}」`)],
+    }), () => {
+      this.scrollToBottom();
+      setTimeout(() => this.beginDiagnosisSteps(stockLabel, name, code, steps, stepDelay), 1000);
+    });
+  };
+
+  beginDiagnosisSteps(stockLabel, name, code, steps, stepDelay) {
+    this.setState(s => ({
+      messages: [...s.messages, { role: 'bot', type: 'diagnosing', stockLabel, statusText: '诊断中，请稍后', items: this.buildDiagnosingItems(0) }],
+    }), () => {
+      this.scrollToBottom();
+      const advance = (step) => {
+        this.setState(s => {
+          const msgs = [...s.messages];
+          const idx = msgs.findIndex(m => m.type === 'diagnosing' && m.stockLabel === stockLabel);
+          if (idx !== -1) msgs[idx] = {
+            ...msgs[idx],
+            items: this.buildDiagnosingItems(step),
+            statusText: step >= steps.length ? '即将生成报告' : '诊断中，请稍后',
+          };
+          return { messages: msgs };
+        }, () => this.scrollToBottom());
+        if (step < steps.length) {
+          setTimeout(() => advance(step + 1), stepDelay);
+        } else {
+          setTimeout(() => {
+            this.setState(s => {
+              const msgs = [...s.messages];
+              const idx = msgs.findIndex(m => m.type === 'diagnosing' && m.stockLabel === stockLabel);
+              if (idx !== -1) msgs[idx] = { role: 'bot', type: 'report', report: this.buildStockReport(name, code) };
+              return { messages: msgs };
+            });
+          }, 600);
+        }
+      };
+      setTimeout(() => advance(1), stepDelay);
+    });
+  };
+
+  showToast = (text) => {
+    clearTimeout(this._toastTimer);
+    this.setState({ toastText: text, toastVisible: true });
+    this._toastTimer = setTimeout(() => this.setState({ toastVisible: false }), 1800);
+  };
+
+  viewFullReport = () => {
+    this.setState({ showReportModal: true });
+    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ reportModalVisible: true })));
+  };
+  closeReportModal = () => {
+    this.setState({ reportModalVisible: false });
+    setTimeout(() => this.setState({ showReportModal: false }), 320);
+  };
+  stopPropagation = (e) => e.stopPropagation();
+  copyScript = () => {
+    const msgs = this.state.messages;
+    const last = [...msgs].reverse().find(m => m.type === 'report');
+    if (!last) return;
+    const text = last.report.script;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+    this.showToast('话术已复制到剪贴板');
+  };
+
+  renderVals() {
+    const customer = this.customers[this.state.customerIdx];
+    return {
+      customer,
+      trustStage: '建立信任阶段',
+      tagsExpanded: this.state.tagsExpanded,
+      toggleTags: this.toggleTags,
+      switchCustomer: this.switchCustomer,
+      toast: this.toast,
+      inputValue: this.state.inputValue,
+      onInputChange: this.onInputChange,
+      onKeyDown: this.onKeyDown,
+      sendMessage: this.sendMessage,
+      messages: this.state.messages,
+      scrollRef: this.scrollRef,
+      showSenseCard: this.state.showSenseCard,
+      senseCardVisible: this.state.senseCardVisible,
+      senseCardTop: 260,
+      senseStock: '五粮液(000858)',
+      ignoreSenseCard: this.ignoreSenseCard,
+      diagnoseSenseCard: this.diagnoseSenseCard,
+      viewFullReport: this.viewFullReport,
+      copyScript: this.copyScript,
+      showReportModal: this.state.showReportModal,
+      reportModalVisible: this.state.reportModalVisible,
+      reportUrl: './五粮液-000858-诊断报告.html',
+      closeReportModal: this.closeReportModal,
+      stopPropagation: this.stopPropagation,
+      toastText: this.state.toastText,
+      toastVisible: this.state.toastVisible,
+      mainTags: [
+        { label: '高客五星', bg: '#fff2e0', color: '#e08a3c' },
+        { label: 'C4', bg: '#eaf1ff', color: '#4f6bef' },
+        { label: 'C4(中高风险承受)', bg: '#eaf1ff', color: '#4f6bef' },
+        { label: '债券、货币...', bg: '#f4f5f8', color: '#6b7080' },
+      ],
+      subTags: [
+        { label: '港', active: true },
+        { label: '北', active: false },
+        { label: '三', active: false },
+        { label: '创', active: false },
+        { label: '科', active: false },
+        { label: '期', active: false },
+        { label: '融', active: false },
+      ],
+      quickActions: [
+        { icon: 'A+', iconBg: '#4f6bef', label: '30秒了解客户', onClick: () => this.quickAsk('30秒了解客户') },
+        { icon: '☰', iconBg: '#4fa8e0', label: '我的待办', onClick: () => this.quickAsk('查看我的待办') },
+        { icon: '⇢', iconBg: '#8a6bef', label: 'APP触达', onClick: () => this.quickAsk('对该客户进行APP触达') },
+      ],
+      navChips: [
+        { label: 'AI每日服务指引', iconBg: '#4f6bef', onClick: () => this.quickAsk('AI每日服务指引') },
+        { label: '金融技能', iconBg: '#4fa8e0', onClick: () => this.quickAsk('金融技能') },
+        { label: 'AI+助手', iconBg: '#8a6bef', onClick: () => this.quickAsk('AI+助手能帮我做什么') },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
