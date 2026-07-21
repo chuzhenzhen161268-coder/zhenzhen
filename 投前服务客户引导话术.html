@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Document</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 100%;
+			height:1200;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1, h2, h3, h4, h5, h6 { margin-top: 1.5rem; margin-bottom: 1rem; }
+        pre { background: #f6f8fa; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+        code { background: #f6f8fa; padding: 0.2rem 0.4rem; border-radius: 3px; }
+        blockquote { border-left: 4px solid #dfe2e5; padding-left: 1rem; margin: 1rem 0; color: #6a737d; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+        th, td { border: 1px solid #dfe2e5; padding: 0.5rem; text-align: left; }
+        th { background: #f6f8fa; }
+    </style>
+</head>
+<body>
+<h1 id="h1--"><a name="投前服务报告 · 客户引导话术规则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>投前服务报告 · 客户引导话术规则</h1><h2 id="h2-u5BA2u6237u5F15u5BFCu8BDDu672Fu6A21u677F"><a name="客户引导话术模板" class="reference-link"></a><span class="header-link octicon octicon-link"></span>客户引导话术模板</h2><blockquote>
+<p><strong>场景</strong>：员工与客户线上沟通时，先发送引导话术，再发送投前服务报告。<br><strong>要求</strong>：≤100 字，口语化、有温度、不推销。</p>
+</blockquote>
+<h3 id="h3-u6A21u677Fu6B63u6587"><a name="模板正文" class="reference-link"></a><span class="header-link octicon octicon-link"></span>模板正文</h3><pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="pun">{客户称呼}，根据您之前聊到的需求和风险偏好，我帮您定制了一份投资方案，核心思路是用固收打底、少量多元资产增厚收益，力求在控制波动的同时跑赢银行理财。您先看看，有任何想法咱们随时聊。</span></code></li></ol></pre><h3 id="h3-u6A21u677Fu5360u4F4Du7B26"><a name="模板占位符" class="reference-link"></a><span class="header-link octicon octicon-link"></span>模板占位符</h3><table>
+<thead>
+<tr>
+<th>占位符</th>
+<th>来源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{客户称呼}</code></td>
+<td>客户基础域 · 姓名/称呼偏好</td>
+<td>如”王总””李姐””张先生”，若无则用”您好”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-u4EA7u51FAu89C4u5219"><a name="产出规则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>产出规则</h3><ol>
+<li><strong>结构三段式</strong>：引出方案（1句）→ 简述核心思路（1句）→ 邀请阅读（1句）</li><li><strong>引出方案</strong>：必须提到”根据您之前聊到的需求”，建立个性化感知，不凭空出现</li><li><strong>简述核心思路</strong>：引用产品池的组合策略标签（如”固收打底+多元资产增强”），用口语转述，不超过 25 字</li><li><strong>邀请阅读</strong>：固定语气”您先看看，有任何想法咱们随时聊”，表达陪伴而非推销</li><li><strong>禁止</strong>：<ul>
+<li>禁止出现具体收益数字（避免在未展示完整数据前片段化引用）</li><li>禁止出现”推荐””建议购买”等销售用语</li><li>禁止评价客户（如”这个方案特别适合您这样的情况”——判断交给客户自己）</li></ul>
+</li><li><strong>长度</strong>：严格 ≤100 字（含标点，不含占位符名称）</li></ol>
+<h3 id="h3-u5FC5u9700u5B57u6BB5"><a name="必需字段" class="reference-link"></a><span class="header-link octicon octicon-link"></span>必需字段</h3><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>字段</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户基础域</td>
+<td>姓名/称呼偏好</td>
+<td>填充 <code>{客户称呼}</code></td>
+</tr>
+<tr>
+<td>产品池</td>
+<td>组合策略标签/核心思路</td>
+<td>生成”核心思路”句</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><em>文档版本：v1.0 · 适用场景：券商基金投顾投前服务报告 AI 文案生成</em></p>
+
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>场景2 · 单客户报告查询 · 国金证券</title>
+<style>
+/* ===== 国金证券 B端设计规范 CSS变量（深蓝主题，与场景1保持一致）===== */
+:root {
+  --color-primary: #1A2A5E;
+  --color-primary-mid: #2B3F7A;
+  --color-accent: #2B73FF;
+  --color-primary-light: #EEF1F8;
+  --color-text-primary: #1A2A5E;
+  --color-text-secondary: #4A5578;
+  --color-text-tertiary: #8A96B4;
+  --color-text-disabled: #C3CADC;
+  --color-danger: #C8392B;
+  --color-danger-bg: #FEF2F1;
+  --color-info: #2B73FF;
+  --color-warning: #C47520;
+  --color-warning-bg: #FFF7EC;
+  --color-border: #E4E9F2;
+  --color-divider: #EEF1F8;
+  --color-table-line: #EEF1F8;
+  --color-table-header: #F7F9FC;
+  --color-white: #FFFFFF;
+  --color-success: #1A7F4E;
+  --color-success-bg: #F0FAF4;
+  --color-up: #C8392B;
+  --color-down: #1A7F4E;
+  --color-flat: #4A5578;
+  --shadow-sm: 0 1px 4px rgba(26,42,94,0.06);
+  --shadow: 0 2px 10px rgba(26,42,94,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F0F3F8; color: var(--color-text-primary); padding: 0; }
+
+.page { max-width: 960px; margin: 0 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+/* 头部：单客户场景不需要维度切换和左侧列表，直接展示定位信息 */
+.header-bar { background: var(--color-primary); border-radius: 10px; padding: 20px 24px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; box-shadow: var(--shadow); }
+.header-bar .h-left { flex: 1; min-width: 0; }
+.header-bar .h-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.2px; }
+.header-bar .h-sub { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+
+.detail-panel { display: flex; flex-direction: column; gap: 16px; }
+
+.no-result { display: none; text-align: center; padding: 60px 20px; color: var(--color-text-tertiary); font-size: 14px; background: #fff; border-radius: 10px; border: 1px solid var(--color-border); }
+.no-result.show { display: block; }
+
+/* ===== 详情面板 · 客户信息卡 ===== */
+.detail-card { background: #fff; border: 1px solid var(--color-border); border-radius: 10px; padding: 20px; box-shadow: var(--shadow-sm); }
+.detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--color-divider); }
+.detail-header .dh-left { display: flex; align-items: center; gap: 12px; }
+.detail-header .c-avatar-lg { width: 48px; height: 48px; border-radius: 10px; background: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; }
+.detail-header .dh-name { font-size: 18px; font-weight: 800; color: var(--color-primary); }
+.detail-header .dh-account { font-size: 12.5px; color: var(--color-text-tertiary); margin-top: 4px; }
+.c-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; flex-shrink: 0; }
+.c-tag.r2 { background: var(--color-success-bg); color: var(--color-success); }
+.c-tag.r3 { background: var(--color-warning-bg); color: var(--color-warning); }
+.c360-link { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 7px; background: #fff; color: var(--color-primary); border: 1px solid var(--color-border); font-size: 12.5px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all .15s; flex-shrink: 0; }
+.c360-link:hover { border-color: var(--color-accent); color: var(--color-accent); background: #EEF5FF; }
+.c360-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* 汇总指标条 */
+.c-summary-row { display: flex; gap: 12px; margin-bottom: 4px; }
+.c-summary-tile { flex: 1; background: var(--color-table-header); border-radius: 8px; padding: 10px 14px; }
+.c-summary-tile .cs-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.c-summary-tile .cs-value { font-size: 15px; font-weight: 700; color: var(--color-primary); }
+.c-summary-tile .cs-value.up { color: var(--color-up); }
+
+/* 产品分组（每个产品自带报告列表 + 独立话术卡片） */
+.product-group { border: 1px solid var(--color-divider); border-radius: 10px; padding: 16px; margin-bottom: 12px; background: var(--color-white); }
+.product-group:last-child { margin-bottom: 0; }
+.pg-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.pgh-name { font-size: 13px; font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; }
+.pgh-name .pgh-icon { width: 22px; height: 22px; border-radius: 6px; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pgh-name .pgh-icon svg { width: 12px; height: 12px; }
+.pgh-tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; font-weight: 600; background: #EEF5FF; color: #2B5CC8; }
+.pg-holdings { display: flex; gap: 16px; margin-top: 6px; margin-bottom: 12px; font-size: 12px; }
+.pg-holdings .pgh-asset { color: var(--color-text-secondary); }
+.pg-holdings .pgh-return { color: var(--color-up); font-weight: 700; }
+
+.report-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.report-list .report-item { flex: 1 1 220px; min-width: 220px; }
+.report-item { display: flex; gap: 10px; padding: 10px; background: var(--color-table-header); border-radius: 8px; align-items: flex-start; }
+.report-thumb { width: 40px; height: 52px; border-radius: 6px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-primary); font-size: 11px; text-align: center; line-height: 1.3; background: #EEF5FF; }
+.report-thumb .rt-icon { margin-bottom: 3px; display: flex; }
+.report-thumb .rt-icon svg { width: 16px; height: 16px; }
+.report-info { flex: 1; min-width: 0; }
+.report-info .r-title { font-size: 13px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px; }
+.report-info .r-desc { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; line-height: 1.5; }
+.report-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.r-btn { font-size: 12px; height: 28px; padding: 0 10px; border-radius: 6px; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; text-decoration: none; font-weight: 600; }
+.r-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.r-btn.view { background: var(--color-primary); color: #fff; border: 1px solid var(--color-primary); }
+.r-btn.view:hover { background: var(--color-primary-mid); }
+.r-btn.dl-img { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.r-btn.dl-img:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+.speech-section { margin-top: 12px; }
+
+/* 话术卡片通用样式 */
+.draft-card { background: var(--color-table-header); border-radius: 10px; padding: 14px; border: 1px solid var(--color-divider); }
+.draft-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.draft-header-row .dhr-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.draft-header-row .dhr-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); }
+.ai-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #EEF5FF; color: #2B5CC8; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.compliance-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.compliance-badge.passed { background: var(--color-success-bg); color: var(--color-success); }
+.compliance-badge.pending { background: var(--color-warning-bg); color: var(--color-warning); }
+.draft-textarea { width: 100%; min-height: 200px; border: 1px solid var(--color-border); border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.8; color: var(--color-text-primary); font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+.draft-textarea:focus { border-color: var(--color-accent); box-shadow: 0 0 0 1.5px var(--color-accent); }
+.draft-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.char-count { font-size: 12px; color: var(--color-text-tertiary); }
+.char-count .cc-num { color: var(--color-text-secondary); font-weight: 600; }
+.reset-btn { font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; background: none; border: none; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; font-family: inherit; }
+.reset-btn:hover { background: #fff; color: var(--color-text-secondary); }
+.reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.draft-actions-row { display: flex; gap: 8px; margin-top: 12px; }
+.d-btn { height: 32px; padding: 0 12px; border-radius: 7px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: inherit; }
+.d-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.d-btn.secondary { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); flex: 1; justify-content: center; }
+.d-btn.secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.draft-card.edited .ai-badge { background: var(--color-warning-bg); color: var(--color-warning); }
+
+/* 周期选择器 */
+.period-selector { display: inline-flex; align-items: center; gap: 1px; }
+.ps-item { font-size: 11px; color: var(--color-text-tertiary); cursor: pointer; padding: 1px 5px; border-radius: 3px; transition: all 0.15s; user-select: none; font-weight: 600; }
+.ps-item.active { color: var(--color-accent); font-weight: 700; background: #EEF5FF; }
+.ps-item:hover:not(.active) { background: #fff; color: var(--color-text-secondary); }
+.ps-sep { font-size: 10px; color: var(--color-border); }
+
+/* 底部 */
+.footer { text-align: center; font-size: 12px; color: var(--color-text-tertiary); padding: 16px 0 24px; line-height: 1.6; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--color-primary); color: rgba(255,255,255,0.9); font-size: 12px; padding: 8px 18px; border-radius: 16px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 16px rgba(26,42,94,0.25); white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+@media (max-width: 720px) {
+  .page { padding: 12px; }
+  .header-bar { flex-direction: column; align-items: flex-start; }
+  .c-summary-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-bar">
+    <div class="h-left">
+      <div class="h-title">客户投后服务报告</div>
+      <div class="h-sub" id="hSub">单客户报告查询 · 国金证券基金投顾</div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detailPanel"></div>
+
+  <div class="no-result" id="noResult">未找到该客户，请检查链接中的客户参数是否正确</div>
+
+  <div class="footer">
+    本页面由 WorkBuddy 自动生成 · 数据实时同步自报告工坊
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== 数据（与场景1共用同一份客户/产品/话术库）=====================
+var customers = [
+  {
+    id: 'lw', name: '李婉清', account: '6008801289', riskTag: '中低风险', riskClass: 'r2',
+    products: [
+      { key: 'lw-bf', type: 'portfolio', name: '百分安心·全球稳健配置', asset: '¥53.82万', ret: '+7.64%',
+        reports: [
+          { icon:'quarterly', label:'季报', title:'2026Q2 投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_李婉清.html', dlName:'投后季报_李婉清' },
+          { icon:'monthly', label:'月报', title:'2026年6月 投后月报', desc:'2026.07.01 生成 · 合规通过', file:'投后月报_李婉清.html', dlName:'投后月报_李婉清' },
+          { icon:'weekly', label:'周报', title:'7月第1周 投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_李婉清.html', dlName:'投后周报_李婉清' }
+        ]}
+    ]
+  },
+  {
+    id: 'wh', name: '王建华', account: '6006600312', riskTag: '中风险', riskClass: 'r3',
+    products: [
+      { key: 'wh-bf', type: 'portfolio', name: '百分安心·全球稳健配置', asset: '¥91.89万', ret: '+6.89%',
+        reports: [
+          { icon:'quarterly', label:'季报', title:'2026Q2 投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_王建华.html', dlName:'投后季报_王建华' },
+          { icon:'monthly', label:'月报', title:'2026年6月 投后月报', desc:'2026.07.01 生成 · 合规通过', file:'投后月报_王建华.html', dlName:'投后月报_王建华' },
+          { icon:'weekly', label:'周报', title:'7月第1周 投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_王建华.html', dlName:'投后周报_王建华' }
+        ]},
+      { key: 'wh-hx', type: 'single_fund', name: '华夏医药量化选股股票A', asset: '¥15.00万', ret: '+12.34%',
+        reports: [
+          { icon:'doc', label:'月报', title:'2026年6月 公募基金月报', desc:'2026.07.01 生成 · 合规通过', file:'单基金月报_华夏医药量化_016938.html', dlName:'单基金月报_华夏医药_王建华' }
+        ]}
+    ]
+  },
+  {
+    id: 'zx', name: '赵秀英', account: '6009900255', riskTag: '低风险', riskClass: 'r2',
+    products: [
+      { key: 'zx-bf', type: 'portfolio', name: '百分安心·全球稳健配置', asset: '¥20.94万', ret: '+4.70%',
+        reports: [
+          { icon:'quarterly', label:'季报', title:'2026Q2 投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_赵秀英.html', dlName:'投后季报_赵秀英' },
+          { icon:'monthly', label:'月报', title:'2026年6月 投后月报', desc:'2026.07.01 生成 · 合规通过', file:'投后月报_赵秀英.html', dlName:'投后月报_赵秀英' },
+          { icon:'weekly', label:'周报', title:'7月第1周 投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_赵秀英.html', dlName:'投后周报_赵秀英' }
+        ]}
+    ]
+  }
+];
+
+// ===== 话术库（按产品×周期）=====
+var draftLib = {
+  portfolio: {
+    quarterly: '您好。这是您持有的百分安心·全球稳健配置组合的2026年二季度运作季报，核心内容为您梳理如下：\n\n1. 收益表现：本季度收益+3.21%，跑赢基准。\n2. 运作思路：本季度组合在全球多元资产上保持固收打底、权益增强的均衡方向。\n3. 业绩归因：权益类资产和海外债券对组合收益贡献较大。\n4. 后市观点：二季度市场波动整体可控，组合通过分散配置控制了回撤；展望后市，管理人认为短期A股结构性行情和海外资产仍有配置价值，组合将维持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。',
+    monthly: '您好。这是您持有的百分安心·全球稳健配置组合的2026年6月运作月报，核心内容为您梳理如下：\n\n1. 收益表现：本月收益+1.05%，跑赢基准。\n2. 运作思路：本月组合在权益和固收资产上保持均衡配置。\n3. 业绩归因：权益类资产对组合收益贡献较大，固收类资产提供稳定底仓。\n4. 后市观点：管理人认为短期市场仍以震荡为主，组合将继续保持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。',
+    weekly: '您好。百分安心·全球稳健配置组合本周报告已更新，我帮您提炼了要点：\n\n组合上周收益+0.28%，与基准表现相近。成分基金中，海外资产方向贡献较多。展望方面，管理人认为短期市场维持震荡，组合继续保持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。'
+  },
+  single_fund: {
+    monthly: '您好。这是您关注的华夏医药量化选股股票A的2026年6月运作月报，核心内容为您梳理如下：\n\n1. 收益表现：本月收益+3.21%，跑赢业绩比较基准。\n2. 运作思路：本月基金重点布局医药生物细分赛道，持仓集中度保持适中。\n3. 业绩归因：创新药、医疗器械方向对基金收益贡献较大。\n4. 后市观点：管理人认为医药行业长期成长逻辑未变，将继续优化选股策略。\n\n报告已发您，有空看看，有疑问随时找我。'
+  }
+};
+
+var reportsBase = '../reports/';
+
+// ===== 报告类型图标（SVG）=====
+var ICONS = {
+  quarterly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="4" height="10"/><rect x="10" y="6" width="4" height="14"/><rect x="16" y="13" width="4" height="7"/></svg>',
+  monthly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/></svg>',
+  weekly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
+  portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+};
+function iconSvg(key) { return ICONS[key] || ICONS.doc; }
+
+function customer360Url(c) {
+  return 'https://guojin.com/customer-view/' + encodeURIComponent(c.account);
+}
+
+// ===================== 状态 =====================
+var draftState = {}; // key -> { product, period, originalText }
+
+function esc(s) { return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+// 从 URL 读取要展示的客户，例如 ?id=lw 或 ?account=6008801289；均未提供时默认展示第一个客户（便于预览）
+function getTargetCustomer() {
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  var account = params.get('account');
+  if (id) return customers.filter(function(c){ return c.id === id; })[0] || null;
+  if (account) return customers.filter(function(c){ return c.account === account; })[0] || null;
+  return customers[0] || null;
+}
+
+function renderCustomerDetail() {
+  var c = getTargetCustomer();
+  if (!c) {
+    document.getElementById('detailPanel').innerHTML = '';
+    document.getElementById('noResult').classList.add('show');
+    return;
+  }
+  document.getElementById('noResult').classList.remove('show');
+  document.getElementById('hSub').textContent = esc(c.name) + ' · 单客户报告查询 · 国金证券基金投顾';
+
+  var totalAsset = c.products.reduce(function(sum, p){ return sum + parseFloat(p.asset.replace(/[¥万]/g,'')); }, 0);
+  var totalReports = c.products.reduce(function(sum, p){ return sum + p.reports.length; }, 0);
+
+  var html = '<div class="detail-card">' +
+    '<div class="detail-header">' +
+      '<div class="dh-left">' +
+        '<div class="c-avatar-lg">' + esc(c.name.charAt(0)) + '</div>' +
+        '<div><div class="dh-name">' + esc(c.name) + '</div><div class="dh-account">资金账号 ' + c.account + ' · ' + '<span class="c-tag ' + c.riskClass + '">' + esc(c.riskTag) + '</span></div></div>' +
+      '</div>' +
+      '<a class="c360-link" href="' + esc(customer360Url(c)) + '" target="_blank" rel="noopener" title="打开客户视图查看完整客户详情">' +
+        iconSvg('external') + '客户视图' +
+      '</a>' +
+    '</div>' +
+    '<div class="c-summary-row">' +
+      '<div class="c-summary-tile"><div class="cs-label">持仓资产合计</div><div class="cs-value">¥' + totalAsset.toFixed(2) + '万</div></div>' +
+      '<div class="c-summary-tile"><div class="cs-label">最新报告</div><div class="cs-value">' + totalReports + ' 份</div></div>' +
+    '</div>' +
+  '</div>';
+
+  c.products.forEach(function(p) {
+    html += renderProductGroup(p);
+  });
+
+  document.getElementById('detailPanel').innerHTML = html;
+
+  c.products.forEach(function(p) {
+    var defaultPeriod = p.type === 'single_fund' ? 'monthly' : 'quarterly';
+    initDraft(p.key, p.type, defaultPeriod);
+  });
+}
+
+function renderProductGroup(p) {
+  var reportsHtml = p.reports.map(function(r) {
+    return '<div class="report-item">' +
+      '<div class="report-thumb"><div class="rt-icon">' + iconSvg(r.icon) + '</div>' + r.label + '</div>' +
+      '<div class="report-info">' +
+        '<div class="r-title">' + esc(r.title) + '</div>' +
+        '<div class="r-desc">' + esc(r.desc) + '</div>' +
+        '<div class="report-actions">' +
+          '<a class="r-btn view" href="' + reportsBase + esc(r.file) + '" target="_blank">' + iconSvg('eye') + '查看</a>' +
+          '<button class="r-btn dl-img" onclick="downloadReport(\'' + esc(r.dlName) + '\',\'image\')">' + iconSvg('download') + '下载图片</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // 周期切换器：几种周期的报告，话术就能切几版
+  var periods = Array.from(new Set(p.reports.map(function(r){ return r.icon; }))).filter(function(k){
+    return k === 'quarterly' || k === 'monthly' || k === 'weekly';
+  });
+  var periodLabels = { quarterly: '季报', monthly: '月报', weekly: '周报' };
+  var defaultPeriod = p.type === 'single_fund' ? 'monthly' : 'quarterly';
+  var periodSelector = periods.length > 1
+    ? '<div class="period-selector" id="ps-' + p.key + '">' +
+        periods.map(function(period, idx) {
+          return (idx > 0 ? '<span class="ps-sep">|</span>' : '') +
+            '<span class="ps-item' + (period === defaultPeriod ? ' active' : '') + '" data-period="' + period + '" onclick="switchDraftPeriod(\'' + p.key + '\',\'' + period + '\')">' + periodLabels[period] + '</span>';
+        }).join('') +
+      '</div>'
+    : '';
+
+  return '<div class="product-group">' +
+    '<div class="pg-header">' +
+      '<div class="pgh-name"><div class="pgh-icon">' + iconSvg(p.type === 'portfolio' ? 'portfolio' : 'doc') + '</div>' + esc(p.name) + '</div>' +
+      '<div class="pgh-tag">' + (p.type === 'portfolio' ? '基金投顾' : '公募基金') + '</div>' +
+    '</div>' +
+    '<div class="pg-holdings"><span class="pgh-asset">持仓资产 ' + p.asset + '</span><span class="pgh-return">持有收益 ' + p.ret + '</span></div>' +
+    '<div class="report-list">' + reportsHtml + '</div>' +
+    '<div class="speech-section">' +
+      '<div class="draft-card" id="draft-' + p.key + '">' +
+        '<div class="draft-header-row">' +
+          '<div class="dhr-left">' +
+            '<div class="dhr-title">沟通话术</div>' +
+            periodSelector +
+            '<div class="ai-badge">✨ AI提炼</div>' +
+          '</div>' +
+          '<div class="compliance-badge passed">✓ 合规审核通过</div>' +
+        '</div>' +
+        '<textarea class="draft-textarea" oninput="onDraftEdit(\'' + p.key + '\')"></textarea>' +
+        '<div class="draft-footer-row">' +
+          '<div class="char-count">共 <span class="cc-num">0</span> 字</div>' +
+          '<button class="reset-btn" disabled onclick="resetDraft(\'' + p.key + '\')">↺ 恢复原始话术</button>' +
+        '</div>' +
+        '<div class="draft-actions-row">' +
+          '<button class="d-btn secondary" onclick="copyDraft(\'' + p.key + '\')">⧉ 复制话术</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ===================== 话术公共逻辑 =====================
+function getDraftText(product, period) {
+  var lib = draftLib[product] || {};
+  return lib[period] || lib.quarterly || lib.monthly || '';
+}
+
+function initDraft(draftKey, product, period) {
+  var card = document.getElementById('draft-' + draftKey);
+  if (!card) return;
+  var text = getDraftText(product, period);
+  var textarea = card.querySelector('.draft-textarea');
+  textarea.value = text;
+  card.querySelector('.cc-num').textContent = text.length;
+  draftState[draftKey] = { product: product, period: period, originalText: text };
+}
+
+function switchDraftPeriod(draftKey, period) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  st.period = period;
+  var text = getDraftText(st.product, period);
+  st.originalText = text;
+  var card = document.getElementById('draft-' + draftKey);
+  var textarea = card.querySelector('.draft-textarea');
+  textarea.value = text;
+  card.querySelector('.cc-num').textContent = text.length;
+  card.classList.remove('edited');
+  var badge = card.querySelector('.compliance-badge');
+  badge.className = 'compliance-badge passed';
+  badge.innerHTML = '✓ 合规审核通过';
+  card.querySelector('.reset-btn').disabled = true;
+  card.querySelectorAll('.ps-item').forEach(function(item) {
+    item.classList.toggle('active', item.dataset.period === period);
+  });
+}
+
+function onDraftEdit(draftKey) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  var card = document.getElementById('draft-' + draftKey);
+  var textarea = card.querySelector('.draft-textarea');
+  var text = textarea.value;
+  card.querySelector('.cc-num').textContent = text.length;
+  var isEdited = text !== st.originalText;
+  var badge = card.querySelector('.compliance-badge');
+  var resetBtn = card.querySelector('.reset-btn');
+  if (isEdited) {
+    card.classList.add('edited');
+    badge.className = 'compliance-badge pending';
+    badge.innerHTML = '● 已编辑';
+    resetBtn.disabled = false;
+  } else {
+    card.classList.remove('edited');
+    badge.className = 'compliance-badge passed';
+    badge.innerHTML = '✓ 合规审核通过';
+    resetBtn.disabled = true;
+  }
+}
+
+function resetDraft(draftKey) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  var card = document.getElementById('draft-' + draftKey);
+  card.querySelector('.draft-textarea').value = st.originalText;
+  onDraftEdit(draftKey);
+  showToast('已恢复原始话术');
+}
+
+function copyDraft(draftKey) {
+  var card = document.getElementById('draft-' + draftKey);
+  var text = card.querySelector('.draft-textarea').value;
+  copyToClipboard(text);
+  showToast('话术已复制到剪贴板');
+}
+
+function copyToClipboard(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ===================== 其它工具函数 =====================
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function downloadReport(name, type) {
+  if (type === 'image') {
+    showToast('正在生成报告截图...（演示模式）');
+    setTimeout(function() { showToast('图片已保存：' + name + '.png'); }, 1200);
+  } else {
+    var link = 'https://guojin.com/reports/' + name + '.html';
+    copyToClipboard(link);
+    showToast('报告链接已复制到剪贴板');
+  }
+}
+
+// ===================== 初始化 =====================
+renderCustomerDetail();
+</script>
+</body>
+</html>

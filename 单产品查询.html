@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>场景3 · 单产品报告查询 · 国金证券</title>
+<style>
+/* ===== 国金证券 B端设计规范 CSS变量（深蓝主题，与场景1/2保持一致）===== */
+:root {
+  --color-primary: #1A2A5E;
+  --color-primary-mid: #2B3F7A;
+  --color-accent: #2B73FF;
+  --color-primary-light: #EEF1F8;
+  --color-text-primary: #1A2A5E;
+  --color-text-secondary: #4A5578;
+  --color-text-tertiary: #8A96B4;
+  --color-text-disabled: #C3CADC;
+  --color-danger: #C8392B;
+  --color-danger-bg: #FEF2F1;
+  --color-info: #2B73FF;
+  --color-warning: #C47520;
+  --color-warning-bg: #FFF7EC;
+  --color-border: #E4E9F2;
+  --color-divider: #EEF1F8;
+  --color-table-line: #EEF1F8;
+  --color-table-header: #F7F9FC;
+  --color-white: #FFFFFF;
+  --color-success: #1A7F4E;
+  --color-success-bg: #F0FAF4;
+  --color-up: #C8392B;
+  --color-down: #1A7F4E;
+  --color-flat: #4A5578;
+  --shadow-sm: 0 1px 4px rgba(26,42,94,0.06);
+  --shadow: 0 2px 10px rgba(26,42,94,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F0F3F8; color: var(--color-text-primary); padding: 0; }
+
+.page { max-width: 1100px; margin: 0 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+/* 头部：单产品场景不需要维度切换和左侧列表，直接展示定位信息 */
+.header-bar { background: var(--color-primary); border-radius: 10px; padding: 20px 24px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; box-shadow: var(--shadow); }
+.header-bar .h-left { flex: 1; min-width: 0; }
+.header-bar .h-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.2px; }
+.header-bar .h-sub { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+
+.detail-panel { display: flex; flex-direction: column; gap: 16px; }
+
+.no-result { display: none; text-align: center; padding: 60px 20px; color: var(--color-text-tertiary); font-size: 14px; background: #fff; border-radius: 10px; border: 1px solid var(--color-border); }
+.no-result.show { display: block; }
+
+/* ===== 详情面板 · 产品信息卡 ===== */
+.detail-card { background: #fff; border: 1px solid var(--color-border); border-radius: 10px; padding: 20px; box-shadow: var(--shadow-sm); }
+.detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--color-divider); }
+.detail-header .dh-left { display: flex; align-items: center; gap: 12px; }
+.detail-header .p-icon-lg { width: 44px; height: 44px; border-radius: 10px; background: var(--color-primary); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+.detail-header .p-icon-lg svg { width: 20px; height: 20px; }
+.detail-header .dh-name { font-size: 17px; font-weight: 800; color: var(--color-primary); }
+.detail-header .dh-account { font-size: 12.5px; color: var(--color-text-tertiary); margin-top: 4px; }
+.li-type-tag { font-size: 12px; padding: 3px 10px; border-radius: 4px; background: #EEF5FF; color: #2B5CC8; font-weight: 700; flex-shrink: 0; }
+
+/* 产品业绩指标条 */
+.perf-metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.perf-metric-tile { background: var(--color-table-header); border-radius: 8px; padding: 12px 14px; }
+.perf-metric-tile .pm-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.perf-metric-tile .pm-value { font-size: 16px; font-weight: 700; color: var(--color-primary); }
+.perf-metric-tile .pm-value.up { color: var(--color-up); }
+.perf-metric-tile .pm-value.down { color: var(--color-down); }
+
+.product-detail-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+.pd-section { margin-bottom: 16px; }
+.pd-section:last-child { margin-bottom: 0; }
+.pd-section-title { font-size: 11px; color: var(--color-text-tertiary); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; }
+.pd-report-list { display: flex; flex-direction: column; gap: 8px; }
+.pd-report-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; background: var(--color-table-header); border-radius: 8px; border: 1px solid transparent; transition: all 0.15s; }
+.pd-report-item:hover { border-color: var(--color-border); }
+.pd-report-thumb { width: 36px; height: 44px; border-radius: 6px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-primary); font-size: 11px; line-height: 1.3; background: #fff; }
+.pd-report-thumb .rt-icon { margin-bottom: 2px; display: flex; }
+.pd-report-thumb .rt-icon svg { width: 15px; height: 15px; }
+.pd-report-info { flex: 1; min-width: 0; }
+.pd-report-info .pd-report-name { font-size: 13px; font-weight: 700; color: var(--color-text-primary); }
+.pd-report-info .pd-report-desc { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
+.pd-report-actions { display: flex; gap: 8px; margin-top: 8px; }
+.r-btn { font-size: 12px; height: 28px; padding: 0 10px; border-radius: 6px; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; text-decoration: none; font-weight: 600; }
+.r-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.r-btn.view { background: var(--color-primary); color: #fff; border: 1px solid var(--color-primary); }
+.r-btn.view:hover { background: var(--color-primary-mid); }
+.r-btn.dl-img { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); font-family: inherit; }
+.r-btn.dl-img:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+.customer-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.customer-table th { text-align: left; font-weight: 700; color: var(--color-text-tertiary); font-size: 11px; letter-spacing: 0.3px; padding: 8px 12px; background: var(--color-table-header); border-bottom: 1px solid var(--color-divider); }
+.customer-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-table-line); color: var(--color-text-primary); }
+.customer-table tr:last-child td { border-bottom: none; }
+.customer-table .ct-name-cell { display: flex; align-items: center; gap: 8px; }
+.customer-table .ct-name-link { display: flex; align-items: center; gap: 8px; background: none; border: none; padding: 0; cursor: pointer; font: inherit; color: inherit; text-align: left; }
+.customer-table .ct-name-link:hover .ct-name-text { color: var(--color-accent); text-decoration: underline; }
+.customer-table .c-avatar-sm { width: 26px; height: 26px; border-radius: 6px; background: var(--color-primary); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.customer-table .ct-return { color: var(--color-up); font-weight: 700; }
+.ct-freq-warn { display: inline-flex; align-items: center; color: var(--color-warning); cursor: help; flex-shrink: 0; }
+
+/* 话术卡片通用样式 */
+.draft-card { background: var(--color-table-header); border-radius: 10px; padding: 14px; border: 1px solid var(--color-divider); }
+.draft-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.draft-header-row .dhr-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.draft-header-row .dhr-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); }
+.ai-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #EEF5FF; color: #2B5CC8; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.compliance-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.compliance-badge.passed { background: var(--color-success-bg); color: var(--color-success); }
+.compliance-badge.pending { background: var(--color-warning-bg); color: var(--color-warning); }
+.draft-textarea { width: 100%; min-height: 200px; border: 1px solid var(--color-border); border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.8; color: var(--color-text-primary); font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+.draft-textarea:focus { border-color: var(--color-accent); box-shadow: 0 0 0 1.5px var(--color-accent); }
+.draft-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.char-count { font-size: 12px; color: var(--color-text-tertiary); }
+.char-count .cc-num { color: var(--color-text-secondary); font-weight: 600; }
+.reset-btn { font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; background: none; border: none; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; font-family: inherit; }
+.reset-btn:hover { background: #fff; color: var(--color-text-secondary); }
+.reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.draft-actions-row { display: flex; gap: 8px; margin-top: 12px; }
+.d-btn { height: 32px; padding: 0 12px; border-radius: 7px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: inherit; }
+.d-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.d-btn.secondary { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); flex: 1; justify-content: center; }
+.d-btn.secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.d-btn.primary { background: var(--color-primary); color: #fff; border: 1px solid var(--color-primary); flex: 1; justify-content: center; }
+.d-btn.primary:hover { background: var(--color-primary-mid); }
+.draft-card.edited .ai-badge { background: var(--color-warning-bg); color: var(--color-warning); }
+
+/* ===== 企微一键群发弹窗 ===== */
+.bc-modal-mask { display: none; position: fixed; inset: 0; background: rgba(15,22,48,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+.bc-modal-mask.show { display: flex; }
+.bc-modal { width: 100%; max-width: 480px; max-height: 82vh; background: #fff; border-radius: 12px; box-shadow: 0 12px 40px rgba(15,22,48,0.35); display: flex; flex-direction: column; overflow: hidden; }
+.bc-modal-header { padding: 16px 20px; border-bottom: 1px solid var(--color-divider); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.bc-modal-title { font-size: 15px; font-weight: 700; color: var(--color-primary); }
+.bc-modal-close { border: none; background: transparent; cursor: pointer; color: var(--color-text-tertiary); padding: 4px; border-radius: 5px; display: flex; }
+.bc-modal-close:hover { background: var(--color-table-header); color: var(--color-text-primary); }
+.bc-modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+.bc-section-label { font-size: 11.5px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+.bc-script-source { font-size: 10.5px; font-weight: 600; color: var(--color-accent); background: #EEF5FF; padding: 2px 7px; border-radius: 4px; }
+.bc-recipient-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.bc-recipient-tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 6px 4px 10px; border-radius: 14px; background: var(--color-table-header); color: var(--color-text-primary); font-size: 12px; font-weight: 600; border: 1px solid var(--color-border); }
+.bc-recipient-tag button { border: none; background: transparent; cursor: pointer; color: var(--color-text-tertiary); display: flex; padding: 2px; border-radius: 50%; }
+.bc-recipient-tag button:hover { color: var(--color-danger); background: var(--color-danger-bg); }
+.bc-recipient-empty { font-size: 12px; color: var(--color-text-tertiary); padding: 8px 0; }
+
+.bc-excluded-wrap { display: none; background: var(--color-warning-bg); border: 1px solid #F0D488; border-radius: 8px; padding: 10px 12px; margin-bottom: 18px; }
+.bc-excluded-title { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: #8A6A1B; margin-bottom: 8px; }
+.bc-excluded-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.bc-excluded-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; border-radius: 14px; background: #fff; border: 1px solid #F0D488; font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+.bc-excluded-reason { font-size: 10.5px; font-weight: 500; color: var(--color-text-tertiary); white-space: nowrap; }
+.bc-excluded-tag button { border: none; background: var(--color-table-header); cursor: pointer; color: var(--color-accent); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.bc-excluded-tag button:hover { background: #EEF5FF; }
+
+.bc-attach-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.bc-attach-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--color-table-header); border: 1px solid var(--color-border); cursor: pointer; transition: all .15s; }
+.bc-attach-item:hover { border-color: var(--color-accent); }
+.bc-attach-item.checked { border-color: var(--color-accent); background: #EEF5FF; }
+.bc-attach-checkbox { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid var(--color-border); background: #fff; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.bc-attach-item.checked .bc-attach-checkbox { background: var(--color-accent); border-color: var(--color-accent); }
+.bc-attach-checkbox svg { display: none; width: 10px; height: 10px; }
+.bc-attach-item.checked .bc-attach-checkbox svg { display: block; }
+.bc-attach-icon { width: 26px; height: 34px; border-radius: 4px; background: #fff; color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bc-attach-icon svg { width: 13px; height: 13px; }
+.bc-attach-info { flex: 1; min-width: 0; }
+.bc-attach-name { font-size: 12.5px; font-weight: 600; color: var(--color-text-primary); }
+.bc-attach-desc { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+.bc-modal-footer { padding: 14px 20px; border-top: 1px solid var(--color-divider); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.bc-footer-note { font-size: 11px; color: var(--color-text-tertiary); }
+.bc-send-btn { padding: 8px 20px; border-radius: 7px; border: none; background: var(--color-primary); color: #fff; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.bc-send-btn:hover { background: var(--color-primary-mid); }
+.bc-send-btn:disabled { opacity: 0.45; cursor: default; }
+
+/* 周期选择器 */
+.period-selector { display: inline-flex; align-items: center; gap: 1px; }
+.ps-item { font-size: 11px; color: var(--color-text-tertiary); cursor: pointer; padding: 1px 5px; border-radius: 3px; transition: all 0.15s; user-select: none; font-weight: 600; }
+.ps-item.active { color: var(--color-accent); font-weight: 700; background: #EEF5FF; }
+.ps-item:hover:not(.active) { background: #fff; color: var(--color-text-secondary); }
+.ps-sep { font-size: 10px; color: var(--color-border); }
+
+/* 底部 */
+.footer { text-align: center; font-size: 12px; color: var(--color-text-tertiary); padding: 16px 0 24px; line-height: 1.6; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--color-primary); color: rgba(255,255,255,0.9); font-size: 12px; padding: 8px 18px; border-radius: 16px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 16px rgba(26,42,94,0.25); white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+@media (max-width: 860px) {
+  .page { padding: 12px; }
+  .header-bar { flex-direction: column; align-items: flex-start; }
+  .product-detail-columns { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-bar">
+    <div class="h-left">
+      <div class="h-title">产品投后服务报告</div>
+      <div class="h-sub" id="hSub">单产品报告查询 · 国金证券基金投顾</div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detailPanel"></div>
+
+  <div class="no-result" id="noResult">未找到该产品，请检查链接中的产品参数是否正确</div>
+
+  <div class="footer">
+    本页面由 WorkBuddy 自动生成 · 数据实时同步自报告工坊
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 企微一键群发弹窗 -->
+<div class="bc-modal-mask" id="bcModalMask" onclick="closeBroadcastModal(event)">
+  <div class="bc-modal" onclick="event.stopPropagation()">
+    <div class="bc-modal-header">
+      <span class="bc-modal-title">企微一键群发</span>
+      <button class="bc-modal-close" onclick="closeBroadcastModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="bc-modal-body">
+      <div class="bc-section-label"><span>接收客户（<span id="bcRecipientCount">0</span> 人）</span></div>
+      <div class="bc-recipient-list" id="bcRecipientList"></div>
+      <div class="bc-excluded-wrap" id="bcExcludedWrap"></div>
+
+      <div class="bc-section-label"><span>群发附件（<span id="bcAttachCount">0</span> 份）</span></div>
+      <div class="bc-attach-list" id="bcAttachList"></div>
+
+      <div class="bc-section-label"><span>群发话术</span><span class="bc-script-source">来自当前产品沟通话术</span></div>
+      <textarea class="draft-textarea" id="bcScriptBox"></textarea>
+    </div>
+    <div class="bc-modal-footer">
+      <span class="bc-footer-note">将通过企微一键群发发送</span>
+      <button class="bc-send-btn" id="bcSendBtn" onclick="sendBroadcast()">发送（<span id="bcSendCount">0</span>人）</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== 数据（与场景1共用同一份产品/话术库）=====================
+var products = [
+  {
+    key: 'portfolio', name: '百分安心·全球稳健配置组合', typeTag: '基金投顾',
+    code: '', summary: '全球资产配置固收+ · R2中低风险 · 9份报告',
+    metrics: { oneYearRet: '+8.52%', sinceInceptionRet: '+19.96%', volatility: '2.35%', maxDrawdown: '-1.97%' },
+    reports: [
+      { icon:'quarterly', label:'季报', name:'投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_百分安心.html', dlName:'投后季报_百分安心' },
+      { icon:'monthly', label:'月报', name:'投后月报', desc:'2026.06.01 生成 · 合规通过', file:'投后月报_百分安心.html', dlName:'投后月报_百分安心' },
+      { icon:'weekly', label:'周报', name:'投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_百分安心.html', dlName:'投后周报_百分安心' }
+    ],
+    holders: [
+      { name:'李婉清', asset:'¥53.82万', ret:'+7.64%' },
+      { name:'王建华', asset:'¥91.89万', ret:'+6.89%' },
+      { name:'赵秀英', asset:'¥20.94万', ret:'+4.70%' }
+    ]
+  },
+  {
+    key: 'single_fund', name: '华夏医药量化选股股票A', typeTag: '公募基金',
+    code: '016938', summary: '016938 · 医药主题股票型 · 1份报告',
+    metrics: { oneYearRet: '+15.68%', sinceInceptionRet: '+42.30%', volatility: '18.6%', maxDrawdown: '-23.15%' },
+    reports: [
+      { icon:'doc', label:'月报', name:'公募基金月报', desc:'2026.07.01 生成 · 合规通过', file:'单基金月报_华夏医药量化_016938.html', dlName:'单基金月报_华夏医药量化_016938' }
+    ],
+    holders: [
+      { name:'王建华', asset:'¥15.00万', ret:'+12.34%' }
+    ]
+  }
+];
+
+var reportsBase = '../reports/';
+
+// 客户 id 映射（用于持有客户表格点击跳转到单客户查询页），与场景1/场景2的 customers 数据保持一致
+var customerIdByName = { '李婉清': 'lw', '王建华': 'wh', '赵秀英': 'zx' };
+
+// ===== 群发历史记录（用于频控：避免同一客户当日被多次群发打扰，此处仅用于展示"今日已群发"提醒角标）=====
+var broadcastLog = [
+  { name: '王建华', date: todayStr(), productKey: 'single_fund', productName: '华夏医药量化选股股票A' }
+];
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function getTodayBroadcastInfo(name, excludeProductKey) {
+  var todays = broadcastLog.filter(function(r) {
+    return r.name === name && r.date === todayStr() && r.productKey !== excludeProductKey;
+  });
+  return todays.length ? todays : null;
+}
+
+// ===== 话术库（按产品×周期）=====
+var draftLib = {
+  portfolio: {
+    quarterly: '您好。这是您持有的百分安心·全球稳健配置组合的2026年二季度运作季报，核心内容为您梳理如下：\n\n1. 收益表现：本季度收益+3.21%，跑赢基准。\n2. 运作思路：本季度组合在全球多元资产上保持固收打底、权益增强的均衡方向。\n3. 业绩归因：权益类资产和海外债券对组合收益贡献较大。\n4. 后市观点：二季度市场波动整体可控，组合通过分散配置控制了回撤；展望后市，管理人认为短期A股结构性行情和海外资产仍有配置价值，组合将维持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。',
+    monthly: '您好。这是您持有的百分安心·全球稳健配置组合的2026年6月运作月报，核心内容为您梳理如下：\n\n1. 收益表现：本月收益+1.05%，跑赢基准。\n2. 运作思路：本月组合在权益和固收资产上保持均衡配置。\n3. 业绩归因：权益类资产对组合收益贡献较大，固收类资产提供稳定底仓。\n4. 后市观点：管理人认为短期市场仍以震荡为主，组合将继续保持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。',
+    weekly: '您好。百分安心·全球稳健配置组合本周报告已更新，我帮您提炼了要点：\n\n组合上周收益+0.28%，与基准表现相近。成分基金中，海外资产方向贡献较多。展望方面，管理人认为短期市场维持震荡，组合继续保持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。'
+  },
+  single_fund: {
+    monthly: '您好。这是您关注的华夏医药量化选股股票A的2026年6月运作月报，核心内容为您梳理如下：\n\n1. 收益表现：本月收益+3.21%，跑赢业绩比较基准。\n2. 运作思路：本月基金重点布局医药生物细分赛道，持仓集中度保持适中。\n3. 业绩归因：创新药、医疗器械方向对基金收益贡献较大。\n4. 后市观点：管理人认为医药行业长期成长逻辑未变，将继续优化选股策略。\n\n报告已发您，有空看看，有疑问随时找我。'
+  }
+};
+
+// ===== 报告类型图标（SVG）=====
+var ICONS = {
+  quarterly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="4" height="10"/><rect x="10" y="6" width="4" height="14"/><rect x="16" y="13" width="4" height="7"/></svg>',
+  monthly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/></svg>',
+  weekly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
+  portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  broadcast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>'
+};
+function iconSvg(key) { return ICONS[key] || ICONS.doc; }
+
+// ===================== 状态 =====================
+var draftState = {}; // key -> { product, period, originalText }
+var currentProductKey = null;
+
+function esc(s) { return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+// 从 URL 读取要展示的产品，例如 ?key=portfolio 或 ?code=016938；均未提供时默认展示第一个产品（便于预览）
+function getTargetProduct() {
+  var params = new URLSearchParams(window.location.search);
+  var key = params.get('key');
+  var code = params.get('code');
+  if (key) return products.filter(function(p){ return p.key === key; })[0] || null;
+  if (code) return products.filter(function(p){ return p.code === code; })[0] || null;
+  return products[0] || null;
+}
+
+function renderProductDetail() {
+  var p = getTargetProduct();
+  if (!p) {
+    document.getElementById('detailPanel').innerHTML = '';
+    document.getElementById('noResult').classList.add('show');
+    return;
+  }
+  document.getElementById('noResult').classList.remove('show');
+  currentProductKey = p.key;
+  document.getElementById('hSub').textContent = esc(p.name) + ' · 单产品报告查询 · 国金证券基金投顾';
+
+  var reportsHtml = p.reports.map(function(r) {
+    return '<div class="pd-report-item">' +
+      '<div class="pd-report-thumb"><div class="rt-icon">' + iconSvg(r.icon) + '</div>' + r.label + '</div>' +
+      '<div class="pd-report-info">' +
+        '<div class="pd-report-name">' + esc(r.name) + '</div>' +
+        '<div class="pd-report-desc">' + esc(r.desc) + '</div>' +
+        '<div class="pd-report-actions">' +
+          '<a class="r-btn view" href="' + reportsBase + esc(r.file) + '" target="_blank">' + iconSvg('eye') + '查看</a>' +
+          '<button class="r-btn dl-img" onclick="downloadReport(\'' + esc(r.dlName) + '\',\'image\')">' + iconSvg('download') + '下载</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var holdersRows = p.holders.map(function(h) {
+    var hits = getTodayBroadcastInfo(h.name, p.key);
+    var warnBadge = hits
+      ? '<span class="ct-freq-warn" title="今日已群发「' + esc(hits.map(function(r){ return r.productName; }).join('、')) + '」，请注意群发频率">' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>' +
+        '</span>'
+      : '';
+    var custId = customerIdByName[h.name];
+    var nameCell = custId
+      ? '<button class="ct-name-link" onclick="goToCustomer(\'' + custId + '\')" title="打开该客户的单客户报告查询页">' +
+          '<div class="c-avatar-sm">' + esc(h.name.charAt(0)) + '</div><span class="ct-name-text">' + esc(h.name) + '</span>' + warnBadge +
+        '</button>'
+      : '<div class="ct-name-cell"><div class="c-avatar-sm">' + esc(h.name.charAt(0)) + '</div>' + esc(h.name) + warnBadge + '</div>';
+    return '<tr>' +
+      '<td>' + nameCell + '</td>' +
+      '<td>' + h.asset + '</td>' +
+      '<td class="ct-return">' + h.ret + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var metricsHtml = '<div class="perf-metrics-row">' +
+      '<div class="perf-metric-tile"><div class="pm-label">近1年收益率</div><div class="pm-value ' + (p.metrics.oneYearRet.indexOf('-') === 0 ? 'down' : 'up') + '">' + esc(p.metrics.oneYearRet) + '</div></div>' +
+      '<div class="perf-metric-tile"><div class="pm-label">成立以来收益率</div><div class="pm-value ' + (p.metrics.sinceInceptionRet.indexOf('-') === 0 ? 'down' : 'up') + '">' + esc(p.metrics.sinceInceptionRet) + '</div></div>' +
+      '<div class="perf-metric-tile"><div class="pm-label">波动率（年化）</div><div class="pm-value">' + esc(p.metrics.volatility) + '</div></div>' +
+      '<div class="perf-metric-tile"><div class="pm-label">最大回撤（成立以来）</div><div class="pm-value down">' + esc(p.metrics.maxDrawdown) + '</div></div>' +
+    '</div>';
+
+  var periodSelector = p.key === 'portfolio'
+    ? '<div class="period-selector" id="ps-pv">' +
+        '<span class="ps-item active" data-period="quarterly" onclick="switchDraftPeriod(\'pv\',\'quarterly\')">季报</span>' +
+        '<span class="ps-sep">|</span>' +
+        '<span class="ps-item" data-period="monthly" onclick="switchDraftPeriod(\'pv\',\'monthly\')">月报</span>' +
+        '<span class="ps-sep">|</span>' +
+        '<span class="ps-item" data-period="weekly" onclick="switchDraftPeriod(\'pv\',\'weekly\')">周报</span>' +
+      '</div>'
+    : '';
+
+  var draftKey = p.key === 'portfolio' ? 'pv' : 'sf';
+
+  var html = '<div class="detail-card">' +
+    '<div class="detail-header">' +
+      '<div class="dh-left">' +
+        '<div class="p-icon-lg">' + iconSvg(p.key === 'portfolio' ? 'portfolio' : 'doc') + '</div>' +
+        '<div><div class="dh-name">' + esc(p.name) + '</div><div class="dh-account">' + esc(p.summary) + '</div></div>' +
+      '</div>' +
+      '<div class="li-type-tag">' + esc(p.typeTag) + '</div>' +
+    '</div>' +
+    metricsHtml +
+    '<div class="product-detail-columns">' +
+      '<div>' +
+        '<div class="pd-section"><div class="pd-section-title">产品报告</div><div class="pd-report-list">' + reportsHtml + '</div></div>' +
+        '<div class="pd-section"><div class="pd-section-title">持有客户（' + p.holders.length + '名）</div>' +
+          '<table class="customer-table"><thead><tr><th>客户</th><th>持仓资产</th><th>持有收益</th></tr></thead><tbody>' + holdersRows + '</tbody></table>' +
+        '</div>' +
+      '</div>' +
+      '<div class="speech-section">' +
+        '<div class="draft-card" id="draft-' + draftKey + '">' +
+          '<div class="draft-header-row">' +
+            '<div class="dhr-left">' +
+              '<div class="dhr-title">沟通话术</div>' +
+              periodSelector +
+              '<div class="ai-badge">✨ AI提炼</div>' +
+            '</div>' +
+            '<div class="compliance-badge passed">✓ 合规审核通过</div>' +
+          '</div>' +
+          '<textarea class="draft-textarea" oninput="onDraftEdit(\'' + draftKey + '\')"></textarea>' +
+          '<div class="draft-footer-row">' +
+            '<div class="char-count">共 <span class="cc-num">0</span> 字</div>' +
+            '<button class="reset-btn" disabled onclick="resetDraft(\'' + draftKey + '\')">↺ 恢复原始话术</button>' +
+          '</div>' +
+          '<div class="draft-actions-row">' +
+            '<button class="d-btn secondary" onclick="copyDraft(\'' + draftKey + '\')">⧉ 复制话术</button>' +
+            '<button class="d-btn primary" onclick="openBroadcastModal(\'' + p.key + '\')">' + iconSvg('broadcast') + '企微群发</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  document.getElementById('detailPanel').innerHTML = html;
+
+  var defaultPeriod = p.key === 'portfolio' ? 'quarterly' : 'monthly';
+  initDraft(draftKey, p.key, defaultPeriod);
+}
+
+// 跳转到单客户报告查询页（同目录下的场景2页面），按客户 id 定位
+function goToCustomer(customerId) {
+  window.location.href = 'scenario2_single_customer_pc.html?id=' + encodeURIComponent(customerId);
+}
+
+// ===================== 话术公共逻辑 =====================
+function getDraftText(product, period) {
+  var lib = draftLib[product] || {};
+  return lib[period] || lib.quarterly || lib.monthly || '';
+}
+
+function initDraft(draftKey, product, period) {
+  var card = document.getElementById('draft-' + draftKey);
+  if (!card) return;
+  var text = getDraftText(product, period);
+  var textarea = card.querySelector('.draft-textarea');
+  textarea.value = text;
+  card.querySelector('.cc-num').textContent = text.length;
+  draftState[draftKey] = { product: product, period: period, originalText: text };
+}
+
+function switchDraftPeriod(draftKey, period) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  st.period = period;
+  var text = getDraftText(st.product, period);
+  st.originalText = text;
+  var card = document.getElementById('draft-' + draftKey);
+  var textarea = card.querySelector('.draft-textarea');
+  textarea.value = text;
+  card.querySelector('.cc-num').textContent = text.length;
+  card.classList.remove('edited');
+  var badge = card.querySelector('.compliance-badge');
+  badge.className = 'compliance-badge passed';
+  badge.innerHTML = '✓ 合规审核通过';
+  card.querySelector('.reset-btn').disabled = true;
+  card.querySelectorAll('.ps-item').forEach(function(item) {
+    item.classList.toggle('active', item.dataset.period === period);
+  });
+}
+
+function onDraftEdit(draftKey) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  var card = document.getElementById('draft-' + draftKey);
+  var textarea = card.querySelector('.draft-textarea');
+  var text = textarea.value;
+  card.querySelector('.cc-num').textContent = text.length;
+  var isEdited = text !== st.originalText;
+  var badge = card.querySelector('.compliance-badge');
+  var resetBtn = card.querySelector('.reset-btn');
+  if (isEdited) {
+    card.classList.add('edited');
+    badge.className = 'compliance-badge pending';
+    badge.innerHTML = '● 已编辑';
+    resetBtn.disabled = false;
+  } else {
+    card.classList.remove('edited');
+    badge.className = 'compliance-badge passed';
+    badge.innerHTML = '✓ 合规审核通过';
+    resetBtn.disabled = true;
+  }
+}
+
+function resetDraft(draftKey) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  var card = document.getElementById('draft-' + draftKey);
+  card.querySelector('.draft-textarea').value = st.originalText;
+  onDraftEdit(draftKey);
+  showToast('已恢复原始话术');
+}
+
+function copyDraft(draftKey) {
+  var card = document.getElementById('draft-' + draftKey);
+  var text = card.querySelector('.draft-textarea').value;
+  copyToClipboard(text);
+  showToast('话术已复制到剪贴板');
+}
+
+function copyToClipboard(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ===================== 企微一键群发 =====================
+var bcRecipients = [];
+var bcExcluded = [];
+var bcProductKey = null;
+var bcAttachments = [];
+
+function openBroadcastModal(productKey) {
+  var p = products.filter(function(x){ return x.key === productKey; })[0];
+  if (!p) return;
+  bcProductKey = productKey;
+
+  bcRecipients = [];
+  bcExcluded = [];
+  p.holders.forEach(function(h) {
+    var hits = getTodayBroadcastInfo(h.name, productKey);
+    if (hits) {
+      bcExcluded.push({ name: h.name, reasons: hits.map(function(r){ return r.productName; }) });
+    } else {
+      bcRecipients.push(h.name);
+    }
+  });
+
+  bcAttachments = p.reports.map(function(r){ return r.label; });
+
+  var draftKey = productKey === 'portfolio' ? 'pv' : 'sf';
+  var draftCard = document.getElementById('draft-' + draftKey);
+  var scriptText = draftCard ? draftCard.querySelector('.draft-textarea').value : '';
+  document.getElementById('bcScriptBox').value = scriptText;
+
+  renderBroadcastRecipients();
+  renderBroadcastAttachments();
+  document.getElementById('bcModalMask').classList.add('show');
+}
+
+function renderBroadcastRecipients() {
+  var list = document.getElementById('bcRecipientList');
+  var html = '';
+  if (bcRecipients.length === 0) {
+    html += '<div class="bc-recipient-empty">暂无接收客户，请至少保留一人</div>';
+  } else {
+    html += bcRecipients.map(function(name) {
+      return '<span class="bc-recipient-tag">' + esc(name) +
+        '<button onclick="removeBroadcastRecipient(\'' + esc(name) + '\')" title="移除">' +
+        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+        '</button></span>';
+    }).join('');
+  }
+  list.innerHTML = html;
+  document.getElementById('bcRecipientCount').textContent = bcRecipients.length;
+  document.getElementById('bcSendCount').textContent = bcRecipients.length;
+  document.getElementById('bcSendBtn').disabled = bcRecipients.length === 0;
+  renderBroadcastExcluded();
+}
+
+function renderBroadcastExcluded() {
+  var wrap = document.getElementById('bcExcludedWrap');
+  if (bcExcluded.length === 0) {
+    wrap.innerHTML = '';
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  wrap.innerHTML = '<div class="bc-excluded-title">' +
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>' +
+      '今日已群发，已自动跳过（' + bcExcluded.length + '人）</div>' +
+    '<div class="bc-excluded-list">' +
+      bcExcluded.map(function(item) {
+        return '<span class="bc-excluded-tag">' + esc(item.name) +
+          '<span class="bc-excluded-reason">今日已发「' + esc(item.reasons.join('、')) + '」</span>' +
+          '<button onclick="restoreBroadcastRecipient(\'' + esc(item.name) + '\')" title="仍然加入本次群发">加回</button>' +
+        '</span>';
+      }).join('') +
+    '</div>';
+}
+
+function removeBroadcastRecipient(name) {
+  bcRecipients = bcRecipients.filter(function(n){ return n !== name; });
+  renderBroadcastRecipients();
+}
+
+function restoreBroadcastRecipient(name) {
+  bcExcluded = bcExcluded.filter(function(item){ return item.name !== name; });
+  if (bcRecipients.indexOf(name) < 0) bcRecipients.push(name);
+  renderBroadcastRecipients();
+}
+
+function renderBroadcastAttachments() {
+  var p = products.filter(function(x){ return x.key === bcProductKey; })[0];
+  var list = document.getElementById('bcAttachList');
+  if (!p || p.reports.length === 0) {
+    list.innerHTML = '<div class="bc-recipient-empty">该产品暂无可群发的报告</div>';
+  } else {
+    list.innerHTML = p.reports.map(function(r) {
+      var checked = bcAttachments.indexOf(r.label) >= 0;
+      return '<div class="bc-attach-item' + (checked ? ' checked' : '') + '" onclick="toggleBroadcastAttachment(\'' + esc(r.label) + '\')">' +
+        '<div class="bc-attach-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<div class="bc-attach-icon">' + iconSvg(r.icon) + '</div>' +
+        '<div class="bc-attach-info"><div class="bc-attach-name">' + esc(r.name) + '</div><div class="bc-attach-desc">' + esc(r.desc) + '</div></div>' +
+      '</div>';
+    }).join('');
+  }
+  document.getElementById('bcAttachCount').textContent = bcAttachments.length;
+}
+
+function toggleBroadcastAttachment(label) {
+  var idx = bcAttachments.indexOf(label);
+  if (idx >= 0) bcAttachments.splice(idx, 1);
+  else bcAttachments.push(label);
+  renderBroadcastAttachments();
+}
+
+function closeBroadcastModal(e) {
+  if (e && e.target !== document.getElementById('bcModalMask')) return;
+  document.getElementById('bcModalMask').classList.remove('show');
+}
+
+function sendBroadcast() {
+  if (bcRecipients.length === 0) return;
+  var p = products.filter(function(x){ return x.key === bcProductKey; })[0];
+  var count = bcRecipients.length;
+  var attachCount = bcAttachments.length;
+
+  var today = todayStr();
+  bcRecipients.forEach(function(name) {
+    broadcastLog.push({ name: name, date: today, productKey: bcProductKey, productName: p ? p.name : '' });
+  });
+
+  closeBroadcastModal();
+  var msg = '已通过企微群发发送给 ' + count + ' 位客户';
+  if (attachCount > 0) msg += '，附带 ' + attachCount + ' 份报告';
+  showToast(msg);
+
+  // 重新渲染以刷新"今日已群发"提醒
+  if (currentProductKey) renderProductDetail();
+}
+
+// ===================== 其它工具函数 =====================
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function downloadReport(name, type) {
+  if (type === 'image') {
+    showToast('正在生成报告截图...（演示模式）');
+    setTimeout(function() { showToast('图片已保存：' + name + '.png'); }, 1200);
+  } else {
+    var link = 'https://guojin.com/reports/' + name + '.html';
+    copyToClipboard(link);
+    showToast('报告链接已复制到剪贴板');
+  }
+}
+
+// ===================== 初始化 =====================
+renderProductDetail();
+</script>
+</body>
+</html>

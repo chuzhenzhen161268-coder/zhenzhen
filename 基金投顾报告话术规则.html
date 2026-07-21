@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Document</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 100%;
+			height:1200;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1, h2, h3, h4, h5, h6 { margin-top: 1.5rem; margin-bottom: 1rem; }
+        pre { background: #f6f8fa; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+        code { background: #f6f8fa; padding: 0.2rem 0.4rem; border-radius: 3px; }
+        blockquote { border-left: 4px solid #dfe2e5; padding-left: 1rem; margin: 1rem 0; color: #6a737d; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+        th, td { border: 1px solid #dfe2e5; padding: 0.5rem; text-align: left; }
+        th { background: #f6f8fa; }
+    </style>
+</head>
+<body>
+<h1 id="h1-u57FAu91D1u6295u987Eu62A5u544Au5BF9u5BA2u8BDDu672Fu6A21u677Fu4E0Eu89C4u5219"><a name="基金投顾报告对客话术模板与规则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>基金投顾报告对客话术模板与规则</h1><blockquote>
+<p>适用场景：员工向客户发送组合周报/月报/季报前的前置沟通话术<br>版本：V1.5<br>生效日期：2026-07-14<br>基调：专业、克制、服务导向，不评价涨跌，只提炼信息</p>
+</blockquote>
+<h3 id="h3-u4FEEu8BA2u8BB0u5F55"><a name="修订记录" class="reference-link"></a><span class="header-link octicon octicon-link"></span>修订记录</h3><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>主要变更</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V1.0</td>
+<td>2026-07-14</td>
+<td>初版发布</td>
+</tr>
+<tr>
+<td>V1.1</td>
+<td>2026-07-14</td>
+<td>变量表增加「数据来源」「生成方式」列；拆分后市核心观点为市场环境摘要+后市展望两个独立变量；模板/示例/提炼规则同步更新</td>
+</tr>
+<tr>
+<td>V1.2</td>
+<td>2026-07-14</td>
+<td>第七节新增周报承压场景示例；合并 <code>{市场环境摘要}</code>+<code>{后市展望}</code> 为单一变量 <code>{市场回顾与展望}</code>，全文同步更新</td>
+</tr>
+<tr>
+<td>V1.3</td>
+<td>2026-07-14</td>
+<td>变量说明中删除 <code>{客户称呼}</code> 与 <code>{员工姓名}</code>，全文示例同步去除称呼和署名；周报模板与月报/季报模板下分别新增「模板变量取数说明」表，明确各 AI 提炼变量对应的报告原文章节/字段</td>
+</tr>
+<tr>
+<td>V1.4</td>
+<td>2026-07-14</td>
+<td>变量说明新增「适用报告」列；原第六节升格为「AI 提炼通用规则」（通用禁区+兜底原则），新增第七节「各变量 AI 提炼规则」逐一明确输入字段/提炼目标/输出约束/兜底表述；示例和使用建议章节顺延为第八、九节</td>
+</tr>
+<tr>
+<td>V1.5</td>
+<td>2026-07-14</td>
+<td>删除 <code>{策略方向}</code> 变量（月报/季报第2条「运作思路」简化为”组合在{主要资产类别}上维持配置”）；同步清理变量表、取数说明、第七节、示例和适用报告说明</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="h2--"><a name="一、设计原则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>一、设计原则</h2><ol>
+<li><p><strong>员工定位是“翻译者”，不是“评价者”</strong><br>话术核心是帮客户快速定位报告重点，而不是替客户判断好坏。</p>
+</li><li><p><strong>只说“组合”，不说“客户账户”</strong><br>报告是千人一面的组合表现，话术中也应保持这一边界，不引用客户个人收益、持仓金额或账户盈亏。</p>
+</li><li><p><strong>以“阶段收益+管理人观点”为锚</strong><br>客户最关心两个问题：组合最近表现如何？管理人怎么看后市？话术应围绕这两个问题展开。</p>
+</li><li><p><strong>周报极简、月报适中、季报可稍展开</strong><br>不同频次报告的信息密度不同，话术篇幅应匹配：周报 60–120 字，月报 120–180 字，季报 150–220 字（含结尾服务语）。</p>
+</li></ol>
+<hr>
+<h2 id="h2--"><a name="二、变量说明" class="reference-link"></a><span class="header-link octicon octicon-link"></span>二、变量说明</h2><blockquote>
+<p><strong>概念约定（重要）</strong>：本表所有「变量」本质上是<strong>话术最终输出给客户的那段文字</strong>（即一份话术中可被替换的片段），不是数据库字段。表中各列含义如下：</p>
+<ul>
+<li><strong>变量</strong>：话术中可被替换的占位符，也是客户最终看到的那段文字。</li><li><strong>含义</strong>：该输出片段要表达的内容。</li><li><strong>示例</strong>：客户最终看到的样子。</li><li><strong>输入来源</strong>：该变量从哪儿获取——系统类变量指数据系统/业务系统，AI 提炼类变量指报告原文中的哪个章节/字段。</li><li><strong>生成方式</strong>：从输入到输出的处理方式，分三类（系统自动填入 / 系统自动计算 / AI 提炼）。</li><li><strong>适用报告</strong>：该变量出现在哪种话术模板中。周报、月报、季报三种模板都用到组合名称、报告周期/类型、收益、贡献方向、市场观点类变量；月报/季报模板额外增加”运作思路（资产配置策略）”和”业绩归因”两块，因此多用到 <code>{主要资产类别}</code>。</li></ul>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>含义</th>
+<th>示例</th>
+<th>输入来源</th>
+<th>生成方式</th>
+<th>适用报告</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{组合名称}</code></td>
+<td>组合完整名称</td>
+<td>百分安心·全球稳健配置组合</td>
+<td>组合主数据</td>
+<td>系统自动填入</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{报告周期名称}</code></td>
+<td>报告的统计周期完整名称</td>
+<td>上周 / 2026年1月 / 2026年一季度</td>
+<td>报告工坊</td>
+<td>系统自动填入</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{报告类型}</code></td>
+<td>报告类型</td>
+<td>简报（周报）/ 月报 / 季报</td>
+<td>报告工坊</td>
+<td>系统自动填入</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{报告周期词}</code></td>
+<td>报告周期对应的短词</td>
+<td>上周 / 本月 / 本季度</td>
+<td>由 <code>{报告类型}</code> 派生</td>
+<td>系统自动计算</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{区间收益率}</code></td>
+<td>组合在报告期内的收益</td>
+<td>+0.45%</td>
+<td>净值系统</td>
+<td>系统自动计算</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{基准收益率}</code></td>
+<td>对应基准在同一区间的收益（用于生成 <code>{基准对比}</code>，不直接出现在话术中）</td>
+<td>+0.31%</td>
+<td>净值系统</td>
+<td>系统自动计算</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{超额收益率}</code></td>
+<td>组合收益 - 基准收益（正向超额时以百分数出现在话术中，如”跑赢基准 X%”；落后场景不展示具体数值）</td>
+<td>+0.14%（= 0.45% − 0.31%）</td>
+<td>计算字段</td>
+<td>系统自动计算（区间收益率 - 基准收益率）</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{基准对比}</code></td>
+<td>一句话说明相对基准表现</td>
+<td>跑赢基准 X% / 阶段性小幅落后基准</td>
+<td>超额收益率 + 5.5 分级规则</td>
+<td>系统按规则生成</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{主要贡献方向}</code></td>
+<td>业绩归因/成分基金中的主要正向贡献</td>
+<td>权益类资产 / 海外债基 / 黄金等</td>
+<td>月报/季报取报告原文”业绩归因”章节，周报取”成分基金表现”章节</td>
+<td>AI 提炼（需开发十部配合）</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{主要资产类别}</code></td>
+<td>当前组合的主要资产配置方向</td>
+<td>债券和海外资产为主 / 多资产均衡</td>
+<td>报告原文”资产配置策略”章节（资产类型比例）</td>
+<td>AI 提炼（需开发十部配合）</td>
+<td>月报 / 季报</td>
+</tr>
+<tr>
+<td><code>{市场回顾与展望}</code></td>
+<td>报告期市场环境 + 管理人后市判断与配置应对，合并为 1–2 句话</td>
+<td>本月市场以震荡为主，权益资产波动较大；管理人认为短期仍有不确定性，组合将继续保持稳健配置</td>
+<td>报告原文”市场分析”+”市场展望”字段</td>
+<td>AI 提炼（需开发十部配合）</td>
+<td>周报 / 月报 / 季报</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="h2--"><a name="三、周报话术模板" class="reference-link"></a><span class="header-link octicon octicon-link"></span>三、周报话术模板</h2><h3 id="h3-u9002u7528u5185u5BB9u6846u67B6"><a name="适用内容框架" class="reference-link"></a><span class="header-link octicon octicon-link"></span>适用内容框架</h3><ul>
+<li>组合定位</li><li>组合阶段性业绩表现（上周、近1月、近3月、今年以来、净值走势）</li><li>成分基金表现</li><li>展望观点</li></ul>
+<blockquote>
+<p>这是您持有的{组合名称}的{报告周期名称}运作{报告类型}，我帮您提炼了要点：</p>
+<p>组合{报告周期词}收益{区间收益率}，{基准对比}。成分基金中，{主要贡献方向}贡献较多。{市场回顾与展望}。</p>
+<p>报告已发您，有空看看，有疑问随时找我。</p>
+</blockquote>
+<h3 id="h3--"><a name="模板变量取数说明（周报）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>模板变量取数说明（周报）</h3><table>
+<thead>
+<tr>
+<th>话术变量</th>
+<th>取自报告原文哪个章节/字段</th>
+<th>提炼方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{主要贡献方向}</code></td>
+<td>周报原文”成分基金表现”章节（或月报”业绩归因”章节的简版）</td>
+<td>AI 按资产类别提炼，不点单只基金名</td>
+</tr>
+<tr>
+<td><code>{市场回顾与展望}</code></td>
+<td>周报原文”管理人观点”中关于市场判断 + 后市应对的部分</td>
+<td>AI 合并提炼为 1–2 句话</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="h2--"><a name="四、月报/季报话术模板" class="reference-link"></a><span class="header-link octicon octicon-link"></span>四、月报/季报话术模板</h2><h3 id="h3-u9002u7528u89C4u5219"><a name="适用规则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>适用规则</h3><ul>
+<li>每月产出月报，季度末月（3月/6月/9月/12月）不产月报，改为产出季报。</li><li>月报和季报内容框架一致，共用一套话术模板，通过变量区分报告类型。</li></ul>
+<h3 id="h3-u9002u7528u5185u5BB9u6846u67B6"><a name="适用内容框架" class="reference-link"></a><span class="header-link octicon octicon-link"></span>适用内容框架</h3><ul>
+<li>组合定位</li><li>组合运作情况（收益表现、风险收益特征、净值曲线）</li><li>资产配置策略</li><li>业绩归因</li><li>市场回顾及展望</li></ul>
+<h3 id="h3-u8BDDu672Fu6A21u677F"><a name="话术模板" class="reference-link"></a><span class="header-link octicon octicon-link"></span>话术模板</h3><blockquote>
+<p>这是您持有的{组合名称}的{报告周期名称}运作{报告类型}，核心内容为您梳理如下：</p>
+<ol>
+<li><strong>收益表现</strong>：{报告周期词}收益{区间收益率}，{基准对比}。</li><li><strong>运作思路</strong>：{报告周期词}组合在{主要资产类别}上维持配置。</li><li><strong>业绩归因</strong>：{主要贡献方向}对组合收益贡献较大。</li><li><strong>市场回顾与展望</strong>：{市场回顾与展望}。</li></ol>
+<p>报告已发您，有空看看，有疑问随时找我。</p>
+</blockquote>
+<h3 id="h3--"><a name="模板变量取数说明（月报/季报）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>模板变量取数说明（月报/季报）</h3><table>
+<thead>
+<tr>
+<th>话术变量</th>
+<th>取自报告原文哪个章节/字段</th>
+<th>提炼方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{主要资产类别}</code></td>
+<td>报告原文”资产配置策略”章节（资产类型比例） → 占比最高的资产方向</td>
+<td>AI 提炼为资产类别级描述，如”债券和海外资产”</td>
+</tr>
+<tr>
+<td><code>{主要贡献方向}</code></td>
+<td>报告原文”业绩归因”章节 → 本期对组合收益正向贡献最大的资产/策略</td>
+<td>AI 按资产类别提炼，不引用单只基金名</td>
+</tr>
+<tr>
+<td><code>{市场回顾与展望}</code></td>
+<td>报告原文”市场分析”字段 + “市场展望”字段</td>
+<td>AI 合并提炼为 1–2 句话，前半句市场环境、后半句后市判断</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-u53D8u91CFu586Bu5145u5BF9u7167"><a name="变量填充对照" class="reference-link"></a><span class="header-link octicon octicon-link"></span>变量填充对照</h3><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>周报填充</th>
+<th>月报填充</th>
+<th>季报填充</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{报告周期名称}</code></td>
+<td>上周</td>
+<td>2026年1月</td>
+<td>2026年一季度</td>
+</tr>
+<tr>
+<td><code>{报告类型}</code></td>
+<td>简报</td>
+<td>月报</td>
+<td>季报</td>
+</tr>
+<tr>
+<td><code>{报告周期词}</code></td>
+<td>上周</td>
+<td>本月</td>
+<td>本季度</td>
+</tr>
+<tr>
+<td><code>{市场回顾与展望}</code></td>
+<td>管理人认为短期市场维持震荡，组合将继续保持稳健配置</td>
+<td>本月市场以震荡为主，权益资产波动较大；管理人认为短期市场仍以震荡为主，组合将继续保持稳健配置</td>
+<td>一季度市场波动较大，组合通过稳健配置控制了回撤；展望后市，管理人认为短期仍有不确定性，组合将继续维持防御性配置</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>说明</strong>：<code>{市场回顾与展望}</code> 由报告原文”市场分析”+”市场展望”两个字段合并提炼，前半句说市场环境、后半句说后市判断与配置应对，三种报告共用一个变量。</p>
+</blockquote>
+<hr>
+<h2 id="h2--"><a name="五、话术规则：重点展示与规避项" class="reference-link"></a><span class="header-link octicon octicon-link"></span>五、话术规则：重点展示与规避项</h2><h3 id="h3-5-1-"><a name="5.1 必须展示的数据/信息" class="reference-link"></a><span class="header-link octicon octicon-link"></span>5.1 必须展示的数据/信息</h3><table>
+<thead>
+<tr>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报告类型与周期</td>
+<td>让客户明确这是“周报/月报/季报”</td>
+</tr>
+<tr>
+<td>组合名称</td>
+<td>明确是哪只组合的报告</td>
+</tr>
+<tr>
+<td>阶段收益</td>
+<td>报告期内的组合收益率，可附今年以来/近1年等维度</td>
+</tr>
+<tr>
+<td>基准对比</td>
+<td>有正向超额时突出；无超额时简要说明“与基准接近”或“小幅落后”</td>
+</tr>
+<tr>
+<td>市场回顾与展望</td>
+<td>对应报告”市场分析”+”市场展望”字段，合并提炼为 1–2 句话，不能直接贴原文</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-5-2-"><a name="5.2 周报特有展示项" class="reference-link"></a><span class="header-link octicon octicon-link"></span>5.2 周报特有展示项</h3><ul>
+<li>成分基金表现：只说方向或资产类别，<strong>不逐一点名基金名称</strong>。</li><li>市场回顾与展望：篇幅短，可直接引用核心判断。</li></ul>
+<h3 id="h3-5-3-"><a name="5.3 月报/季报特有展示项" class="reference-link"></a><span class="header-link octicon octicon-link"></span>5.3 月报/季报特有展示项</h3><ul>
+<li>资产配置策略：提炼当前主要资产类别。</li><li>业绩归因：只提<strong>主要贡献项</strong>，不展开全部归因数据。</li><li>市场回顾与展望：从报告原文”市场分析”+”市场展望”两个字段合并提炼为 <code>{市场回顾与展望}</code> 一个变量，不能直接转发原文。</li></ul>
+<h3 id="h3-5-4-"><a name="5.4 不允许出现的内容" class="reference-link"></a><span class="header-link octicon octicon-link"></span>5.4 不允许出现的内容</h3><table>
+<thead>
+<tr>
+<th>禁止项</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户个人账户收益/持仓金额</td>
+<td>报告是组合层面，非客户个人业绩</td>
+</tr>
+<tr>
+<td>组合具体净值点位</td>
+<td>无客户理解价值，且易引起过度关注</td>
+</tr>
+<tr>
+<td>单一基金亏损排名/垫底基金</td>
+<td>易引发客户对单一基金的负面情绪</td>
+</tr>
+<tr>
+<td>“业绩很差/很差劲/跑输太多”等负面绝对化表述</td>
+<td>应保持专业中立，可表述为“阶段性承压”</td>
+</tr>
+<tr>
+<td>员工个人投资观点或推荐</td>
+<td>员工是服务者，不应输出个人投资判断</td>
+</tr>
+<tr>
+<td>对未来收益的承诺</td>
+<td>如“接下来会涨”“保证回本”等</td>
+</tr>
+<tr>
+<td>未经提炼的市场分析长文</td>
+<td>月报/季报原文较长，直接转发会增加客户阅读负担</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-5-5-"><a name="5.5 超额收益的表述规则（不对称处理：赢了报数字、输了模糊化）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>5.5 超额收益的表述规则（不对称处理：赢了报数字、输了模糊化）</h3><ul>
+<li><strong>有正向超额</strong>：突出展示，带具体数字，例如”跑赢基准 0.89%”。</li><li><strong>无明显超额</strong>：模糊化处理，表述为”与基准表现相近”，不报具体数字。</li><li><strong>小幅落后</strong>：模糊化处理，表述为”阶段性小幅落后基准”，不报具体差距。</li><li><strong>落后较多</strong>：模糊化处理，不提超额数字，重点放在”运作思路”和”后市展望”上。<h3 id="h3-5-6-"><a name="5.6 特殊场景：大幅回撤 / 极端行情" class="reference-link"></a><span class="header-link octicon octicon-link"></span>5.6 特殊场景：大幅回撤 / 极端行情</h3></li></ul>
+<p>组合出现明显回撤或市场剧烈波动时（参考阈值：单周回撤超过 -1%、单月回撤超过 -3%、单季度回撤超过 -5%，可按组合波动特征调整），话术处理优先级如下：</p>
+<ol>
+<li>收益表述走 5.5”落后较多”档：如实说明但不强调差距，避免”跌得多/亏损大”等绝对化表述，可用”阶段性承压”。</li><li>重心从”收益”转向”运作思路”和”后市展望”，让客户看到管理人在积极应对。</li><li>后市展望按第六、七节规则提炼，但不承诺反弹、不预测点位（呼应 5.4 禁止项）。</li><li>结尾可适当加一句安抚性但不承诺的服务用语，如”如有疑问我随时为您解读”。</li></ol>
+<hr>
+<h2 id="h2--ai-"><a name="六、AI 提炼通用规则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>六、AI 提炼通用规则</h2><p>话术模板中所有”AI 提炼”类变量（<code>{主要贡献方向}</code> / <code>{主要资产类别}</code> / <code>{市场回顾与展望}</code>）都遵循同一套通用约束。具体每个变量的输入字段、提炼目标、兜底表述见第七节。</p>
+<h3 id="h3-6-1-"><a name="6.1 为什么必须提炼" class="reference-link"></a><span class="header-link octicon octicon-link"></span>6.1 为什么必须提炼</h3><p>报告原文（含周报、月报、季报）通常信息密度高、专业术语多、段落较长，直接转发给客户会：</p>
+<ul>
+<li>增加客户阅读负担，降低报告触达效率；</li><li>容易出现敏感表述（如具体宏观数据、单一基金亏损、未承诺的观点）；</li><li>不同员工表述差异大，影响品牌一致性。</li></ul>
+<p>因此所有 AI 提炼类变量<strong>禁止直接转发原文</strong>，必须按统一规则压缩、转换、抽象。</p>
+<h3 id="h3-6-2-"><a name="6.2 通用提炼禁区（所有变量都适用）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>6.2 通用提炼禁区（所有变量都适用）</h3><ul>
+<li><strong>不保留原文宏观数据罗列</strong>：如”CPI 同比 X%、PMI X%”、具体涨跌幅排名等。</li><li><strong>不保留原文中的单一基金名称</strong>：只能用资产类别（”权益类””海外债””黄金”等）描述。</li><li><strong>不保留原文未承诺 / 不确定的观点</strong>：如”可能””或将””存在不确定性”等措辞。</li><li><strong>不输出员工个人投资判断</strong>：员工是服务者，不是投资决策者。</li><li><strong>不承诺未来收益</strong>：如”会涨回来””保证回本”等绝对化表述。</li><li><strong>不出现负面绝对化词汇</strong>：”业绩很差””跑输太多””跌得厉害”等，应改为”阶段性承压”等中性表述。</li></ul>
+<h3 id="h3-6-3-"><a name="6.3 通用兜底原则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>6.3 通用兜底原则</h3><p>如果原文观点分散、字段缺失、AI 提炼置信度低，统一按以下优先级处理：</p>
+<ol>
+<li>优先使用各变量自带的兜底表述（见第七节）；</li><li>如无兜底表述，则输出空字符串，由前端按规则决定是否省略对应模板片段；</li><li>兜底表述需由内容运营团队审核后才可上线，避免不同批次报告兜底口径不一致。</li></ol>
+<hr>
+<h2 id="h2--ai-"><a name="七、各变量 AI 提炼规则" class="reference-link"></a><span class="header-link octicon octicon-link"></span>七、各变量 AI 提炼规则</h2><h3 id="h3-7-1-code-code-"><a name="7.1 &lt;code&gt;{主要贡献方向}&lt;/code&gt;" class="reference-link"></a><span class="header-link octicon octicon-link"></span>7.1 <code>{主要贡献方向}</code></h3><table>
+<thead>
+<tr>
+<th>项</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>输入字段</strong></td>
+<td>月报/季报取报告原文”业绩归因”章节；周报取报告原文”成分基金表现”章节</td>
+</tr>
+<tr>
+<td><strong>提炼目标</strong></td>
+<td>本期对组合收益正向贡献最大的<strong>资产类别</strong>（不是单只基金）</td>
+</tr>
+<tr>
+<td><strong>提炼公式</strong></td>
+<td>找出业绩归因中贡献额为正且排名前 1–2 名的方向 → 抽象为资产类别表述</td>
+</tr>
+<tr>
+<td><strong>输出约束</strong></td>
+<td>仅输出资产类别名（如”权益类资产””海外债基””黄金”）；不点单只基金名称；1 个或 2 个并列</td>
+</tr>
+<tr>
+<td><strong>示例</strong></td>
+<td>“海外债券和黄金方向贡献较多”</td>
+</tr>
+<tr>
+<td><strong>兜底表述</strong></td>
+<td>“成分基金整体贡献相对均衡”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-7-2-code-code-"><a name="7.2 &lt;code&gt;{主要资产类别}&lt;/code&gt;" class="reference-link"></a><span class="header-link octicon octicon-link"></span>7.2 <code>{主要资产类别}</code></h3><table>
+<thead>
+<tr>
+<th>项</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>输入字段</strong></td>
+<td>报告原文”资产配置策略”章节中的资产类型比例数据</td>
+</tr>
+<tr>
+<td><strong>提炼目标</strong></td>
+<td>当前组合占比最高的<strong>资产类别方向</strong>（不是具体百分比）</td>
+</tr>
+<tr>
+<td><strong>提炼公式</strong></td>
+<td>提取配置段中权重最高的 1–2 类资产 → 抽象为类别表述</td>
+</tr>
+<tr>
+<td><strong>输出约束</strong></td>
+<td>仅输出资产类别名；不出现具体百分比、基金名称；可并列 2 类</td>
+</tr>
+<tr>
+<td><strong>示例</strong></td>
+<td>“债券和海外资产为主””多资产均衡””权益和海外资产”</td>
+</tr>
+<tr>
+<td><strong>兜底表述</strong></td>
+<td>“维持多资产均衡配置”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-7-3-code-code-"><a name="7.3 &lt;code&gt;{市场回顾与展望}&lt;/code&gt;" class="reference-link"></a><span class="header-link octicon octicon-link"></span>7.3 <code>{市场回顾与展望}</code></h3><table>
+<thead>
+<tr>
+<th>项</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>输入字段</strong></td>
+<td>报告原文”市场分析”字段（市场环境）+”市场展望”字段（后市判断与配置应对）</td>
+</tr>
+<tr>
+<td><strong>提炼目标</strong></td>
+<td>合并压缩为 1–2 句话，前半句说报告期市场环境，后半句说管理人后市判断与配置应对</td>
+</tr>
+<tr>
+<td><strong>提炼公式</strong></td>
+<td><code>{市场回顾与展望}</code> = <strong>市场状态 + 关键驱动</strong> + <strong>方向判断 + 配置应对</strong></td>
+</tr>
+<tr>
+<td><strong>输出约束</strong></td>
+<td>总字数控制在 60–100 字；用分号或句号串联两个半句；不出现具体宏观数据；不承诺反弹 / 不预测点位</td>
+</tr>
+<tr>
+<td><strong>示例（正面）</strong></td>
+<td>“本月市场以震荡为主，权益资产波动较大；管理人认为短期市场仍以震荡为主，组合将继续保持稳健配置”</td>
+</tr>
+<tr>
+<td><strong>示例（承压）</strong></td>
+<td>“报告期内权益市场集中调整，组合阶段性承压；管理人认为短期波动仍可能持续，组合将保持稳健配置、等待市场企稳”</td>
+</tr>
+<tr>
+<td><strong>兜底表述</strong></td>
+<td>“报告期内市场整体以震荡为主；管理人认为当前市场仍以震荡为主，组合保持原有策略方向不变”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-7-4-ai-"><a name="7.4 AI 提炼失败的统一处理" class="reference-link"></a><span class="header-link octicon octicon-link"></span>7.4 AI 提炼失败的统一处理</h3><p>如某变量 AI 提炼连续 N 次触发兜底（建议 N=3 次），由内容运营团队介入核查：</p>
+<ul>
+<li>报告原文字段是否缺失；</li><li>提炼 prompt 是否需要根据新报告形态迭代；</li><li>是否需要新增预设词库或兜底表述。</li></ul>
+<hr>
+<h2 id="h2--"><a name="八、示例（基于全球稳健配置组合报告）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>八、示例（基于全球稳健配置组合报告）</h2><h3 id="h3--"><a name="周报示例（正面场景）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>周报示例（正面场景）</h3><blockquote>
+<p>这是您持有的百分安心·全球稳健配置组合的上周运作简报，我帮您提炼了要点：</p>
+<p>组合上周收益+0.50%，跑赢基准 0.19%。成分基金中，海外债券和黄金方向贡献较多。管理人认为短期市场维持震荡，组合将继续保持稳健配置。</p>
+<p>报告已发您，有空看看，有疑问随时找我。</p>
+</blockquote>
+<h3 id="h3--"><a name="周报示例（承压场景）" class="reference-link"></a><span class="header-link octicon octicon-link"></span>周报示例（承压场景）</h3><blockquote>
+<p>适用规则：5.5”落后较多”档 + 5.6 大幅回撤场景。收益不强调差距，重心转向运作思路和后市展望。</p>
+<p>这是您持有的百分安心·全球稳健配置组合的上周运作简报，我帮您提炼了要点：</p>
+<p>受上周权益市场集中调整影响，组合阶段性承压。管理人已在配置上做出应对，当前维持稳健配置，重点关注回撤控制。展望方面，管理人认为短期波动仍可能持续，组合将保持稳健配置、等待市场企稳。</p>
+<p>报告已发您，有空看看，如有疑问我随时为您解读。</p>
+<p><strong>对照说明</strong>：</p>
+<ul>
+<li>收益表述：不出现具体收益率和超额数字（对应 5.5”落后较多”规则）</li><li>重心转移：从”收益+归因”转向”运作思路+后市展望”（对应 5.6 第 2 条）</li><li>不承诺反弹：展望用”等待市场企稳”，不说”会涨回来”（对应 5.6 第 3 条）</li><li>结尾语调整：用”如有疑问我随时为您解读”替代常规结尾（对应 5.6 第 4 条）</li></ul>
+</blockquote>
+<h3 id="h3--"><a name="月报/季报示例" class="reference-link"></a><span class="header-link octicon octicon-link"></span>月报/季报示例</h3><p><strong>月报填充效果：</strong></p>
+<blockquote>
+<p>这是您持有的百分安心·全球稳健配置组合的2026年1月运作月报，核心内容为您梳理如下：</p>
+<ol>
+<li><strong>收益表现</strong>：本月收益+1.20%，跑赢基准 0.89%。</li><li><strong>运作思路</strong>：本月组合在债券和海外资产上维持配置。</li><li><strong>业绩归因</strong>：海外债券和黄金类资产对组合收益贡献较大。</li><li><strong>市场回顾与展望</strong>：本月市场以震荡为主，权益资产波动较大；管理人认为短期市场仍以震荡为主，组合将继续保持稳健配置。</li></ol>
+<p>报告已发您，有空看看，有疑问随时找我。</p>
+</blockquote>
+<p><strong>季报填充效果：</strong></p>
+<blockquote>
+<p>这是您持有的百分安心·全球稳健配置组合的2026年一季度运作季报，核心内容为您梳理如下：</p>
+<ol>
+<li><strong>收益表现</strong>：本季度收益+2.80%，跑赢基准 1.83%。</li><li><strong>运作思路</strong>：本季度组合在债券和海外资产上维持配置。</li><li><strong>业绩归因</strong>：海外债券和黄金对组合收益贡献较大。</li><li><strong>市场回顾与展望</strong>：一季度市场波动较大，组合通过稳健配置控制了回撤；展望后市，管理人认为短期仍有不确定性，组合将继续维持防御性配置。</li></ol>
+<p>报告已发您，有空看看，有疑问随时找我。</p>
+</blockquote>
+<hr>
+<h2 id="h2--"><a name="九、使用建议" class="reference-link"></a><span class="header-link octicon octicon-link"></span>九、使用建议</h2><ol>
+<li><strong>全篇仅提供两套话术模板</strong>（周报 + 月报/季报共用），月报和季报通过变量区分，无需员工判断报告类型。</li><li><strong>建议在产品系统中配置变量自动填充</strong>，员工只需确认即可发送，减少个人发挥空间。</li><li><strong>对于”市场回顾与展望”提炼</strong>，建议由内容运营团队统一输出标准摘要，避免不同员工表述差异过大。</li><li><strong>建议话术作为”默认发送文案”</strong>，同时允许员工在合规框架内做少量个性化补充（如结尾服务语）。</li><li><strong>定期回顾客诉和反馈</strong>，重点观察客户是否因”超额收益表述”或”市场观点提炼”产生误解，持续优化规则。</li></ol>
+
+</body>
+</html>

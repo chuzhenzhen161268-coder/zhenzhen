@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>场景1 · 全客户报告看板 · 国金证券</title>
+<style>
+/* ===== 国金证券 B端设计规范 CSS变量（深蓝主题，参考 v7方案B）===== */
+:root {
+  --color-primary: #1A2A5E;
+  --color-primary-mid: #2B3F7A;
+  --color-accent: #2B73FF;
+  --color-primary-light: #EEF1F8;
+  --color-text-primary: #1A2A5E;
+  --color-text-secondary: #4A5578;
+  --color-text-tertiary: #8A96B4;
+  --color-text-disabled: #C3CADC;
+  --color-danger: #C8392B;
+  --color-danger-bg: #FEF2F1;
+  --color-info: #2B73FF;
+  --color-warning: #C47520;
+  --color-warning-bg: #FFF7EC;
+  --color-border: #E4E9F2;
+  --color-divider: #EEF1F8;
+  --color-table-line: #EEF1F8;
+  --color-table-header: #F7F9FC;
+  --color-white: #FFFFFF;
+  --color-success: #1A7F4E;
+  --color-success-bg: #F0FAF4;
+  --color-up: #C8392B;
+  --color-down: #1A7F4E;
+  --color-flat: #4A5578;
+  --shadow-sm: 0 1px 4px rgba(26,42,94,0.06);
+  --shadow: 0 2px 10px rgba(26,42,94,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F0F3F8; color: var(--color-text-primary); padding: 0; }
+
+.page { max-width: 1440px; margin: 0 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+/* 头部 */
+.header-bar { background: var(--color-primary); border-radius: 10px; padding: 20px 24px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; box-shadow: var(--shadow); }
+.header-bar .h-left { flex: 1; min-width: 0; }
+.header-bar .h-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.2px; }
+.header-bar .h-sub { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+.metrics-row { display: flex; gap: 12px; flex-shrink: 0; }
+.metric-tile { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 10px 22px; text-align: center; min-width: 88px; }
+.metric-tile .m-label { font-size: 11px; opacity: 0.65; margin-bottom: 4px; white-space: nowrap; letter-spacing: 0.3px; }
+.metric-tile .m-value { font-size: 18px; font-weight: 700; }
+
+/* 工具栏：维度切换 + 搜索 */
+.toolbar { display: flex; align-items: center; gap: 12px; }
+.view-toggle { display: inline-flex; gap: 0; background: #fff; border-radius: 8px; padding: 4px; border: 1px solid var(--color-border); flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.view-toggle button { height: 32px; min-width: 108px; border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; transition: all 0.2s; padding: 0 16px; }
+.view-toggle button.active { background: var(--color-primary); color: #fff; }
+
+.search-bar { position: relative; width: 320px; }
+.search-input { width: 100%; height: 32px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 32px 0 32px; font-size: 13px; background: #fff; color: var(--color-text-primary); outline: none; transition: border-color 0.2s; font-family: inherit; box-shadow: var(--shadow-sm); }
+.search-input:focus { border-color: var(--color-accent); }
+.search-input::placeholder { color: var(--color-text-tertiary); }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--color-text-tertiary); pointer-events: none; }
+.search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: none; background: var(--color-text-disabled); border-radius: 50%; color: #fff; font-size: 10px; cursor: pointer; display: none; align-items: center; justify-content: center; line-height: 1; }
+.search-clear.show { display: flex; }
+
+/* ===== 左右分栏主布局 ===== */
+.layout { display: flex; gap: 16px; align-items: flex-start; }
+.side-panel { width: 340px; flex-shrink: 0; background: var(--color-primary); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; max-height: calc(100vh - 180px); position: sticky; top: 20px; box-shadow: var(--shadow); }
+.side-panel-header { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: rgba(255,255,255,0.55); flex-shrink: 0; }
+.side-list { overflow-y: auto; flex: 1; padding: 4px 8px 12px; }
+.side-list::-webkit-scrollbar { width: 4px; }
+.side-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 2px; }
+
+.detail-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+
+.no-result { display: none; text-align: center; padding: 60px 20px; color: var(--color-text-tertiary); font-size: 14px; }
+.no-result.show { display: block; }
+
+/* ===== 左侧列表项 · 客户（深色底） ===== */
+.list-item { display: flex; align-items: center; gap: 10px; padding: 10px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 2px; border: 1.5px solid transparent; transition: background 0.15s; }
+.list-item:hover { background: rgba(255,255,255,0.08); }
+.list-item.active { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.28); }
+.list-item .c-avatar { width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.list-item.active .c-avatar { background: var(--color-accent); color: #fff; }
+.li-body { flex: 1; min-width: 0; }
+.li-name-row { display: flex; align-items: center; gap: 6px; }
+.li-name { font-size: 13px; font-weight: 600; color: #fff; }
+.li-meta { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 3px; display: flex; gap: 8px; }
+.li-meta .li-return { color: #FFAFA4; }
+.c-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; flex-shrink: 0; }
+.c-tag.r2 { background: rgba(154,224,175,0.16); color: #9AE0AF; }
+.c-tag.r3 { background: rgba(255,210,122,0.16); color: #FFD27A; }
+
+/* ===== 左侧列表项 · 产品 ===== */
+.list-item .pgh-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.16); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.list-item .pgh-icon svg { width: 16px; height: 16px; }
+.li-type-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.85); font-weight: 600; flex-shrink: 0; }
+
+/* ===== 详情面板 · 客户信息卡 ===== */
+.detail-card { background: #fff; border: 1px solid var(--color-border); border-radius: 10px; padding: 20px; box-shadow: var(--shadow-sm); }
+.detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--color-border-light, var(--color-divider)); }
+.detail-header .dh-left { display: flex; align-items: center; gap: 12px; }
+.detail-header .c-avatar-lg { width: 44px; height: 44px; border-radius: 10px; background: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; color: #fff; }
+.detail-header .dh-name { font-size: 16px; font-weight: 800; color: var(--color-primary); }
+.detail-header .dh-account { font-size: 12px; color: var(--color-text-tertiary); margin-top: 3px; }
+.c360-link { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 7px; background: #fff; color: var(--color-primary); border: 1px solid var(--color-border); font-size: 12.5px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all .15s; flex-shrink: 0; }
+.c360-link:hover { border-color: var(--color-accent); color: var(--color-accent); background: #EEF5FF; }
+.c360-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* 客户维度：详情内多个产品分组（产品信息 + 报告列表），下方另有综合话术区 */
+.product-group { border: 1px solid var(--color-divider); border-radius: 10px; padding: 16px; margin-bottom: 12px; background: var(--color-white); }
+.product-group:last-child { margin-bottom: 0; }
+.pg-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.pgh-name { font-size: 13px; font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; }
+.pgh-name .pgh-icon { width: 22px; height: 22px; border-radius: 6px; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pgh-name .pgh-icon svg { width: 12px; height: 12px; }
+.pgh-tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; white-space: nowrap; font-weight: 600; }
+.pgh-tag.portfolio { background: #EEF5FF; color: #2B5CC8; }
+.pgh-tag.single_fund { background: #EEF5FF; color: #2B5CC8; }
+.pg-holdings { display: flex; gap: 16px; margin-top: 6px; margin-bottom: 12px; font-size: 12px; }
+.pg-holdings .pgh-asset { color: var(--color-text-secondary); }
+.pg-holdings .pgh-return { color: var(--color-up); font-weight: 700; }
+
+.pg-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+/* 报告列表：客户维度下按行横向排布（不再与话术分栏） */
+.report-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.report-list .report-item { flex: 1 1 220px; min-width: 220px; }
+.report-item { display: flex; gap: 10px; padding: 10px; background: var(--color-table-header); border-radius: 8px; align-items: flex-start; border: 1px solid var(--color-border-light, transparent); }
+.report-thumb { width: 40px; height: 52px; border-radius: 6px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-primary); font-size: 11px; text-align: center; line-height: 1.3; }
+.report-thumb.portfolio { background: #EEF5FF; }
+.report-thumb.single_fund { background: #EEF5FF; }
+.report-thumb .rt-icon { margin-bottom: 3px; display: flex; }
+.report-thumb .rt-icon svg { width: 16px; height: 16px; }
+.report-info { flex: 1; min-width: 0; }
+.report-info .r-title { font-size: 13px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px; }
+.report-info .r-desc { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; line-height: 1.5; }
+.report-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.r-btn { font-size: 12px; height: 28px; padding: 0 10px; border-radius: 6px; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; text-decoration: none; font-weight: 600; }
+.r-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.r-btn.view { background: var(--color-primary); color: #fff; border: 1px solid var(--color-primary); }
+.r-btn.view:hover { background: var(--color-primary-mid); }
+.r-btn.dl-img { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.r-btn.dl-img:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+/* 话术区（详情内联，右列常驻显示） */
+.speech-section { }
+.ss-label { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 6px; }
+
+/* 产品维度：持有客户表格 */
+.pd-section { margin-bottom: 16px; }
+.pd-section:last-child { margin-bottom: 0; }
+.pd-section-title { font-size: 11px; color: var(--color-text-tertiary); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; }
+.pd-report-list { display: flex; flex-direction: column; gap: 8px; }
+.pd-report-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--color-table-header); border-radius: 8px; }
+.pd-report-thumb { width: 36px; height: 44px; border-radius: 6px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-primary); font-size: 11px; line-height: 1.3; }
+.pd-report-thumb.portfolio { background: #EEF5FF; }
+.pd-report-thumb.single_fund { background: #EEF5FF; }
+.pd-report-thumb .rt-icon { margin-bottom: 2px; display: flex; }
+.pd-report-thumb .rt-icon svg { width: 15px; height: 15px; }
+.pd-report-info { flex: 1; min-width: 0; }
+.pd-report-info .pd-report-name { font-size: 13px; font-weight: 700; color: var(--color-text-primary); }
+.pd-report-info .pd-report-desc { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+.customer-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.customer-table th { text-align: left; font-weight: 700; color: var(--color-text-tertiary); font-size: 11px; letter-spacing: 0.3px; padding: 8px 12px; background: var(--color-table-header); border-bottom: 1px solid var(--color-divider); }
+.customer-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-table-line); color: var(--color-text-primary); }
+.customer-table tr:last-child td { border-bottom: none; }
+.customer-table .ct-name-cell { display: flex; align-items: center; gap: 8px; }
+.customer-table .ct-name-link { display: flex; align-items: center; gap: 8px; background: none; border: none; padding: 0; cursor: pointer; font: inherit; color: inherit; text-align: left; }
+.customer-table .ct-name-link:hover .ct-name-text { color: var(--color-accent); text-decoration: underline; }
+.customer-table .c-avatar-sm { width: 26px; height: 26px; border-radius: 6px; background: var(--color-primary); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.customer-table .ct-return { color: var(--color-up); font-weight: 700; }
+.ct-freq-warn { display: inline-flex; align-items: center; color: var(--color-warning); cursor: help; flex-shrink: 0; }
+
+/* 产品维度详情内的报告+话术两栏 */
+.product-detail-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+/* 话术卡片通用样式 */
+.draft-card { background: var(--color-table-header); border-radius: 10px; padding: 14px; border: 1px solid var(--color-border-light, var(--color-divider)); }
+.draft-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.draft-header-row .dhr-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.draft-header-row .dhr-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); }
+.ai-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #EEF5FF; color: #2B5CC8; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.compliance-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.compliance-badge.passed { background: var(--color-success-bg); color: var(--color-success); }
+.compliance-badge.pending { background: var(--color-warning-bg); color: var(--color-warning); }
+.draft-textarea { width: 100%; min-height: 200px; border: 1px solid var(--color-border); border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.8; color: var(--color-text-primary); font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+.draft-textarea:focus { border-color: var(--color-accent); box-shadow: 0 0 0 1.5px var(--color-accent); }
+.draft-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.char-count { font-size: 12px; color: var(--color-text-tertiary); }
+.char-count .cc-num { color: var(--color-text-secondary); font-weight: 600; }
+.reset-btn { font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; background: none; border: none; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; font-family: inherit; }
+.reset-btn:hover { background: #fff; color: var(--color-text-secondary); }
+.reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.draft-actions-row { display: flex; gap: 8px; margin-top: 12px; }
+.d-btn { height: 32px; padding: 0 12px; border-radius: 7px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; font-family: inherit; }
+.d-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.d-btn.secondary { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); flex: 1; justify-content: center; }
+.d-btn.secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.d-btn.primary { background: var(--color-primary); color: #fff; border: 1px solid var(--color-primary); flex: 1; justify-content: center; }
+.d-btn.primary:hover { background: var(--color-primary-mid); }
+.draft-card.edited .ai-badge { background: var(--color-warning-bg); color: var(--color-warning); }
+
+/* ===== 企微一键群发弹窗 ===== */
+.bc-modal-mask { display: none; position: fixed; inset: 0; background: rgba(15,22,48,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+.bc-modal-mask.show { display: flex; }
+.bc-modal { width: 100%; max-width: 480px; max-height: 82vh; background: #fff; border-radius: 12px; box-shadow: 0 12px 40px rgba(15,22,48,0.35); display: flex; flex-direction: column; overflow: hidden; }
+.bc-modal-header { padding: 16px 20px; border-bottom: 1px solid var(--color-divider); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.bc-modal-title { font-size: 15px; font-weight: 700; color: var(--color-primary); }
+.bc-modal-close { border: none; background: transparent; cursor: pointer; color: var(--color-text-tertiary); padding: 4px; border-radius: 5px; display: flex; }
+.bc-modal-close:hover { background: var(--color-table-header); color: var(--color-text-primary); }
+.bc-modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+.bc-section-label { font-size: 11.5px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+.bc-script-source { font-size: 10.5px; font-weight: 600; color: var(--color-accent); background: #EEF5FF; padding: 2px 7px; border-radius: 4px; }
+.bc-recipient-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.bc-recipient-tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 6px 4px 10px; border-radius: 14px; background: var(--color-table-header); color: var(--color-text-primary); font-size: 12px; font-weight: 600; border: 1px solid var(--color-border); }
+.bc-recipient-tag button { border: none; background: transparent; cursor: pointer; color: var(--color-text-tertiary); display: flex; padding: 2px; border-radius: 50%; }
+.bc-recipient-tag button:hover { color: var(--color-danger); background: var(--color-danger-bg); }
+.bc-recipient-empty { font-size: 12px; color: var(--color-text-tertiary); padding: 8px 0; }
+
+.bc-excluded-wrap { display: none; background: var(--color-warning-bg); border: 1px solid #F0D488; border-radius: 8px; padding: 10px 12px; margin-bottom: 18px; }
+.bc-excluded-title { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: #8A6A1B; margin-bottom: 8px; }
+.bc-excluded-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.bc-excluded-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; border-radius: 14px; background: #fff; border: 1px solid #F0D488; font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+.bc-excluded-reason { font-size: 10.5px; font-weight: 500; color: var(--color-text-tertiary); white-space: nowrap; }
+.bc-excluded-tag button { border: none; background: var(--color-table-header); cursor: pointer; color: var(--color-accent); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.bc-excluded-tag button:hover { background: #EEF5FF; }
+
+.bc-attach-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.bc-attach-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--color-table-header); border: 1px solid var(--color-border); cursor: pointer; transition: all .15s; }
+.bc-attach-item:hover { border-color: var(--color-accent); }
+.bc-attach-item.checked { border-color: var(--color-accent); background: #EEF5FF; }
+.bc-attach-checkbox { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; border: 1.5px solid var(--color-border); background: #fff; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.bc-attach-item.checked .bc-attach-checkbox { background: var(--color-accent); border-color: var(--color-accent); }
+.bc-attach-checkbox svg { display: none; width: 10px; height: 10px; }
+.bc-attach-item.checked .bc-attach-checkbox svg { display: block; }
+.bc-attach-icon { width: 26px; height: 34px; border-radius: 4px; background: #fff; color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bc-attach-icon svg { width: 13px; height: 13px; }
+.bc-attach-info { flex: 1; min-width: 0; }
+.bc-attach-name { font-size: 12.5px; font-weight: 600; color: var(--color-text-primary); }
+.bc-attach-desc { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+.bc-modal-footer { padding: 14px 20px; border-top: 1px solid var(--color-divider); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.bc-footer-note { font-size: 11px; color: var(--color-text-tertiary); }
+.bc-send-btn { padding: 8px 20px; border-radius: 7px; border: none; background: var(--color-primary); color: #fff; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.bc-send-btn:hover { background: var(--color-primary-mid); }
+.bc-send-btn:disabled { opacity: 0.45; cursor: default; }
+
+/* 周期选择器 */
+.period-selector { display: inline-flex; align-items: center; gap: 1px; }
+.ps-item { font-size: 11px; color: var(--color-text-tertiary); cursor: pointer; padding: 1px 5px; border-radius: 3px; transition: all 0.15s; user-select: none; font-weight: 600; }
+.ps-item.active { color: var(--color-accent); font-weight: 700; background: #EEF5FF; }
+.ps-item:hover:not(.active) { background: #fff; color: var(--color-text-secondary); }
+.ps-sep { font-size: 10px; color: var(--color-border); }
+
+/* 底部 */
+.footer { text-align: center; font-size: 12px; color: var(--color-text-tertiary); padding: 16px 0 24px; line-height: 1.6; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--color-primary); color: rgba(255,255,255,0.9); font-size: 12px; padding: 8px 18px; border-radius: 16px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 16px rgba(26,42,94,0.25); white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* 响应式：窄屏回退为单栏堆叠 */
+@media (max-width: 960px) {
+  .page { padding: 12px; }
+  .header-bar { flex-direction: column; align-items: flex-start; }
+  .metrics-row { width: 100%; }
+  .metric-tile { flex: 1; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .search-bar { width: 100%; }
+  .layout { flex-direction: column; }
+  .side-panel { width: 100%; position: static; max-height: 320px; }
+  .pg-columns, .product-detail-columns { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-bar">
+    <div class="h-left">
+      <div class="h-title">投后服务报告看板</div>
+      <div class="h-sub">您名下有服务关系客户的最新报告已汇总，可按客户或产品维度查看</div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-tile"><div class="m-label">服务客户</div><div class="m-value">3</div></div>
+      <div class="metric-tile"><div class="m-label">持有产品</div><div class="m-value">2</div></div>
+      <div class="metric-tile"><div class="m-label">最新报告</div><div class="m-value">10</div></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="view-toggle">
+      <button class="active" id="btnCustomerView" onclick="switchView('customer')">按客户维度</button>
+      <button id="btnProductView" onclick="switchView('product')">按产品维度</button>
+    </div>
+    <div class="search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索客户姓名或资金账号" oninput="filterContent()" />
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- 左侧列表面板 -->
+    <div class="side-panel">
+      <div class="side-panel-header" id="sidePanelHeader">服务客户（3）</div>
+      <div class="side-list" id="sideList"><!-- 由 JS 渲染 --></div>
+    </div>
+
+    <!-- 右侧详情面板 -->
+    <div class="detail-panel" id="detailPanel"></div>
+
+  </div>
+
+  <div class="no-result" id="noResult">未找到匹配结果，请尝试其他关键词</div>
+
+  <div class="footer">
+    本看板由 WorkBuddy 自动汇总 · 数据实时同步自报告工坊
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 企微一键群发弹窗（产品维度） -->
+<div class="bc-modal-mask" id="bcModalMask" onclick="closeBroadcastModal(event)">
+  <div class="bc-modal" onclick="event.stopPropagation()">
+    <div class="bc-modal-header">
+      <span class="bc-modal-title">企微一键群发</span>
+      <button class="bc-modal-close" onclick="closeBroadcastModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="bc-modal-body">
+      <div class="bc-section-label"><span>接收客户（<span id="bcRecipientCount">0</span> 人）</span></div>
+      <div class="bc-recipient-list" id="bcRecipientList"></div>
+      <div class="bc-excluded-wrap" id="bcExcludedWrap"></div>
+
+      <div class="bc-section-label"><span>群发附件（<span id="bcAttachCount">0</span> 份）</span></div>
+      <div class="bc-attach-list" id="bcAttachList"></div>
+
+      <div class="bc-section-label"><span>群发话术</span><span class="bc-script-source">来自当前产品沟通话术</span></div>
+      <textarea class="draft-textarea" id="bcScriptBox"></textarea>
+    </div>
+    <div class="bc-modal-footer">
+      <span class="bc-footer-note">将通过企微一键群发发送</span>
+      <button class="bc-send-btn" id="bcSendBtn" onclick="sendBroadcast()">发送（<span id="bcSendCount">0</span>人）</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== 数据 =====================
+var customers = [
+  {
+    id: 'lw', name: '李婉清', account: '6008801289', riskTag: '中低风险', riskClass: 'r2',
+    products: [
+      { key: 'lw-bf', type: 'portfolio', name: '百分安心·全球稳健配置', asset: '¥53.82万', ret: '+7.64%',
+        reports: [
+          { icon:'quarterly', label:'季报', title:'2026Q2 投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_李婉清.html', dlName:'投后季报_李婉清' },
+          { icon:'monthly', label:'月报', title:'2026年6月 投后月报', desc:'2026.07.01 生成 · 合规通过', file:'投后月报_李婉清.html', dlName:'投后月报_李婉清' },
+          { icon:'weekly', label:'周报', title:'7月第1周 投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_李婉清.html', dlName:'投后周报_李婉清' }
+        ]}
+    ]
+  },
+  {
+    id: 'wh', name: '王建华', account: '6006600312', riskTag: '中风险', riskClass: 'r3',
+    products: [
+      { key: 'wh-bf', type: 'portfolio', name: '百分安心·全球稳健配置', asset: '¥91.89万', ret: '+6.89%',
+        reports: [
+          { icon:'quarterly', label:'季报', title:'2026Q2 投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_王建华.html', dlName:'投后季报_王建华' },
+          { icon:'monthly', label:'月报', title:'2026年6月 投后月报', desc:'2026.07.01 生成 · 合规通过', file:'投后月报_王建华.html', dlName:'投后月报_王建华' },
+          { icon:'weekly', label:'周报', title:'7月第1周 投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_王建华.html', dlName:'投后周报_王建华' }
+        ]},
+      { key: 'wh-hx', type: 'single_fund', name: '华夏医药量化选股股票A', asset: '¥15.00万', ret: '+12.34%',
+        reports: [
+          { icon:'doc', label:'月报', title:'2026年6月 公募基金月报', desc:'2026.07.01 生成 · 合规通过', file:'单基金月报_华夏医药量化_016938.html', dlName:'单基金月报_华夏医药_王建华' }
+        ]}
+    ]
+  },
+  {
+    id: 'zx', name: '赵秀英', account: '6009900255', riskTag: '低风险', riskClass: 'r2',
+    products: [
+      { key: 'zx-bf', type: 'portfolio', name: '百分安心·全球稳健配置', asset: '¥20.94万', ret: '+4.70%',
+        reports: [
+          { icon:'quarterly', label:'季报', title:'2026Q2 投后季报', desc:'2026.07.01 生成 · 合规通过', file:'投后季报_赵秀英.html', dlName:'投后季报_赵秀英' },
+          { icon:'monthly', label:'月报', title:'2026年6月 投后月报', desc:'2026.07.01 生成 · 合规通过', file:'投后月报_赵秀英.html', dlName:'投后月报_赵秀英' },
+          { icon:'weekly', label:'周报', title:'7月第1周 投后周报', desc:'2026.06.30 生成 · 合规通过', file:'投后周报_赵秀英.html', dlName:'投后周报_赵秀英' }
+        ]}
+    ]
+  }
+];
+
+var products = [
+  {
+    key: 'portfolio', name: '百分安心·全球稳健配置组合', typeTag: '基金投顾',
+    code: '', summary: '3名持有客户 · 9份报告',
+    reports: [
+      { icon:'quarterly', label:'季报', name:'投后季报', desc:'2026.07.01 生成 · 合规通过' },
+      { icon:'monthly', label:'月报', name:'投后月报', desc:'2026.06.01 生成 · 合规通过' },
+      { icon:'weekly', label:'周报', name:'投后周报', desc:'2026.06.30 生成 · 合规通过' }
+    ],
+    holders: [
+      { name:'李婉清', asset:'¥53.82万', ret:'+7.64%' },
+      { name:'王建华', asset:'¥91.89万', ret:'+6.89%' },
+      { name:'赵秀英', asset:'¥20.94万', ret:'+4.70%' }
+    ]
+  },
+  {
+    key: 'single_fund', name: '华夏医药量化选股股票A', typeTag: '公募基金',
+    code: '016938', summary: '016938 · 1名持有客户 · 1份报告',
+    reports: [
+      { icon:'doc', label:'月报', name:'公募基金月报', desc:'2026.07.01 生成 · 合规通过' }
+    ],
+    holders: [
+      { name:'王建华', asset:'¥15.00万', ret:'+12.34%' }
+    ]
+  }
+];
+
+// ===== 话术库（按产品×周期）=====
+// 生成规则依据《基金投顾报告话术模板与规则》V2.0：
+// - 只谈"组合/基金"表现，不出现客户个人持仓、收益、账户金额
+// - 不出现具体净值点位、不逐一点名成分基金、不出现员工个人观点或收益承诺
+// - 周报用简报段落（80-120字），月报/季报用编号框架（120-160字/150-200字）
+// - 后市观点提炼为1-2句，不贴市场分析原文
+var draftLib = {
+  portfolio: {
+    // 季报：组合定位 + 运作情况 + 配置策略 + 业绩归因 + 市场回顾与展望（合并一段）
+    quarterly: '您好。这是您持有的百分安心·全球稳健配置组合的2026年二季度运作季报，核心内容为您梳理如下：\n\n1. 收益表现：本季度收益+3.21%，跑赢基准。\n2. 运作思路：本季度组合在全球多元资产上保持固收打底、权益增强的均衡方向。\n3. 业绩归因：权益类资产和海外债券对组合收益贡献较大。\n4. 后市观点：二季度市场波动整体可控，组合通过分散配置控制了回撤；展望后市，管理人认为短期A股结构性行情和海外资产仍有配置价值，组合将维持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。',
+    // 月报：与季报共用框架，篇幅更紧凑
+    monthly: '您好。这是您持有的百分安心·全球稳健配置组合的2026年6月运作月报，核心内容为您梳理如下：\n\n1. 收益表现：本月收益+1.05%，跑赢基准。\n2. 运作思路：本月组合在权益和固收资产上保持均衡配置。\n3. 业绩归因：权益类资产对组合收益贡献较大，固收类资产提供稳定底仓。\n4. 后市观点：管理人认为短期市场仍以震荡为主，组合将继续保持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。',
+    // 周报：极简简报段落
+    weekly: '您好。百分安心·全球稳健配置组合本周报告已更新，我帮您提炼了要点：\n\n组合上周收益+0.28%，与基准表现相近。成分基金中，海外资产方向贡献较多。展望方面，管理人认为短期市场维持震荡，组合继续保持稳健配置。\n\n报告已发您，有空看看，有疑问随时找我。'
+  },
+  single_fund: {
+    // 单基金套用同一套规则：只谈基金层面表现，不提客户个人持仓/收益，不做投资建议
+    monthly: '您好。这是您关注的华夏医药量化选股股票A的2026年6月运作月报，核心内容为您梳理如下：\n\n1. 收益表现：本月收益+3.21%，跑赢业绩比较基准。\n2. 运作思路：本月基金重点布局医药生物细分赛道，持仓集中度保持适中。\n3. 业绩归因：创新药、医疗器械方向对基金收益贡献较大。\n4. 后市观点：管理人认为医药行业长期成长逻辑未变，将继续优化选股策略。\n\n报告已发您，有空看看，有疑问随时找我。'
+  }
+};
+
+var reportsBase = '../reports/';
+
+// ===== 企微群发历史记录（用于频控：避免同一客户当日被多次群发打扰）=====
+// 每条记录：客户姓名 + 群发日期(YYYY-MM-DD) + 产品名 + 触发的产品key，实际生产环境应来自后端群发日志接口
+var broadcastLog = [
+  { name: '王建华', date: todayStr(), productKey: 'single_fund', productName: '华夏医药量化选股股票A' }
+];
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+// 查询某客户今日是否已被群发过（排除当前正在操作的产品自身，避免同产品重复群发误判为"其他产品打扰"）
+function getTodayBroadcastInfo(name, excludeProductKey) {
+  var todays = broadcastLog.filter(function(r) {
+    return r.name === name && r.date === todayStr() && r.productKey !== excludeProductKey;
+  });
+  return todays.length ? todays : null;
+}
+
+// ===== 报告类型图标（SVG，替代原emoji，颜色随父级 currentColor 走浅色底方案）=====
+var ICONS = {
+  // 季报：柱状图
+  quarterly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="4" height="10"/><rect x="10" y="6" width="4" height="14"/><rect x="16" y="13" width="4" height="7"/></svg>',
+  // 月报：趋势折线图
+  monthly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/></svg>',
+  // 周报：清单
+  weekly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  // 单基金/文档类报告
+  doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
+  // 基金投顾组合：饼图
+  portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+  // 查看：眼睛
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  // 下载：下载箭头
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  // 群发：发送箭头
+  broadcast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+  // 外部跳转：外链箭头
+  external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+};
+function iconSvg(key) { return ICONS[key] || ICONS.doc; }
+
+// 生成客户视图页面的跳转链接（占位实现：实际生产环境应替换为真实客户视图系统地址，按客户账号跳转）
+function customer360Url(c) {
+  return 'https://guojin.com/customer-view/' + encodeURIComponent(c.account);
+}
+
+// ===================== 状态 =====================
+var currentView = 'customer';
+var currentCustomerId = null;
+var currentProductKey = null;
+var draftState = {}; // key -> { product, period, originalText }
+
+function esc(s) { return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+// ===================== 视图切换 =====================
+function switchView(view) {
+  currentView = view;
+  document.getElementById('btnCustomerView').classList.toggle('active', view === 'customer');
+  document.getElementById('btnProductView').classList.toggle('active', view === 'product');
+  var input = document.getElementById('searchInput');
+  input.value = '';
+  document.getElementById('searchClear').classList.remove('show');
+  input.placeholder = view === 'customer' ? '搜索客户姓名或资金账号' : '搜索产品名称';
+
+  if (view === 'customer') {
+    renderCustomerList();
+    if (customers.length) selectCustomer(customers[0].id);
+  } else {
+    renderProductList();
+    if (products.length) selectProduct(products[0].key);
+  }
+}
+
+// ===================== 客户维度：左侧列表 =====================
+function renderCustomerList(filterKeyword) {
+  var kw = (filterKeyword || '').trim().toLowerCase();
+  document.getElementById('sidePanelHeader').textContent = '服务客户（' + customers.length + '）';
+  var list = document.getElementById('sideList');
+  var html = '';
+  var visibleCount = 0;
+  customers.forEach(function(c) {
+    var match = !kw || c.name.toLowerCase().indexOf(kw) >= 0 || c.account.indexOf(kw) >= 0;
+    if (!match) return;
+    visibleCount++;
+    html += '<div class="list-item' + (c.id === currentCustomerId ? ' active' : '') + '" onclick="selectCustomer(\'' + c.id + '\')">' +
+      '<div class="c-avatar">' + esc(c.name.charAt(0)) + '</div>' +
+      '<div class="li-body">' +
+        '<div class="li-name-row"><span class="li-name">' + esc(c.name) + '</span><span class="c-tag ' + c.riskClass + '">' + esc(c.riskTag) + '</span></div>' +
+        '<div class="li-meta"><span>' + c.account + '</span></div>' +
+      '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+  document.getElementById('noResult').classList.toggle('show', visibleCount === 0);
+  return visibleCount;
+}
+
+function selectCustomer(id) {
+  currentCustomerId = id;
+  renderCustomerList(document.getElementById('searchInput').value);
+  var c = customers.filter(function(x){ return x.id === id; })[0];
+  if (!c) { document.getElementById('detailPanel').innerHTML = ''; return; }
+
+  var html = '<div class="detail-card">' +
+    '<div class="detail-header">' +
+      '<div class="dh-left">' +
+        '<div class="c-avatar-lg">' + esc(c.name.charAt(0)) + '</div>' +
+        '<div><div class="dh-name">' + esc(c.name) + '</div><div class="dh-account">资金账号 ' + c.account + ' · ' + '<span class="c-tag ' + c.riskClass + '">' + esc(c.riskTag) + '</span></div></div>' +
+      '</div>' +
+      '<a class="c360-link" href="' + esc(customer360Url(c)) + '" target="_blank" rel="noopener" title="打开客户视图查看完整客户详情">' +
+        iconSvg('external') + '客户视图' +
+      '</a>' +
+    '</div>';
+
+  c.products.forEach(function(p) {
+    html += renderProductGroup(p);
+  });
+  html += '</div>';
+
+  document.getElementById('detailPanel').innerHTML = html;
+
+  // 初始化每个产品分组各自的话术（按默认周期）
+  c.products.forEach(function(p) {
+    var defaultPeriod = p.type === 'single_fund' ? 'monthly' : 'quarterly';
+    initDraft(p.key, p.type, defaultPeriod);
+  });
+}
+
+function renderProductGroup(p) {
+  var reportsHtml = p.reports.map(function(r) {
+    return '<div class="report-item">' +
+      '<div class="report-thumb ' + p.type + '"><div class="rt-icon">' + iconSvg(r.icon) + '</div>' + r.label + '</div>' +
+      '<div class="report-info">' +
+        '<div class="r-title">' + esc(r.title) + '</div>' +
+        '<div class="r-desc">' + esc(r.desc) + '</div>' +
+        '<div class="report-actions">' +
+          '<a class="r-btn view" href="' + reportsBase + esc(r.file) + '" target="_blank">' + iconSvg('eye') + '查看</a>' +
+          '<button class="r-btn dl-img" onclick="downloadReport(\'' + esc(r.dlName) + '\',\'image\')">' + iconSvg('download') + '下载图片</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // 周期切换器：产品下有几种周期的报告，话术就能切几版；组合类默认季/月/周三版，单基金目前只有月报一版故不显示切换器
+  var periods = Array.from(new Set(p.reports.map(function(r){ return r.icon; }))).filter(function(k){
+    return k === 'quarterly' || k === 'monthly' || k === 'weekly';
+  });
+  var periodLabels = { quarterly: '季报', monthly: '月报', weekly: '周报' };
+  var defaultPeriod = p.type === 'single_fund' ? 'monthly' : 'quarterly';
+  var periodSelector = periods.length > 1
+    ? '<div class="period-selector" id="ps-' + p.key + '">' +
+        periods.map(function(period, idx) {
+          return (idx > 0 ? '<span class="ps-sep">|</span>' : '') +
+            '<span class="ps-item' + (period === defaultPeriod ? ' active' : '') + '" data-period="' + period + '" onclick="switchDraftPeriod(\'' + p.key + '\',\'' + period + '\')">' + periodLabels[period] + '</span>';
+        }).join('') +
+      '</div>'
+    : '';
+
+  return '<div class="product-group">' +
+    '<div class="pg-header">' +
+      '<div class="pgh-name"><div class="pgh-icon">' + iconSvg(p.type === 'portfolio' ? 'portfolio' : 'doc') + '</div>' + esc(p.name) + '</div>' +
+      '<div class="pgh-tag ' + p.type + '">' + (p.type === 'portfolio' ? '基金投顾' : '公募基金') + '</div>' +
+    '</div>' +
+    '<div class="pg-holdings"><span class="pgh-asset">持仓资产 ' + p.asset + '</span><span class="pgh-return">持有收益 ' + p.ret + '</span></div>' +
+    '<div class="report-list">' + reportsHtml + '</div>' +
+    '<div class="speech-section" style="margin-top:12px;">' +
+      '<div class="draft-card" id="draft-' + p.key + '">' +
+        '<div class="draft-header-row">' +
+          '<div class="dhr-left">' +
+            '<div class="dhr-title">沟通话术</div>' +
+            periodSelector +
+            '<div class="ai-badge">✨ AI提炼</div>' +
+          '</div>' +
+          '<div class="compliance-badge passed">✓ 合规审核通过</div>' +
+        '</div>' +
+        '<textarea class="draft-textarea" oninput="onDraftEdit(\'' + p.key + '\')"></textarea>' +
+        '<div class="draft-footer-row">' +
+          '<div class="char-count">共 <span class="cc-num">0</span> 字</div>' +
+          '<button class="reset-btn" disabled onclick="resetDraft(\'' + p.key + '\')">↺ 恢复原始话术</button>' +
+        '</div>' +
+        '<div class="draft-actions-row">' +
+          '<button class="d-btn secondary" onclick="copyDraft(\'' + p.key + '\')">⧉ 复制话术</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ===================== 产品维度：左侧列表 =====================
+function renderProductList(filterKeyword) {
+  var kw = (filterKeyword || '').trim().toLowerCase();
+  document.getElementById('sidePanelHeader').textContent = '持有产品（' + products.length + '）';
+  var list = document.getElementById('sideList');
+  var html = '';
+  var visibleCount = 0;
+  products.forEach(function(p) {
+    var match = !kw || p.name.toLowerCase().indexOf(kw) >= 0 || (p.code && p.code.indexOf(kw) >= 0);
+    if (!match) return;
+    visibleCount++;
+    html += '<div class="list-item' + (p.key === currentProductKey ? ' active' : '') + '" onclick="selectProduct(\'' + p.key + '\')">' +
+      '<div class="pgh-icon">' + iconSvg(p.key === 'portfolio' ? 'portfolio' : 'doc') + '</div>' +
+      '<div class="li-body">' +
+        '<div class="li-name-row"><span class="li-name">' + esc(p.name) + '</span></div>' +
+        '<div class="li-meta"><span class="li-type-tag">' + esc(p.typeTag) + '</span><span>' + esc(p.summary) + '</span></div>' +
+      '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+  document.getElementById('noResult').classList.toggle('show', visibleCount === 0);
+  return visibleCount;
+}
+
+function selectProduct(key) {
+  currentProductKey = key;
+  renderProductList(document.getElementById('searchInput').value);
+  var p = products.filter(function(x){ return x.key === key; })[0];
+  if (!p) { document.getElementById('detailPanel').innerHTML = ''; return; }
+
+  var reportsHtml = p.reports.map(function(r) {
+    return '<div class="pd-report-item">' +
+      '<div class="pd-report-thumb ' + p.key + '"><div class="rt-icon">' + iconSvg(r.icon) + '</div>' + r.label + '</div>' +
+      '<div class="pd-report-info"><div class="pd-report-name">' + esc(r.name) + '</div><div class="pd-report-desc">' + esc(r.desc) + '</div></div>' +
+    '</div>';
+  }).join('');
+
+  var holdersRows = p.holders.map(function(h) {
+    var hits = getTodayBroadcastInfo(h.name, p.key);
+    var warnBadge = hits
+      ? '<span class="ct-freq-warn" title="今日已群发「' + esc(hits.map(function(r){ return r.productName; }).join('、')) + '」，请注意群发频率">' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>' +
+        '</span>'
+      : '';
+    var custId = getCustomerIdByName(h.name);
+    var nameCell = custId
+      ? '<button class="ct-name-link" onclick="goToCustomerDetail(\'' + custId + '\')" title="查看该客户在客户维度下的详情">' +
+          '<div class="c-avatar-sm">' + esc(h.name.charAt(0)) + '</div><span class="ct-name-text">' + esc(h.name) + '</span>' + warnBadge +
+        '</button>'
+      : '<div class="ct-name-cell"><div class="c-avatar-sm">' + esc(h.name.charAt(0)) + '</div>' + esc(h.name) + warnBadge + '</div>';
+    return '<tr>' +
+      '<td>' + nameCell + '</td>' +
+      '<td>' + h.asset + '</td>' +
+      '<td class="ct-return">' + h.ret + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var periodSelector = p.key === 'portfolio'
+    ? '<div class="period-selector" id="ps-pv">' +
+        '<span class="ps-item active" data-period="quarterly" onclick="switchDraftPeriod(\'pv\',\'quarterly\')">季报</span>' +
+        '<span class="ps-sep">|</span>' +
+        '<span class="ps-item" data-period="monthly" onclick="switchDraftPeriod(\'pv\',\'monthly\')">月报</span>' +
+        '<span class="ps-sep">|</span>' +
+        '<span class="ps-item" data-period="weekly" onclick="switchDraftPeriod(\'pv\',\'weekly\')">周报</span>' +
+      '</div>'
+    : '';
+
+  var draftKey = p.key === 'portfolio' ? 'pv' : 'sf';
+
+  var html = '<div class="detail-card">' +
+    '<div class="detail-header">' +
+      '<div class="dh-left"><div><div class="dh-name">' + esc(p.name) + '</div><div class="dh-account">' + esc(p.summary) + '</div></div></div>' +
+      '<div class="li-type-tag" style="font-size:12px;padding:3px 10px;">' + esc(p.typeTag) + '</div>' +
+    '</div>' +
+    '<div class="product-detail-columns">' +
+      '<div>' +
+        '<div class="pd-section"><div class="pd-section-title">产品报告</div><div class="pd-report-list">' + reportsHtml + '</div></div>' +
+        '<div class="pd-section"><div class="pd-section-title">持有客户（' + p.holders.length + '名）</div>' +
+          '<table class="customer-table"><thead><tr><th>客户</th><th>持仓资产</th><th>持有收益</th></tr></thead><tbody>' + holdersRows + '</tbody></table>' +
+        '</div>' +
+      '</div>' +
+      '<div class="speech-section">' +
+        '<div class="draft-card" id="draft-' + draftKey + '">' +
+          '<div class="draft-header-row">' +
+            '<div class="dhr-left">' +
+              '<div class="dhr-title">沟通话术</div>' +
+              periodSelector +
+              '<div class="ai-badge">✨ AI提炼</div>' +
+            '</div>' +
+            '<div class="compliance-badge passed">✓ 合规审核通过</div>' +
+          '</div>' +
+          '<textarea class="draft-textarea" oninput="onDraftEdit(\'' + draftKey + '\')"></textarea>' +
+          '<div class="draft-footer-row">' +
+            '<div class="char-count">共 <span class="cc-num">0</span> 字</div>' +
+            '<button class="reset-btn" disabled onclick="resetDraft(\'' + draftKey + '\')">↺ 恢复原始话术</button>' +
+          '</div>' +
+          '<div class="draft-actions-row">' +
+            '<button class="d-btn secondary" onclick="copyDraft(\'' + draftKey + '\')">⧉ 复制话术</button>' +
+            '<button class="d-btn primary" onclick="openBroadcastModal(\'' + p.key + '\')">' + iconSvg('broadcast') + '企微群发</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  document.getElementById('detailPanel').innerHTML = html;
+
+  var defaultPeriod = p.key === 'portfolio' ? 'quarterly' : 'monthly';
+  initDraft(draftKey, p.key, defaultPeriod);
+}
+
+// 根据客户姓名查客户 id（用于产品维度"持有客户"表格跳转到客户维度详情）
+function getCustomerIdByName(name) {
+  var c = customers.filter(function(x){ return x.name === name; })[0];
+  return c ? c.id : null;
+}
+
+// 从产品维度的持有客户表格跳转到客户维度并定位到该客户
+function goToCustomerDetail(customerId) {
+  switchView('customer');
+  selectCustomer(customerId);
+}
+
+// ===================== 话术公共逻辑（已去重）=====================
+function getDraftText(product, period) {
+  var lib = draftLib[product] || {};
+  return lib[period] || lib.quarterly || lib.monthly || '';
+}
+
+function initDraft(draftKey, product, period) {
+  var card = document.getElementById('draft-' + draftKey);
+  if (!card) return;
+  var text = getDraftText(product, period);
+  var textarea = card.querySelector('.draft-textarea');
+  textarea.value = text;
+  card.querySelector('.cc-num').textContent = text.length;
+  draftState[draftKey] = { product: product, period: period, originalText: text };
+}
+
+function switchDraftPeriod(draftKey, period) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  st.period = period;
+  var text = getDraftText(st.product, period);
+  st.originalText = text;
+  var card = document.getElementById('draft-' + draftKey);
+  var textarea = card.querySelector('.draft-textarea');
+  textarea.value = text;
+  card.querySelector('.cc-num').textContent = text.length;
+  card.classList.remove('edited');
+  var badge = card.querySelector('.compliance-badge');
+  badge.className = 'compliance-badge passed';
+  badge.innerHTML = '✓ 合规审核通过';
+  card.querySelector('.reset-btn').disabled = true;
+  card.querySelectorAll('.ps-item').forEach(function(item) {
+    item.classList.toggle('active', item.dataset.period === period);
+  });
+}
+
+function onDraftEdit(draftKey) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  var card = document.getElementById('draft-' + draftKey);
+  var textarea = card.querySelector('.draft-textarea');
+  var text = textarea.value;
+  card.querySelector('.cc-num').textContent = text.length;
+  var isEdited = text !== st.originalText;
+  var badge = card.querySelector('.compliance-badge');
+  var resetBtn = card.querySelector('.reset-btn');
+  if (isEdited) {
+    card.classList.add('edited');
+    badge.className = 'compliance-badge pending';
+    badge.innerHTML = '● 已编辑';
+    resetBtn.disabled = false;
+  } else {
+    card.classList.remove('edited');
+    badge.className = 'compliance-badge passed';
+    badge.innerHTML = '✓ 合规审核通过';
+    resetBtn.disabled = true;
+  }
+}
+
+function resetDraft(draftKey) {
+  var st = draftState[draftKey];
+  if (!st) return;
+  var card = document.getElementById('draft-' + draftKey);
+  card.querySelector('.draft-textarea').value = st.originalText;
+  onDraftEdit(draftKey);
+  showToast('已恢复原始话术');
+}
+
+function copyDraft(draftKey) {
+  var card = document.getElementById('draft-' + draftKey);
+  var text = card.querySelector('.draft-textarea').value;
+  copyToClipboard(text);
+  showToast('话术已复制到剪贴板');
+}
+
+function copyToClipboard(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ===================== 产品维度：企微一键群发 =====================
+var bcRecipients = []; // 当前弹窗内的接收客户名单（数组，元素为客户姓名）— 实际会被群发
+var bcExcluded = []; // 因"今日已群发过其他产品"被自动排除的客户，元素为 { name, reasons: [productName,...] }
+var bcProductKey = null;
+var bcAttachments = []; // 当前弹窗内已勾选的附件报告（数组，元素为报告 label，如"季报"）
+
+function openBroadcastModal(productKey) {
+  var p = products.filter(function(x){ return x.key === productKey; })[0];
+  if (!p) return;
+  bcProductKey = productKey;
+
+  // 频控：今日已被其他产品群发过的客户，默认从勾选名单中排除，单独列出供手动加回
+  bcRecipients = [];
+  bcExcluded = [];
+  p.holders.forEach(function(h) {
+    var hits = getTodayBroadcastInfo(h.name, productKey);
+    if (hits) {
+      bcExcluded.push({ name: h.name, reasons: hits.map(function(r){ return r.productName; }) });
+    } else {
+      bcRecipients.push(h.name);
+    }
+  });
+
+  // 默认勾选该产品全部报告作为附件
+  bcAttachments = p.reports.map(function(r){ return r.label; });
+
+  var draftKey = productKey === 'portfolio' ? 'pv' : 'sf';
+  var draftCard = document.getElementById('draft-' + draftKey);
+  var scriptText = draftCard ? draftCard.querySelector('.draft-textarea').value : '';
+  document.getElementById('bcScriptBox').value = scriptText;
+
+  renderBroadcastRecipients();
+  renderBroadcastAttachments();
+  document.getElementById('bcModalMask').classList.add('show');
+}
+
+function renderBroadcastRecipients() {
+  var list = document.getElementById('bcRecipientList');
+  var html = '';
+  if (bcRecipients.length === 0) {
+    html += '<div class="bc-recipient-empty">暂无接收客户，请至少保留一人</div>';
+  } else {
+    html += bcRecipients.map(function(name) {
+      return '<span class="bc-recipient-tag">' + esc(name) +
+        '<button onclick="removeBroadcastRecipient(\'' + esc(name) + '\')" title="移除">' +
+        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+        '</button></span>';
+    }).join('');
+  }
+  list.innerHTML = html;
+  document.getElementById('bcRecipientCount').textContent = bcRecipients.length;
+  document.getElementById('bcSendCount').textContent = bcRecipients.length;
+  document.getElementById('bcSendBtn').disabled = bcRecipients.length === 0;
+  renderBroadcastExcluded();
+}
+
+function renderBroadcastExcluded() {
+  var wrap = document.getElementById('bcExcludedWrap');
+  if (bcExcluded.length === 0) {
+    wrap.innerHTML = '';
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  wrap.innerHTML = '<div class="bc-excluded-title">' +
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>' +
+      '今日已群发，已自动跳过（' + bcExcluded.length + '人）</div>' +
+    '<div class="bc-excluded-list">' +
+      bcExcluded.map(function(item) {
+        return '<span class="bc-excluded-tag">' + esc(item.name) +
+          '<span class="bc-excluded-reason">今日已发「' + esc(item.reasons.join('、')) + '」</span>' +
+          '<button onclick="restoreBroadcastRecipient(\'' + esc(item.name) + '\')" title="仍然加入本次群发">加回</button>' +
+        '</span>';
+      }).join('') +
+    '</div>';
+}
+
+function removeBroadcastRecipient(name) {
+  bcRecipients = bcRecipients.filter(function(n){ return n !== name; });
+  renderBroadcastRecipients();
+}
+
+function restoreBroadcastRecipient(name) {
+  bcExcluded = bcExcluded.filter(function(item){ return item.name !== name; });
+  if (bcRecipients.indexOf(name) < 0) bcRecipients.push(name);
+  renderBroadcastRecipients();
+}
+
+function renderBroadcastAttachments() {
+  var p = products.filter(function(x){ return x.key === bcProductKey; })[0];
+  var list = document.getElementById('bcAttachList');
+  if (!p || p.reports.length === 0) {
+    list.innerHTML = '<div class="bc-recipient-empty">该产品暂无可群发的报告</div>';
+  } else {
+    list.innerHTML = p.reports.map(function(r) {
+      var checked = bcAttachments.indexOf(r.label) >= 0;
+      return '<div class="bc-attach-item' + (checked ? ' checked' : '') + '" onclick="toggleBroadcastAttachment(\'' + esc(r.label) + '\')">' +
+        '<div class="bc-attach-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<div class="bc-attach-icon">' + iconSvg(r.icon) + '</div>' +
+        '<div class="bc-attach-info"><div class="bc-attach-name">' + esc(r.name) + '</div><div class="bc-attach-desc">' + esc(r.desc) + '</div></div>' +
+      '</div>';
+    }).join('');
+  }
+  document.getElementById('bcAttachCount').textContent = bcAttachments.length;
+}
+
+function toggleBroadcastAttachment(label) {
+  var idx = bcAttachments.indexOf(label);
+  if (idx >= 0) bcAttachments.splice(idx, 1);
+  else bcAttachments.push(label);
+  renderBroadcastAttachments();
+}
+
+function closeBroadcastModal(e) {
+  if (e && e.target !== document.getElementById('bcModalMask')) return;
+  document.getElementById('bcModalMask').classList.remove('show');
+}
+
+function sendBroadcast() {
+  if (bcRecipients.length === 0) return;
+  var p = products.filter(function(x){ return x.key === bcProductKey; })[0];
+  var count = bcRecipients.length;
+  var attachCount = bcAttachments.length;
+
+  // 写入群发记录，供后续频控查询（含本次手动加回、仍选择发送的客户）
+  var today = todayStr();
+  bcRecipients.forEach(function(name) {
+    broadcastLog.push({ name: name, date: today, productKey: bcProductKey, productName: p ? p.name : '' });
+  });
+
+  closeBroadcastModal();
+  var msg = '已通过企微群发发送给 ' + count + ' 位客户';
+  if (attachCount > 0) msg += '，附带 ' + attachCount + ' 份报告';
+  showToast(msg);
+
+  // 若当前正停留在产品维度详情页，刷新一下让"今日已群发"提醒同步更新
+  if (currentView === 'product' && currentProductKey) selectProduct(currentProductKey);
+}
+
+// ===================== 搜索 =====================
+function filterContent() {
+  var keyword = document.getElementById('searchInput').value;
+  document.getElementById('searchClear').classList.toggle('show', keyword.trim().length > 0);
+  if (currentView === 'customer') {
+    var n = renderCustomerList(keyword);
+    if (n === 0) {
+      document.getElementById('detailPanel').innerHTML = '';
+    } else if (!customers.some(function(c){ return c.id === currentCustomerId && (!keyword.trim() || c.name.toLowerCase().indexOf(keyword.trim().toLowerCase()) >= 0 || c.account.indexOf(keyword.trim()) >= 0); })) {
+      var firstVisible = customers.filter(function(c){
+        var kw = keyword.trim().toLowerCase();
+        return !kw || c.name.toLowerCase().indexOf(kw) >= 0 || c.account.indexOf(kw) >= 0;
+      })[0];
+      if (firstVisible) selectCustomer(firstVisible.id);
+    }
+  } else {
+    var n2 = renderProductList(keyword);
+    if (n2 === 0) {
+      document.getElementById('detailPanel').innerHTML = '';
+    } else if (!products.some(function(p){ return p.key === currentProductKey && (!keyword.trim() || p.name.toLowerCase().indexOf(keyword.trim().toLowerCase()) >= 0); })) {
+      var firstVisibleP = products.filter(function(p){
+        var kw = keyword.trim().toLowerCase();
+        return !kw || p.name.toLowerCase().indexOf(kw) >= 0;
+      })[0];
+      if (firstVisibleP) selectProduct(firstVisibleP.key);
+    }
+  }
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('show');
+  if (currentView === 'customer') renderCustomerList(''); else renderProductList('');
+  document.getElementById('noResult').classList.remove('show');
+  document.getElementById('searchInput').focus();
+}
+
+// ===================== 其它工具函数 =====================
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function downloadReport(name, type) {
+  if (type === 'image') {
+    showToast('正在生成报告截图...（演示模式）');
+    setTimeout(function() { showToast('图片已保存：' + name + '.png'); }, 1200);
+  } else {
+    var link = 'https://guojin.com/reports/' + name + '.html';
+    copyToClipboard(link);
+    showToast('报告链接已复制到剪贴板');
+  }
+}
+
+// ===================== 初始化 =====================
+switchView('customer');
+</script>
+</body>
+</html>

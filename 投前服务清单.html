@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投前服务清单 · 国金证券</title>
+<style>
+/* ===== 国金证券 B端设计规范 CSS变量（深蓝主题，与投后场景保持一致）===== */
+:root {
+  --color-primary: #1A2A5E;
+  --color-primary-mid: #2B3F7A;
+  --color-accent: #2B73FF;
+  --color-primary-light: #EEF1F8;
+  --color-text-primary: #1A2A5E;
+  --color-text-secondary: #4A5578;
+  --color-text-tertiary: #8A96B4;
+  --color-text-disabled: #C3CADC;
+  --color-danger: #C8392B;
+  --color-danger-bg: #FEF2F1;
+  --color-info: #2B73FF;
+  --color-warning: #C47520;
+  --color-warning-bg: #FFF7EC;
+  --color-border: #E4E9F2;
+  --color-divider: #EEF1F8;
+  --color-table-line: #EEF1F8;
+  --color-table-header: #F7F9FC;
+  --color-white: #FFFFFF;
+  --color-success: #1A7F4E;
+  --color-success-bg: #F0FAF4;
+  --color-up: #C8392B;
+  --color-down: #1A7F4E;
+  --color-flat: #4A5578;
+  --shadow-sm: 0 1px 4px rgba(26,42,94,0.06);
+  --shadow: 0 2px 10px rgba(26,42,94,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F0F3F8; color: var(--color-text-primary); padding: 0; }
+
+.page { max-width: 960px; margin: 0 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+/* 头部 */
+.header-bar { background: var(--color-primary); border-radius: 10px; padding: 20px 24px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 24px; box-shadow: var(--shadow); flex-wrap: wrap; }
+.header-bar .h-left { flex: 1; min-width: 240px; }
+.header-bar .h-title { font-size: 19px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.2px; }
+.header-bar .h-sub { font-size: 13px; opacity: 0.75; line-height: 1.5; }
+.metrics-row { display: flex; gap: 12px; }
+.metric-tile { background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 10px 18px; text-align: center; min-width: 96px; }
+.metric-tile .m-label { font-size: 11px; opacity: 0.7; margin-bottom: 4px; }
+.metric-tile .m-value { font-size: 14px; font-weight: 700; }
+
+.main-layout { display: flex; flex-direction: column; gap: 16px; }
+
+.customer-card, .speech-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.c-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--color-divider); }
+.c-name-row { display: flex; align-items: center; gap: 12px; }
+.c-avatar {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  background: var(--color-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.c-info .c-name { font-size: 18px; font-weight: 800; color: var(--color-primary); }
+.c-info .c-account { font-size: 12.5px; color: var(--color-text-tertiary); margin-top: 4px; }
+.c-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; background: #EEF5FF; color: #2B5CC8; flex-shrink: 0; }
+.c360-link { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 7px; background: #fff; color: var(--color-primary); border: 1px solid var(--color-border); font-size: 12.5px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all .15s; flex-shrink: 0; }
+.c360-link:hover { border-color: var(--color-accent); color: var(--color-accent); background: #EEF5FF; }
+.c360-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.profile-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 4px; }
+.p-item { background: var(--color-table-header); border-radius: 8px; padding: 10px 14px; }
+.p-item .p-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.p-item .p-value { font-size: 14px; color: var(--color-primary); font-weight: 700; }
+
+.report-section { border-top: 1px solid var(--color-divider); margin-top: 16px; padding-top: 16px; }
+.report-label { font-size: 12.5px; color: var(--color-text-secondary); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.report-label svg { width: 15px; height: 15px; }
+
+.report-item { display: flex; gap: 12px; padding: 12px; background: var(--color-table-header); border-radius: 8px; align-items: flex-start; }
+.report-thumb { width: 48px; height: 62px; border-radius: 6px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-primary); font-size: 11px; text-align: center; line-height: 1.3; background: #EEF5FF; }
+.report-thumb .rt-icon { margin-bottom: 3px; display: flex; }
+.report-thumb .rt-icon svg { width: 18px; height: 18px; }
+.report-info { flex: 1; min-width: 0; }
+.report-info .r-title { font-size: 14px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 3px; }
+.report-info .r-desc { font-size: 11.5px; color: var(--color-text-tertiary); margin-bottom: 10px; line-height: 1.5; }
+.report-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.r-link { font-size: 12px; height: 30px; padding: 0 12px; border-radius: 6px; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; text-decoration: none; font-weight: 600; }
+.r-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+.r-link.view { background: var(--color-primary); color: #fff; border: 1px solid var(--color-primary); }
+.r-link.view:hover { background: var(--color-primary-mid); }
+.r-link.dl { background: #fff; color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.r-link.dl:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+/* 话术卡片 */
+.speech-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+.speech-label { font-size: 12.5px; color: var(--color-text-secondary); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.speech-label svg { width: 15px; height: 15px; }
+.compliance-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; background: var(--color-success-bg); color: var(--color-success); transition: all 0.2s; }
+.compliance-badge.pending { background: var(--color-warning-bg); color: var(--color-warning); }
+.compliance-badge svg { width: 12px; height: 12px; }
+.speech-textarea { width: 100%; min-height: 220px; border: 1px solid var(--color-border); border-radius: 8px; padding: 14px; font-size: 13px; line-height: 1.8; color: var(--color-text-primary); font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--color-table-header); }
+.speech-textarea:focus { border-color: var(--color-accent); box-shadow: 0 0 0 1.5px var(--color-accent); background: #fff; }
+.speech-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.char-count { font-size: 12px; color: var(--color-text-tertiary); }
+.char-count .cc-num { color: var(--color-text-secondary); font-weight: 600; }
+.reset-btn { font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; background: none; border: none; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; font-family: inherit; }
+.reset-btn:hover { background: var(--color-table-header); color: var(--color-text-secondary); }
+.reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.speech-actions-row { display: flex; gap: 8px; margin-top: 12px; }
+.d-btn { height: 34px; padding: 0 14px; border-radius: 7px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; font-family: inherit; }
+.d-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.d-btn.primary { background: var(--color-primary); color: #fff; flex: 1; justify-content: center; }
+.d-btn.primary:hover { background: var(--color-primary-mid); }
+
+.footer-note { font-size: 12px; color: var(--color-text-tertiary); text-align: center; line-height: 1.6; padding: 16px 0 8px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--color-primary); color: rgba(255,255,255,0.9); font-size: 12px; padding: 8px 18px; border-radius: 16px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 16px rgba(26,42,94,0.25); white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+@media (max-width: 720px) {
+  .page { padding: 12px; }
+  .header-bar { flex-direction: column; align-items: flex-start; }
+  .profile-grid { grid-template-columns: repeat(2, 1fr); }
+  .metrics-row { justify-content: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header-bar">
+    <div class="h-left">
+      <div class="h-title">投前服务清单</div>
+      <div class="h-sub">国金证券 · 基金投顾投前服务报告已生成，请审核后转发客户</div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-tile"><div class="m-label">报告状态</div><div class="m-value">已生成</div></div>
+      <div class="metric-tile"><div class="m-label">合规审查</div><div class="m-value">已通过</div></div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <div class="customer-card" id="customerCard">
+      <div class="c-header">
+        <div class="c-name-row">
+          <div class="c-avatar" id="avatar">张</div>
+          <div class="c-info">
+            <div class="c-name" id="custName">张女士</div>
+            <div class="c-account"><span id="custAccount">手动输入（路径B · 无资金账号）</span> · <span class="c-tag" id="riskTag">中低风险</span></div>
+          </div>
+        </div>
+        <a class="c360-link" id="c360Link" href="#" target="_blank" rel="noopener" title="打开客户视图查看完整客户详情">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          客户视图
+        </a>
+      </div>
+
+      <div class="profile-grid">
+        <div class="p-item"><div class="p-label">目标收益</div><div class="p-value" id="pTarget">4-6%</div></div>
+        <div class="p-item"><div class="p-label">投资期限</div><div class="p-value" id="pHorizon">1-2年</div></div>
+        <div class="p-item"><div class="p-label">最大回撤承受</div><div class="p-value" id="pDrawdown">≤5%</div></div>
+        <div class="p-item"><div class="p-label">资金用途</div><div class="p-value" id="pPurpose">子女教育金</div></div>
+      </div>
+
+      <div class="report-section">
+        <div class="report-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+          投前服务报告
+        </div>
+        <div class="report-item">
+          <div class="report-thumb">
+            <div class="rt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></div>
+            报告
+          </div>
+          <div class="report-info">
+            <div class="r-title" id="reportTitle">百分安心·全球稳健配置组合</div>
+            <div class="r-desc">国金证券 · 基金投顾投前服务报告 · 为张女士定制</div>
+            <div class="report-links">
+              <a class="r-link view" id="viewReport" href="../reports/投前服务报告_张女士_BXAX_QQWJPZ.html" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                查看报告
+              </a>
+              <a class="r-link dl" href="../reports/投前服务报告_张女士_BXAX_QQWJPZ.png" download="投前服务报告_张女士.png">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                下载报告图片
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speech-card">
+      <div class="speech-header-row">
+        <div class="speech-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          推荐话术
+        </div>
+        <div class="compliance-badge" id="complianceBadge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 10 18 19 7"/></svg>
+          合规审查通过
+        </div>
+      </div>
+      <textarea class="speech-textarea" id="speechBox" oninput="onSpeechEdit()"></textarea>
+      <div class="speech-footer-row">
+        <div class="char-count">共 <span class="cc-num" id="speechCharCount">0</span> 字</div>
+        <button class="reset-btn" id="speechResetBtn" disabled onclick="resetSpeech()">↺ 恢复原始话术</button>
+      </div>
+      <div class="speech-actions-row">
+        <button class="d-btn primary" onclick="copySpeech()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          一键复制话术
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note" id="globalFooter">
+    本服务清单由 WorkBuddy 辅助生成 · 报告已经合规审查 · 客户敏感信息未离开国金系统<br>
+    国金证券基金投顾 · 2026.07.04
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// 4个客户的预设数据（按 customer 参数匹配）
+var customers = {
+  'lixiufang': {
+    name: '李秀芳', account: '60088089', avatar: '李',
+    riskTag: '中低风险',
+    target: '4-6%', horizon: '1-2年', drawdown: '≤5%', purpose: '子女教育金',
+    product: '百分安心·稳健理财组合策略', productCode: 'BXAX_WJLC',
+    report: '为李秀芳女士定制'
+  },
+  'chenzhiqiang': {
+    name: '陈志强', account: '60077033', avatar: '陈',
+    riskTag: '中风险',
+    target: '6-8%', horizon: '2-3年', drawdown: '≤8%', purpose: '资产配置',
+    product: '百分顺鑫·全球平衡配置组合', productCode: 'BFSX_QQPHPC',
+    report: '为陈志强先生定制'
+  },
+  'zhangnvshi': {
+    name: '张女士', account: '手动输入', avatar: '张',
+    riskTag: '中低风险',
+    target: '4-6%', horizon: '1-2年', drawdown: '≤5%', purpose: '子女教育金',
+    product: '百分安心·稳健理财组合策略', productCode: 'BXAX_WJLC',
+    report: '为张女士女士定制'
+  },
+  'zhaoyayi': {
+    name: '赵阿姨', account: '手动输入', avatar: '赵',
+    riskTag: '低风险',
+    target: '0-2%', horizon: '1个月以上', drawdown: '0%-1.2%', purpose: '退休养老金',
+    product: '百分添利·货币优享组合策略', productCode: 'BFTL_HBYX',
+    report: '为赵阿姨女士定制'
+  },
+  'wangjianguo': {
+    name: '王建国', account: '60066112', avatar: '王',
+    riskTag: '中风险',
+    target: '6-8%', horizon: '2-3年', drawdown: '≤8%', purpose: '财富增值',
+    product: '百分顺鑫·全球平衡配置组合', productCode: 'BFSX_QQPHPC',
+    report: '为王建国先生定制'
+  }
+};
+
+var p = new URLSearchParams(window.location.search);
+var ck = p.get('customer') || 'lixiufang';
+var c = customers[ck] || customers['lixiufang'];
+
+document.getElementById('custName').textContent = c.name;
+document.getElementById('avatar').textContent = c.avatar;
+document.getElementById('custAccount').textContent = c.account === '手动输入'
+  ? '手动输入（路径B · 无资金账号）'
+  : '资金账号：' + c.account;
+document.getElementById('riskTag').textContent = c.riskTag;
+
+var c360Link = document.getElementById('c360Link');
+if (c.account === '手动输入') {
+  c360Link.style.display = 'none';
+} else {
+  c360Link.href = 'https://guojin.com/customer-view/' + encodeURIComponent(c.account);
+}
+document.getElementById('pTarget').textContent = c.target;
+document.getElementById('pHorizon').textContent = c.horizon;
+document.getElementById('pDrawdown').textContent = c.drawdown;
+document.getElementById('pPurpose').textContent = c.purpose;
+document.getElementById('reportTitle').textContent = c.product;
+document.querySelector('.r-desc').textContent = '国金证券 · 基金投顾投前服务报告 · ' + c.report;
+
+var reportFile = '投前服务报告_' + c.name + '_' + c.productCode + '.html';
+var reportUrl = '../reports/' + reportFile;
+document.getElementById('viewReport').href = reportUrl;
+document.querySelectorAll('a[href*="reports/"]')[1].href = reportUrl.replace('.html', '.png');
+
+// 话术按客户动态生成
+var speechMap = {
+  'lixiufang': '李女士您好，这是为您准备的《基金投顾投前服务报告》。根据您子女教育金的需求和中低风险的风险偏好，我们从公司主推策略中为您匹配了' + c.product + '。\n\n报告里包含了方案的收益亮点、净值表现、投资策略和成分基金详情，您可以看看是否符合您的预期。如果您觉得合适，我可以为您安排后续的申购流程。有什么问题随时问我。',
+  'zhangnvshi': c.name + '您好，这是为您准备的《基金投顾投前服务报告》。结合您35岁医生的身份和子女教育金的规划，我们匹配了' + c.product + '，该组合历史表现稳健，回撤控制优秀。\n\n报告详细展示了方案的收益亮点、净值走势、资产配置比例以及与您三要素的匹配分析。请审阅后告知是否符合您的期待。',
+  'chenzhiqiang': c.name + '先生您好，这是为您准备的《基金投顾投前服务报告》。基于您6-8%目标收益、中风险偏好的需求，我们匹配了' + c.product + '，该策略历史最大回撤控制良好，适合中长期持有。\n\n报告详细展示了方案的收益亮点、投资策略、成分基金配置以及与您投资目标的匹配说明。请您抽空审阅，有任何疑问随时联系我。',
+  'zhaoyayi': c.name + '您好，这是为您准备的《基金投顾投前服务报告》。您提到"不能亏本金"的核心诉求，我们为您匹配了' + c.product + '，该策略以货币+短债资产为主，波动极小。\n\n报告详细说明了方案的预期收益区间、历史回撤控制、投资策略和成分基金。如果您觉得合适，我们可以安排后续的申购流程。',
+  'wangjianguo': c.name + '先生您好，这是为您准备的《基金投顾投前服务报告》。结合您中风险偏好和资产配置需求，我们为您匹配了' + c.product + '。\n\n报告展示了方案的收益亮点、净值表现、投资策略和成分基金详情。请审阅后告知是否符合您的预期，期待您的反馈。'
+};
+
+// ===================== 话术：编辑 / 复制 / 恢复 =====================
+var originalSpeech = speechMap[ck] || speechMap['lixiufang'];
+var speechBox = document.getElementById('speechBox');
+var charCountEl = document.getElementById('speechCharCount');
+var resetBtn = document.getElementById('speechResetBtn');
+var badgeEl = document.getElementById('complianceBadge');
+
+speechBox.value = originalSpeech;
+charCountEl.textContent = originalSpeech.length;
+
+function onSpeechEdit() {
+  var text = speechBox.value;
+  charCountEl.textContent = text.length;
+  var isEdited = text !== originalSpeech;
+  if (isEdited) {
+    badgeEl.className = 'compliance-badge pending';
+    badgeEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>已编辑 · 待复核';
+    resetBtn.disabled = false;
+  } else {
+    badgeEl.className = 'compliance-badge';
+    badgeEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 10 18 19 7"/></svg>合规审查通过';
+    resetBtn.disabled = true;
+  }
+}
+
+function resetSpeech() {
+  speechBox.value = originalSpeech;
+  onSpeechEdit();
+  showToast('已恢复原始话术');
+}
+
+function copySpeech() {
+  var text = speechBox.value;
+  copyToClipboard(text);
+  showToast('话术已复制到剪贴板');
+}
+
+function copyToClipboard(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._hideTimer);
+  t._hideTimer = setTimeout(function() { t.classList.remove('show'); }, 2200);
+}
+</script>
+</body>
+</html>
