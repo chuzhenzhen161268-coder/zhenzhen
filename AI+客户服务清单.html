@@ -1,0 +1,3053 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>AI+服务清单</title>
+    <style>
+        @font-face {
+            font-family: GJType;
+            src: url("assets/fonts/GJType-Regular.ttf")
+        }
+
+        @font-face {
+            font-family: GJType;
+            src: url("assets/fonts/GJType-Medium.ttf");
+            font-weight: 500
+        }
+
+        @font-face {
+            font-family: GJType;
+            src: url("assets/fonts/GJType-Bold.ttf");
+            font-weight: 700
+        }
+
+        :root {
+            --blue: #2b73ff;
+            --text: #101828;
+            --muted: #8d96a3;
+            --line: #f3f6f9;
+            --page: #f5f7fa;
+            --red: #f93838;
+            --green: #12b76a;
+            --radius: 10px
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-width: 1200px;
+            background: var(--page);
+            color: var(--text);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-size: 14px
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer
+        }
+
+        .num {
+            font-family: GJType, "Arial Narrow", sans-serif
+        }
+
+        .topbar {
+            position: fixed;
+            z-index: 20;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 61px;
+            background: #fff;
+            border-bottom: 2px solid #f3f6f9;
+            display: flex;
+            align-items: center;
+            padding: 0 24px 0 20px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            height: 100%
+        }
+
+        .brand img {
+            width: 115px;
+            height: 30px;
+            object-fit: contain
+        }
+
+        .brand-line {
+            width: 1px;
+            height: 18px;
+            background: #d9d9d9;
+            margin: 0 20px 0 10px
+        }
+
+        .brand-title {
+            font-size: 14px
+        }
+
+        .top-stats {
+            margin-left: auto;
+            display: flex;
+            gap: 24px;
+            align-items: center
+        }
+
+        .top-stat {
+            display: flex;
+            gap: 4px;
+            align-items: flex-end
+        }
+
+        .top-stat b {
+            font: 400 18px/20px GJType
+        }
+
+        .top-date {
+            font-size: 14px
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover
+        }
+
+        .sidebar {
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 61px;
+            bottom: 0;
+            width: 300px;
+            background: #fff;
+            padding: 12px 20px;
+            overflow: auto
+        }
+
+        .side-head {
+            height: 27px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px
+        }
+
+        .side-head strong {
+            font-size: 18px
+        }
+
+        .collapse {
+            border: 0;
+            background: transparent;
+            color: #7f889c;
+            font-size: 20px
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px
+        }
+
+        .tab {
+            width: 58px;
+            height: 32px;
+            border: 0;
+            border-radius: 6px;
+            background: #f5f6f9;
+            color: var(--text)
+        }
+
+        .tab.active {
+            background: var(--blue);
+            color: #fff;
+            font-weight: 700
+        }
+
+        .broadcast {
+            width: 260px;
+            height: 40px;
+            border: 1px solid rgba(46, 113, 251, .2);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            margin-bottom: 20px
+        }
+
+        .broadcast span:first-child:before {
+            content: "↗";
+            font-weight: 700;
+            margin-right: 8px
+        }
+
+        .clients {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .client {
+            position: relative;
+            width: 260px;
+            height: 114px;
+            border: .5px solid #d0d9e2;
+            border-radius: 8px;
+            background: #fff;
+            padding: 12px 16px;
+            display: grid;
+            grid-template-columns: 36px 1fr;
+            column-gap: 8px;
+            transition: .15s
+        }
+
+        .client:hover {
+            border-color: #8db2ff
+        }
+
+        .client.active {
+            background: #f5f7fa;
+            border: 1px solid var(--blue)
+        }
+
+        .client-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background: linear-gradient(#b7c5e6, #8492b4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700
+        }
+
+        .client.active .client-avatar {
+            background: var(--blue)
+        }
+
+        .client-main {
+            min-width: 0
+        }
+
+        .client-title {
+            height: 24px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px
+        }
+
+        .client-name {
+            font-weight: 700;
+            font-size: 16px
+        }
+
+        .client-account {
+            color: var(--muted);
+            font: 14px/22px GJType
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ff7272;
+            margin-bottom: 10px
+        }
+
+        .client-sub {
+            color: var(--muted);
+            font: 14px/22px GJType;
+            display: flex;
+
+        }
+
+        .client-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px
+        }
+
+        .tag {
+            height: 24px;
+            min-width: 36px;
+            border-radius: 4px;
+            padding: 0 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            line-height: 18px;
+            border: .5px solid rgba(163, 170, 182, .3);
+            background: #f5f7fa
+        }
+
+        .tag.green {
+            color: var(--green);
+            background: rgba(2, 148, 68, .1);
+            border-color: rgba(2, 148, 68, .3)
+        }
+
+        .tag.red {
+            color: var(--red);
+            background: rgba(255, 66, 66, .1);
+            border-color: rgba(242, 47, 50, .3)
+        }
+
+        .main {
+            margin-left: 300px;
+            padding: 16px;
+            min-height: 1375px
+        }
+
+        .content {
+            width: min(1108px, calc(100vw - 332px));
+            min-width: 868px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .profile {
+            height: 150px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            position: relative
+        }
+
+        .profile-top {
+            height: 58px;
+            display: flex;
+            align-items: center
+        }
+
+        .profile-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 21px;
+            background: var(--blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            margin-right: 12px
+        }
+
+        .profile-core {
+            align-self: flex-start
+        }
+
+        .profile-name-row {
+            height: 27px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700
+        }
+
+        .profile-account {
+            font: 16px/22px GJType;
+            color: var(--muted)
+        }
+
+        .detail-link {
+            color: var(--blue);
+            font-size: 14px
+        }
+
+        .profile-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 7px
+        }
+
+        .profile-metrics {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .metric {
+            min-width: 140px
+        }
+
+        .metric-label {
+            color: var(--muted);
+            margin-bottom: 4px
+        }
+
+        .metric-value {
+            font: 500 20px/20px GJType
+        }
+
+        .metric-value small {
+            font: 12px "Microsoft YaHei"
+        }
+
+        .metric-line {
+            width: 1px;
+            height: 26px;
+            background: rgba(127, 136, 156, .3)
+        }
+
+        .service-summary {
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .service-summary .good {
+            color: var(--green)
+        }
+
+        .service-summary .bad {
+            color: var(--red)
+        }
+
+        .phone-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 10px
+        }
+
+        .plus0 {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px
+        }
+
+        .phone-number {
+            font: 700 16px/22px GJType
+        }
+
+        .phone-btn {
+            height: 32px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--blue);
+            color: #fff;
+            padding: 0 12px;
+            font-weight: 500
+        }
+
+        .task-line {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border-top: 1px solid var(--line);
+            padding-top: 16px;
+            height: 44px;
+            display: flex;
+            align-items: center
+        }
+
+        .task-title {
+            font-size: 16px
+        }
+
+        .task-count {
+            height: 24px;
+            min-width: 36px;
+            background: var(--red);
+            color: #fff;
+            border-radius: 4px;
+            padding: 0 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            margin-left: 8px
+        }
+
+        .task-count b {
+            font: 400 16px GJType
+        }
+
+        .task-toggle {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            color: var(--blue)
+        }
+
+        .tasks-panel {
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: -20px
+        }
+
+        .tasks-panel.open {
+            display: block
+        }
+
+        .task-row {
+            display: grid;
+            grid-template-columns: 22px 1fr auto;
+            gap: 10px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--line);
+            align-items: start
+        }
+
+        .task-check {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #b8c0cc;
+            border-radius: 4px;
+            margin-top: 2px
+        }
+
+        .task-check.checked {
+            background: var(--blue);
+            border-color: var(--blue)
+        }
+
+        .task-check.checked:after {
+            content: "✓";
+            display: block;
+            color: white;
+            text-align: center;
+            font-size: 12px
+        }
+
+        .task-row strong {
+            font-size: 14px
+        }
+
+        .task-row p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            line-height: 20px
+        }
+
+        .due {
+            color: var(--red);
+            font-size: 12px
+        }
+
+        .signals-title {
+            height: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 700
+        }
+
+        .signals-title:before {
+            content: "⌁";
+            color: var(--blue);
+            font-size: 20px
+        }
+
+        .signals-count {
+            height: 24px;
+            min-width: 36px;
+            border-radius: 4px;
+            background: var(--red);
+            color: #fff;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-weight: 400
+        }
+
+        .signals-count b {
+            font: 400 16px GJType
+        }
+
+        .signals {
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .signal-card {
+            height: 513px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 20px;
+        }
+
+        .signal-head {
+            display: flex;
+            align-items: center
+        }
+
+        .asset-title {
+            font-size: 20px;
+            font-weight: 700
+        }
+
+        .asset-code {
+            font: 16px/22px GJType;
+            color: var(--muted);
+            margin-left: 8px
+        }
+
+        .asset-pills {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px
+        }
+
+        .copy-all {
+            height: 32px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--blue);
+            color: #fff;
+            font-weight: 500;
+            padding: 0 10px;
+            margin-left: auto
+        }
+
+        .data-grid {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px
+        }
+
+        .data-box {
+            width: 160px;
+            border-radius: 10px;
+            background: #f5f7fa;
+            padding: 16px
+        }
+
+        .data-label {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 10px
+        }
+
+        .data-value {
+            font: 500 20px/20px GJType
+        }
+
+        .data-value.green {
+            color: var(--green)
+        }
+
+        .data-value.red {
+            color: var(--red)
+        }
+
+        .data-value small {
+            font: 12px "Microsoft YaHei"
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--line);
+            margin: 16px 0
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            height: 24px
+        }
+
+        .section-head h3 {
+            font-size: 16px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .section-head h3:before {
+            content: "";
+            width: 3px;
+            height: 12px;
+            background: var(--blue)
+        }
+
+        .mini-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 12px
+        }
+
+        .mini-btn {
+            height: 24px;
+            border: 1px solid #b8c0cc;
+            border-radius: 4px;
+            background: #fff;
+            padding: 0 8px;
+            font-size: 12px
+        }
+
+        .mini-btn.blue {
+            color: var(--blue);
+            border-color: var(--blue)
+        }
+
+        .events {
+            height: 40px;
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .event {
+            height: 24px;
+            border-radius: 12px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            background: #f5f7fa;
+            font-size: 12px
+        }
+
+        .event.green {
+            color: #029444;
+            background: rgba(2, 148, 68, .1)
+        }
+
+        .event:before {
+            content: "•";
+            margin-right: 4px
+        }
+
+        .script-box {
+            height: 110px;
+            border: 1px solid rgba(46, 113, 251, .2);
+            border-radius: 10px;
+            background: #f5f7fa;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 26px;
+            margin-top: 12px;
+            overflow: auto;
+            outline: none
+        }
+
+        .risk-tip {
+            color: var(--red);
+            font-size: 14px;
+            margin-top: 12px
+        }
+
+        .signal-card.safe .script-box {
+            background: #f7f9fe
+        }
+
+        .signal-card.safe .risk-tip {
+            color: var(--muted)
+        }
+
+        .service-footer {
+            position: fixed;
+            z-index: 15;
+            left: 316px;
+            right: 16px;
+            bottom: 0;
+            max-width: 1108px;
+            height: 58px;
+            background: #fff;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 -4px 18px rgba(16, 24, 40, .06);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px
+        }
+
+        .service-footer label {
+            font-weight: 700
+        }
+
+        .service-input {
+            height: 34px;
+            flex: 1;
+            border: 1px solid #d0d9e2;
+            border-radius: 6px;
+            padding: 0 12px;
+            outline: none
+        }
+
+        .finish {
+            height: 34px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 0 18px;
+            font-weight: 5.main00
+        }
+
+        .toast {
+            position: fixed;
+            z-index: 50;
+            left: 50%;
+            top: 80px;
+            transform: translateX(-50%);
+            background: #101828;
+            color: #fff;
+            border-radius: 6px;
+            padding: 10px 16px;
+            display: none
+        }
+
+        @media(max-width:1250px) {
+            .metric {
+                min-width: 105px
+            }
+
+            .metric-value {
+                font-size: 18px
+            }
+
+            .data-box {
+                width: calc((100% - 64px)/5)
+            }
+        }
+
+        /* html_03: responsive and interaction layers */
+        html,
+        body {
+            min-width: 0 !important;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden
+        }
+
+        .broadcast-wrap {
+            position: relative
+        }
+
+        .broadcast img {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            vertical-align: -3px
+        }
+
+        .broadcast-menu {
+            display: none;
+            position: absolute;
+            z-index: 35;
+            top: 46px;
+            left: 0;
+            width: 260px;
+            padding: 8px;
+            background: #fff;
+            border: 1px solid #e5e9f0;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(16, 24, 40, .12)
+        }
+
+        .broadcast-menu.open {
+            display: block
+        }
+
+        .broadcast-option {
+            width: 100%;
+            height: 40px;
+            border: 0;
+            background: #fff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            color: var(--text)
+        }
+
+        .broadcast-option:hover {
+            background: #f5f7fa
+        }
+
+        .broadcast-option b {
+            color: var(--blue);
+            font: 500 16px GJType
+        }
+
+        .event-wrap {
+            position: relative
+        }
+
+        .event {
+            border-radius: 4px !important;
+            border: 1px solid rgba(163, 170, 182, .3);
+            padding: 0 8px !important;
+            cursor: pointer
+        }
+
+        .event.green {
+            border-color: rgba(2, 148, 68, .3)
+        }
+
+        .event.orange {
+            color: #f79009;
+            background: rgba(247, 144, 9, .1);
+            border-color: rgba(247, 144, 9, .3)
+        }
+
+        .event-pop {
+            display: none;
+            position: absolute;
+            z-index: 20;
+            left: 0;
+            top: 32px;
+            width: 280px;
+            background: #fff;
+            border: 1px solid #e4e8ef;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 8px 24px rgba(16, 24, 40, .12);
+            color: var(--text);
+            font-size: 12px;
+            line-height: 20px
+        }
+
+        .event-pop.open {
+            display: block
+        }
+
+        .event-pop strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 4px
+        }
+
+        .call-bar {
+            display: none;
+            position: fixed;
+            z-index: 19;
+            left: 300px;
+            right: 0;
+            top: 61px;
+            height: 36px;
+            background: #2b73ff;
+            color: #fff;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 13px
+        }
+
+        .call-bar.open {
+            display: flex
+        }
+
+        .call-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #9ec0ff;
+            margin-right: 8px;
+            animation: pulse 1s infinite
+        }
+
+        .call-time {
+            margin-left: 12px;
+            font: 14px GJType
+        }
+
+        .hangup {
+            margin-left: auto;
+            height: 26px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 5px;
+            background: #f04438;
+            color: #fff
+        }
+
+        .call-result {
+            display: none;
+            position: fixed;
+            z-index: 45;
+            top: 112px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 340px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 12px 36px rgba(16, 24, 40, .2);
+            padding: 20px
+        }
+
+        .call-result.open {
+            display: block
+        }
+
+        .call-result h3 {
+            margin: 0 0 12px
+        }
+
+        .call-result p {
+            color: var(--muted);
+            line-height: 22px
+        }
+
+        .call-result button {
+            float: right;
+            border: 0;
+            border-radius: 6px;
+            background: var(--blue);
+            color: #fff;
+            height: 32px;
+            padding: 0 16px
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .35
+            }
+        }
+
+        .modal-mask {
+            display: none;
+            position: fixed;
+            z-index: 40;
+            inset: 0;
+            background: rgba(16, 24, 40, .45);
+            align-items: center;
+            justify-content: center
+        }
+
+        .modal-mask.open {
+            display: flex
+        }
+
+        .broadcast-modal {
+            width: min(640px, calc(100vw - 32px));
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 16px 48px rgba(16, 24, 40, .2);
+            overflow: hidden
+        }
+
+        .modal-head {
+            height: 56px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            padding: 0 20px
+        }
+
+        .modal-head h3 {
+            font-size: 18px;
+            margin: 0
+        }
+
+        .modal-close {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            font-size: 22px
+        }
+
+        .modal-body {
+            padding: 20px
+        }
+
+        .recipient-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0 18px
+        }
+
+        .recipient {
+            height: 28px;
+            border-radius: 4px;
+            background: #eef4ff;
+            color: var(--blue);
+            padding: 0 10px;
+            display: flex;
+            align-items: center
+        }
+
+        .broadcast-script {
+            width: 100%;
+            height: 130px;
+            border: 1px solid #d0d9e2;
+            border-radius: 8px;
+            padding: 12px;
+            resize: none;
+            line-height: 22px
+        }
+
+        .modal-foot {
+            height: 60px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 0 20px
+        }
+
+        .secondary {
+            height: 34px;
+            border: 1px solid #d0d9e2;
+            background: #fff;
+            border-radius: 6px;
+            padding: 0 16px
+        }
+
+        .primary {
+            height: 34px;
+            border: 0;
+            background: var(--blue);
+            color: #fff;
+            border-radius: 6px;
+            padding: 0 16px
+        }
+
+        @media(max-width:1250px) {
+            .profile {
+                height: auto;
+                min-height: 163px
+            }
+
+            .profile-top {
+                height: auto;
+                align-items: flex-start
+            }
+
+            .profile-metrics {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(90px, 1fr));
+                gap: 10px;
+                flex: 1
+            }
+
+            .metric-line {
+                display: none
+            }
+
+            .phone-wrap {
+                grid-column: 1/-1;
+                justify-content: flex-end
+            }
+
+            .metric {
+                min-width: 0
+            }
+
+            .data-box {
+                min-width: 0
+            }
+        }
+
+        @media(max-width:980px) {
+            .sidebar {
+                width: 240px;
+                padding-left: 12px;
+                padding-right: 12px
+            }
+
+            .side-head,
+            .tabs,
+            .broadcast,
+            .broadcast-menu,
+            .client {
+                width: 216px
+            }
+
+            .tab {
+                width: 49px
+            }
+
+            .main {
+                margin-left: 240px;
+                padding: 12px
+            }
+
+            .content {
+                width: 100%;
+                min-width: 0
+            }
+
+            .call-bar {
+                left: 240px
+            }
+
+            .service-footer {
+                left: 252px
+            }
+
+            .profile-core {
+                min-width: 180px
+            }
+
+            .profile-metrics {
+                grid-template-columns: repeat(2, minmax(90px, 1fr))
+            }
+
+            .data-grid {
+                gap: 8px
+            }
+
+            .data-box {
+                width: calc((100% - 32px)/5);
+                padding: 12px 8px
+            }
+
+            .data-value {
+                font-size: 18px
+            }
+        }
+
+        @media(max-width:760px) {
+            .sidebar {
+                position: relative;
+                top: 61px;
+                width: 100%;
+                height: auto;
+                bottom: auto;
+                overflow: visible
+            }
+
+            .side-head,
+            .tabs,
+            .broadcast,
+            .broadcast-menu,
+            .client {
+                width: 100%
+            }
+
+            .clients {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .main {
+                margin-left: 0;
+                padding-top: 77px
+            }
+
+            .content {
+                width: 100%;
+                min-width: 0
+            }
+
+            .profile-top {
+                display: block
+            }
+
+            .profile-metrics {
+                margin: 16px 0 0
+            }
+
+            .phone-wrap {
+                justify-content: flex-start
+            }
+
+            .call-bar {
+                left: 0
+            }
+
+            .service-footer {
+                left: 12px;
+                right: 12px
+            }
+
+            .data-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .data-box {
+                width: 100%
+            }
+
+            .signal-card {
+                height: auto;
+                min-height: 513px
+            }
+
+            .top-date,
+            .user-avatar {
+                display: none
+            }
+        }
+
+        /* html_04 corrections */
+        .main {
+            min-width: 0
+        }
+
+        .content {
+            min-width: 0 !important
+        }
+
+        *,
+        *::before,
+        *::after {
+            font-style: normal !important
+        }
+
+        .main {
+            padding-top: 70px;
+            transition: padding-top .2s, margin-left .2s
+        }
+
+        .content {
+            max-width: 1108px
+        }
+
+        .phone-btn,
+        .copy-all,
+        .mini-btn,
+        .task-toggle,
+        .collapse {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap
+        }
+
+        .phone-btn img,
+        .copy-all img,
+        .mini-btn img {
+            display: block;
+            flex: 0 0 auto;
+            object-fit: contain
+        }
+
+        .phone-btn img {
+            width: 16px;
+            height: 16px
+        }
+
+        .copy-all img {
+            width: 16px;
+            height: 16px
+        }
+
+        .mini-btn img {
+            width: 12px;
+            height: 12px
+        }
+
+        .section-head h3:before {
+            display: none !important
+        }
+
+        .signals-title:before {
+            display: none
+        }
+
+        .signals-title img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain
+        }
+
+        .call-bar {
+            position: fixed
+        }
+
+        .calling .main {
+            padding-top: 113px
+        }
+
+        .calling .sidebar {
+            padding-top: 54px
+        }
+
+        .calling .call-bar {
+            display: flex
+        }
+
+        .service-reference {
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 20px
+        }
+
+        .service-reference.open {
+            display: block
+        }
+
+        .service-ref-head {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 16px
+        }
+
+        .service-ref-head img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px
+        }
+
+        .service-ref-head button {
+            margin-left: auto;
+            border: 0;
+            background: transparent;
+            color: var(--blue)
+        }
+
+        .service-ref-body {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #f7f9fe;
+            border: 1px solid rgba(46, 113, 251, .2);
+            border-radius: 8px;
+            color: #475467;
+            line-height: 24px
+        }
+
+        .sidebar.collapsed {
+            width: 72px;
+            padding-left: 12px;
+            padding-right: 12px
+        }
+
+        .sidebar.collapsed .side-head strong,
+        .sidebar.collapsed .tabs,
+        .sidebar.collapsed .broadcast-wrap,
+        .sidebar.collapsed .client-main {
+            display: none
+        }
+
+        .sidebar.collapsed .side-head {
+            width: 48px;
+            justify-content: center
+        }
+
+        .sidebar.collapsed .clients {
+            width: 48px;
+            gap: 12px
+        }
+
+        .sidebar.collapsed .client {
+            width: 48px;
+            height: 48px;
+            padding: 6px;
+            border-radius: 8px;
+            display: block
+        }
+
+        .sidebar.collapsed .client-avatar {
+            margin: 0
+        }
+
+        .sidebar.collapsed~.main {
+            margin-left: 72px
+        }
+
+        .sidebar.collapsed~.main .content {
+            width: min(1108px, calc(100vw - 104px))
+        }
+
+        .sidebar.collapsed~.call-bar {
+            left: 72px
+        }
+
+        .sidebar.collapsed~.service-footer {
+            left: 88px
+        }
+
+        .task-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #f93838;
+            display: inline-block;
+            margin: 0 0 9px 1px
+        }
+
+        .copy-done {
+            color: var(--green) !important;
+            border-color: rgba(18, 183, 106, .45) !important
+        }
+
+        .client-tags {
+            flex-wrap: wrap
+        }
+
+        .client {
+            height: auto;
+            /* min-height: 114px */
+        }
+
+        .client-broadcast-mark {
+            grid-column: 2;
+            color: #8d96a3;
+            font-size: 11px;
+            margin-top: 5px
+        }
+
+        .metric-value.gain,
+        .data-value.gain {
+            color: #f93838
+        }
+
+        .metric-value.loss,
+        .data-value.loss {
+            color: #12b76a
+        }
+
+        @media(max-width:1250px) {
+            .content {
+                width: 100%
+            }
+
+            .profile {
+                min-height: 205px
+            }
+
+            .task-line {
+                bottom: 16px
+            }
+
+            .profile-top {
+                padding-bottom: 52px
+            }
+
+            .signal-card {
+                height: auto;
+                min-height: 513px
+            }
+        }
+
+        @media(max-width:980px) {
+            .main {
+                padding-top: 73px
+            }
+
+            .calling .main {
+                padding-top: 109px
+            }
+
+            .profile {
+                min-height: 280px
+            }
+
+            .profile-top {
+                display: grid;
+                grid-template-columns: auto 1fr
+            }
+
+            .profile-metrics {
+                grid-column: 1/-1;
+                margin: 16px 0 40px
+            }
+
+            .sidebar.collapsed~.main {
+                margin-left: 72px
+            }
+
+            .sidebar.collapsed~.main .content {
+                width: calc(100vw - 96px)
+            }
+        }
+
+        @media(max-width:760px) {
+            .topbar {
+                position: relative
+            }
+
+            .sidebar {
+                top: 0
+            }
+
+            .main {
+                padding-top: 16px
+            }
+
+            .calling .main {
+                padding-top: 52px
+            }
+
+            .calling .sidebar {
+                padding-top: 18px
+            }
+
+            .call-bar {
+                top: 61px
+            }
+
+            .profile {
+                min-height: 340px
+            }
+
+            .profile-metrics {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .clients {
+                grid-template-columns: 1fr
+            }
+
+            .sidebar.collapsed {
+                position: fixed;
+                top: 61px;
+                height: calc(100vh - 61px)
+            }
+
+            .sidebar.collapsed~.main {
+                margin-left: 72px;
+                padding-top: 16px
+            }
+
+            .sidebar.collapsed~.main .content {
+                width: calc(100vw - 96px)
+            }
+
+            .service-footer {
+                position: sticky;
+                bottom: 0;
+                width: auto
+            }
+
+            .asset-title {
+                font-size: 18px
+            }
+
+            .signal-head {
+                align-items: flex-start
+            }
+
+            .copy-all {
+                margin-left: auto
+            }
+
+            .section-head {
+                height: auto;
+                align-items: flex-start
+            }
+
+            .mini-actions {
+                flex-wrap: wrap;
+                justify-content: flex-end
+            }
+
+            .events {
+                height: auto;
+                flex-wrap: wrap;
+                margin-top: 10px
+            }
+        }
+
+        /* html_05: 11-point prototype alignment */
+        .main {
+            width: auto;
+            padding-right: 16px
+        }
+
+        .content {
+            width: 100% !important;
+            max-width: none !important
+        }
+
+        .service-footer {
+            max-width: none;
+            right: 16px
+        }
+
+        .data-grid {
+            width: 100%
+        }
+
+        .data-box {
+            flex: 1 1 0;
+            width: auto;
+            min-width: 0
+        }
+
+        .tag {
+            max-width: 100%;
+            width: max-content;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 0 1 auto
+        }
+
+        .client-tags {
+            min-width: 0;
+            flex-wrap: nowrap;
+            overflow: hidden
+        }
+
+        .task-toggle {
+            gap: 8px
+        }
+
+        .task-toggle img {
+            width: 21px;
+            height: 21px;
+            display: block;
+            object-fit: contain
+        }
+
+        .broadcast span:first-child:before {
+            content: none !important;
+            display: none !important
+        }
+
+        .copy-action {
+            width: 48px;
+            min-width: 48px;
+            padding: 0 !important
+        }
+
+        .copy-action img {
+            display: none !important
+        }
+
+        .signal-card {
+            height: auto !important;
+            min-height: 513px
+        }
+
+        .script-box {
+            height: auto !important;
+            min-height: 110px;
+            max-height: none !important;
+            overflow: visible !important;
+            white-space: pre-wrap;
+            word-break: break-word
+        }
+
+        .sidebar {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(141, 150, 163, .25) transparent
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 3px
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(141, 150, 163, .22);
+            border-radius: 4px
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(141, 150, 163, .48)
+        }
+
+        .broadcast-menu {
+            display: block;
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(-6px) scale(.98);
+            transform-origin: top;
+            pointer-events: none;
+            padding: 4px;
+            width: 260px;
+            border: 0;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(15, 22, 48, .22);
+            transition: opacity .15s ease, transform .15s ease, visibility 0s linear .15s
+        }
+
+        .broadcast-menu.open {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            transition-delay: 0s
+        }
+
+        .broadcast-option {
+            height: 38px;
+            padding: 0 10px;
+            font-size: 12.5px;
+            font-weight: 600
+        }
+
+        .broadcast-option:hover {
+            background: var(--page)
+        }
+
+        .broadcast-option b {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .broadcast-chevron {
+            width: 16px;
+            height: 16px;
+            transition: transform .15s
+        }
+
+        .broadcast[aria-expanded="true"] .broadcast-chevron {
+            transform: rotate(180deg)
+        }
+
+        .risk-tip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted) !important
+        }
+
+        .risk-tip img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+            filter: grayscale(1);
+            opacity: .58
+        }
+
+        .risk-tip.danger {
+            color: var(--red) !important
+        }
+
+        .risk-tip.danger img {
+            width: 14px;
+            height: 14px;
+            filter: none;
+            opacity: 1
+        }
+
+        .copy-action.copy-done {
+            color: var(--blue) !important;
+            border-color: var(--blue) !important
+        }
+
+        @media(min-width:1920px) {
+            .main {
+                padding-left: 20px;
+                padding-right: 20px
+            }
+
+            .service-footer {
+                left: 320px;
+                right: 20px
+            }
+        }
+
+        /* html_06: prototype batch-selection, overlay scroll and natural-height fixes */
+        :root {
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --footer-safe: 80px;
+            --motion-fast: 150ms;
+            --scroll-thumb: rgba(141, 150, 163, .28);
+            --scroll-thumb-active: rgba(141, 150, 163, .5)
+        }
+
+        .main {
+            min-height: 0 !important;
+            padding-bottom: var(--footer-safe)
+        }
+
+        .content {
+            height: auto;
+            min-height: 0;
+            padding-bottom: var(--space-1)
+        }
+
+        .signals {
+            padding-bottom: var(--space-4)
+        }
+
+        .signal-card {
+            min-height: 0 !important
+        }
+
+        .broadcast {
+            width: 100%;
+            margin-bottom: 0;
+            border: 0;
+            background: var(--blue);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 var(--space-1) var(--space-2) rgba(43, 115, 255, .18)
+        }
+
+        .broadcast:hover {
+            background: #1e63e6
+        }
+
+        .broadcast-wrap {
+            margin-bottom: var(--space-4)
+        }
+
+        .broadcast-menu {
+            top: calc(100% + var(--space-2));
+            width: 100%;
+            padding: var(--space-1);
+            border-radius: var(--space-2);
+            box-shadow: 0 var(--space-2) 24px rgba(15, 22, 48, .22)
+        }
+
+        .broadcast-option {
+            position: relative;
+            height: 48px;
+            padding: 0 var(--space-4);
+            border-radius: var(--space-2);
+            font-size: 16px;
+            color: #293b67
+        }
+
+        .broadcast-option:hover,
+        .broadcast-option.selected {
+            background: #f5f7fa
+        }
+
+        .broadcast-option span:first-child {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3)
+        }
+
+        .broadcast-option span:first-child:before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #8fa0c4;
+            flex: 0 0 auto
+        }
+
+        .broadcast-option[data-group="loss"] span:first-child:before {
+            background: #d13b35
+        }
+
+        .broadcast-option[data-group="stopped"] span:first-child:before {
+            background: #d6b233
+        }
+
+        .broadcast-option[data-group="profit"] span:first-child:before {
+            background: #168f5c
+        }
+
+        .broadcast-option b {
+            font-size: 16px;
+            font-weight: 400;
+            color: #8fa0c4
+        }
+
+        .broadcast-chevron {
+            filter: brightness(0) invert(1)
+        }
+
+        .broadcast-selectbar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 40px;
+            padding: 0 var(--space-1);
+            gap: var(--space-2)
+        }
+
+        .broadcast-selectbar.open {
+            display: flex
+        }
+
+        .broadcast-selectbar strong {
+            font-size: 14px
+        }
+
+        .broadcast-select-actions {
+            display: flex;
+            gap: var(--space-2)
+        }
+
+        .broadcast-select-actions button {
+            height: 32px;
+            padding: 0 var(--space-3);
+            border-radius: var(--space-1);
+            border: 1px solid #d0d9e2;
+            background: #fff
+        }
+
+        .broadcast-select-actions .next {
+            border-color: var(--blue);
+            background: var(--blue);
+            color: #fff
+        }
+
+        .client-check {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border: 1px solid #b8c0cc;
+            border-radius: var(--space-2);
+            background: #fff;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px
+        }
+
+        .sidebar.selecting .client-avatar {
+            display: none
+        }
+
+        .sidebar.selecting .client-check {
+            display: flex
+        }
+
+        .sidebar.selecting .client.selected {
+            border-color: var(--blue);
+            background: #eef4ff
+        }
+
+        .sidebar.selecting .client-check.checked {
+            background: var(--blue);
+            border-color: var(--blue)
+        }
+
+        .sidebar {
+            scrollbar-width: none
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0
+        }
+
+        .side-scroll-thumb {
+            position: fixed;
+            z-index: 18;
+            width: var(--space-1);
+            border-radius: var(--space-1);
+            background: var(--scroll-thumb);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--motion-fast), background var(--motion-fast)
+        }
+
+        .side-scroll-thumb.visible {
+            opacity: 1;
+            background: var(--scroll-thumb-active)
+        }
+
+        .diag-open:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: #fff
+        }
+
+        .risk-tip img {
+            flex: 0 0 auto
+        }
+
+        @media(max-width:760px) {
+            .main {
+                padding-bottom: var(--space-4)
+            }
+
+            .content,
+            .signals {
+                padding-bottom: 0
+            }
+
+            .side-scroll-thumb {
+                display: none
+            }
+
+            .broadcast-wrap {
+                margin-bottom: var(--space-4)
+            }
+        }
+
+        /* html_07: Figma node 795:973 detail alignment */
+        :root {
+            --space-6: 24px;
+            --space-8: 32px;
+            --tag-loss: #12b76a;
+            --tag-loss-bg: rgba(2, 148, 68, .1);
+            --tag-loss-border: rgba(2, 148, 68, .3);
+            --tag-profit: #f93838;
+            --tag-profit-bg: rgba(255, 66, 66, .1);
+            --tag-profit-border: rgba(242, 47, 50, .3)
+        }
+
+        .profile-core {
+            flex: 0 0 auto
+        }
+
+        .profile-metrics {
+            margin-left: var(--space-8);
+            margin-right: 0;
+            flex: 1;
+            justify-content: flex-end
+        }
+
+        .service-summary {
+            gap: var(--space-4);
+            align-items: flex-end
+        }
+
+        .service-summary>span {
+            display: inline-flex;
+            align-items: flex-end;
+            gap: var(--space-1);
+            font-size: 12px;
+            line-height: 20px;
+            white-space: nowrap
+        }
+
+        .service-summary b {
+            font: 500 20px/20px GJType
+        }
+
+        .tasks-panel.open {
+            border-radius: 0 0 var(--radius) var(--radius)
+        }
+
+        .copy-all.copy-done {
+            color: #fff !important;
+            border-color: transparent !important
+        }
+
+        .risk-tip img {
+            display: none !important
+        }
+
+        .tag.loss-tone {
+            color: var(--tag-loss);
+            background: var(--tag-loss-bg);
+            border-color: var(--tag-loss-border)
+        }
+
+        .tag.profit-tone {
+            color: var(--tag-profit);
+            background: var(--tag-profit-bg);
+            border-color: var(--tag-profit-border)
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: var(--space-4);
+            align-items: stretch
+        }
+
+        .data-box {
+            width: auto;
+            padding: var(--space-3) var(--space-5)
+        }
+
+        .data-value.profit-tone {
+            color: var(--red)
+        }
+
+        .data-value.loss-tone {
+            color: var(--green)
+        }
+
+        .event:before {
+            content: "#";
+            margin-right: var(--space-1)
+        }
+
+        .service-ref-head,
+        .signals-title {
+            height: 24px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px
+        }
+
+        .service-ref-head img,
+        .signals-title img {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            object-fit: contain
+        }
+
+        .service-ref-head button {
+            line-height: 24px
+        }
+
+        @media(max-width:1250px) {
+            .profile-metrics {
+                margin-left: var(--space-4)
+            }
+
+            .data-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr))
+            }
+        }
+
+        @media(max-width:980px) {
+            .profile-metrics {
+                margin-left: 0
+            }
+
+            .data-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr))
+            }
+        }
+
+        @media(max-width:760px) {
+            .data-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+        }
+
+        /* html_08: Figma event tags, asset pills and service-reference structure */
+        :root {
+            --event-red: #f93838;
+            --event-red-bg: rgba(249, 56, 56, .08);
+            --event-red-border: rgba(249, 56, 56, .28);
+            --event-green: #029444;
+            --event-green-bg: rgba(2, 148, 68, .1);
+            --event-green-border: rgba(2, 148, 68, .3);
+            --event-yellow: #ff6a00;
+            --event-yellow-bg: #fff7ed;
+            --event-yellow-border: #fdba74;
+            --event-neutral: #101828;
+            --event-neutral-bg: #f5f7fa;
+            --event-neutral-border: rgba(163, 170, 182, .3);
+            --asset-pill-height: 22px;
+            --event-height: 28px
+        }
+
+        .events {
+            height: auto;
+            min-height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            align-items: center
+        }
+
+        .event {
+            height: var(--event-height) !important;
+            min-height: var(--event-height);
+            padding: 0 var(--space-3) !important;
+            border-radius: var(--space-1) !important;
+            font-size: 14px;
+            line-height: 18px;
+            white-space: nowrap;
+            background: var(--event-neutral-bg);
+            border-color: var(--event-neutral-border);
+            color: var(--event-neutral)
+        }
+
+        .event.neutral {
+            background: var(--event-neutral-bg) !important;
+            border-color: var(--event-neutral-border) !important;
+            color: var(--event-neutral) !important
+        }
+
+        .event.green {
+            background: var(--event-green-bg) !important;
+            border-color: var(--event-green-border) !important;
+            color: var(--event-green) !important
+        }
+
+        .event.orange {
+            background: var(--event-yellow-bg) !important;
+            border-color: var(--event-yellow-border) !important;
+            color: var(--event-yellow) !important
+        }
+
+        .event.red {
+            background: var(--event-red-bg) !important;
+            border-color: var(--event-red-border) !important;
+            color: var(--event-red) !important
+        }
+
+        .asset-pills {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-top: var(--space-2)
+        }
+
+        .asset-pills .tag {
+            height: var(--asset-pill-height);
+            min-height: var(--asset-pill-height);
+            min-width: 0;
+            padding: 0 var(--space-2);
+            border-radius: var(--space-1);
+            font-size: 12px;
+            line-height: 18px;
+            white-space: nowrap
+        }
+
+        .service-reference {
+            padding: 0 !important;
+            background: transparent !important;
+            border-radius: 0 !important
+        }
+
+        .service-ref-head {
+            height: 24px;
+            padding: 0;
+            background: var(--page);
+            border-radius: 0
+        }
+
+        .service-ref-body {
+            margin-top: var(--space-3);
+            padding: var(--space-5);
+            background: #fff;
+            border: 0;
+            border-radius: var(--radius);
+            color: #475467;
+            line-height: 24px
+        }
+
+        .service-ref-head button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--blue)
+        }
+
+        @media(max-width:760px) {
+            .events {
+                margin-top: var(--space-2)
+            }
+
+            .service-ref-body {
+                padding: var(--space-4)
+            }
+        }
+
+        /* html_09: Figma service-reference, profile offset and collapsed-client corrections */
+        :root {
+            --profile-metrics-shift: var(--space-8);
+            --collapsed-client-size: 48px;
+            --service-card-radius: 12px;
+            --service-copy-bg: #f7f9fe;
+            --service-divider: #f3f6f9;
+            --motion-standard: 200ms
+        }
+
+        .profile-metrics {
+            /* transform: translateX(calc(-1 * var(--profile-metrics-shift))) */
+        }
+
+        .sidebar.collapsed .client,
+        .sidebar.collapsed .client.active {
+            width: var(--collapsed-client-size) !important;
+            height: var(--collapsed-client-size) !important;
+            min-height: var(--collapsed-client-size) !important;
+            aspect-ratio: auto;
+            padding: var(--space-2) !important;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .sidebar.collapsed .client-avatar {
+            flex: 0 0 36px
+        }
+
+        .service-ref-head {
+            background: var(--page)
+        }
+
+        #serviceRefToggle.task-toggle {
+            margin-left: auto;
+            padding: 0;
+            gap: var(--space-2);
+            font-weight: 400;
+            line-height: 24px;
+            transition: color var(--motion-standard)
+        }
+
+        #serviceRefToggle.task-toggle:hover {
+            color: #155eef
+        }
+
+        #serviceRefToggle img {
+            display: block;
+            width: 14px;
+            height: 14px;
+            object-fit: contain
+        }
+
+        .service-ref-body {
+            overflow: hidden;
+            transition: opacity var(--motion-standard), transform var(--motion-standard)
+        }
+
+        .service-ref-body[hidden] {
+            display: none
+        }
+
+        .service-overview {
+            padding: var(--space-4);
+            border-radius: var(--space-2);
+            background: var(--service-copy-bg);
+            color: #475467
+        }
+
+        .service-overview strong {
+            display: block;
+            margin-bottom: var(--space-2);
+            color: var(--text);
+            font-size: 16px
+        }
+
+        .service-overview p {
+            margin: 0;
+            line-height: 24px
+        }
+
+        .service-products-title {
+            margin: var(--space-5) 0 var(--space-3);
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--service-divider);
+            font-size: 16px;
+            color: var(--text)
+        }
+
+        .service-products {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: var(--space-4)
+        }
+
+        .service-product {
+            min-width: 0;
+            padding: var(--space-4);
+            border: 1px solid var(--service-divider);
+            border-radius: var(--space-2);
+            background: #fff
+        }
+
+        .service-product-head {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-2);
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .service-product-head img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain
+        }
+
+        .service-product p {
+            margin: 0;
+            color: #667085;
+            line-height: 22px
+        }
+
+        @media(max-width:1250px) {
+            .profile-metrics {
+                transform: none
+            }
+        }
+
+        @media(max-width:980px) {
+            .service-products {
+                grid-template-columns: 1fr
+            }
+        }
+
+        /* html_10: natural scripts, standard broadcast entry and independent service accordions */
+        :root {
+            --service-panel-radius: var(--space-2);
+            --service-product-icon: 32px;
+            --service-gradient: linear-gradient(90deg, var(--CB40, #F3F5FF) 0%, var(--CB39, #FFF9FF) 50%, var(--CB38, #F6FBFF) 100%)
+        }
+
+        .events {
+            margin-top: var(--space-2)
+        }
+
+        .script-box {
+            white-space: normal;
+            overflow-wrap: anywhere
+        }
+
+        .broadcast {
+            width: 100%;
+            margin-bottom: 0;
+            border: 1px solid rgba(46, 113, 251, .2);
+            border-radius: var(--space-2);
+            background: #fff;
+            color: var(--blue);
+            font-weight: 400;
+            box-shadow: none
+        }
+
+        .broadcast:hover {
+            background: #f7f9fe;
+            border-color: rgba(46, 113, 251, .4)
+        }
+
+        .broadcast-chevron {
+            filter: none
+        }
+
+        .service-ref-body {
+            padding: var(--space-5);
+            background: #fff
+        }
+
+        .service-section-head,
+        .service-products-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            min-height: 24px;
+            margin: 0;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px
+        }
+
+        .service-section-head {
+            margin-bottom: var(--space-3)
+        }
+
+        .service-section-head strong {
+            margin: 0
+        }
+
+        .service-products-title {
+            margin: var(--space-5) 0 var(--space-3);
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--service-divider)
+        }
+
+        .service-section-head .task-toggle,
+        .service-products-title .task-toggle {
+            margin-left: 0;
+            padding: 0;
+            gap: var(--space-2);
+            font-weight: 400
+        }
+
+        .service-section-head .task-toggle img,
+        .service-products-title .task-toggle img {
+            display: block;
+            width: 14px;
+            height: 14px;
+            object-fit: contain
+        }
+
+        .service-overview,
+        .service-product {
+            border: 0;
+            border-radius: var(--service-panel-radius);
+            background: var(--service-gradient)
+        }
+
+        .service-overview {
+            padding: var(--space-4);
+            color: #475467
+        }
+
+        .service-overview-copy p {
+            margin: 0;
+            line-height: 24px
+        }
+
+        .service-products[hidden],
+        .service-overview-copy[hidden] {
+            display: none
+        }
+
+        .service-product-head img {
+            width: var(--service-product-icon);
+            height: var(--service-product-icon)
+        }
+
+        /* html_12: Figma service copy, product logos and task-panel radius */
+        :root {
+            --service-product-logo-height: 20px;
+            --service-product-tip-size: 12px;
+            --profile-card-radius: 12px;
+        }
+
+        .service-product-head {
+            align-items: center;
+        }
+
+        .service-product-head img {
+            width: auto;
+            height: var(--service-product-logo-height);
+        }
+
+        .service-overview-copy p {
+            margin: 0 0 var(--space-2);
+            line-height: 24px;
+        }
+
+        .service-overview-copy p:last-child {
+            margin-bottom: 0;
+        }
+
+        .service-fee-title {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .service-product .service-product-tip {
+            margin: 0 0 var(--space-2);
+            color: var(--muted);
+            font-family: "Source Han Sans CN", "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-size: var(--service-product-tip-size);
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        .service-product .service-product-copy {
+            margin: 0;
+            color: #475467;
+            line-height: 22px;
+        }
+
+        .profile.tasks-expanded {
+            border-radius: var(--profile-card-radius) var(--profile-card-radius) 0 0;
+        }
+
+        /* html_13: unified toggles and batch-selection checkbox */
+        :root {
+            --toggle-font-size: 14px;
+            --toggle-line-height: 22px;
+            --toggle-icon-size: 14px;
+            --batch-check-size: 28px;
+            --batch-check-mark-size: 18px;
+        }
+
+        .task-toggle,
+        #serviceRefToggle.task-toggle,
+        #serviceProductsToggle.task-toggle {
+            margin-left: auto;
+            gap: var(--space-2);
+            font-size: var(--toggle-font-size);
+            line-height: var(--toggle-line-height);
+            font-weight: 400;
+        }
+
+        .task-toggle img,
+        #serviceRefToggle.task-toggle img,
+        #serviceProductsToggle.task-toggle img {
+            width: var(--toggle-icon-size);
+            height: var(--toggle-icon-size);
+        }
+
+        .service-section-head .task-toggle,
+        .service-products-title .task-toggle {
+            margin-left: auto;
+        }
+
+        .client-check {
+            width: var(--batch-check-size);
+            height: var(--batch-check-size);
+            margin: var(--space-1);
+            border-radius: var(--space-1);
+            font-size: 0;
+        }
+
+        .sidebar.selecting .client-check.checked::after {
+            content: "✓";
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: var(--batch-check-mark-size);
+            font-weight: 700;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand"><img src="assets/logo.png" alt="国金证券"><i class="brand-line"></i><span
+                class="brand-title">AI+服务清单</span></div>
+        <div class="top-stats">
+            <div class="top-stat"><b id="todoNum">6</b><span>待服务</span></div>
+            <div class="top-stat"><b id="doneNum">0</b><span>已完成</span></div><span class="top-date">7月17日周五</span><img
+                class="user-avatar" src="assets/Frame23.png" alt="用户">
+        </div>
+    </header>
+    <aside class="sidebar">
+        <div class="side-head"><strong>客户列表</strong><button class="collapse">‹</button></div>
+        <div class="tabs"><button class="tab active" data-filter="all">全部</button><button class="tab"
+                data-filter="loss">亏损</button><button class="tab" data-filter="profit">盈利</button><button class="tab"
+                data-filter="prospect">未签约</button></div>
+        <div class="broadcast-wrap"><button class="broadcast" id="broadcastBtn"><span><img src="assets/fenxiang.png"
+                        alt="">企微群发通用话术</span><span>⌄</span></button>
+            <div class="broadcast-menu" id="broadcastMenu"><button class="broadcast-option"
+                    data-group="loss"><span>亏损未止损客户</span><b>2</b></button><button class="broadcast-option"
+                    data-group="stopped"><span>亏损已止损客户</span><b>1</b></button><button class="broadcast-option"
+                    data-group="profit"><span>已盈利客户</span><b>2</b></button><button class="broadcast-option"
+                    data-group="prospect"><span>未签约客户</span><b>2</b></button></div>
+        </div>
+        <div class="clients" id="clients"></div>
+    </aside>
+    <main class="main">
+        <div class="content">
+            <section class="profile">
+                <div class="profile-top">
+                    <div class="profile-avatar" id="profileAvatar">刘</div>
+                    <div class="profile-core">
+                        <div class="profile-name-row"><span class="profile-name" id="profileName">刘晓梅</span><span
+                                class="profile-account" id="profileAccount">8863027489</span><span class="detail-link">↗
+                                客户详情</span></div>
+                        <div class="profile-tags"><span class="tag">女</span><span class="tag">高客五星</span><span
+                                class="tag">C4 中高风险</span><span class="tag">稳健型</span></div>
+                    </div>
+                    <div class="profile-metrics">
+                        <div class="metric">
+                            <div class="metric-label">总资产（元）</div>
+                            <div class="metric-value">2,356.88<small> 万</small></div>
+                        </div><i class="metric-line"></i>
+                        <div class="metric">
+                            <div class="metric-label">证券市值（元）</div>
+                            <div class="metric-value">32,356.88<small> 万</small></div>
+                        </div><i class="metric-line"></i>
+                        <div class="metric">
+                            <div class="metric-label">本次服务</div>
+                            <div class="service-summary"><span><b class="num good">2</b> 未止损</span><span><b
+                                        class="num bad">1</b> 已盈利</span></div>
+                        </div>
+                        <div class="phone-wrap"><label class="plus0"><input type="checkbox"> +0</label><span
+                                class="phone-number">139****5678</span><button class="phone-btn" id="phoneBtn">☎
+                                电话</button></div>
+                    </div>
+                </div>
+                <div class="task-line"><span class="task-title">待处理任务</span><span class="task-count"><b>3</b>
+                        条</span><button class="task-toggle" id="taskToggle">展开⌄</button></div>
+            </section>
+            <section class="tasks-panel" id="tasksPanel">
+                <div class="task-row"><span class="task-check"></span>
+                    <div><strong>SOP-AI投ETF产品退订挽留</strong>
+                        <p>客户近期有退订意向，需及时联系并记录沟通结果。</p>
+                    </div><span class="due">逾期 07-06</span>
+                </div>
+                <div class="task-row"><span class="task-check"></span>
+                    <div><strong>理财产品到期提醒</strong>
+                        <p>提醒客户关注产品到期时间及后续安排。</p>
+                    </div><span class="due">逾期 07-06</span>
+                </div>
+                <div class="task-row"><span class="task-check"></span>
+                    <div><strong>风险测评过期</strong>
+                        <p>客户风险测评已超过有效期。</p>
+                    </div><span class="due">待处理</span>
+                </div>
+            </section>
+            <div class="signals-title">信号 &amp; 关联标的 <span class="signals-count"><b>3</b> 条</span></div>
+            <div class="signals" id="signals"></div>
+        </div>
+    </main>
+    <div class="call-bar" id="callBar"><i class="call-dot"></i><span id="callStatus">正在拨出</span><span class="call-time"
+            id="callTime">00:00</span><button class="hangup" id="hangupBtn">☎ 挂断</button></div>
+    <div class="call-result" id="callResult">
+        <h3>通话已结束</h3>
+        <p id="callResultText">本次通话已结束，通话记录将同步保存。</p><button id="closeCallResult">知道了</button>
+    </div>
+    <footer class="service-footer"><label>服务内容</label><input class="service-input" id="serviceInput"
+            placeholder="记录本次服务内容...选填"><button class="finish" id="finishBtn">完成服务</button></footer>
+    <div class="toast" id="toast"></div>
+    <div class="modal-mask" id="broadcastMask">
+        <div class="broadcast-modal">
+            <div class="modal-head">
+                <h3>企微群发通用话术</h3><button class="modal-close" id="closeBroadcast">×</button>
+            </div>
+            <div class="modal-body">
+                <div>接收人</div>
+                <div class="recipient-list" id="recipientList"></div>
+                <div>群发话术</div><textarea class="broadcast-script" id="broadcastScript"></textarea>
+            </div>
+            <div class="modal-foot"><button class="secondary" id="cancelBroadcast">取消</button><button class="primary"
+                    id="sendBroadcast">发送</button></div>
+        </div>
+    </div>
+    <script>
+        const defaultScript = '您好！今日市场出现波动，您持有的相关标的随市场调整。此次波动主要受整体市场影响，与信号质量本身关系不大。建议结合仓位和风险承受能力合理应对，我会持续帮您跟踪，有操作机会会第一时间提示您。';
+        const clients = [
+            {
+                name: '刘晓梅', account: '8863027489', phone: '139****5678', fullPhone: '13912345678', gender: '女', level: '高客五星', risk: 'C4 中高风险', style: '稳健型', types: ['loss', 'profit'], tags: [['2 未止损', 'green'], ['1 已盈利', 'red']], asset: '2,356.88', market: '32,356.88', signals: [
+                    { name: '沪深300ETF', code: '510300', type: 'ETF', state: '亏损未止损', stateClass: 'red', cost: '3.812', price: '3.65', ratio: '-4.1%', position: '22.4%', stop: '3.565', events: [['大盘整体调整', 'green', '今日大盘主要指数同步调整，市场风险偏好下降。'], ['汇率扰动', 'orange', '汇率短期波动对外资交易情绪形成扰动。']], script: '您好！今日大盘整体出现调整，您跟随AI投ETF信号的沪深300ETF随市下行，目前跟随仓位出现了一定浮亏。此次浮亏主要受整体A股市场回调影响，属于市场系统性压力，与信号质量本身关系不大。目前您这只ETF跟随仓位占比较高（22.4%），建议适当降低仓位、控制单一标的风险。同时可关注下一期信号，通过分散配置降低波动影响。投资都会有起伏，您不用太担心。我会持续帮您跟踪，有操作机会会第一时间提示您。' },
+                    { name: '贵州茅台', code: '600519', type: '个股', state: '亏损未止损', stateClass: 'red', cost: '1,523.80', price: '1,498.20', ratio: '-1.7%', position: '16.8%', stop: '1,455.00', events: [['消费板块调整', 'orange', '消费板块今日震荡回落，白酒方向短线承压。'], ['北向资金流出', '', '北向资金阶段性流出，影响权重股表现。']], script: '您好！贵州茅台今天随消费板块出现调整，当前浮亏幅度仍在可控范围。建议继续关注止损位及板块资金变化，避免情绪化操作。' },
+                    { name: '中证500ETF', code: '510500', type: 'ETF', state: '已盈利', stateClass: 'green', cost: '5.428', price: '5.612', ratio: '+3.4%', position: '12.6%', stop: '5.360', events: [['中小盘活跃', 'green', '中小盘方向交易活跃度提升。'], ['量能放大', '', '成交量较前一交易日明显放大。']], script: '您好！中证500ETF目前已经取得一定浮盈，可以结合您的整体仓位考虑分批止盈，锁定部分收益。' }
+                ]
+            },
+            {
+                name: '武静', account: '8881905747', phone: '173****5368', fullPhone: '17386175368', gender: '女', level: '高客四星', risk: 'C4 中高风险', style: '平衡型', types: ['loss', 'profit'], tags: [['1 未止损', 'red'], ['1 已止损', '']], asset: '986.35', market: '612.40', signals: [
+                    { name: '光伏ETF', code: '515790', type: 'ETF', state: '亏损未止损', stateClass: 'red', cost: '0.842', price: '0.796', ratio: '-5.5%', position: '18.2%', stop: '0.776', events: [['光伏板块回调', 'orange', '光伏产业链今日整体回调，板块情绪偏弱。'], ['成交量放大', '', '板块成交量较近期均值有所放大。']], script: '您好！光伏ETF今天随板块调整，当前仓位出现浮亏。建议重点关注止损位和板块企稳信号，控制单一行业仓位。' },
+                    { name: '消费ETF', code: '159928', type: 'ETF', state: '亏损已止损', stateClass: '', cost: '0.921', price: '0.884', ratio: '-4.0%', position: '0%', stop: '0.890', events: [['消费板块震荡', 'orange', '消费板块延续震荡格局。'], ['防御属性增强', 'green', '部分资金向防御方向切换。']], script: '您好！消费ETF已按策略执行止损，本次操作主要是为了控制风险。后续待板块重新出现有效信号后再考虑参与。' }
+                ]
+            },
+            { name: '陈建国', account: '8872134561', phone: '138****3241', fullPhone: '13888723241', gender: '男', level: '高客三星', risk: 'C5 激进型', style: '进取型', types: ['profit'], tags: [['1 已盈利', 'green']], asset: '756.20', market: '488.30', signals: [{ name: '医药ETF', code: '512010', type: 'ETF', state: '已盈利', stateClass: 'green', cost: '0.382', price: '0.401', ratio: '+5.0%', position: '15.5%', stop: '0.376', events: [['医药板块走强', 'green', '创新药方向带动板块上涨。']], script: '您好！医药ETF目前已取得浮盈，可结合您的收益目标分批锁定收益。' }] },
+            { name: '孙丽华', account: '8845736218', phone: '136****6218', fullPhone: '13688456218', gender: '女', level: '高客二星', risk: 'C3 平衡型', style: '平衡型', types: ['prospect'], tags: [['1 未签约', '']], asset: '528.60', market: '302.18', signals: [{ name: '黄金ETF', code: '518880', type: 'ETF', state: '未签约持仓', stateClass: '', cost: '5.120', price: '5.268', ratio: '+2.9%', position: '10.2%', stop: '4.980', events: [['避险需求升温', 'green', '市场避险需求阶段性升温。']], script: '您好！您持有的黄金ETF近期表现较稳，我们的AI投顾也在持续跟踪相关信号，可为您提供更及时的仓位和风险提醒。' }] }
+        ];
+        let active = 0, filter = 'all', done = 0, callTimer = null, callSeconds = 0;
+        function esc(s) { return String(s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])) }
+        function renderClients() { const box = document.getElementById('clients'); box.innerHTML = ''; clients.forEach((c, i) => { if (filter !== 'all' && !c.types.includes(filter)) return; const el = document.createElement('button'); el.className = 'client ' + (i === active ? 'active' : ''); el.innerHTML = `<span class="client-avatar">${c.name[0]}</span><span class="client-main"><span class="client-title"><b class="client-name">${c.name}</b><span class="client-account">${c.account}</span><i class="dot"></i></span><span class="client-sub">${c.level} · ${c.risk}</span><span class="client-tags">${c.tags.map(t => `<i class="tag ${t[1]}">${t[0]}</i>`).join('')}</span></span>`; el.onclick = () => selectClient(i); box.appendChild(el) }) }
+        function selectClient(i) { active = i; const c = clients[i]; document.getElementById('profileAvatar').textContent = c.name[0]; document.getElementById('profileName').textContent = c.name; document.getElementById('profileAccount').textContent = c.account; document.querySelector('.phone-number').textContent = c.phone; document.querySelector('.profile-tags').innerHTML = `<span class="tag">${c.gender}</span><span class="tag">${c.level}</span><span class="tag">${c.risk}</span><span class="tag">${c.style}</span>`; document.querySelectorAll('.metric-value')[0].innerHTML = `${c.asset}<small> 万</small>`; document.querySelectorAll('.metric-value')[1].innerHTML = `${c.market}<small> 万</small>`; document.querySelector('.signals-count b').textContent = c.signals.length; renderClients(); renderSignals() }
+        function eventHTML(e, si, ei) { return `<span class="event-wrap"><button class="event ${e[1]}" data-pop="pop-${si}-${ei}">${esc(e[0])}</button><span class="event-pop" id="pop-${si}-${ei}"><strong>${esc(e[0])}</strong>${esc(e[2])}</span></span>` }
+        function signalCard(s, si) { return `<article class="signal-card ${s.stateClass === 'green' ? 'safe' : ''}"><div class="signal-head"><div><span class="asset-title">${s.name}</span><span class="asset-code">${s.code}</span><div class="asset-pills"><i class="tag">${s.type}</i><i class="tag ${s.stateClass}">${s.state}</i></div></div><button class="copy-all" data-copy="${si}"><img src="assets/fuzhi.png" width="16" height="16" alt=""> 一键复制</button></div><div class="data-grid"><div class="data-box"><div class="data-label">跟随成本</div><div class="data-value">${s.cost}<small> 元</small></div></div><div class="data-box"><div class="data-label">当前价格</div><div class="data-value">${s.price}<small> 元</small></div></div><div class="data-box"><div class="data-label">浮盈亏比例</div><div class="data-value ${s.ratio.startsWith('-') ? 'red' : 'green'}">${s.ratio}</div></div><div class="data-box"><div class="data-label">仓位占比</div><div class="data-value">${s.position}</div></div><div class="data-box"><div class="data-label">止损价</div><div class="data-value">${s.stop}<small> 元</small></div></div></div><div class="divider"></div><div class="section-head"><h3>关联异动 / 热点</h3><div class="mini-actions"><button class="mini-btn"><img src="assets/bankuai.png" width="12" height="12" alt=""> 板块诊断结果</button><button class="mini-btn blue"><img src="assets/fuzhi.png" width="12" height="12" alt=""> 复制</button></div></div><div class="events">${s.events.map((e, ei) => eventHTML(e, si, ei)).join('')}</div><div class="divider"></div><div class="section-head"><h3>个性化话术</h3><div class="mini-actions"><button class="mini-btn"><img src="assets/ETF.png" width="12" height="12" alt=""> ${s.type}诊断结果</button><button class="mini-btn blue copy-script" data-copy="${si}">复制</button></div></div><div class="script-box" contenteditable="true" data-script="${si}">${esc(s.script || defaultScript)}</div><div class="risk-tip">${clients[active].risk.startsWith('C2') ? '该话术仅适用于 C3 及以上风险等级客户，请谨慎使用并核实适当性' : '适用于 C3 及以上风险等级客户'}</div></article>` }
+        function renderSignals() { document.getElementById('signals').innerHTML = clients[active].signals.map(signalCard).join('') }
+        function showToast(t) { const x = document.getElementById('toast'); x.textContent = t; x.style.display = 'block'; setTimeout(() => x.style.display = 'none', 1500) }
+        function openBroadcast(group) { const map = { loss: '亏损未止损', stopped: '亏损已止损', profit: '已盈利', prospect: '未签约' }; const selected = clients.filter(c => group === 'prospect' ? c.types.includes('prospect') : group === 'profit' ? c.types.includes('profit') : c.types.includes('loss')); document.getElementById('recipientList').innerHTML = selected.map(c => `<span class="recipient">${c.name}</span>`).join(''); document.getElementById('broadcastScript').value = `【${map[group]}客户服务提醒】您好，结合您当前的持仓与市场情况，为您整理了最新服务建议，请及时查收。如有疑问可随时联系我。`; document.getElementById('broadcastMask').classList.add('open'); document.getElementById('broadcastMenu').classList.remove('open') }
+        function startCall() { if (callTimer) return; callSeconds = 0; document.getElementById('callBar').classList.add('open'); document.getElementById('callStatus').textContent = '正在拨出 ' + clients[active].fullPhone + '…'; document.getElementById('callTime').textContent = '00:00'; setTimeout(() => { if (callTimer) document.getElementById('callStatus').textContent = '通话中' }, 1200); callTimer = setInterval(() => { callSeconds++; document.getElementById('callTime').textContent = String(Math.floor(callSeconds / 60)).padStart(2, '0') + ':' + String(callSeconds % 60).padStart(2, '0') }, 1000) }
+        function hangupCall() { if (!callTimer) return; clearInterval(callTimer); callTimer = null; document.getElementById('callBar').classList.remove('open'); document.getElementById('callResultText').textContent = `与${clients[active].name}的通话已结束，通话时长 ${document.getElementById('callTime').textContent}，记录将同步保存。`; document.getElementById('callResult').classList.add('open') }
+        document.querySelectorAll('.tab').forEach(b => b.onclick = () => { document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); b.classList.add('active'); filter = b.dataset.filter; renderClients() });
+        document.getElementById('taskToggle').onclick = () => { const p = document.getElementById('tasksPanel'); p.classList.toggle('open'); document.getElementById('taskToggle').textContent = p.classList.contains('open') ? '收起⌃' : '展开⌄' }; document.querySelectorAll('.task-check').forEach(x => x.onclick = () => x.classList.toggle('checked'));
+        document.getElementById('closeBroadcast').onclick = document.getElementById('cancelBroadcast').onclick = () => document.getElementById('broadcastMask').classList.remove('open');
+        document.getElementById('phoneBtn').onclick = startCall; document.getElementById('hangupBtn').onclick = hangupCall; document.getElementById('closeCallResult').onclick = () => document.getElementById('callResult').classList.remove('open');
+        document.addEventListener('click', e => { if (!e.target.closest('.broadcast-wrap')) document.getElementById('broadcastMenu').classList.remove('open'); const ev = e.target.closest('.event'); if (ev) { e.stopPropagation(); const p = document.getElementById(ev.dataset.pop); document.querySelectorAll('.event-pop').forEach(x => { if (x !== p) x.classList.remove('open') }); p.classList.toggle('open'); return } if (!e.target.closest('.event-pop')) document.querySelectorAll('.event-pop').forEach(x => x.classList.remove('open')); if (e.target.closest('.copy-all,.copy-script,.mini-btn.blue')) showToast('已复制') });
+        document.getElementById('finishBtn').onclick = () => { done++; document.getElementById('doneNum').textContent = done; document.getElementById('todoNum').textContent = Math.max(0, 6 - done); showToast('服务已完成') };
+        /* html_04 interaction/data corrections */
+        clients.push(
+            { name: '赵明远', account: '8854918302', phone: '136****8901', fullPhone: '13645678901', gender: '男', level: '普通客户', risk: 'C3 平衡型', style: '指数增强', types: ['prospect'], asset: '128.42', market: '122.10', taskCount: 1, signals: [{ name: '医药ETF', code: '512010', type: 'ETF', state: '未签约持仓', stateClass: '', cost: '0.812', price: '0.846', ratio: '+4.2%', position: '--', stop: '--', events: [['医药ETF热点', 'green', '医药板块今日获增量资金关注，CXO、创新药细分方向领涨，AI+医疗概念持续活跃。'], ['创新药政策利好', 'orange', '创新药审批流程持续优化，医药板块长期逻辑受到关注。']], script: '您好！今天系统提示，您持有的医药ETF属于近期市场关注度较高的医疗健康主题，这类方向近期有一定热点机会，我结合ETF诊断帮您看了一下当前情况。AI投ETF历史信号表现具备一定参考价值，建议您了解我司AI+投顾服务，以便后续及时获得持仓相关信号和风险提醒。' }] },
+            { name: '林秀兰', account: '8837654921', phone: '135****8899', fullPhone: '13512348899', gender: '女', level: '普通客户', risk: 'C2 谨慎型', style: '稳健型', types: ['prospect'], asset: '86.40', market: '62.10', taskCount: 1, signals: [{ name: '红利ETF', code: '510880', type: 'ETF', state: '未签约', stateClass: '', cost: '--', price: '--', ratio: '+4.2%', position: '--', stop: '--', events: [['高股息策略', 'green', '市场波动加大背景下，高股息资产配置价值凸显，红利类ETF近期资金持续净流入。']], script: '您好！最近市场上出现了几个值得关注的投资机会信号，表现比较稳健，很适合作为资产配置的补充。看您目前还未开通相关跟投服务，方便的话我可以先给您简单介绍一下产品逻辑和风险特征，您感兴趣的话我们可以约个时间详细聊聊～' }] }
+        );
+        clients[0].taskCount = 3; clients[1].taskCount = 2; clients[2].taskCount = 0; clients[3].taskCount = 1;
+        document.querySelector('.phone-btn').innerHTML = '<img src="assets/dianhua.png" alt="">电话';
+        document.querySelector('.signals-title').innerHTML = '<img src="assets/xinhao.png" alt="">信号 &amp; 关联标的 <span class="signals-count"><b>3</b> 条</span>';
+        const serviceRef = document.createElement('section'); serviceRef.className = 'service-reference'; serviceRef.id = 'serviceReference'; serviceRef.innerHTML = '<div class="service-ref-head"><img src="assets/fuwucankao.png" alt="">服务介绍参考<button id="serviceRefToggle">收起⌃</button></div><div class="service-ref-body" id="serviceRefBody">AI+投顾服务结合客户持仓与市场信号，为客户提供 AI选好股、AI股票解套、AI投ETF 三类产品的信号跟踪、风险提醒与投顾服务。相关服务内容与费用请以客户实际签约页面为准。</div>'; document.getElementById('tasksPanel').insertAdjacentElement('afterend', serviceRef); document.getElementById('serviceRefToggle').onclick = () => { const b = document.getElementById('serviceRefBody'); b.hidden = !b.hidden; document.getElementById('serviceRefToggle').textContent = b.hidden ? '展开⌄' : '收起⌃' };
+        renderClients = function () { const box = document.getElementById('clients'); box.innerHTML = ''; clients.forEach((c, i) => { if (filter !== 'all' && !c.types.includes(filter)) return; const loss = c.signals.filter(s => s.state.includes('亏损') && !s.state.includes('已止损')).length, stopped = c.signals.filter(s => s.state.includes('已止损')).length, profit = c.signals.filter(s => s.state.includes('盈利')).length, prospect = c.signals.filter(s => s.state.includes('未签约')).length; const pills = []; if (loss) pills.push([loss + ' 未止损', 'green']); if (stopped) pills.push([stopped + ' 已止损', '']); if (profit) pills.push([profit + ' 已盈利', 'red']); if (prospect) pills.push([prospect + ' 未签约', '']); const el = document.createElement('button'); el.className = 'client ' + (i === active ? 'active' : ''); el.title = c.name + ' ' + c.account; el.innerHTML = `<span class="client-avatar">${c.name[0]}</span><span class="client-main"><span class="client-title"><b class="client-name">${c.name}</b><span class="client-account">${c.account}</span>${c.taskCount ? '<i class="task-dot"></i>' : ''}</span><span class="client-sub">${c.level} · ${c.risk}</span><span class="client-tags">${pills.map(t => `<i class="tag ${t[1]}">${t[0]}</i>`).join('')}</span></span>`; el.onclick = () => selectClient(i); box.appendChild(el) }) };
+        signalCard = function (s, si) { const isProfit = s.state.includes('盈利'), ratioLabel = isProfit ? '信号收益率' : '浮亏比例', ratioClass = isProfit ? 'gain' : 'loss'; return `<article class="signal-card ${isProfit ? 'safe' : ''}"><div class="signal-head"><div><span class="asset-title">${s.name}</span><span class="asset-code">${s.code}</span><div class="asset-pills"><i class="tag">${s.type}</i><i class="tag ${s.stateClass}">${s.state}</i></div></div><button class="copy-all" data-copy="${si}"><img src="assets/fuzhi.png" alt=""><span>一键复制</span></button></div><div class="data-grid"><div class="data-box"><div class="data-label">跟随成本</div><div class="data-value">${s.cost}<small> 元</small></div></div><div class="data-box"><div class="data-label">当前价格</div><div class="data-value">${s.price}<small> 元</small></div></div><div class="data-box"><div class="data-label">${ratioLabel}</div><div class="data-value ${ratioClass}">${s.ratio}</div></div><div class="data-box"><div class="data-label">仓位占比</div><div class="data-value">${s.position}</div></div><div class="data-box"><div class="data-label">止损价</div><div class="data-value">${s.stop}<small> 元</small></div></div></div><div class="divider"></div><div class="section-head"><h3>关联异动 / 热点</h3><div class="mini-actions"><button class="mini-btn"><img src="assets/bankuai.png" alt=""><span>板块诊断结果</span></button><button class="mini-btn blue copy-action" data-text="诊断链接"><img src="assets/fuzhi.png" alt=""><span>复制</span></button></div></div><div class="events">${s.events.map((e, ei) => eventHTML(e, si, ei)).join('')}</div><div class="divider"></div><div class="section-head"><h3>个性化话术</h3><div class="mini-actions"><button class="mini-btn"><img src="assets/ETF.png" alt=""><span>${s.type}诊断结果</span></button><button class="mini-btn blue copy-action" data-copy="${si}"><span>复制</span></button></div></div><div class="script-box" contenteditable="true" data-script="${si}">${esc(s.script || defaultScript)}</div><div class="risk-tip">${clients[active].risk.startsWith('C2') ? '该话术仅适用于 C3 及以上风险等级客户，请谨慎使用并核实适当性' : '适用于 C3 及以上风险等级客户'}</div></article>` };
+        const previousSelectClient = selectClient; selectClient = function (i) { previousSelectClient(i); const prospect = clients[i].types.includes('prospect'); document.getElementById('serviceReference').classList.toggle('open', prospect) };
+        startCall = function () { if (callTimer) return; callSeconds = 0; document.body.classList.add('calling'); document.getElementById('callStatus').textContent = '正在拨出 ' + clients[active].fullPhone + ' …'; document.getElementById('callTime').textContent = ''; let phase = 'dialing'; const phaseTimer = setTimeout(() => { if (!callTimer) return; phase = 'ringing'; document.getElementById('callStatus').textContent = '振铃中'; document.getElementById('callTime').textContent = '00:00'; setTimeout(() => { if (!callTimer) return; phase = 'connected'; callSeconds = 0; document.getElementById('callStatus').textContent = '通话中' }, 3500) }, 1500); callTimer = setInterval(() => { if (phase === 'ringing' || phase === 'connected') { callSeconds++; document.getElementById('callTime').textContent = String(Math.floor(callSeconds / 60)).padStart(2, '0') + ':' + String(callSeconds % 60).padStart(2, '0') } }, 1000) };
+        hangupCall = function () { if (!callTimer) return; clearInterval(callTimer); callTimer = null; document.getElementById('callStatus').textContent = callSeconds ? '通话结束 · 时长 ' + document.getElementById('callTime').textContent : '未接通'; document.getElementById('callTime').textContent = ''; document.getElementById('hangupBtn').style.visibility = 'hidden'; setTimeout(() => { document.body.classList.remove('calling'); document.getElementById('hangupBtn').style.visibility = 'visible' }, 3000) };
+        document.getElementById('phoneBtn').onclick = startCall; document.getElementById('hangupBtn').onclick = hangupCall;
+        document.querySelector('.collapse').onclick = function () { const side = document.querySelector('.sidebar'); side.classList.toggle('collapsed'); this.textContent = side.classList.contains('collapsed') ? '›' : '‹'; this.setAttribute('aria-label', side.classList.contains('collapsed') ? '展开客户列表' : '收起客户列表') };
+        function copyFeedback(btn, text) { const span = btn.querySelector('span') || btn; const old = span.textContent; const content = text || clients[active].signals[Number(btn.dataset.copy) || 0]?.script || ''; if (navigator.clipboard && content) navigator.clipboard.writeText(content).catch(() => { }); btn.classList.add('copy-done'); span.textContent = '✓ 已复制'; setTimeout(() => { btn.classList.remove('copy-done'); span.textContent = old }, 1400) }
+        document.addEventListener('click', e => { const btn = e.target.closest('.copy-all,.copy-action'); if (btn) { e.preventDefault(); e.stopPropagation(); copyFeedback(btn, btn.dataset.text) } }, true);
+        /* html_05 interaction refinements */
+        const broadcastCounts = { loss: clients.filter(c => c.types.includes('loss')).length, stopped: clients.filter(c => c.signals.some(s => s.state.includes('已止损'))).length, profit: clients.filter(c => c.types.includes('profit')).length, prospect: clients.filter(c => c.types.includes('prospect')).length };
+        document.querySelectorAll('.broadcast-option').forEach(option => { option.querySelector('b').textContent = broadcastCounts[option.dataset.group] || 0 });
+        const taskToggle = document.getElementById('taskToggle');
+        function syncTaskToggle() { const open = document.getElementById('tasksPanel').classList.contains('open'); taskToggle.innerHTML = `<span>${open ? '收起' : '展开'}</span><img src="assets/${open ? 'jiantou2' : 'jiantou1'}.png" alt="">` }
+        taskToggle.onclick = () => { document.getElementById('tasksPanel').classList.toggle('open'); syncTaskToggle() }; syncTaskToggle();
+        const broadcastButton = document.getElementById('broadcastBtn');
+        broadcastButton.querySelector('span:last-child').innerHTML = '<img class="broadcast-chevron" src="assets/jiantou1.png" alt="">';
+        broadcastButton.setAttribute('aria-expanded', 'false');
+        broadcastButton.onclick = e => { e.stopPropagation(); const menu = document.getElementById('broadcastMenu'); const open = !menu.classList.contains('open'); menu.classList.toggle('open', open); broadcastButton.setAttribute('aria-expanded', String(open)) };
+        document.addEventListener('click', () => broadcastButton.setAttribute('aria-expanded', 'false'));
+        function riskTipHTML(c) { const danger = c.risk.startsWith('C2'); const text = danger ? '该话术仅适用于 C3 及以上风险等级客户，当前客户风险等级为 C2（谨慎型），请谨慎使用并核实适当性' : '适用于 C3 及以上风险等级客户'; return `<div class="risk-tip${danger ? ' danger' : ''}"><span>${text}</span></div>` }
+        signalCard = function (s, si) { const isProfit = s.state.includes('盈利'), ratioLabel = isProfit ? '信号收益率' : '浮亏比例', ratioClass = isProfit ? 'gain' : 'loss'; return `<article class="signal-card ${isProfit ? 'safe' : ''}"><div class="signal-head"><div><span class="asset-title">${s.name}</span><span class="asset-code">${s.code}</span><div class="asset-pills"><i class="tag">${s.type}</i><i class="tag ${s.stateClass}">${s.state}</i></div></div><button class="copy-all" data-copy="${si}"><img src="assets/fuzhi.png" alt=""><span>一键复制</span></button></div><div class="data-grid"><div class="data-box"><div class="data-label">跟随成本</div><div class="data-value">${s.cost}<small> 元</small></div></div><div class="data-box"><div class="data-label">当前价格</div><div class="data-value">${s.price}<small> 元</small></div></div><div class="data-box"><div class="data-label">${ratioLabel}</div><div class="data-value ${ratioClass}">${s.ratio}</div></div><div class="data-box"><div class="data-label">仓位占比</div><div class="data-value">${s.position}</div></div><div class="data-box"><div class="data-label">止损价</div><div class="data-value">${s.stop}<small> 元</small></div></div></div><div class="divider"></div><div class="section-head"><h3>关联异动 / 热点</h3><div class="mini-actions"><button class="mini-btn"><img src="assets/bankuai.png" alt=""><span>板块诊断结果</span></button><button class="mini-btn blue copy-action" data-text="诊断链接" aria-label="复制诊断链接"><span>复制</span></button></div></div><div class="events">${s.events.map((e, ei) => eventHTML(e, si, ei)).join('')}</div><div class="divider"></div><div class="section-head"><h3>个性化话术</h3><div class="mini-actions"><button class="mini-btn"><img src="assets/ETF.png" alt=""><span>${s.type}诊断结果</span></button><button class="mini-btn blue copy-action" data-copy="${si}" aria-label="复制个性化话术"><span>复制</span></button></div></div><div class="script-box" contenteditable="true" data-script="${si}">${esc(s.script || defaultScript)}</div>${riskTipHTML(clients[active])}</article>` };
+        copyFeedback = function (btn, text) { const span = btn.querySelector('span') || btn; const old = span.textContent; const content = text || clients[active].signals[Number(btn.dataset.copy) || 0]?.script || ''; if (navigator.clipboard && content) navigator.clipboard.writeText(content).catch(() => { }); btn.classList.add('copy-done'); span.textContent = btn.classList.contains('copy-action') ? '√' : '✓ 已复制'; setTimeout(() => { btn.classList.remove('copy-done'); span.textContent = old }, 1400) };
+        /* html_06 final interaction layer */
+        clients[3].types = ['profit']; clients[3].signals[0].state = '已盈利'; clients[3].signals[0].stateClass = 'green'; clients[3].signals[0].ratio = '+8.1%';
+        let batchMode = false, batchGroup = '', batchSelected = new Set(), sideScrollTimer = 0;
+        const groupMeta = { loss: { label: '亏损未止损', color: 'loss' }, stopped: { label: '亏损已止损', color: 'stopped' }, profit: { label: '已盈利', color: 'profit' }, prospect: { label: '未签约', color: 'prospect' } };
+        function primaryGroup(c) { if (c.signals.some(s => s.state.includes('亏损未止损'))) return 'loss'; if (c.signals.some(s => s.state.includes('亏损已止损'))) return 'stopped'; if (c.signals.some(s => s.state.includes('盈利'))) return 'profit'; return 'prospect' }
+        function groupIndexes(group) { return clients.map((c, i) => primaryGroup(c) === group ? i : -1).filter(i => i >= 0) }
+        const batchBar = document.createElement('div'); batchBar.className = 'broadcast-selectbar'; batchBar.innerHTML = '<strong id="batchCount">已选 0 人</strong><span class="broadcast-select-actions"><button type="button" id="batchCancel">取消</button><button type="button" class="next" id="batchNext">下一步</button></span>'; document.querySelector('.broadcast-wrap').insertAdjacentElement('afterend', batchBar);
+        const sideThumb = document.createElement('i'); sideThumb.className = 'side-scroll-thumb'; sideThumb.setAttribute('aria-hidden', 'true'); document.body.appendChild(sideThumb);
+        function updateBatchBar() { document.querySelector('.broadcast-wrap').style.display = batchMode ? 'none' : ''; batchBar.classList.toggle('open', batchMode); document.querySelector('.sidebar').classList.toggle('selecting', batchMode); document.getElementById('batchCount').textContent = `已选 ${batchSelected.size} 人` }
+        function refreshGroupMenu() { document.querySelectorAll('.broadcast-option').forEach(option => { const g = option.dataset.group, n = groupIndexes(g).length; option.querySelector('span').textContent = groupMeta[g].label; option.querySelector('b').textContent = n + ' 人'; option.classList.toggle('selected', batchMode && batchGroup === g) }) }
+        function startBatch(group) { batchMode = true; batchGroup = group; batchSelected = new Set(groupIndexes(group)); document.getElementById('broadcastMenu').classList.remove('open'); broadcastButton.setAttribute('aria-expanded', 'false'); updateBatchBar(); renderClients() }
+        function exitBatch() { batchMode = false; batchGroup = ''; batchSelected.clear(); updateBatchBar(); renderClients() }
+        document.querySelectorAll('.broadcast-option').forEach(option => { option.onclick = e => { e.preventDefault(); e.stopPropagation(); startBatch(option.dataset.group) } });
+        document.getElementById('batchCancel').onclick = exitBatch;
+        document.getElementById('batchNext').onclick = () => { if (!batchSelected.size) { showToast('请至少选择一位客户'); return } const chosen = [...batchSelected].map(i => clients[i]); document.getElementById('recipientList').innerHTML = chosen.map(c => `<span class="recipient">${c.name}</span>`).join(''); document.getElementById('broadcastScript').value = `【${groupMeta[batchGroup].label}客户服务提醒】您好，结合您当前的持仓与市场情况，为您整理了最新服务建议，请及时查收。如有疑问可随时联系我。`; document.getElementById('broadcastMask').classList.add('open') };
+        document.getElementById('sendBroadcast').onclick = () => { document.getElementById('broadcastMask').classList.remove('open'); showToast(`已通过企微群发给 ${batchSelected.size} 位客户 ✓`); exitBatch() };
+        renderClients = function () { const box = document.getElementById('clients'), side = document.querySelector('.sidebar'), savedSide = side.scrollTop; box.innerHTML = ''; clients.forEach((c, i) => { if (filter !== 'all' && !c.types.includes(filter)) return; const loss = c.signals.filter(s => s.state.includes('亏损未止损')).length, stopped = c.signals.filter(s => s.state.includes('亏损已止损')).length, profit = c.signals.filter(s => s.state.includes('盈利')).length, prospect = c.signals.filter(s => s.state.includes('未签约')).length, pills = []; if (loss) pills.push([loss + ' 未止损', 'green']); if (stopped) pills.push([stopped + ' 已止损', '']); if (profit) pills.push([profit + ' 已盈利', 'red']); if (prospect) pills.push([prospect + ' 未签约', '']); const selected = batchSelected.has(i), el = document.createElement('button'); el.type = 'button'; el.className = 'client ' + (!batchMode && i === active ? 'active ' : '') + (selected ? 'selected' : ''); el.title = c.name + ' ' + c.account; el.innerHTML = `<span class="client-check ${selected ? 'checked' : ''}">${selected ? '✓' : ''}</span><span class="client-avatar">${c.name[0]}</span><span class="client-main"><span class="client-title"><b class="client-name">${c.name}</b><span class="client-account">${c.account}</span>${c.taskCount ? '<i class="task-dot"></i>' : ''}</span><span class="client-sub">${c.level} · ${c.risk}</span><span class="client-tags">${pills.map(t => `<i class="tag ${t[1]}">${t[0]}</i>`).join('')}</span></span>`; el.onclick = e => { e.preventDefault(); el.blur(); if (batchMode) { batchSelected.has(i) ? batchSelected.delete(i) : batchSelected.add(i); updateBatchBar(); renderClients() } else selectClient(i) }; box.appendChild(el) }); side.scrollTop = savedSide; requestAnimationFrame(() => { side.scrollTop = savedSide; updateSideThumb() }) };
+        selectClient = function (i) { const page = document.scrollingElement.scrollTop, side = document.querySelector('.sidebar'), sideTop = side.scrollTop; if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); active = i; const c = clients[i]; document.getElementById('profileAvatar').textContent = c.name[0]; document.getElementById('profileName').textContent = c.name; document.getElementById('profileAccount').textContent = c.account; document.querySelector('.phone-number').textContent = c.phone; document.querySelector('.profile-tags').innerHTML = `<span class="tag">${c.gender}</span><span class="tag">${c.level}</span><span class="tag">${c.risk}</span><span class="tag">${c.style}</span>`; document.querySelectorAll('.metric-value')[0].innerHTML = `${c.asset}<small> 万</small>`; document.querySelectorAll('.metric-value')[1].innerHTML = `${c.market}<small> 万</small>`; document.querySelector('.signals-count b').textContent = c.signals.length; document.getElementById('serviceReference').classList.toggle('open', c.types.includes('prospect')); renderClients(); renderSignals(); document.scrollingElement.scrollTop = page; side.scrollTop = sideTop; requestAnimationFrame(() => { document.scrollingElement.scrollTop = page; side.scrollTop = sideTop }) };
+        signalCard = function (s, si) { const isProfit = s.state.includes('盈利'), ratioLabel = isProfit ? '信号收益率' : '浮亏比例', ratioClass = isProfit ? 'gain' : 'loss', diagType = s.type === '个股' ? '个股' : 'ETF'; return `<article class="signal-card ${isProfit ? 'safe' : ''}"><div class="signal-head"><div><span class="asset-title">${s.name}</span><span class="asset-code">${s.code}</span><div class="asset-pills"><i class="tag">${s.type}</i><i class="tag ${s.stateClass}">${s.state}</i></div></div><button class="copy-all" data-copy="${si}"><img src="assets/fuzhi.png" alt=""><span>一键复制</span></button></div><div class="data-grid"><div class="data-box"><div class="data-label">跟随成本</div><div class="data-value">${s.cost}<small> 元</small></div></div><div class="data-box"><div class="data-label">当前价格</div><div class="data-value">${s.price}<small> 元</small></div></div><div class="data-box"><div class="data-label">${ratioLabel}</div><div class="data-value ${ratioClass}">${s.ratio}</div></div><div class="data-box"><div class="data-label">仓位占比</div><div class="data-value">${s.position}</div></div><div class="data-box"><div class="data-label">止损价</div><div class="data-value">${s.stop}<small> 元</small></div></div></div><div class="divider"></div><div class="section-head"><h3>关联异动 / 热点</h3><div class="mini-actions"><button class="mini-btn diag-open" data-code="${s.code}" data-type="sector" data-name="${esc(s.name)} 板块"><img src="assets/bankuai.png" alt=""><span>板块诊断结果</span></button><button class="mini-btn blue copy-action" data-text="诊断链接" aria-label="复制诊断链接"><span>复制</span></button></div></div><div class="events">${s.events.map((e, ei) => eventHTML(e, si, ei)).join('')}</div><div class="divider"></div><div class="section-head"><h3>个性化话术</h3><div class="mini-actions"><button class="mini-btn diag-open" data-code="${s.code}" data-type="${encodeURIComponent(diagType)}" data-name="${esc(s.name)}"><img src="assets/ETF.png" alt=""><span>${diagType}诊断结果</span></button><button class="mini-btn blue copy-action" data-copy="${si}" aria-label="复制个性化话术"><span>复制</span></button></div></div><div class="script-box" contenteditable="true" data-script="${si}">${esc(s.script || defaultScript)}</div>${riskTipHTML(clients[active])}</article>` };
+        document.addEventListener('click', e => { const btn = e.target.closest('.diag-open'); if (!btn) return; e.preventDefault(); e.stopPropagation(); const url = `https://workbuddy.gjzq.com.cn/diag?code=${encodeURIComponent(btn.dataset.code)}&type=${btn.dataset.type}`; const opened = window.open(url, '_blank', 'noopener,noreferrer'); if (opened) opened.opener = null; showToast(`${btn.dataset.name} 诊断报告已在浏览器中打开`) }, true);
+        function updateSideThumb() { const side = document.querySelector('.sidebar'); if (innerWidth <= 760 || side.scrollHeight <= side.clientHeight) { sideThumb.style.display = 'none'; return } sideThumb.style.display = 'block'; const rect = side.getBoundingClientRect(), track = Math.max(0, rect.height - 16), height = Math.max(32, track * side.clientHeight / side.scrollHeight), maxTop = Math.max(0, track - height), ratio = side.scrollTop / Math.max(1, side.scrollHeight - side.clientHeight); sideThumb.style.left = (rect.right - 6) + 'px'; sideThumb.style.top = (rect.top + 8 + maxTop * ratio) + 'px'; sideThumb.style.height = height + 'px' }
+        document.querySelector('.sidebar').addEventListener('scroll', () => { updateSideThumb(); sideThumb.classList.add('visible'); clearTimeout(sideScrollTimer); sideScrollTimer = setTimeout(() => sideThumb.classList.remove('visible'), 500) }, { passive: true }); window.addEventListener('resize', updateSideThumb);
+        const oldCollapseHandler = document.querySelector('.collapse').onclick; document.querySelector('.collapse').onclick = function (e) { oldCollapseHandler.call(this, e); requestAnimationFrame(updateSideThumb) };
+        /* html_07 Figma content and semantic-state corrections */
+        const maotai = clients[0].signals.find(s => s.code === '600519');
+        Object.assign(maotai, {
+            state: '盈利已了结', stateClass: 'profit-tone', cost: '1695.00', price: '1824.50', ratio: '+8.5%', position: '6.8%', stop: '--', details: [
+                { label: '信号买入价', value: '1682.00', unit: '元' },
+                { label: '信号止盈价', value: '1824.50', unit: '元' },
+                { label: '信号收益率', value: '+8.5%', tone: 'profit-tone' },
+                { label: '客户跟随成本', value: '1695.00', unit: '元' },
+                { label: '客户跟随收益', value: '+7.7%', tone: 'profit-tone' },
+                { label: '仓位占比', value: '6.8%' },
+                { label: '所属板块', value: '白酒' },
+                { label: '上月信号胜率', value: '68%', tone: 'profit-tone' },
+                { label: '上月盈利信号', value: '14', unit: '个' },
+                { label: '上月整体收益', value: '+5.9%', tone: 'profit-tone' }
+            ]
+        });
+        const sunGold = clients.find(c => c.name === '孙丽华').signals.find(s => s.name === '黄金ETF'); Object.assign(sunGold, { state: '盈利已了结', stateClass: 'profit-tone' });
+        function semanticStateTone(s) { return s.state.includes('盈利') ? 'profit-tone' : s.state.includes('亏损') ? 'loss-tone' : '' }
+        function signalDataItems(s) {
+            return s.details || [
+                { label: '跟随成本', value: s.cost, unit: s.cost === '--' ? '' : '元' },
+                { label: '当前价格', value: s.price, unit: s.price === '--' ? '' : '元' },
+                { label: s.state.includes('盈利') ? '信号收益率' : '浮亏比例', value: s.ratio, tone: s.state.includes('盈利') ? 'profit-tone' : 'loss-tone' },
+                { label: '仓位占比', value: s.position },
+                { label: '止损价', value: s.stop, unit: s.stop === '--' ? '' : '元' }
+            ]
+        }
+        function dataItemHTML(item) { return `<div class="data-box"><div class="data-label">${item.label}</div><div class="data-value ${item.tone || ''}">${item.value}${item.unit ? `<small> ${item.unit}</small>` : ''}</div></div>` }
+        signalCard = function (s, si) { const isProfit = s.state.includes('盈利'), diagType = s.type === '个股' ? '个股' : 'ETF', stateTone = semanticStateTone(s); return `<article class="signal-card ${isProfit ? 'safe' : ''}"><div class="signal-head"><div><span class="asset-title">${s.name}</span><span class="asset-code">${s.code}</span><div class="asset-pills"><i class="tag">${s.type}</i><i class="tag ${stateTone}">${s.state}</i></div></div><button class="copy-all" data-copy="${si}"><img src="assets/fuzhi.png" alt=""><span>一键复制</span></button></div><div class="data-grid">${signalDataItems(s).map(dataItemHTML).join('')}</div><div class="divider"></div><div class="section-head"><h3>关联异动 / 热点</h3><div class="mini-actions"><button class="mini-btn diag-open" data-code="${s.code}" data-type="sector" data-name="${esc(s.name)} 板块"><img src="assets/bankuai.png" alt=""><span>板块诊断结果</span></button><button class="mini-btn blue copy-action" data-text="诊断链接" aria-label="复制诊断链接"><span>复制</span></button></div></div><div class="events">${s.events.map((e, ei) => eventHTML(e, si, ei)).join('')}</div><div class="divider"></div><div class="section-head"><h3>个性化话术</h3><div class="mini-actions"><button class="mini-btn diag-open" data-code="${s.code}" data-type="${encodeURIComponent(diagType)}" data-name="${esc(s.name)}"><img src="assets/ETF.png" alt=""><span>${diagType}诊断结果</span></button><button class="mini-btn blue copy-action" data-copy="${si}" aria-label="复制个性化话术"><span>复制</span></button></div></div><div class="script-box" contenteditable="true" data-script="${si}">${esc(s.script || defaultScript)}</div>${riskTipHTML(clients[active])}</article>` };
+        /* html_08 interaction and grouped-event rendering */
+        eventHTML = function (e, si, ei) { const semantic = ['green', 'orange', 'red'].includes(e[1]) ? e[1] : 'orange', tone = ei === 0 ? semantic : 'neutral'; return `<span class="event-wrap"><button class="event ${tone}" data-pop="pop-${si}-${ei}">${esc(e[0])}</button><span class="event-pop" id="pop-${si}-${ei}"><strong>${esc(e[0])}</strong>${esc(e[2])}</span></span>` };
+        const selectClientBefore08 = selectClient; let initialClientRender08 = true;
+        selectClient = function (i) { const side = document.querySelector('.sidebar'), sideTop = side.scrollTop; selectClientBefore08(i); side.scrollTop = sideTop; if (!initialClientRender08) { requestAnimationFrame(() => { const content = document.querySelector('.content'), topbar = document.querySelector('.topbar'), safeGap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--space-4')) || 16, target = Math.max(0, content.getBoundingClientRect().top + window.scrollY - topbar.offsetHeight - safeGap); window.scrollTo({ top: target, left: 0, behavior: 'auto' }); side.scrollTop = sideTop }) } };
+
+        /* html_09: canonical prototype data and Figma service-reference behavior */
+        const canonicalClients09 = [{ "id": 1, "name": "武静", "phone": "86175368", "fullPhone": "17386175368", "gender": "女", "accountNo": "8881905747", "level": "高客四星", "risk": "C4", "riskLabel": "中高风险", "style": "价值型", "totalAsset": "789.79万", "secAsset": "789.30万", "tasks": [{ "name": "SOP-AI投ETF产品退订挽留", "desc": "1.AI投ETF退订（目前AI+未上线退订，暂不推送）2.剔除近三月接通率=0的客户且近三月外呼次数≥3次", "done": false, "dueDate": "2026-07-07", "category": "service", "urgency": "high", "required": true }, { "name": "风险测评过期", "desc": "客户风险测评已超过有效期，需提醒客户完成重新测评", "done": false, "dueDate": "2026-07-10", "category": "service", "urgency": "normal", "required": true }], "completed": false, "signals": [{ "id": "s1", "type": "loss", "typeLabel": "亏损未止损", "targetName": "光伏ETF", "targetCode": "515790", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "跟随成本", "value": "1.085元" }, { "label": "当前价格", "value": "1.017元" }, { "label": "浮亏比例", "value": "-6.3%", "cls": "green" }, { "label": "止损价", "value": "0.998元" }], "events": [{ "label": "#新能源调整", "type": "down", "desc": "新能源板块今日大幅下跌，申万新能源指数跌2.8%，光伏、储能、充电桩子板块集体走弱，主要受欧洲补贴政策收紧及碳酸锂价格下行预期影响。" }, { "label": "#美联储议息", "type": "news", "desc": "美联储7月议息会议纪要显示官员倾向维持高利率，美元指数走强，对A股外资流向存在一定扰动。" }], "script": "您好！今日新能源板块出现较大异动，您跟随AI投ETF信号的光伏ETF属于该板块，受板块整体下跌影响，您的跟随仓位目前出现了浮亏。\n\n此次浮亏主要由板块下跌异动引起，属于板块性系统压力传导，并非信号本身失效。\n\n您当前跟随仓位占比不高（7.8%），建议继续持有观察，等待板块情绪修复后的反弹机会。同时也可关注下一期信号，通过分散配置降低单一标的波动对账户的影响。\n\n投资都会有起伏，您不用太担心。从AI投ETF上个月整体表现来看，系统捕捉的信号整体不错，这只票只是暂时处于震荡期。我会持续帮您跟踪，有操作机会第一时间提示您。" }, { "id": "s2", "type": "loss", "typeLabel": "亏损已止损", "targetName": "消费ETF", "targetCode": "159928", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "跟随成本", "value": "0.996元" }, { "label": "止损价格", "value": "0.943元" }, { "label": "实际亏损", "value": "-5.4%", "cls": "green" }, { "label": "仓位占比", "value": "5.2%" }, { "label": "止损时间", "value": "07-03" }], "events": [{ "label": "#大消费承压", "type": "down", "desc": "大消费板块整体承压，受宏观经济数据偏弱及居民消费信心不足影响，零售、食品饮料等子板块跌幅居前。" }], "script": "您好！您跟随的消费ETF信号已触发止损，我主动跟您沟通一下。大消费板块近期出现明显回调，板块整体承压，您跟随的ETF随板块同步回调因此触发了止损。值得注意的是，及时止损已经避免了进一步亏损扩大。\n\n这次触发止损确实给您带来了一定损失，非常理解您的心情。止损机制的核心作用正是控制风险，避免更大亏损。接下来建议关注AI投ETF后续推送的新信号，通过分散配置降低单一标的波动影响；如需调整跟随仓位或频率，我们也可以重新评估您的风险偏好。\n\n从AI投ETF上个月整体表现来看，系统捕捉的信号整体不错，这只票是个例外。接下来我会持续帮您关注新的投资机会，有操作提示会及时与您沟通。" }] }, { "id": 2, "name": "陈建国", "phone": "13801234567", "fullPhone": "13801234567", "gender": "男", "accountNo": "8872134561", "level": "高客三星", "risk": "C5", "riskLabel": "激进型", "style": "成长型", "totalAsset": "342.16万", "secAsset": "338.50万", "tasks": [], "completed": false, "signals": [{ "id": "s3", "type": "profit", "typeLabel": "盈利已了结", "targetName": "芯片ETF", "targetCode": "512760", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "信号买入价", "value": "1.432元" }, { "label": "信号止盈价", "value": "1.555元" }, { "label": "信号收益率", "value": "+8.6%", "cls": "red" }, { "label": "客户跟随成本", "value": "1.451元" }, { "label": "客户跟随收益", "value": "+7.2%", "cls": "red" }, { "label": "仓位占比", "value": "13.2%" }, { "label": "所属板块", "value": "半导体" }, { "label": "上月信号胜率", "value": "74%", "cls": "red" }, { "label": "上月盈利信号", "value": "18个" }, { "label": "上月整体收益", "value": "+6.8%", "cls": "red" }, { "label": "客户本次盈利", "value": "+1,046元" }, { "label": "个股诊断", "value": "短期强势" }], "events": [{ "label": "#半导体大涨", "type": "up", "desc": "半导体板块今日大幅上涨，申万半导体指数涨幅达3.7%，受益于国产替代政策及AI算力需求拉动，芯片设计、封测板块领涨。" }, { "label": "#芯片ETF涨停", "type": "up", "desc": "芯片ETF今日涨停，触发AI投ETF止盈信号，当前持仓客户已获得8.6%正收益。" }], "script": "您好！首先恭喜您，最近跟投的芯片ETF表现很不错！这只ETF所属的半导体板块近期出现向上异动，是本次信号盈利的重要驱动，您这次跟投的时机把握得很好。\n\n目前您这只ETF跟随仓位占比相对较高（13.2%），建议考虑阶段性止盈一部分，先锁定部分收益；剩余仓位可结合AI投ETF信号继续观察。\n\n从AI投ETF上个月整体表现来看，系统胜率相当不错（74%），您这次跟投成功也印证了信号的参考价值。接下来还会有新信号推出，建议继续保持关注、提高跟随率。" }] }, { "id": 3, "name": "刘晓梅", "phone": "13912345678", "fullPhone": "13912345678", "gender": "女", "accountNo": "8863027489", "level": "高客五星", "risk": "C4", "riskLabel": "中高风险", "style": "稳健型", "totalAsset": "2356.88万", "secAsset": "2100.40万", "tasks": [{ "name": "SOP-AI投ETF产品退订挽留", "desc": "1.AI投ETF退订（目前AI+未上线退订，暂不推送）2.剔除近三月接通率=0的客户且近三月外呼次数≥3次", "done": false, "dueDate": "2026-07-06", "category": "service", "urgency": "high", "required": true }, { "name": "理财产品即将到期", "desc": "客户持有的理财产品将于近期到期，需提前沟通续期或转购意向", "done": false, "dueDate": "2026-07-08", "category": "service", "urgency": "high", "required": true }, { "name": "风险测评过期", "desc": "客户风险测评已超过有效期，需提醒客户完成重新测评", "done": false, "dueDate": "2026-07-15", "category": "service", "urgency": "normal", "required": true }], "completed": false, "signals": [{ "id": "s4", "type": "loss", "typeLabel": "亏损未止损", "targetName": "沪深300ETF", "targetCode": "510300", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "跟随成本", "value": "3.812元" }, { "label": "当前价格", "value": "3.654元" }, { "label": "浮亏比例", "value": "-4.1%", "cls": "green" }, { "label": "仓位占比", "value": "22.4%", "cls": "green" }, { "label": "止损价", "value": "3.565元" }], "events": [{ "label": "#大盘整体调整", "type": "down", "desc": "上证指数今日下跌1.2%，沪深300同步走弱，受美联储偏鹰表态影响，外资净流出超50亿元，市场风险偏好整体回落。" }, { "label": "#汇率扰动", "type": "warning", "desc": "人民币兑美元汇率近期有所承压，对持有相关QDII产品的客户产生一定影响，建议关注汇率对净值的扰动。" }], "script": "您好！今日大盘整体出现调整，您跟随AI投ETF信号的沪深300ETF随市下行，目前跟随仓位出现了一定浮亏。\n\n此次浮亏主要受整体A股市场回调影响，属于市场系统性压力，与信号质量本身关系不大。\n\n目前您这只ETF跟随仓位占比较高（22.4%），建议适当降低仓位、控制单一标的风险。同时可关注下一期信号，通过分散配置降低波动影响。\n\n投资都会有起伏，您不用太担心。我会持续帮您跟踪，有操作机会会第一时间提示您。" }, { "id": "s5", "type": "profit", "typeLabel": "盈利已了结", "targetName": "贵州茅台", "targetCode": "600519", "targetType": "个股", "prepared": false, "keyData": [{ "label": "信号买入价", "value": "1682.00元" }, { "label": "信号止盈价", "value": "1824.50元" }, { "label": "信号收益率", "value": "+8.5%", "cls": "red" }, { "label": "客户跟随成本", "value": "1695.00元" }, { "label": "客户跟随收益", "value": "+7.7%", "cls": "red" }, { "label": "仓位占比", "value": "6.8%" }, { "label": "所属板块", "value": "白酒" }, { "label": "上月信号胜率", "value": "68%", "cls": "red" }, { "label": "上月盈利信号", "value": "14个" }, { "label": "上月整体收益", "value": "+5.9%", "cls": "red" }, { "label": "客户本次盈利", "value": "+9,730元" }, { "label": "个股诊断", "value": "风口方向" }], "events": [{ "label": "#白酒板块回暖", "type": "up", "desc": "白酒板块受渠道库存改善及节日备货提振，本周累计涨幅超4%，贵州茅台、五粮液等核心标的表现突出。" }], "script": "您好！首先恭喜您，贵州茅台的这笔跟投表现很不错！白酒板块近期受渠道库存改善提振，茅台近期走势强劲，本次信号已盈利了结。\n\n您当前跟随仓位占比不高（6.8%），且白酒板块目前仍处于市场关注方向，可以继续持有观察；如果后续出现合理回调，也可结合AI投ETF信号考虑是否适当加仓。\n\n从AI投ETF上个月整体表现来看，系统胜率还不错，您这次跟投成功也印证了信号的参考价值。接下来还会有新信号推出，建议继续保持关注。" }, { "id": "s6", "type": "loss", "typeLabel": "亏损未止损", "targetName": "中证500ETF", "targetCode": "510500", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "跟随成本", "value": "6.218元" }, { "label": "当前价格", "value": "5.994元" }, { "label": "浮亏比例", "value": "-3.6%", "cls": "green" }, { "label": "仓位占比", "value": "9.1%" }, { "label": "止损价", "value": "5.878元" }], "events": [{ "label": "#中小盘承压", "type": "down", "desc": "中小盘风格今日表现偏弱，中证500指数跌幅超沪深300，资金向蓝筹方向集中，成长风格短期承压。" }], "script": "您好！今日中小盘风格整体承压，您跟随的中证500ETF受风格切换影响，目前出现了一定浮亏。\n\n此次浮亏属于风格轮动导致的短期承压，信号尚未触发止损，当前止损价格为5.878元，后续重点关注是否接近止损位。\n\n您当前跟随仓位占比不高（9.1%），建议继续持有观察，等待市场风格切换后的修复机会。同时也可关注下一期信号，通过分散配置降低单一标的波动对账户的影响。" }] }, { "id": 4, "name": "赵明远", "phone": "13645678901", "fullPhone": "13645678901", "gender": "男", "accountNo": "8854918302", "level": "普通客户", "risk": "C3", "riskLabel": "平衡型", "style": "指数增强", "totalAsset": "128.42万", "secAsset": "122.10万", "tasks": [{ "name": "风险测评过期", "done": false, "dueDate": "2026-07-12", "category": "service", "urgency": "normal", "required": false }], "completed": false, "signals": [{ "id": "s7", "type": "prospect", "typeLabel": "未签约开发", "targetName": "医药ETF", "targetCode": "512010", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "持仓成本", "value": "0.812元" }, { "label": "当前价格", "value": "0.846元" }, { "label": "当前浮盈", "value": "+4.2%", "cls": "red" }, { "label": "所属概念", "value": "医疗健康" }, { "label": "历史信号胜率", "value": "72%", "cls": "red" }, { "label": "历史信号次数", "value": "14次" }, { "label": "最大收益信号", "value": "+18.3%" }, { "label": "最大收益开仓", "value": "24-11-08" }, { "label": "最大收益卖出", "value": "24-12-02" }], "events": [{ "label": "#医药ETF热点", "type": "up", "desc": "医药板块今日获增量资金关注，CXO、创新药细分方向领涨，AI+医疗概念持续活跃，申万医药指数涨幅1.6%。" }, { "label": "#创新药政策利好", "type": "news", "desc": "国家药监局最新公告显示将进一步加快创新药审批流程，相关政策预计下月正式落地，医药板块长期逻辑持续向好。" }], "script": "您好！今天系统提示，您持有的医药ETF属于近期市场关注度较高的医疗健康主题，这类方向近期有一定热点机会，我结合ETF诊断帮您看了一下当前情况。\n\nETF底层核心成分股中，爱尔眼科、迈瑞医疗近期受益于创新药政策利好，表现较为亮眼。AI投ETF系统之前也给出过这只ETF的相关信号，从历史信号表现来看，当时如果跟投收益还是比较可观的（近半年胜率72%），说明AI投ETF对您当前持仓有一定跟踪和提示价值。\n\n基于刚才的沟通，建议您了解一下我司的AI+投顾服务。AI+投顾会在AI投ETF信号基础上，由我结合您的持仓情况做进一步提醒和跟踪服务，以后有持仓相关信号我会第一时间提示您，让您不错过重要机会。要不我给您详细介绍一下AI+服务的具体内容和资费？" }] }, { "id": 5, "name": "孙丽华", "phone": "15823456789", "fullPhone": "15823456789", "gender": "女", "accountNo": "8845736218", "level": "高客二星", "risk": "C3", "riskLabel": "平衡型", "style": "价值型", "totalAsset": "516.30万", "secAsset": "480.00万", "tasks": [], "completed": false, "signals": [{ "id": "s8", "type": "profit", "typeLabel": "盈利已了结", "targetName": "黄金ETF", "targetCode": "518880", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "信号买入价", "value": "5.320元" }, { "label": "信号止盈价", "value": "5.751元" }, { "label": "信号收益率", "value": "+8.1%", "cls": "red" }, { "label": "客户跟随成本", "value": "5.334元" }, { "label": "客户跟随收益", "value": "+7.8%", "cls": "red" }, { "label": "仓位占比", "value": "8.5%" }, { "label": "所属板块", "value": "黄金" }, { "label": "上月信号胜率", "value": "70%", "cls": "red" }, { "label": "上月盈利信号", "value": "16个" }, { "label": "上月整体收益", "value": "+5.4%", "cls": "red" }, { "label": "客户本次盈利", "value": "+3,757元" }, { "label": "个股诊断", "value": "避险方向" }], "events": [{ "label": "#黄金创新高", "type": "up", "desc": "国际金价突破2480美元/盎司，创历史新高，受美联储降息预期升温及地缘政治避险情绪推动，黄金ETF大幅上涨。" }], "script": "您好！首先恭喜您，黄金ETF这笔跟投收益非常不错！国际金价近期受美联储降息预期及避险情绪推动，突破历史高位，本次信号已顺利盈利了结（+8.1%）。\n\n您当前跟随仓位占比不高（8.5%），黄金作为避险资产目前仍受市场关注，可以继续持有观察；如果后续出现合理回调，也可结合AI投ETF信号考虑是否适当加仓。\n\n从AI投ETF上个月整体表现来看，系统胜率还不错（70%），您这次跟投成功也印证了信号的参考价值。接下来还会有新信号推出，建议继续保持关注、提高跟随率。" }] }, { "id": 6, "name": "林秀兰", "phone": "13512348899", "fullPhone": "13512348899", "gender": "女", "accountNo": "8837654921", "level": "普通客户", "risk": "C2", "riskLabel": "谨慎型", "style": "稳健型", "totalAsset": "86.40万", "secAsset": "62.10万", "tasks": [{ "name": "风险测评过期", "desc": "客户风险测评已超过有效期，需提醒客户完成重新测评", "done": false, "dueDate": "2026-07-11", "category": "service", "urgency": "normal", "required": true }], "completed": false, "signals": [{ "id": "s9", "type": "prospect", "typeLabel": "未签约", "targetName": "红利ETF", "targetCode": "510880", "targetType": "ETF", "prepared": false, "keyData": [{ "label": "近三月胜率", "value": "62%", "cls": "red" }, { "label": "近三月收益率", "value": "+4.2%", "cls": "red" }, { "label": "适用风险等级", "value": "C3 及以上" }, { "label": "客户当前风险等级", "value": "C2（谨慎型）" }], "events": [{ "label": "#高股息策略", "type": "up", "desc": "市场波动加大背景下，高股息资产配置价值凸显，红利类ETF近期资金持续净流入。" }], "script": "您好！最近市场上出现了几个值得关注的投资机会信号，表现比较稳健，很适合作为资产配置的补充。看您目前还未开通相关跟投服务，方便的话我可以先给您简单介绍一下产品逻辑和风险特征，您感兴趣的话我们可以约个时间详细聊聊～" }] }];
+        const clientOrder09 = ['刘晓梅', '武静', '陈建国', '孙丽华', '赵明远', '林秀兰'];
+        function maskPhone09(value) { const phone = String(value); return phone.length >= 7 ? phone.slice(0, 3) + '****' + phone.slice(-4) : phone }
+        function signalTone09(type) { return type === 'profit' ? 'profit-tone' : type === 'loss' ? 'loss-tone' : '' }
+        function eventTone09(type) { return type === 'up' ? 'red' : type === 'down' ? 'green' : 'orange' }
+        function normalizeClient09(source) {
+            const signalTypes = new Set(source.signals.map(signal => signal.type));
+            return { name: source.name, account: source.accountNo, phone: maskPhone09(source.fullPhone), fullPhone: source.fullPhone, gender: source.gender, level: source.level, risk: source.risk + ' ' + source.riskLabel, style: source.style, types: [...(signalTypes.has('loss') ? ['loss'] : []), ...(signalTypes.has('profit') ? ['profit'] : []), ...(signalTypes.has('prospect') ? ['prospect'] : [])], asset: source.totalAsset.replace(/万$/, ''), market: source.secAsset.replace(/万$/, ''), taskCount: source.tasks.length, signals: source.signals.map(signal => ({ name: signal.targetName, code: signal.targetCode, type: signal.targetType, state: signal.typeLabel, stateClass: signalTone09(signal.type), details: signal.keyData.map(item => ({ label: item.label, value: item.value, tone: item.cls === 'red' ? 'profit-tone' : item.cls === 'green' ? 'loss-tone' : '' })), events: signal.events.map(event => [event.label.replace(/^#/, ''), eventTone09(event.type), event.desc]), script: signal.script })) }
+        }
+        const normalizedClients09 = clientOrder09.map(name => normalizeClient09(canonicalClients09.find(client => client.name === name)));
+        clients.splice(0, clients.length, ...normalizedClients09);
+        // serviceRef.innerHTML = '<div class="service-ref-head"><img src="assets/fuwucankao.png" alt="">服务介绍参考<button type="button" class="task-toggle" id="serviceRefToggle" aria-expanded="true"><span>收起</span><img src="assets/jiantou2.png" alt=""></button></div><div class="service-ref-body" id="serviceRefBody"><div class="service-overview"><strong>AI+投顾 · 整体服务（含费用说明）</strong><p>AI+投顾结合客户持仓与市场信号，由投顾提供持续跟踪、机会提醒和风险提示服务。服务内容包含 AI选好股、AI股票解套、AI投ETF，具体签约范围与费用以客户实际签约页面为准。</p></div><h3 class="service-products-title">下辖三大产品</h3><div class="service-products"><article class="service-product"><div class="service-product-head"><img src="assets/xuanhaogu.png" alt=""></div><p>结合市场热点与量化信号，提供选股方向、机会跟踪及风险提醒。</p></article><article class="service-product"><div class="service-product-head"><img src="assets/gupiaojietao.png" alt=""></div><p>围绕客户持仓成本和行情变化，提供持仓诊断与解套策略参考。</p></article><article class="service-product"><div class="service-product-head"><img src="assets/touETF.png" alt=""></div><p>追踪ETF信号与板块异动，提供买卖信号、仓位和止盈止损提醒。</p></article></div></div>';
+        document.getElementById('serviceRefToggle').onclick = function () {
+            const body = document.getElementById('serviceRefBody'), willCollapse = !body.hidden;
+            body.hidden = willCollapse; this.setAttribute('aria-expanded', String(!willCollapse));
+            this.innerHTML = '<span>' + (willCollapse ? '展开' : '收起') + '</span><img src="assets/' + (willCollapse ? 'jiantou1.png' : 'jiantou2.png') + '" alt="">';
+        };
+        /* html_10: independent service-reference accordions */
+        serviceRef.innerHTML = '<div class="service-ref-head"><img src="assets/fuwucankao.png" alt="">服务介绍参考</div><div class="service-ref-body"><section class="service-overview"><div class="service-section-head"><strong>AI+投顾 · 整体服务（含费用说明）</strong><button type="button" class="task-toggle" id="serviceRefToggle" aria-expanded="true"><span>收起</span><img src="assets/jiantou2.png" alt=""></button></div><div class="service-overview-copy" id="serviceOverviewContent"><p>11111</p></div></section><div class="service-products-title"><strong>下辖三大产品</strong><button type="button" class="task-toggle" id="serviceProductsToggle" aria-expanded="true"><span>收起</span><img src="assets/jiantou2.png" alt=""></button></div><div class="service-products" id="serviceProductsContent"><article class="service-product"><div class="service-product-head"><img src="assets/xuanhaogu.png" alt=""></div><p>结合市场热点与量化信号，提供选股方向、机会跟踪及风险提醒。</p></article><article class="service-product"><div class="service-product-head"><img src="assets/gupiaojietao.png" alt=""></div><p>围绕客户持仓成本和行情变化，提供持仓诊断与解套策略参考。</p></article><article class="service-product"><div class="service-product-head"><img src="assets/touETF.png" alt=""></div><p>追踪ETF信号与板块异动，提供买卖信号、仓位和止盈止损提醒。</p></article></div></div>';
+        function bindServiceToggle10(buttonId, contentId) {
+            const button = document.getElementById(buttonId), content = document.getElementById(contentId);
+            button.onclick = function () {
+                const expanded = this.getAttribute('aria-expanded') === 'true', nextExpanded = !expanded;
+                content.hidden = !nextExpanded; this.setAttribute('aria-expanded', String(nextExpanded));
+                this.innerHTML = '<span>' + (nextExpanded ? '收起' : '展开') + '</span><img src="assets/' + (nextExpanded ? 'jiantou2.png' : 'jiantou1.png') + '" alt="">';
+            };
+        }
+        bindServiceToggle10('serviceRefToggle', 'serviceOverviewContent');
+        bindServiceToggle10('serviceProductsToggle', 'serviceProductsContent');
+        /* html_12: final service-reference content and synchronized task radius */
+        serviceRef.innerHTML = `
+            <div class="service-ref-head"><img src="assets/fuwucankao.png" alt="">服务介绍参考</div>
+            <div class="service-ref-body">
+                <div class="service-section-head">
+                    <strong>AI+投顾 · 整体服务（含费用说明）</strong>
+                    <button type="button" class="task-toggle" id="serviceRefToggle" aria-expanded="true"><span>收起</span><img src="assets/jiantou2.png" alt=""></button>
+                </div>
+                <section class="service-overview" id="serviceOverviewContent">
+                    <div class="service-overview-copy">
+                        <p>国金"AI+投顾"尊享服务是依托强大AI技术与专业投顾团队，为您在投资方面提供全方面、全流程服务。</p>
+                        <p>首先，AI投顾依托人工智能与量化策略，从海量数据中帮您捕捉持仓个股操作机会、具备潜力的热点个股，同时提供明确的买卖点建议，帮助您解决"买什么""什么价位买"和"什么价位卖"的难题。</p>
+                        <p>其次，人工投顾全程陪伴，从您的投资账户实际出发，为您量身定制仓位策略；当AI投顾信号较少或过多时，帮您过滤噪音聚焦市场热门概念，精准锚定投资机会。</p>
+                        <p>最后，当您有个股诊断、账户优化或任何疑问时，您的专属投顾会为您提供一对一的分析，尤其是在您持仓被套或市场异动时，给予您及时的心理支持和专业建议。</p>
+                        <p>签约后，您还可选择加入社群，和一群志同道合的股友交流投资心得。除此以外，签约后在佣金宝首页界面，还会呈现AI+服务的3个核心线上内容：</p>
+                        <p>（1）看市场——这个客观高效反映市场整体情绪变化、识别短期极端情绪，为趋势反转提供预警信号。对应过热和冰点的都有不同的操作方式，参考下面的看风口行业热度榜。</p>
+                        <p>（2）看风口——动态追踪活跃资金风向标，梳理市场热点催化逻辑。</p>
+                        <p>（3）专家观点——智能算法甄选，权威专家解析，穿透市场噪音，提炼核心投资洞见。</p>
+                        <p class="service-fee-title">费用提示</p>
+                        <p>你签约的AI+选好股/股票解套/投ETF，账户佣金是叠加万9。现在行情处于慢牛，机会难得，也希望您能够借助我们的AI+投顾服务抓住这波慢牛机会。后续您操作上或者对产品使用有任何问题，也可以随时与我沟通。</p>
+                    </div>
+                </section>
+                <div class="service-products-title">
+                    <strong>下辖三大产品</strong>
+                    <button type="button" class="task-toggle" id="serviceProductsToggle" aria-expanded="true"><span>收起</span><img src="assets/jiantou2.png" alt=""></button>
+                </div>
+                <div class="service-products" id="serviceProductsContent">
+                    <article class="service-product">
+                        <div class="service-product-head"><img src="assets/xuanhaogu.png" alt="AI选好股"></div>
+                        <p class="service-product-tip">专注于精选潜力个股并提供实时信号的智能顾问</p>
+                        <p class="service-product-copy">AI选好股是专注于精选潜力个股并提供实时信号的智能顾问。它可以根据您的行业偏好、市值偏好，利用策略模型，为您精选潜力个股并提供买卖信号，力争帮您获得理想投资收益。它是运用底层丰富的宏观、中观、微观选股策略，捕捉市场热点与技术共振的个股机会，并持续监测交易时机，在每个交易日开盘前，为您精选观察池股票并展示参考价格。在盘中，会发送相关标的的实时信号，包括买卖方向、时间及价格等，方便跟随操作。</p>
+                    </article>
+                    <article class="service-product">
+                        <div class="service-product-head"><img src="assets/gupiaojietao.png" alt="AI股票解套"></div>
+                        <p class="service-product-tip">利用人工智能算法，通过多种方式帮助您解套</p>
+                        <p class="service-product-copy">AI股票解套利用人工智能算法，通过多种方式帮助您解套。如果被套的股票上涨潜力较高，它会帮助您通过"低买高卖"的波段操作，持续降低持仓成本。如果这只股票所处行业有波段潜力更高的个股，它会为您提供同行业高性价比个股并对比参考。如果被套的股票上涨潜力不大它会为您推荐"波段潜力榜"，帮您通过"调仓换股+低买高卖"的方式，力争实现解套。</p>
+                    </article>
+                    <article class="service-product">
+                        <div class="service-product-head"><img src="assets/touETF.png" alt="AI投ETF"></div>
+                        <p class="service-product-tip">基于国金证券量化策略体系，高效捕捉全球市场动向</p>
+                        <p class="service-product-copy">AI投ETF基于国金证券量化策略体系，更高效的捕捉全球市场动向，提供每日热点投资机会。涵盖国内&全球精选指数，每日为您精选次日热点机会，看好行业同时精选个股机会，提供买卖信号建议，支持一键复制，通过双向条件单为您自动执行买卖策略。还融合了Deepseek辅助策略，为您提供热点机会深度解读，查波段买卖信号的服务。</p>
+                    </article>
+                </div>
+            </div>`;
+
+        function bindServiceToggle12(buttonId, contentId) {
+            const button = document.getElementById(buttonId);
+            const content = document.getElementById(contentId);
+            button.onclick = function () {
+                const nextExpanded = this.getAttribute('aria-expanded') !== 'true';
+                content.hidden = !nextExpanded;
+                this.setAttribute('aria-expanded', String(nextExpanded));
+                this.innerHTML = '<span>' + (nextExpanded ? '收起' : '展开') + '</span><img src="assets/' + (nextExpanded ? 'jiantou2.png' : 'jiantou1.png') + '" alt="">';
+            };
+        }
+
+        bindServiceToggle12('serviceRefToggle', 'serviceOverviewContent');
+        bindServiceToggle12('serviceProductsToggle', 'serviceProductsContent');
+
+        function syncTaskProfile12() {
+            const panel = document.getElementById('tasksPanel');
+            const open = panel.classList.contains('open');
+            document.querySelector('.profile').classList.toggle('tasks-expanded', open);
+            taskToggle.innerHTML = '<span>' + (open ? '收起' : '展开') + '</span><img src="assets/' + (open ? 'jiantou2.png' : 'jiantou1.png') + '" alt="">';
+            taskToggle.setAttribute('aria-expanded', String(open));
+        }
+
+        taskToggle.onclick = function () {
+            document.getElementById('tasksPanel').classList.toggle('open');
+            syncTaskProfile12();
+        };
+        syncTaskProfile12();
+
+        /* html_13: collapse only after batch state has been reset */
+        const collapseButton13 = document.querySelector('.collapse');
+        collapseButton13.onclick = function (event) {
+            event.preventDefault();
+            const sidebar = document.querySelector('.sidebar');
+            const collapsing = !sidebar.classList.contains('collapsed');
+            if (collapsing && batchMode) {
+                exitBatch();
+            }
+            document.getElementById('broadcastMenu').classList.remove('open');
+            broadcastButton.setAttribute('aria-expanded', 'false');
+            sidebar.classList.toggle('collapsed');
+            const collapsed = sidebar.classList.contains('collapsed');
+            this.textContent = collapsed ? '›' : '‹';
+            this.setAttribute('aria-label', collapsed ? '展开客户列表' : '收起客户列表');
+            requestAnimationFrame(updateSideThumb);
+        };
+        refreshGroupMenu(); updateBatchBar(); renderClients(); selectClient(0); initialClientRender08 = false; updateSideThumb();
+    </script>
+</body>
+
+</html>
