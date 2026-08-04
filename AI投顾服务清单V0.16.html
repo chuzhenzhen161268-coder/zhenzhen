@@ -1,0 +1,5574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI原生服务清单 · 客户服务会话工作台</title>
+  <style>
+    :root {
+      --primary: #14265F;
+      --primary-2: #1E3A8A;
+      --blue: #2563EB;
+      --bg: #F3F6FB;
+      --panel: #FFFFFF;
+      --line: #E3E8F2;
+      --text: #172554;
+      --sub: #667085;
+      --muted: #98A2B3;
+      --green: #168A52;
+      --green-bg: #EBF8F1;
+      --orange: #C47719;
+      --orange-bg: #FFF7E8;
+      --red: #C7352A;
+      --red-bg: #FFF0EF;
+      --purple: #6D5BD0;
+      --purple-bg: #F3F1FF;
+      --shadow: 0 1px 3px rgba(20, 38, 95, .06);
+      --radius: 12px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px
+    }
+
+    .app {
+      height: 100vh;
+      display: flex;
+      flex-direction: column
+    }
+
+    .topbar {
+      height: 64px;
+      background: #fff;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 1px 3px rgba(20, 38, 95, .06)
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    .top-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px
+    }
+
+    .tstat {
+      min-width: auto;
+      text-align: center
+    }
+
+    .tstat b {
+      font-size: 19px;
+      color: var(--primary)
+    }
+
+    .tstat span {
+      font-size: 11px;
+      color: var(--muted);
+      display: block;
+      margin-top: 2px
+    }
+
+    .top-divider {
+      width: 1px;
+      height: 26px;
+      background: var(--line)
+    }
+
+    .top-date {
+      font-size: 12px;
+      color: var(--sub);
+      font-weight: 600
+    }
+
+    .top-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #EEF4FF;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px
+    }
+
+    .top-ai {
+      max-width: 460px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .1);
+      font-size: 12px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, .82)
+    }
+
+    .main {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 340px minmax(480px, 1fr) 420px;
+      gap: 16px;
+      padding: 16px
+    }
+
+    .col {
+      min-height: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column
+    }
+
+    .col-hd {
+      height: 58px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .col-title {
+      font-size: 15px;
+      font-weight: 800
+    }
+
+    .col-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: #F8FAFD;
+      color: var(--sub);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff
+    }
+
+    .scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 14px
+    }
+
+    .scroll::-webkit-scrollbar {
+      width: 5px
+    }
+
+    .scroll::-webkit-scrollbar-thumb {
+      background: #D0D8E8;
+      border-radius: 5px
+    }
+
+    .queue-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px
+    }
+
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #FAFBFE
+    }
+
+    .mini b {
+      font-size: 17px
+    }
+
+    .mini span {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .customer-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #fff;
+      cursor: pointer;
+      transition: .18s;
+      max-width: 100%;
+      overflow: hidden
+    }
+
+    .cust-head {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .cust-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #EEF4FF;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0
+    }
+
+    .cust-acct {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600
+    }
+
+    .cust-tags {
+      font-size: 11px;
+      color: var(--sub);
+      margin-top: 2px;
+      overflow-wrap: anywhere
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 5px
+    }
+
+    .pill-green {
+      color: var(--green);
+      background: var(--green-bg)
+    }
+
+    .pill-orange {
+      color: var(--orange);
+      background: var(--orange-bg)
+    }
+
+    .pill-red {
+      color: var(--red);
+      background: var(--red-bg)
+    }
+
+    .pill-blue {
+      color: var(--blue);
+      background: #EEF4FF
+    }
+
+    .prof-metric {
+      display: flex;
+      flex-direction: column
+    }
+
+    .prof-metric span {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .prof-metric b {
+      font-size: 15px;
+      color: var(--text);
+      margin-top: 2px
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: #F8FAFD;
+      color: var(--sub);
+      cursor: pointer;
+      margin: 2px 5px 2px 0;
+      transition: .15s
+    }
+
+    .chip:hover {
+      border-color: #9BB6FF
+    }
+
+    .chip.on {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff
+    }
+
+    .cond-row {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .cond-row:last-child {
+      border-bottom: none
+    }
+
+    .cond-name {
+      font-size: 13px;
+      font-weight: 800
+    }
+
+    .cond-period {
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: 5px;
+      font-weight: 600
+    }
+
+    .customer-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(20, 38, 95, .08)
+    }
+
+    .customer-card.active {
+      border-color: #9BB6FF;
+      box-shadow: 0 0 0 3px #EDF3FF;
+      background: #FBFDFF
+    }
+
+    .cust-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0
+    }
+
+    .cust-name {
+      font-size: 16px;
+      font-weight: 800;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    .b-blue {
+      color: var(--blue);
+      background: #EEF4FF
+    }
+
+    .b-green {
+      color: var(--green);
+      background: var(--green-bg)
+    }
+
+    .b-orange {
+      color: var(--orange);
+      background: var(--orange-bg)
+    }
+
+    .b-red {
+      color: var(--red);
+      background: var(--red-bg)
+    }
+
+    .b-purple {
+      color: var(--purple);
+      background: var(--purple-bg)
+    }
+
+    .cust-line {
+      font-size: 12px;
+      color: var(--sub);
+      margin-top: 8px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+      word-break: break-word
+    }
+
+    .opp-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px
+    }
+
+    .opp {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 7px;
+      background: #F1F5F9;
+      color: #475569;
+      max-width: 100%;
+      overflow-wrap: anywhere
+    }
+
+    .opp.main {
+      background: #EAF1FF;
+      color: #1D4ED8
+    }
+
+    .opp.defer {
+      background: #FFF3F0;
+      color: #C7352A
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px
+    }
+
+    .section-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px
+    }
+
+    .section-title {
+      font-weight: 900;
+      font-size: 15px
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #F7FAFF, #FFFFFF);
+      border-color: #CFDBFF
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px
+    }
+
+    .decision {
+      padding: 14px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid #DDE7FF
+    }
+
+    .decision-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: .5px
+    }
+
+    .decision-main {
+      font-size: 22px;
+      font-weight: 900;
+      margin: 6px 0;
+      color: var(--primary)
+    }
+
+    .decision-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--sub)
+    }
+
+    .rule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .rule {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 10px;
+      border-radius: 12px;
+      background: #F8FAFD;
+      border: 1px solid var(--line)
+    }
+
+    .rule-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .rule strong {
+      display: block;
+      font-size: 13px
+    }
+
+    .rule p {
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.55;
+      margin-top: 2px
+    }
+
+    .timeline {
+      display: flex;
+      gap: 8px;
+      align-items: stretch
+    }
+
+    .step {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #FAFBFE;
+      position: relative
+    }
+
+    .step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -12px;
+      top: 34px;
+      color: #9AA7BD;
+      font-weight: 900
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900
+    }
+
+    .step h4 {
+      margin-top: 8px;
+      font-size: 13px
+    }
+
+    .step p {
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.55;
+      margin-top: 5px
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px
+    }
+
+    .kv-item {
+      padding: 12px;
+      border-radius: 12px;
+      background: #F8FAFD;
+      border: 1px solid var(--line)
+    }
+
+    .kv-label {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .kv-val {
+      font-weight: 900;
+      margin-top: 4px;
+      font-size: 14px
+    }
+
+    .material-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px
+    }
+
+    .mat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #FBFCFF
+    }
+
+    .mat h4 {
+      font-size: 13px;
+      margin-bottom: 6px
+    }
+
+    .mat p {
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.65
+    }
+
+    .right-sticky {
+      padding: 14px;
+      overflow: auto
+    }
+
+    .script-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+      margin-bottom: 14px
+    }
+
+    .script-hd {
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .script-hd strong {
+      font-size: 15px
+    }
+
+    .script-body {
+      padding: 14px
+    }
+
+    .script-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px
+    }
+
+    .script-tab {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 8px;
+      background: #F2F5FA;
+      color: var(--sub);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer
+    }
+
+    .script-tab.active {
+      background: var(--primary);
+      color: #fff
+    }
+
+    .script-text {
+      padding: 14px;
+      border-radius: 14px;
+      background: #F8FAFD;
+      border: 1px solid var(--line);
+      line-height: 1.85;
+      color: #344054;
+      min-height: 230px;
+      font-size: 14px
+    }
+
+    .source {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px
+    }
+
+    .compliance {
+      border: 1px solid #B7E3CB;
+      background: #F2FBF6;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px
+    }
+
+    .comp-title {
+      font-weight: 900;
+      color: var(--green);
+      margin-bottom: 8px
+    }
+
+    .checks {
+      display: grid;
+      gap: 7px
+    }
+
+    .check {
+      font-size: 12px;
+      color: #246B47;
+      display: flex;
+      gap: 6px
+    }
+
+    .risk {
+      border: 1px solid #FFD0C9;
+      background: #FFF7F6;
+      border-radius: 16px;
+      padding: 14px
+    }
+
+    .risk-title {
+      font-weight: 900;
+      color: var(--red);
+      margin-bottom: 8px
+    }
+
+    .risk-row {
+      font-size: 12px;
+      line-height: 1.7;
+      color: #7A271A;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #FFD0C9
+    }
+
+    .risk-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      color: #fff;
+      flex: 1
+    }
+
+    .btn.secondary {
+      background: #EEF2F8;
+      color: var(--text)
+    }
+
+    .btn.green {
+      background: var(--green);
+      color: #fff;
+      flex: 1
+    }
+
+    .footer-note {
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+      background: #FAFBFE;
+      font-size: 12px;
+      color: var(--sub);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .hidden {
+      display: none
+    }
+
+    .empty {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .scene-list {
+      display: grid;
+      gap: 10px
+    }
+
+    .scene-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px;
+      background: #fff;
+      cursor: pointer;
+      transition: .18s;
+      max-width: 100%;
+      overflow: hidden
+    }
+
+    .scene-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(20, 38, 95, .08)
+    }
+
+    .scene-card.active {
+      border-color: #9BB6FF;
+      box-shadow: 0 0 0 3px #EDF3FF;
+      background: #FBFDFF
+    }
+
+    .scene-card h3 {
+      font-size: 14px;
+      margin-bottom: 8px
+    }
+
+    .scene-card p {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--sub);
+      overflow-wrap: anywhere
+    }
+
+    .customer-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 0 8px
+    }
+
+    .customer-table th {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: left;
+      font-weight: 800;
+      padding: 0 10px
+    }
+
+    .customer-table td {
+      background: #F8FAFD;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      font-size: 12px;
+      color: var(--sub);
+      overflow-wrap: anywhere;
+      word-break: break-word
+    }
+
+    .customer-table td:first-child {
+      border-left: 1px solid var(--line);
+      border-radius: 12px 0 0 12px;
+      color: var(--text);
+      font-weight: 900
+    }
+
+    .customer-table td:last-child {
+      border-right: 1px solid var(--line);
+      border-radius: 0 12px 12px 0
+    }
+
+    .scene-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px
+    }
+
+    .scene-metric {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #F8FAFD
+    }
+
+    .scene-metric b {
+      font-size: 20px
+    }
+
+    .scene-metric span {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    @media(max-width:1280px) {
+      .main {
+        grid-template-columns: 310px 1fr 380px
+      }
+
+      .top-ai {
+        display: none
+      }
+
+      .kv {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr
+      }
+
+      .timeline {
+        flex-direction: column
+      }
+
+      .step:not(:last-child)::after {
+        display: none
+      }
+    }
+
+    @media(max-width:980px) {
+      body {
+        overflow: auto
+      }
+
+      .app {
+        height: auto
+      }
+
+      .main {
+        grid-template-columns: 1fr
+      }
+
+      .col {
+        min-height: 520px
+      }
+
+      .topbar {
+        height: auto;
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+        padding: 18px
+      }
+
+      .top-stats {
+        flex-wrap: wrap
+      }
+
+      .right-sticky {
+        max-height: none
+      }
+    }
+
+    /* ===== 20260727 Figma UI migration layer ===== */
+    @font-face {
+      font-family: GJType;
+      src: url("assets/fonts/GJType-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap
+    }
+
+    @font-face {
+      font-family: GJType;
+      src: url("assets/fonts/GJType-Medium.ttf") format("truetype");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap
+    }
+
+    @font-face {
+      font-family: GJType;
+      src: url("assets/fonts/GJType-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap
+    }
+
+    :root {
+      --page-width: 1220px;
+      --sidebar-width: 284px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --primary: #2B73FF;
+      --primary-2: #1F63F0;
+      --blue: #2B73FF;
+      --bg: #F5F7FA;
+      --panel: #FFFFFF;
+      --line: #F3F6F9;
+      --border: #D7DCE3;
+      --text: #101828;
+      --sub: #475467;
+      --muted: #8D96A3;
+      --green: #168A52;
+      --green-bg: #EBF8F1;
+      --orange: #C84900;
+      --orange-bg: #FDF9F0;
+      --red: #D92020;
+      --red-bg: #FEF2F2;
+      --purple: #4167D8;
+      --purple-bg: #F3F4FE;
+      --shadow: 0 4px 20px rgba(132, 148, 179, .10);
+      --radius: 12px;
+      --radius-sm: 10px;
+      --control-radius: 6px;
+      --draft-max-height: 320px;
+    }
+
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth
+    }
+
+    body {
+      height: auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: var(--bg);
+      color: var(--text);
+      font-family: GJType, "Source Han Sans CN", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      font-style: normal
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      font-style: normal
+    }
+
+    .app {
+      width: min(100%, var(--page-width));
+      min-height: 100vh;
+      height: auto;
+      margin: 0 auto;
+      padding-bottom: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5)
+    }
+
+    .topbar {
+      width: 100%;
+      height: 120px;
+      flex: 0 0 120px;
+      padding: var(--space-5);
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      box-shadow: none;
+      background: #fff;
+      border-radius: 0;
+      align-items: center
+    }
+
+    .brand {
+      gap: var(--space-4);
+      min-width: 0
+    }
+
+    .logo {
+      width: 50px;
+      height: 48px;
+      flex: 0 0 50px;
+      border-radius: 0;
+      background: transparent url("assets/logo.png") left center/184px 48px no-repeat;
+      color: transparent;
+      overflow: hidden
+    }
+
+    .brand-title {
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .brand-sub {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--muted);
+      margin-top: var(--space-1);
+      white-space: nowrap
+    }
+
+    .top-stats {
+      gap: var(--space-5)
+    }
+
+    .tstat {
+      width: 133px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px
+    }
+
+    .tstat b {
+      font: 700 22px/26px GJType;
+      color: var(--text)
+    }
+
+    .tstat span {
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--text);
+      margin: 0
+    }
+
+    .top-divider {
+      display: none
+    }
+
+    .top-date {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      color: var(--text);
+      white-space: nowrap
+    }
+
+    .top-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 0;
+      background: #F2F7FF url("assets/advisor-avatar.png") center/cover no-repeat;
+      color: transparent
+    }
+
+    .main {
+      width: 100%;
+      min-width: 0;
+      flex: none;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      align-items: start;
+      gap: var(--space-5);
+      padding: 0
+    }
+
+    .main>.col {
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      border: 0;
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: visible;
+      display: flex;
+      flex-direction: column
+    }
+
+    .main>.col:first-child {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      position: sticky;
+      top: var(--space-5);
+      max-height: calc(100vh - var(--space-5)*2);
+      overflow: hidden
+    }
+
+    .main>.col:nth-child(2),
+    .main>.col:nth-child(3) {
+      grid-column: 2
+    }
+
+    .main>.col:nth-child(2) {
+      grid-row: 1
+    }
+
+    .main>.col:nth-child(3) {
+      grid-row: 2
+    }
+
+    .col-hd {
+      height: auto;
+      min-height: 76px;
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--line);
+      align-items: flex-start;
+      gap: var(--space-4)
+    }
+
+    .col-title {
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .col-desc {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--muted);
+      margin-top: var(--space-1)
+    }
+
+    .main>.col:first-child>.col-hd {
+      flex-direction: column
+    }
+
+    .main>.col:first-child>.col-hd .tabs {
+      width: 100%;
+      padding: var(--space-1);
+      border-radius: 20px;
+      background: var(--bg)
+    }
+
+    .main>.col:first-child>.col-hd .tab {
+      flex: 1;
+      border: 0;
+      border-radius: 30px;
+      background: transparent;
+      color: var(--sub);
+      height: 32px;
+      padding: 5px 16px;
+      font-weight: 400
+    }
+
+    .main>.col:first-child>.col-hd .tab.active {
+      background: #fff;
+      color: var(--text);
+      box-shadow: 0 0 4px rgba(0, 0, 0, .10)
+    }
+
+    .scroll {
+      flex: none;
+      min-height: 0;
+      overflow: visible;
+      padding: var(--space-4)
+    }
+
+    .main>.col:first-child .scroll {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184, 192, 204, .55) transparent
+    }
+
+    .scroll::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .scroll::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    .scroll::-webkit-scrollbar-thumb {
+      background: rgba(184, 192, 204, .55);
+      border-radius: 2px
+    }
+
+    .queue-summary {
+      gap: var(--space-5);
+      margin-bottom: var(--space-4)
+    }
+
+    .mini {
+      height: 70px;
+      border: 0;
+      border-radius: var(--control-radius);
+      padding: 10px;
+      background: var(--purple-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px
+    }
+
+    .mini:nth-child(2) {
+      background: var(--orange-bg)
+    }
+
+    .mini b {
+      font: 700 26px/28px GJType;
+      color: #1F0CF9
+    }
+
+    .mini:nth-child(2) b {
+      color: var(--orange)
+    }
+
+    .mini span {
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--text);
+      margin: 0;
+      white-space: nowrap
+    }
+
+    .tabs {
+      gap: var(--space-2)
+    }
+
+    .tab {
+      height: 32px;
+      border: 0;
+      background: #F5F6F9;
+      color: var(--text);
+      padding: 5px 8px;
+      border-radius: var(--control-radius);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      transition: background .18s, color .18s
+    }
+
+    .tab:hover {
+      background: #EEF3FF
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700
+    }
+
+    #dim-filter {
+      margin-bottom: var(--space-4) !important
+    }
+
+    #cond-filter {
+      margin-bottom: var(--space-4) !important
+    }
+
+    #left-session>input {
+      height: 32px !important;
+      padding: 4px 8px 4px 30px !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--control-radius) !important;
+      margin-bottom: var(--space-4) !important;
+      background: #fff url("assets/sousuo.png") 8px center/16px 16px no-repeat !important;
+      font-size: 14px !important;
+      color: var(--text)
+    }
+
+    #left-session>input::placeholder {
+      color: #B8C0CC
+    }
+
+    .customer-card,
+    .scene-card {
+      border: .5px solid #D0D9E2;
+      border-radius: 8px;
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-4);
+      background: #FEFEFD;
+      box-shadow: none;
+      transform: none;
+      transition: background .18s, border-color .18s
+    }
+
+    .customer-card:hover,
+    .scene-card:hover {
+      transform: none;
+      box-shadow: none;
+      background: #F8FAFD;
+      border-color: #9CC0FF
+    }
+
+    .customer-card.active,
+    .scene-card.active {
+      border: 1px solid var(--primary);
+      box-shadow: none;
+      background: var(--bg)
+    }
+
+    .cust-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px
+    }
+
+    .cust-name {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700
+    }
+
+    .cust-acct {
+      font: 400 14px/22px GJType;
+      color: var(--muted)
+    }
+
+    .cust-tags,
+    .cust-line {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--muted)
+    }
+
+    .pill,
+    .badge,
+    .opp {
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+      border: 1px solid transparent;
+      white-space: nowrap
+    }
+
+    .badge.b-blue,
+    .pill-blue,
+    .opp.main {
+      color: #1F63F0;
+      background: #F2F7FF;
+      border-color: #9CC0FF;
+      width: auto;
+      margin: 0;
+    }
+
+    .badge.b-green,
+    .pill-green {
+      color: #168A52;
+      background: #EBF8F1;
+      border-color: #9BD0B4
+    }
+
+    .badge.b-orange,
+    .pill-orange {
+      color: #FF6A00;
+      background: #FFF7ED;
+      border-color: #FDBA74
+    }
+
+    .badge.b-red,
+    .pill-red {
+      color: #D92020;
+      background: #FEF2F2;
+      border-color: #FD9B9B
+    }
+
+    .badge.b-purple {
+      color: #4167D8;
+      background: #F3F4FE;
+      border-color: #B9C6F0
+    }
+
+    .opp-row {
+      gap: var(--space-2);
+      margin-top: var(--space-2)
+    }
+
+    .main>.col:nth-child(2)>.col-hd {
+      display: none
+    }
+
+    #session-detail {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5)
+    }
+
+    .section {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin: 0;
+      background: #fff;
+      box-shadow: none
+    }
+
+    #session-detail>.section {
+      box-shadow: var(--shadow)
+    }
+
+    .section-hd {
+      margin-bottom: var(--space-4);
+      gap: var(--space-4)
+    }
+
+    .section-title {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .section-sub {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--muted)
+    }
+
+    .hero {
+      background: #fff;
+      border: 0
+    }
+
+    .hero-grid {
+      gap: var(--space-4)
+    }
+
+    .prof-metric span {
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted)
+    }
+
+    .prof-metric b {
+      font: 700 18px/24px GJType;
+      color: var(--text);
+      margin-top: var(--space-1)
+    }
+
+    .kv {
+      gap: var(--space-5)
+    }
+
+    .kv-item,
+    .scene-metric {
+      border: 0;
+      border-radius: 10px;
+      padding: var(--space-4);
+      background: linear-gradient(135deg, #F3F5FF 0%, #FFF9FF 50%, #F6FBFF 100%)
+    }
+
+    .kv-label {
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted)
+    }
+
+    .kv-val {
+      font-size: 16px;
+      line-height: 24px;
+      margin-top: var(--space-1)
+    }
+
+    .customer-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-spacing: 0;
+      table-layout: auto
+    }
+
+    .customer-table th {
+      height: 44px;
+      padding: 0 var(--space-3);
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted);
+      background: #F5F7FA;
+      white-space: nowrap
+    }
+
+    .customer-table td {
+      height: 48px;
+      padding: var(--space-2) var(--space-3);
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--sub);
+      background: #fff;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap
+    }
+
+    .customer-table td:first-child,
+    .customer-table td:last-child {
+      border-radius: 0;
+      border-left: 0;
+      border-right: 0
+    }
+
+    .material-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-5)
+    }
+
+    .mat {
+      padding: var(--space-4);
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      min-width: 0
+    }
+
+    .mat h4 {
+      font-size: 16px;
+      line-height: 24px;
+      margin: 0
+    }
+
+    .mat p {
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--sub)
+    }
+
+    .risk {
+      border: 0;
+      background: rgba(240, 56, 56, .10);
+      border-radius: 10px;
+      padding: var(--space-4)
+    }
+
+    .risk-title {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+      color: var(--red);
+      margin-bottom: var(--space-1)
+    }
+
+    .risk-row {
+      font-size: 14px;
+      line-height: 22px;
+      color: #C37272;
+      margin: 0;
+      padding: 0;
+      border: 0
+    }
+
+    .footer-note {
+      margin-top: var(--space-5);
+      padding: var(--space-4) var(--space-5);
+      border: 0;
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .main>.col:nth-child(3) {
+      overflow: visible
+    }
+
+    .main>.col:nth-child(3)>.col-hd {
+      min-height: 92px;
+      padding: var(--space-5)
+    }
+
+    .main>.col:nth-child(3)>.col-hd:before {
+      content: "";
+      width: 52px;
+      height: 52px;
+      flex: 0 0 52px;
+      background: url("assets/Frame 1321317620.png") center/contain no-repeat
+    }
+
+    .main>.col:nth-child(3)>.col-hd>div:first-child {
+      margin-right: auto
+    }
+
+    #right-header-btns {
+      gap: var(--space-5) !important
+    }
+
+    .btn {
+      height: 32px;
+      min-width: 0;
+      border: 1px solid transparent;
+      border-radius: var(--control-radius);
+      padding: 5px 8px;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      transition: background .18s, border-color .18s, color .18s, opacity .18s
+    }
+
+    .btn.primary {
+      background: #fff;
+      color: var(--primary);
+      border-color: var(--primary);
+      flex: none
+    }
+
+    .btn.green {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      flex: none
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--primary);
+      border-color: var(--primary)
+    }
+
+    .btn:hover {
+      background: #F7F9FE
+    }
+
+    .btn.green:hover {
+      background: #1F63F0;
+      color: #fff
+    }
+
+    #hd-btn-phone,
+    #hd-btn-wecom {
+      height: 32px !important;
+      padding: 5px 8px !important;
+      font-size: 14px !important;
+      border-radius: var(--control-radius) !important
+    }
+
+    #hd-btn-phone {
+      /* padding-left: 32px !important; */
+      background: #fff url("assets/dianhua.png") 8px center/16px 16px no-repeat
+    }
+
+    #hd-btn-wecom {
+      padding-left: 32px !important;
+      background: var(--primary) url("assets/qiwei.png") 8px center/16px 16px no-repeat
+    }
+
+    .right-sticky {
+      padding: 0 var(--space-5) var(--space-5);
+      overflow: visible
+    }
+
+    .script-card {
+      border: 0;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--bg);
+      margin-bottom: var(--space-4)
+    }
+
+    .script-hd {
+      padding: var(--space-4);
+      border-bottom: 0
+    }
+
+    .script-hd strong {
+      font-size: 16px;
+      line-height: 24px
+    }
+
+    .script-body {
+      padding: 0 var(--space-4) var(--space-4)
+    }
+
+    .script-text,
+    .draft-textarea {
+      display: block;
+      width: 100%;
+      min-height: 120px;
+      max-height: var(--draft-max-height);
+      overflow-y: hidden;
+      padding: var(--space-4) !important;
+      border: 1px solid rgba(46, 113, 251, .20) !important;
+      border-radius: 10px !important;
+      background: #fff !important;
+      color: var(--text) !important;
+      font-size: 14px !important;
+      line-height: 26px !important;
+      outline: none;
+      white-space: pre-wrap
+    }
+
+    .script-text.is-overflowing,
+    .draft-textarea.is-overflowing {
+      height: var(--draft-max-height);
+      overflow-y: auto
+    }
+
+    .compliance {
+      border: 0;
+      background: #F2FBF6;
+      border-radius: 10px;
+      padding: var(--space-4);
+      margin-bottom: 0
+    }
+
+    .comp-title {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+      margin-bottom: var(--space-2)
+    }
+
+    .checks {
+      gap: var(--space-2)
+    }
+
+    .check {
+      font-size: 12px;
+      line-height: 18px
+    }
+
+    .task-toggle {
+      margin-left: auto;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 5px 0;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      cursor: pointer
+    }
+
+    .task-toggle:hover {
+      color: #1F63F0;
+      background: #F7F9FE
+    }
+
+    .task-toggle:after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background: url("assets/jiantou.png") center/16px 16px no-repeat;
+      transition: transform .18s
+    }
+
+    .task-toggle[aria-expanded="true"]:after {
+      transform: rotate(180deg)
+    }
+
+    .copy-action:before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      background: url("assets/fuzhi.svg") center/contain no-repeat
+    }
+
+    .r-link.view {
+      font-weight: 400;
+      color: var(--primary);
+      background: transparent
+    }
+
+    .r-link.view:hover {
+      background: #F7F9FE
+    }
+
+    .toast-ui {
+      position: fixed;
+      left: 50%;
+      bottom: 26px;
+      transform: translateX(-50%);
+      z-index: 9999;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: #101828;
+      color: #fff;
+      box-shadow: var(--shadow);
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    @media(max-width:1240px) {
+      .app {
+        width: calc(100% - 32px)
+      }
+
+      .topbar {
+        height: auto;
+        min-height: 120px;
+        flex-wrap: wrap;
+        gap: var(--space-4)
+      }
+
+      .top-stats {
+        margin-left: auto;
+        flex-wrap: wrap;
+        justify-content: flex-end
+      }
+
+      .tstat {
+        width: 112px
+      }
+    }
+
+    @media(max-width:980px) {
+      .app {
+        width: calc(100% - 24px)
+      }
+
+      .topbar {
+        align-items: flex-start;
+        padding: var(--space-4)
+      }
+
+      .brand-sub {
+        white-space: normal
+      }
+
+      .top-stats {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-start
+      }
+
+      .main {
+        grid-template-columns: 1fr
+      }
+
+      .main>.col:first-child,
+      .main>.col:nth-child(2),
+      .main>.col:nth-child(3) {
+        grid-column: 1;
+        grid-row: auto;
+        position: static;
+        max-height: none
+      }
+
+      .main>.col:first-child .scroll {
+        max-height: none;
+        overflow: visible
+      }
+
+      .material-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media(max-width:760px) {
+      .app {
+        width: calc(100% - 16px);
+        gap: var(--space-4)
+      }
+
+      .topbar {
+        display: block;
+        height: auto;
+        min-width: 0
+      }
+
+      .brand {
+        width: 100%
+      }
+
+      .top-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2)
+      }
+
+      .tstat {
+        width: auto;
+        height: 68px
+      }
+
+      .top-date,
+      .top-avatar {
+        display: none
+      }
+
+      .main {
+        gap: var(--space-4);
+        grid-template-columns: minmax(0, 1fr) !important
+      }
+
+      .main>.col {
+        min-width: 0;
+        overflow: hidden
+      }
+
+      .col-hd,
+      .section,
+      .right-sticky,
+      .footer-note {
+        padding: var(--space-4)
+      }
+
+      .material-grid,
+      .kv,
+      .scene-metric-grid {
+        grid-template-columns: 1fr
+      }
+
+      .section>div,
+      .right-sticky,
+      .script-card,
+      .script-body {
+        max-width: 100%;
+        min-width: 0
+      }
+
+      .customer-table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto
+      }
+
+      .tabs {
+        flex-wrap: wrap
+      }
+
+      .main>.col:nth-child(3)>.col-hd {
+        flex-wrap: wrap
+      }
+
+      #right-header-btns {
+        width: 100%;
+        justify-content: flex-end
+      }
+    }
+
+    /* ===== V0.7 / Figma node 857:3421 alignment ===== */
+    :root {
+      --page-min-width: 1440px;
+      --bottom-service-height: 68px;
+      --metric-gradient: linear-gradient(90deg, #F3F5FF 0%, #FFF9FF 50%, #F6FBFF 100%);
+      --view-list: #2B73FF;
+      --view-metric: #1E9B62;
+      --view-chart: #FF7A1A;
+    }
+
+    html,
+    body {
+      min-width: var(--page-min-width)
+    }
+
+    body {
+      padding-bottom: calc(var(--bottom-service-height) + var(--space-5));
+      overflow-x: auto
+    }
+
+    .app {
+      width: 100%;
+      min-width: var(--page-min-width);
+      max-width: none;
+      margin: 0;
+      padding: 0 var(--space-5) calc(var(--bottom-service-height) + var(--space-5))
+    }
+
+    .topbar {
+      width: 100%;
+      min-width: 0
+    }
+
+    .main {
+      width: 100%;
+      grid-template-columns: 284px minmax(0, 1fr)
+    }
+
+    .main>.col:first-child {
+      max-height: calc(100vh - var(--bottom-service-height) - var(--space-5)*2)
+    }
+
+    .main>.col:first-child>.col-hd {
+      display: block
+    }
+
+    .main>.col:first-child>.col-hd .tabs {
+      margin-top: var(--space-4)
+    }
+
+    .queue-summary {
+      position: relative;
+      z-index: 0;
+      margin-top: 0
+    }
+
+    .customer-card .cust-avatar {
+      display: none
+    }
+
+    .customer-card .cust-head {
+      gap: 0
+    }
+
+    .customer-card .cust-head>div:last-child {
+      width: 100%
+    }
+
+    .customer-card .cust-tags {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-top: var(--space-2)
+    }
+
+    .customer-card .priority-tag {
+      height: 18px;
+      min-height: 18px;
+      padding: 1px 8px;
+      border: 0;
+      background: #F93838 !important;
+      color: #fff !important;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700
+    }
+
+    .profile-tag {
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 8px;
+      border: 1px solid #B8C0CC;
+      border-radius: 4px;
+      background: #FAFBFC;
+      color: #475467;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap
+    }
+
+    .main>.col:nth-child(2)>.col-hd {
+      display: flex;
+      min-height: 76px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: var(--space-5)
+    }
+
+    .main>.col:nth-child(2)>.col-hd .col-title {
+      font-size: 18px;
+      line-height: 24px
+    }
+
+    .main>.col:nth-child(2)>.col-hd .col-desc {
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .profile-summary {
+      gap: var(--space-4) !important;
+      align-items: center !important
+    }
+
+    .profile-summary .cust-avatar {
+      display: none
+    }
+
+    .profile-identity {
+      min-width: 260px
+    }
+
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2)
+    }
+
+    .profile-tags {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-top: var(--space-2)
+    }
+
+    .client-detail-link {
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 5px 8px;
+      border-radius: var(--control-radius);
+      color: var(--primary);
+      cursor: pointer;
+      white-space: nowrap
+    }
+
+    .client-detail-link:before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background: url("assets/xiangqing.png") center/contain no-repeat
+    }
+
+    .client-detail-link:hover {
+      background: #F7F9FE
+    }
+
+    .profile-metrics {
+      display: flex;
+      align-items: stretch;
+      justify-content: flex-end;
+      gap: var(--space-4);
+      margin-left: auto;
+      flex-wrap: wrap
+    }
+
+    .prof-metric.metric-card {
+      position: relative;
+      width: 190px;
+      min-height: 76px;
+      padding: var(--space-3) 56px var(--space-3) var(--space-4);
+      border-radius: 10px;
+      background: var(--metric-gradient);
+      justify-content: center;
+      overflow: hidden
+    }
+
+    .prof-metric.metric-card:after {
+      content: "";
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      width: 36px;
+      height: 36px;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background-color: #2B73FF;
+      background-position: center;
+      background-size: 24px 24px;
+      background-repeat: no-repeat
+    }
+
+    .prof-metric.metric-assets:after {
+      background-image: url("assets/metric-total-assets.png")
+    }
+
+    .prof-metric.metric-market:after {
+      background-image: url("assets/metric-market-value.png")
+    }
+
+    .phone-module {
+      min-width: 220px;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: 10px;
+      background: #F5F7FA
+    }
+
+    .phone-copy {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1)
+    }
+
+    .phone-copy span {
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted)
+    }
+
+    .phone-copy b {
+      font: 700 16px/22px GJType;
+      color: var(--text)
+    }
+
+    .phone-call-btn {
+      height: 32px;
+      border: 0;
+      border-radius: var(--control-radius);
+      padding: 5px 8px 5px 32px;
+      background: var(--primary) url("assets/dianhua2.png") 8px center/16px 16px no-repeat;
+      color: #fff;
+      font-size: 14px;
+      line-height: 22px;
+      cursor: pointer
+    }
+
+    .phone-call-btn:hover {
+      background-color: #1F63F0
+    }
+
+    .scenario-card-v7 {
+      overflow: hidden;
+      border: 1px solid #D7DCE3;
+      border-radius: 10px;
+      background: #fff
+    }
+
+    .scenario-card-title {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 700
+    }
+
+    .scenario-card-title:before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: var(--space-2);
+      border-radius: 50%;
+      background: var(--primary)
+    }
+
+    .scenario-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr
+    }
+
+    .scenario-column {
+      padding: var(--space-3) var(--space-4);
+      font-size: 12px;
+      line-height: 22px
+    }
+
+    .scenario-column.market {
+      background: #F2F7FF;
+      color: #1F63F0;
+      border-right: 1px solid #D7E5FF
+    }
+
+    .scenario-column.customer {
+      background: #FFF7ED;
+      color: #C84900
+    }
+
+    .realtime-heading .section-sub {
+      position: relative;
+      padding-left: var(--space-3)
+    }
+
+    .realtime-heading .section-sub:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 3px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--primary)
+    }
+
+    .refresh-check {
+      height: 32px;
+      border: 0 !important;
+      padding: 5px 8px 5px 30px !important;
+      background: transparent !important;
+      color: var(--primary) !important;
+      position: relative
+    }
+
+    .refresh-check:before {
+      content: "↻";
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      width: 16px;
+      height: 22px;
+      font-size: 18px;
+      line-height: 22px;
+      text-align: center
+    }
+
+    .refresh-check:hover {
+      background: #F7F9FE !important
+    }
+
+    .pc-block {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: var(--space-3)
+    }
+
+    .pc-head {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: #F5F7FA;
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap
+    }
+
+    .pc-title {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 700
+    }
+
+    .pc-note {
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted)
+    }
+
+    .pc-controls {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2)
+    }
+
+    .pc-body {
+      padding: var(--space-3);
+      background: #fff;
+      overflow-x: auto
+    }
+
+    .pc-block[data-type="指标卡"] .pc-body {
+      background: #F5F7FA
+    }
+
+    .pc-block[data-type="指标卡"] .scene-metric {
+      background: #fff
+    }
+
+    .view-tag {
+      height: 18px;
+      min-height: 18px;
+      padding: 1px 8px;
+      border: 0;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700
+    }
+
+    .view-tag.list {
+      background: var(--view-list)
+    }
+
+    .view-tag.metric {
+      background: var(--view-metric)
+    }
+
+    .view-tag.chart {
+      background: var(--view-chart)
+    }
+
+    .period-select {
+      height: 32px;
+      min-width: 98px;
+      padding: 4px 30px 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--control-radius);
+      background: #fff;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 22px;
+      outline: none;
+      cursor: pointer
+    }
+
+    .period-select:hover {
+      border-color: #9CC0FF
+    }
+
+    .period-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(43, 115, 255, .12)
+    }
+
+    .trend-chart polyline:first-of-type {
+      stroke: #F93838 !important
+    }
+
+    .trend-chart polyline:nth-of-type(2) {
+      stroke: #2B73FF !important
+    }
+
+    .trend-legend .legend-client {
+      background: #F93838 !important
+    }
+
+    .trend-legend .legend-base {
+      background: #2B73FF !important
+    }
+
+    .main>.col:nth-child(3)>.col-hd:before {
+      background-image: url("assets/Frame 1321317620.png")
+    }
+
+    #hd-btn-phone {
+      background-image: url("assets/dianhua2.png") !important
+    }
+
+    .script-card {
+      background: transparent;
+      border-radius: 0;
+      overflow: visible
+    }
+
+    .script-hd {
+      padding: 0 0 var(--space-4);
+      border: 0;
+      background: #fff
+    }
+
+    .script-body {
+      padding: var(--space-4);
+      border-radius: 10px;
+      background: #F5F7FA
+    }
+
+    .script-scenario {
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+      border: 0 !important;
+      border-radius: 10px !important;
+      background: transparent
+    }
+
+    .script-scenario-title {
+      padding: 0 0 var(--space-3) !important;
+      background: transparent !important;
+      border: 0 !important;
+      font-size: 16px !important;
+      line-height: 24px !important
+    }
+
+    .script-scenario .draft-textarea {
+      background: #fff !important
+    }
+
+    .scenario-materials {
+      margin-top: var(--space-3);
+      padding: var(--space-4) !important;
+      border: 1px solid rgba(46, 113, 251, .20);
+      border-radius: 10px;
+      background: #fff !important
+    }
+
+    .scenario-materials-title {
+      margin-bottom: var(--space-3) !important;
+      font-size: 16px !important;
+      line-height: 24px !important
+    }
+
+    .scenario-material-row {
+      min-height: 32px;
+      display: grid !important;
+      grid-template-columns: 16px max-content max-content minmax(0, 1fr);
+      align-items: center;
+      gap: var(--space-2) !important;
+      padding: var(--space-1) 0 !important;
+      font-size: 14px !important;
+      line-height: 22px !important
+    }
+
+    .scenario-material-row input {
+      width: 16px !important;
+      height: 16px !important;
+      accent-color: var(--primary)
+    }
+
+    .footer-note {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 800;
+      width: 100%;
+      min-width: var(--page-min-width);
+      height: var(--bottom-service-height);
+      margin: 0;
+      padding: var(--space-4) var(--space-5);
+      border-radius: 0;
+      background: #fff;
+      box-shadow: 0 -4px 20px rgba(132, 148, 179, .12)
+    }
+
+    .footer-note .btn {
+      margin-left: auto
+    }
+
+    .toast-ui {
+      z-index: 1200
+    }
+
+    @media(max-width:1439px) {
+      .app {
+        width: var(--page-min-width);
+        min-width: var(--page-min-width)
+      }
+
+      .main {
+        grid-template-columns: 284px minmax(0, 1fr) !important
+      }
+    }
+
+    /* ===== V0.8 / html_13 page-shell alignment ===== */
+    :root {
+      --shell-topbar-height: 61px;
+      --shell-sidebar-width: 300px;
+      --shell-page-padding: 16px;
+      --shell-module-gap: 16px;
+      --shell-section-gap: 20px;
+    }
+
+    html,
+    body {
+      min-width: var(--page-min-width)
+    }
+
+    body {
+      padding-top: var(--shell-topbar-height);
+      padding-bottom: calc(var(--bottom-service-height) + var(--space-5));
+      background: var(--bg);
+      overflow-x: auto;
+    }
+
+    .app {
+      display: block;
+      width: 100%;
+      min-width: var(--page-min-width);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0 0 calc(var(--bottom-service-height) + var(--space-5));
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 900;
+      left: 0;
+      right: 0;
+      top: 0;
+      width: 100%;
+      min-width: var(--page-min-width);
+      height: var(--shell-topbar-height);
+      min-height: var(--shell-topbar-height);
+      padding: 0 24px 0 20px;
+      border-bottom: 2px solid var(--line);
+      border-radius: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: none;
+    }
+
+    .brand {
+      height: 100%;
+      gap: 12px
+    }
+
+    .logo {
+      width: 38px;
+      height: 36px;
+      flex: 0 0 38px;
+      background-size: 138px 36px;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      line-height: 22px
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      line-height: 18px;
+      margin-top: 0
+    }
+
+    .top-stats {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 24px;
+    }
+
+    .tstat {
+      width: auto;
+      height: auto;
+      min-width: 0;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: flex-start;
+      gap: 4px;
+    }
+
+    .tstat b {
+      font: 400 18px/20px GJType;
+      color: var(--text)
+    }
+
+    .tstat span {
+      display: block;
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text)
+    }
+
+    .top-date {
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400
+    }
+
+    .top-avatar {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--shell-module-gap);
+      width: calc(100% - var(--shell-sidebar-width));
+      min-width: calc(var(--page-min-width) - var(--shell-sidebar-width));
+      margin: 0 0 0 var(--shell-sidebar-width);
+      padding: var(--shell-page-padding);
+    }
+
+    .main>.col {
+      width: 100%;
+      min-width: 0;
+      border-radius: var(--radius);
+    }
+
+    .main>.col:first-child {
+      position: fixed;
+      z-index: 700;
+      left: 0;
+      top: var(--shell-topbar-height);
+      bottom: var(--bottom-service-height);
+      width: var(--shell-sidebar-width);
+      max-height: none;
+      border-radius: 0;
+      background: #fff;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .main>.col:first-child>.col-hd {
+      display: block;
+      flex: 0 0 auto;
+      min-height: 0;
+      padding: 12px 20px 0;
+      border-bottom: 0;
+    }
+
+    .main>.col:first-child>.col-hd .col-title {
+      font-size: 18px;
+      line-height: 27px
+    }
+
+    .main>.col:first-child>.col-hd .col-desc {
+      margin-top: 4px;
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .main>.col:first-child>.col-hd .tabs {
+      width: 100%;
+      height: 32px;
+      margin: 16px 0 0;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .main>.col:first-child>.col-hd .tab {
+      width: 100%;
+      height: 32px;
+      padding: 5px 8px;
+      border: 0;
+      border-radius: 6px;
+      background: #F5F6F9;
+      color: var(--text);
+      box-shadow: none;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+
+    .main>.col:first-child>.col-hd .tab.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: none;
+      font-weight: 700;
+    }
+
+    .main>.col:first-child .scroll {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 20px 20px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184, 192, 204, .45) transparent;
+    }
+
+    .main>.col:first-child .scroll::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .main>.col:first-child .scroll::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    .main>.col:first-child .scroll::-webkit-scrollbar-thumb {
+      background: rgba(184, 192, 204, .45);
+      border-radius: 2px
+    }
+
+    .main>.col:first-child .scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(141, 150, 163, .65)
+    }
+
+    .queue-summary {
+      position: static;
+      z-index: auto;
+      height: 70px;
+      margin: 0 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .mini {
+      height: 70px;
+      padding: 10px;
+      border-radius: 6px
+    }
+
+    #dim-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 16px !important;
+    }
+
+    #dim-filter .tab,
+    #cond-filter .tab {
+      width: auto;
+      min-width: 58px;
+      height: 32px;
+      padding: 5px 8px;
+      border-radius: 6px;
+    }
+
+    #cond-filter {
+      gap: 8px;
+      margin: 0 0 16px !important
+    }
+
+    #left-session>input {
+      margin-bottom: 16px !important
+    }
+
+    .customer-card,
+    .scene-card {
+      margin-bottom: 12px
+    }
+
+    .main>.col:nth-child(2),
+    .main>.col:nth-child(3) {
+      position: static;
+      width: 100%;
+      margin: 0;
+    }
+
+    .main>.col:nth-child(2)>.col-hd {
+      min-height: 76px;
+      margin: 0 0 var(--shell-section-gap);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #session-detail {
+      gap: var(--shell-section-gap)
+    }
+
+    .main>.col:nth-child(3)>.col-hd {
+      padding: 16px 20px
+    }
+
+    .footer-note {
+      z-index: 800;
+      min-width: var(--page-min-width);
+      height: var(--bottom-service-height);
+      padding: 16px 20px;
+    }
+
+    @media(max-width:1439px) {
+      .app {
+        width: var(--page-min-width)
+      }
+
+      .topbar,
+      .footer-note {
+        width: var(--page-min-width)
+      }
+
+      .main {
+        width: calc(var(--page-min-width) - var(--shell-sidebar-width));
+        min-width: calc(var(--page-min-width) - var(--shell-sidebar-width));
+      }
+    }
+
+    /* ===== V0.9 / Figma node 860:4501 visual audit fixes ===== */
+    :root {
+      --figma-topbar-height: 120px;
+      --figma-sidebar-width: 350px;
+      --figma-content-offset: 344px;
+      --figma-page-gap: 20px;
+      --figma-sidebar-content: calc(var(--figma-sidebar-width) - 40px);
+    }
+
+    body {
+      padding-top: var(--figma-topbar-height)
+    }
+
+    .topbar {
+      height: var(--figma-topbar-height);
+      min-height: var(--figma-topbar-height);
+      padding: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      gap: 16px
+    }
+
+    .logo {
+      width: 50px;
+      height: 48px;
+      flex: 0 0 50px;
+      background: transparent url("assets/Frame 1321317620.png") center/contain no-repeat;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      line-height: 24px
+    }
+
+    .brand-sub {
+      margin-top: 4px;
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .top-stats {
+      gap: 20px
+    }
+
+    .tstat {
+      /* width: 133px; */
+      /* height: 80px; */
+      padding: 10px 30px;
+      border-radius: 10px;
+      background: #F5F7FA;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .tstat b {
+      font: 700 22px/24px GJType;
+      color: var(--text)
+    }
+
+    .tstat span {
+      font-size: 14px;
+      line-height: 22px;
+      text-align: center;
+      color: #475467;
+    }
+
+    .main {
+      width: calc(100% - var(--figma-sidebar-width));
+      min-width: calc(var(--page-min-width) - var(--figma-sidebar-width));
+      margin-left: var(--figma-sidebar-width);
+      padding: var(--figma-page-gap) 30px var(--figma-page-gap) var(--figma-page-gap);
+      gap: var(--figma-page-gap);
+    }
+
+    .main>.col:first-child {
+      top: var(--figma-topbar-height);
+      width: var(--figma-sidebar-width);
+    }
+
+    .main>.col:first-child>.col-hd {
+      width: 100%;
+      padding: 20px 20px 0;
+    }
+
+    .main>.col:first-child>.col-hd .tabs {
+      margin-top: 16px
+    }
+
+    .main>.col:first-child .scroll {
+      padding: 16px 20px 20px
+    }
+
+    .queue-summary {
+      width: var(--figma-sidebar-content)
+    }
+
+    .customer-card,
+    .scene-card {
+      width: var(--figma-sidebar-content)
+    }
+
+    .main>.col:nth-child(2)>.col-hd {
+      min-height: 88px;
+      margin-bottom: 0;
+      padding: 20px;
+      border-radius: 12px 12px 0 0;
+      border-bottom: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .main>.col:nth-child(2) {
+      gap: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    #session-detail {
+      gap: var(--figma-page-gap)
+    }
+
+    #session-detail>.profile-summary {
+      margin-top: 0;
+      border-radius:12px;
+    }
+
+    .profile-summary {
+      min-height: 96px;
+      padding: 16px 20px !important
+    }
+
+    .profile-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 360px
+    }
+
+    .profile-avatar {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .profile-identity-copy {
+      min-width: 0
+    }
+
+    .profile-name-row {
+      gap: 8px
+    }
+
+    .profile-tags {
+      margin-top: 8px
+    }
+
+    .profile-metrics {
+      gap: 20px
+    }
+
+    .prof-metric.metric-card {
+      width: 133px;
+      min-height: 80px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .prof-metric.metric-assets {
+      background: linear-gradient(135deg, #2B73FF 0%, #7FA8FF 100%)
+    }
+
+    .prof-metric.metric-market {
+      background: linear-gradient(135deg, #20B7D7 0%, #70D4EA 100%)
+    }
+
+    .prof-metric.metric-card span,
+    .prof-metric.metric-card b {
+      color: #fff
+    }
+
+    .prof-metric.metric-card:after {
+      display: none
+    }
+
+    .phone-module {
+      min-width: 210px;
+      min-height: 80px;
+      padding: 10px 0 10px 12px;
+      background: transparent;
+    }
+
+    .main>.col:nth-child(3)>.col-hd:before {
+      border-radius: 6px;
+      background: #2B73FF url("assets/aizhenghe.png") center/28px 28px no-repeat;
+    }
+
+    .footer-note {
+      min-width: var(--page-min-width)
+    }
+
+    @media(max-width:1439px) {
+      .main {
+        width: calc(var(--page-min-width) - var(--figma-sidebar-width));
+        min-width: calc(var(--page-min-width) - var(--figma-sidebar-width));
+      }
+    }
+
+    /* ===== V0.10 / Figma node 860:4501 component alignment ===== */
+    :root {
+      --tag-neutral-border: #F5F7FA;
+      --filter-active-bg: #F2F7FF;
+      --filter-active-color: #2B73FF;
+      --sidebar-scrollbar-size: 0px;
+    }
+
+    .main>.col:first-child>.col-hd .tabs {
+      height: 36px;
+      padding: 2px;
+      gap: 2px;
+      border-radius: 18px;
+      background: #F5F7FA;
+    }
+
+    .main>.col:first-child>.col-hd .tab {
+      height: 32px;
+      border-radius: 16px;
+      background: transparent;
+      color: #5B6573;
+    }
+
+    .main>.col:first-child>.col-hd .tab.active {
+      background: #fff;
+      color: var(--primary);
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(43, 115, 255, .12);
+    }
+
+    #dim-filter,
+    #cond-filter {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+      background: transparent;
+    }
+
+    #dim-filter .tab,
+    #cond-filter .tab {
+      min-width: 0;
+      height: 28px;
+      padding: 3px 8px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #5B6573;
+      font-size: 12px;
+      line-height: 22px;
+    }
+
+    #dim-filter .tab:hover,
+    #cond-filter .tab:hover {
+      background: #F7F9FE;
+      color: var(--primary)
+    }
+
+    #dim-filter .tab.active,
+    #cond-filter .tab.active {
+      background: var(--filter-active-bg);
+      color: var(--filter-active-color);
+      box-shadow: none;
+      font-weight: 500;
+    }
+
+    .main>.col:first-child .scroll {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .main>.col:first-child .scroll::-webkit-scrollbar {
+      width: var(--sidebar-scrollbar-size);
+      height: var(--sidebar-scrollbar-size)
+    }
+
+    .client-detail-link {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .profile-tag {
+      border-color: var(--tag-neutral-border);
+      background: #fff;
+    }
+
+    .scenario-card-v7 {
+      border-color: #EEF1F5;
+      border-radius: 8px;
+      background: #F5F7FA;
+    }
+
+    .scenario-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 0;
+      background: #F5F7FA;
+      font-weight: 500;
+    }
+
+    .scenario-card-title:before {
+      display: none
+    }
+
+    .triggered-tag {
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      border: 0;
+      border-radius: 4px;
+      background: #E8F1FF;
+      color: var(--primary);
+      font-size: 10px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .scenario-columns {
+      gap: 1px;
+      padding: 0 12px 12px;
+      background: #F5F7FA;
+    }
+
+    .scenario-column {
+      min-height: 76px;
+      padding: 12px;
+      border: 0 !important;
+      border-radius: 6px;
+      background: #fff !important;
+      color: var(--primary) !important;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .realtime-heading .section-sub {
+      padding-left: 0
+    }
+
+    .realtime-heading .section-sub:before {
+      display: none
+    }
+
+    .pc-head {
+      background: #fff
+    }
+
+    .pc-title {
+      font-weight: 500
+    }
+
+    .pc-block[data-title="信号详情"] .pc-title {
+      position: relative;
+      padding-left: 10px;
+    }
+
+    .pc-block[data-title="信号详情"] .pc-title:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 3px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--primary);
+      margin-top: 6px;
+    }
+
+    .pc-block[data-title="产品信号表现"] .pc-body {
+      width: 100%;
+      overflow: visible
+    }
+
+    .pc-block[data-title="产品信号表现"] .scene-metric-grid {
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .pc-block[data-title="产品信号表现"] .scene-metric {
+      width: 100%;
+      min-width: 0
+    }
+
+    .pc-block[data-title="信号详情"] tbody td:first-child,
+    .pc-block[data-title="信号详情"] tbody td:first-child span {
+      color: var(--text) !important;
+      font-weight: 400 !important;
+      border-bottom: 0 !important;
+    }
+
+    .trend-chart polyline {
+      stroke-dasharray: none !important
+    }
+
+    .search-input {
+      height: 32px !important;
+      padding: 4px 12px 4px 34px !important;
+      border: 1px solid #DDE2EA !important;
+      border-radius: 6px !important;
+      background: #fff url("assets/sousuo.png") 10px center/16px 16px no-repeat !important;
+      color: var(--text) !important;
+      font-size: 12px !important;
+      line-height: 22px !important;
+      outline: none;
+    }
+
+    .search-input:hover {
+      border-color: #9CC0FF !important
+    }
+
+    .search-input:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 2px rgba(43, 115, 255, .12)
+    }
+
+    .material-grid {
+      align-items: stretch
+    }
+
+    .mat {
+      height: 100%;
+      display: flex;
+      flex-direction: column
+    }
+
+    .mat .material-detail-link {
+      margin-top: auto;
+      padding-top: 12px;
+      color: var(--primary);
+      font-size: 12px;
+      line-height: 18px
+    }
+
+    .script-scenario-v10 {
+      margin-bottom: 16px;
+      overflow: hidden;
+      border: 1px solid #EEF1F5;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .script-scenario-v10:last-child {
+      margin-bottom: 0
+    }
+
+    .script-scenario-head {
+      padding: 10px 12px;
+      background: #F5F7FA;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .script-scenario-v10 .draft-textarea {
+      padding: 12px;
+      border: 0;
+      border-bottom: 1px solid #EEF1F5;
+      background: #fff;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .scenario-material-list {
+      padding: 12px;
+      background: #fff
+    }
+
+    .scenario-material-list-title {
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500
+    }
+
+    .scenario-material-item {
+      min-height: 40px;
+      display: grid;
+      grid-template-columns: 16px minmax(108px, max-content) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid #F5F7FA;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .scenario-material-item:last-child {
+      border-bottom: 0
+    }
+
+    .scenario-material-item input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary)
+    }
+
+    .scenario-material-desc {
+      min-width: 0;
+      color: var(--muted)
+    }
+
+    .script-copy-row {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 12px 12px;
+      background: #fff
+    }
+
+    .script-copy-btn {
+      width: auto !important;
+      min-width: 116px;
+      height: 32px;
+      padding: 5px 12px !important;
+    }
+
+    .footer-note {
+      left: var(--figma-sidebar-width);
+      width: calc(100% - var(--figma-sidebar-width));
+      min-width: calc(var(--page-min-width) - var(--figma-sidebar-width));
+    }
+
+    @media(max-width:1439px) {
+      .footer-note {
+        width: calc(var(--page-min-width) - var(--figma-sidebar-width));
+        min-width: calc(var(--page-min-width) - var(--figma-sidebar-width));
+      }
+    }
+
+    /* ===== V0.11 — B端标签与双视图统一层 ===== */
+    :root {
+      --tag-radius: 4px;
+      --tag-padding-x: 8px;
+      --tag-regular-height: 22px;
+      --tag-regular-font: 12px;
+      --tag-regular-line: 18px;
+      --tag-small-height: 18px;
+      --tag-small-font: 10px;
+      --tag-small-line: 14px;
+      --tag-weight: 400;
+      --surface-subtle: #F5F7FA;
+      --surface-soft: #F7F9FE;
+      --border-soft: #EEF1F5;
+    }
+
+    .b-tag {
+      --tag-01: #F2F7FF;
+      --tag-02: #E8F1FF;
+      --tag-04: #9CC0FF;
+      --tag-06: #2B73FF;
+      --tag-07: #1F63F0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      min-width: 40px;
+      height: var(--tag-regular-height);
+      padding: 0 var(--tag-padding-x);
+      border: 1px solid transparent;
+      border-radius: var(--tag-radius);
+      font-size: var(--tag-regular-font);
+      line-height: var(--tag-regular-line);
+      font-weight: var(--tag-weight);
+      font-style: normal;
+      white-space: nowrap;
+    }
+
+    .b-tag--small {
+      min-width: 36px;
+      height: var(--tag-small-height);
+      font-size: var(--tag-small-font);
+      line-height: var(--tag-small-line)
+    }
+
+    .b-tag--filled {
+      background: var(--tag-06);
+      border-color: var(--tag-06);
+      color: #fff
+    }
+
+    .b-tag--light {
+      background: var(--tag-02);
+      border-color: var(--tag-02);
+      color: var(--tag-07)
+    }
+
+    .b-tag--line {
+      background: var(--tag-01);
+      border-color: var(--tag-04);
+      color: var(--tag-07)
+    }
+
+    .b-tag--neutral {
+      --tag-01: #FAFBFC;
+      --tag-02: #F5F7FA;
+      --tag-04: #D7DCE3;
+      --tag-06: #B8C0CC;
+      --tag-07: #475467
+    }
+
+    .b-tag--red {
+      --tag-01: #FEF2F2;
+      --tag-02: #FEE8E8;
+      --tag-04: #FD9B9B;
+      --tag-06: #F03838;
+      --tag-07: #D92020
+    }
+
+    .b-tag--green {
+      --tag-01: #F2FBF6;
+      --tag-02: #E7F7EE;
+      --tag-04: #9BD0B4;
+      --tag-06: #16A05D;
+      --tag-07: #157D38
+    }
+
+    .b-tag--orange {
+      --tag-01: #FFF7ED;
+      --tag-02: #FFEDD5;
+      --tag-04: #FDBA74;
+      --tag-06: #F79009;
+      --tag-07: #C86400
+    }
+
+    .b-tag--yellow {
+      --tag-01: #FFFBEA;
+      --tag-02: #FFF4C2;
+      --tag-04: #F4CE73;
+      --tag-06: #E9B949;
+      --tag-07: #9A6700
+    }
+
+    .b-tag--cyan {
+      --tag-01: #ECFDFF;
+      --tag-02: #CFF9FE;
+      --tag-04: #67E3F9;
+      --tag-06: #06AED4;
+      --tag-07: #0E7490
+    }
+
+    .b-tag--sky {
+      --tag-01: #F0F9FF;
+      --tag-02: #E0F2FE;
+      --tag-04: #7DD3FC;
+      --tag-06: #0EA5E9;
+      --tag-07: #0369A1
+    }
+
+    .b-tag--deepblue {
+      --tag-01: #EEF4FF;
+      --tag-02: #E0EAFF;
+      --tag-04: #84ADFF;
+      --tag-06: #4169E1;
+      --tag-07: #2948B1
+    }
+
+    .b-tag--purple {
+      --tag-01: #F5F3FF;
+      --tag-02: #EDE9FE;
+      --tag-04: #C4B5FD;
+      --tag-06: #7C3AED;
+      --tag-07: #5B21B6
+    }
+
+    .b-tag--pink {
+      --tag-01: #FDF2FA;
+      --tag-02: #FCE7F3;
+      --tag-04: #F9A8D4;
+      --tag-06: #DB2777;
+      --tag-07: #9D174D
+    }
+
+    /* 旧标签只保留兼容入口，最终视觉由统一组件规格接管。 */
+    .badge,
+    .profile-tag,
+    .view-tag,
+    .triggered-tag,
+    .opp,
+    .pill {
+      min-width: 40px;
+      height: var(--tag-regular-height);
+      padding: 0 var(--tag-padding-x);
+      border-radius: var(--tag-radius);
+      font-size: var(--tag-regular-font);
+      line-height: var(--tag-regular-line);
+      font-weight: var(--tag-weight);
+    }
+
+    .view-tag,
+    .triggered-tag {
+      min-width: 36px;
+      height: var(--tag-small-height);
+      font-size: var(--tag-small-font);
+      line-height: var(--tag-small-line)
+    }
+
+    .profile-tag {
+      border-color: #D7DCE3;
+      background: #FAFBFC;
+      color: #475467
+    }
+
+    .phone-call-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 5px 8px;
+      background: var(--primary);
+      color: #fff
+    }
+
+    .phone-call-btn:hover {
+      background: #1F63F0
+    }
+
+    .phone-call-icon {
+      width: 16px;
+      height: 16px;
+      display: block;
+      object-fit: contain;
+      flex: 0 0 auto
+    }
+
+    .scenario-basis-head {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px
+    }
+
+    .scenario-basis-head .section-title,
+    .scenario-basis-head .section-sub {
+      margin: 0
+    }
+
+    .scenario-card-title {
+      justify-content: flex-start
+    }
+
+    .scenario-column strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--primary);
+      font-weight: 500
+    }
+
+    .scenario-column>div {
+      color: var(--muted);
+      font-weight: 400
+    }
+
+    .pc-block[data-title="产品信号表现"] .pc-body {
+      width: 100%;
+      background: transparent
+    }
+
+    .pc-block[data-title="产品信号表现"] .scene-metric-grid {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px
+    }
+
+    .pc-block[data-title="产品信号表现"] .scene-metric {
+      width: 100%;
+      min-width: 0;
+      padding: 16px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--surface-subtle);
+      box-shadow: none
+    }
+
+    .scene-metric .is-profit {
+      color: var(--red)
+    }
+
+    .scene-metric .is-loss {
+      color: var(--green)
+    }
+
+    .scene-metric .is-neutral {
+      color: var(--text)
+    }
+
+    .script-card-v11 {
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .script-card-v11>.script-hd {
+      padding: 0 0 16px;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .script-card-v11>.script-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0
+    }
+
+    .scene-copy-block,
+    .scene-material-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 10px;
+      background: var(--surface-subtle)
+    }
+
+    .scene-copy-title,
+    .scene-material-title {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .scene-copy-block .draft-textarea {
+      min-height: auto;
+      padding: 16px;
+      border: 1px solid rgba(43, 115, 255, .2);
+      border-radius: 10px;
+      background: #fff
+    }
+
+    .scene-material-list-v11 {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .scene-material-row-v11 {
+      display: grid;
+      grid-template-columns: auto minmax(150px, auto) auto minmax(240px, 1fr);
+      align-items: center;
+      gap: 8px;
+      min-height: 58px;
+      padding: 12px 16px;
+      border: 1px solid rgba(43, 115, 255, .2);
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer
+    }
+
+    .scene-material-row-v11 input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--primary)
+    }
+
+    .scene-material-desc {
+      justify-self: end;
+      color: var(--sub);
+      font-size: 12px;
+      line-height: 18px;
+      text-align: right
+    }
+
+    .script-copy-row {
+      display: flex;
+      justify-content: flex-end
+    }
+
+    .script-copy-btn {
+      width: auto;
+      min-width: 0
+    }
+
+    .compliance .checks {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px 24px
+    }
+
+    .scene-view-v11 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
+
+    .scene-overview-v11,
+    .scene-group-v11 {
+      margin: 0
+    }
+
+    .scene-overview-v11 .section-hd {
+      margin-bottom: 16px
+    }
+
+    .scene-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 16px
+    }
+
+    .scene-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 22px;
+      cursor: pointer
+    }
+
+    .scene-filter input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--primary)
+    }
+
+    .scene-overview-v11 .scene-metric-grid {
+      grid-template-columns: repeat(2, 133px);
+      gap: 16px
+    }
+
+    .scene-overview-v11 .scene-metric {
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--surface-subtle);
+      text-align: center
+    }
+
+    .scene-group-v11 {
+      cursor: pointer
+    }
+
+    .scene-group-v11.is-active {
+      /* border: 1px solid var(--primary); */
+      background: #fff
+    }
+
+    .scene-group-v11 .section-sub {
+      margin-top: 8px
+    }
+
+    .scene-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none
+    }
+
+    .scene-table-wrap::-webkit-scrollbar {
+      width: 0;
+      height: 0
+    }
+
+    .scene-table-wrap .customer-table {
+      margin-top: 16px;
+      border-spacing: 0
+    }
+
+    .scene-table-wrap .customer-table th {
+      height: 48px;
+      padding: 12px 16px;
+      background: var(--surface-subtle);
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .scene-table-wrap .customer-table td {
+      padding: 12px 16px;
+      border: 0;
+      border-bottom: 1px solid var(--border-soft);
+      border-radius: 0;
+      background: #fff;
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .scene-enter-btn {
+      border: 0;
+      background: transparent;
+      color: var(--primary);
+      font-size: 14px;
+      line-height: 22px;
+      cursor: pointer
+    }
+
+    .scene-expand-row {
+      display: flex;
+      justify-content: center;
+      padding-top: 12px
+    }
+
+    .scene-expand-row .task-toggle {
+      margin: 0
+    }
+
+    .scene-panel-v11 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
+
+    .scene-panel-v11 .script-card {
+      margin: 0
+    }
+
+    .scene-summary-good,
+    .scene-summary-risk {
+      margin: 0;
+      border-radius: 10px;
+      padding: 16px
+    }
+
+    .scene-summary-good {
+      border: 1px solid rgba(2, 148, 68, .2);
+      background: #F2FBF6
+    }
+
+    .scene-summary-risk {
+      border: 0;
+      background: rgba(240, 56, 56, .1)
+    }
+
+    .scene-summary-title {
+      margin-bottom: 4px;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500
+    }
+
+    .scene-summary-good .scene-summary-title {
+      color: #157D38
+    }
+
+    .scene-summary-risk .scene-summary-title {
+      color: #D92020
+    }
+
+    .scene-summary-content {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 80px;
+      font-size: 14px;
+      line-height: 22px
+    }
+
+    .scene-summary-good .scene-summary-content {
+      color: #246B47
+    }
+
+    .scene-summary-risk .scene-summary-content {
+      color: #C37272
+    }
+
+    @media(max-width:1100px) {
+      .scene-material-row-v11 {
+        grid-template-columns: auto minmax(0, 1fr) auto
+      }
+
+      .scene-material-desc {
+        grid-column: 2/4;
+        justify-self: start;
+        text-align: left
+      }
+
+      .compliance .checks {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    @media(max-width:760px) {
+      .pc-block[data-title="产品信号表现"] .scene-metric-grid {
+        grid-template-columns: 1fr
+      }
+
+      .compliance .checks,
+      .scene-summary-content {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ===== V0.12 — Figma node 857:3421 refinements ===== */
+    :root {
+      --tag-regular-height: 22px;
+      --tag-regular-font: 12px;
+      --tag-regular-line: 18px;
+      --pc-divider: #EEF1F5;
+      --pc-title-marker-width: 3px;
+      --pc-title-marker-height: 14px;
+    }
+
+    /* 本页全部标签统一采用 Regular 规格，Small 仅保留兼容类名。 */
+    .b-tag,
+    .b-tag--small,
+    .badge,
+    .profile-tag,
+    .view-tag,
+    .triggered-tag,
+    .opp,
+    .pill,
+    .customer-card .priority-tag {
+      box-sizing: border-box;
+      min-width: 40px;
+      height: var(--tag-regular-height);
+      min-height: var(--tag-regular-height);
+      padding: 0 var(--tag-padding-x);
+      border-radius: var(--tag-radius);
+      font-family: "Microsoft YaHei", sans-serif;
+      font-size: var(--tag-regular-font);
+      line-height: var(--tag-regular-line);
+      font-weight: 400;
+      font-style: normal;
+      white-space: nowrap;
+    }
+
+    .b-tag--blue {
+      --tag-01: #F2F7FF;
+      --tag-02: #E5F0FF;
+      --tag-04: #9CC0FF;
+      --tag-06: #2B73FF;
+      --tag-07: #1F63F0
+    }
+
+    .b-tag--neutral {
+      --tag-01: #FAFBFC;
+      --tag-02: #EBEEF2;
+      --tag-04: #B8C0CC;
+      --tag-06: #B8C0CC;
+      --tag-07: #475467
+    }
+
+    .b-tag--red {
+      --tag-01: #FEF2F2;
+      --tag-02: #FEE2E2;
+      --tag-04: #FD9B9B;
+      --tag-06: #F93838;
+      --tag-07: #D92020
+    }
+
+    .b-tag--green {
+      --tag-01: #ECFDF3;
+      --tag-02: #D1FADF;
+      --tag-04: #6CE9A6;
+      --tag-06: #12B76A;
+      --tag-07: #039855
+    }
+
+    .b-tag--orange {
+      --tag-01: #FFF7ED;
+      --tag-02: #FFEDD5;
+      --tag-04: #FDBA74;
+      --tag-06: #F77C09;
+      --tag-07: #FF6A00
+    }
+
+    .b-tag--yellow {
+      --tag-01: #FFFBE6;
+      --tag-02: #FFF3BF;
+      --tag-04: #FFD95A;
+      --tag-06: #F5B800;
+      --tag-07: #D99A00
+    }
+
+    .b-tag--cyan {
+      --tag-01: #ECFEFF;
+      --tag-02: #CFFAFE;
+      --tag-04: #67E8F9;
+      --tag-06: #06B6D4;
+      --tag-07: #0891B2
+    }
+
+    .b-tag--sky {
+      --tag-01: #F0F9FF;
+      --tag-02: #E0F2FE;
+      --tag-04: #7DD3FC;
+      --tag-06: #0EA5E9;
+      --tag-07: #0284C7
+    }
+
+    .b-tag--deepblue {
+      --tag-01: #EEF3FF;
+      --tag-02: #DDE7FF;
+      --tag-04: #91B0FF;
+      --tag-06: #4167D8;
+      --tag-07: #2F4FB8
+    }
+
+    .b-tag--purple {
+      --tag-01: #F5F3FF;
+      --tag-02: #EDE9FE;
+      --tag-04: #C4B5FD;
+      --tag-06: #8B5CF6;
+      --tag-07: #7C3AED
+    }
+
+    .b-tag--pink {
+      --tag-01: #FDF2F8;
+      --tag-02: #FCE7F3;
+      --tag-04: #F9A8D4;
+      --tag-06: #EC4899;
+      --tag-07: #DB2777
+    }
+
+    .phone-call-btn .phone-call-icon,
+    #hd-btn-phone .phone-call-icon {
+      width: 16px;
+      height: 16px;
+      display: block;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    #hd-btn-phone {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-image: none !important;
+    }
+
+    /* 实时核验板块采用“标题 + 内容 + 分割线”结构，不再使用外围卡框。 */
+    .pc-block {
+      overflow: visible;
+      margin: 0;
+      padding: 16px 0;
+      border: 0;
+      border-bottom: 1px solid var(--pc-divider);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .pc-block:first-child {
+      padding-top: 0
+    }
+
+    .pc-block:last-child {
+      padding-bottom: 0;
+      border-bottom: 0
+    }
+
+    .pc-head {
+      padding: 0 0 12px;
+      border: 0;
+      background: transparent
+    }
+
+    .pc-title {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding-left: 11px;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .pc-title:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: var(--pc-title-marker-width);
+      height: var(--pc-title-marker-height);
+      border-radius: 2px;
+      background: var(--primary);
+      transform: translateY(-50%);
+    }
+
+    .pc-body {
+      border: 0;
+      border-radius: 0
+    }
+
+    .pc-block[data-type="指标卡"] .pc-body {
+      background: transparent
+    }
+
+    #left-scene>.tabs:first-child {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      gap: 8px;
+    }
+
+    #left-scene>.tabs:first-child .tab {
+      width: 100%;
+      min-width: 0;
+      margin: 0
+    }
+
+    .script-card-v11 {
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .script-card-v11>.script-body {
+      display: contents
+    }
+
+    .scene-copy-block,
+    .scene-material-block {
+      width: 100%;
+      margin: 0
+    }
+
+    .script-copy-row {
+      width: 100%;
+      margin: 0
+    }
+
+    .customer-opportunity-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .customer-opportunity-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%
+    }
+
+    .customer-opportunity-stack .b-tag {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    /* ===== V0.13 — targeted layout corrections ===== */
+    .scenario-columns {
+      gap: 20px
+    }
+
+    .pc-block[data-title="产品信号表现"] .scene-metric-grid,
+    .pc-block[data-title="客户产品信号使用统计"] .scene-metric-grid,
+    .pc-block[data-title="产品签约/访问情况"] .scene-metric-grid {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .pc-block[data-title="产品信号表现"] .scene-metric,
+    .pc-block[data-title="客户产品信号使用统计"] .scene-metric,
+    .pc-block[data-title="产品签约/访问情况"] .scene-metric {
+      width: 100%;
+      min-width: 0;
+      padding: 16px;
+      border: 0;
+      border-radius: 10px;
+      background: #F5F7FA;
+      box-shadow: none;
+    }
+
+    .scene-material-row-v11>.b-tag {
+      margin-left: -4px
+    }
+
+    #script-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px;
+      background: var(--bg);
+    }
+
+    #script-panel>.script-card-v11 {
+      width: 100%;
+      margin: 0;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    #script-panel>.compliance {
+      width: 100%;
+      margin: 0;
+    }
+
+    .scene-panel-v11 {
+      width: 100%
+    }
+
+    .main>.col:first-child {
+      bottom: 0
+    }
+
+    @media(max-width:760px) {
+
+      .pc-block[data-title="产品信号表现"] .scene-metric-grid,
+      .pc-block[data-title="客户产品信号使用统计"] .scene-metric-grid,
+      .pc-block[data-title="产品签约/访问情况"] .scene-metric-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ===== V0.14 — Figma node 865:469 layout update ===== */
+    #dim-filter {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: 100%;
+      gap: 0;
+      margin: 0 0 12px !important;
+      border-bottom: 1px solid #F3F6F9;
+    }
+
+    #dim-filter .tab {
+      position: relative;
+      width: 100%;
+      height: 32px;
+      padding: 5px 4px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #475467;
+      font-size: 12px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+
+    #dim-filter .tab:hover {
+      background: #F7F9FE;
+      color: var(--primary)
+    }
+
+    #dim-filter .tab.active {
+      background: transparent;
+      color: var(--primary);
+      font-weight: 500
+    }
+
+    #dim-filter .tab.active:after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: -1px;
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+      background: var(--primary);
+    }
+
+    #cond-filter {
+      gap: 8px;
+      margin: 0 0 12px !important
+    }
+
+    #cond-filter .tab {
+      height: 28px;
+      padding: 3px 8px;
+      border-radius: 4px
+    }
+
+    #cond-filter .tab.active {
+      background: var(--primary);
+      color: #fff
+    }
+
+    .main>.col:nth-child(2)>.col-hd {
+      margin-bottom: 20px;
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    /* 右栏拆为统一白色话术卡 + 独立状态卡，移除 right-sticky 灰色外框。 */
+    .main>.col:nth-child(3) {
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .main>.col:nth-child(3)>.col-hd {
+      margin: 0;
+      border: 0;
+      border-radius: 12px 12px 0 0;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(132, 148, 179, .10);
+    }
+
+    #script-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    #script-panel>.script-card,
+    #script-panel>.script-card-v11,
+    #script-panel>.scene-panel-v11>.script-card {
+      width: 100%;
+      margin: 0;
+      padding: 0 20px 20px;
+      border: 0;
+      border-radius: 0 0 12px 12px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(132, 148, 179, .10);
+    }
+
+    #script-panel>.scene-panel-v11 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
+
+    #script-panel>.compliance,
+    #script-panel>.scene-panel-v11>.compliance {
+      margin: 0
+    }
+
+    .script-card-v11>.script-hd {
+      padding: 16px 0;
+      border-top: 1px solid #F3F6F9;
+      border-bottom: 0
+    }
+
+    .script-card-v11>.script-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0;
+      background: transparent
+    }
+
+    .script-risk-note {
+      padding: 0 2px;
+      color: #78879A;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+
+    .script-scenario-group-v14 {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 10px;
+      background: #F5F7FA;
+    }
+
+    .script-scenario-group-v14 .scene-copy-block,
+    .script-scenario-group-v14 .scene-material-block {
+      padding: 0;
+      background: transparent;
+    }
+
+    .script-scenario-group-v14 .scene-copy-block {
+      gap: 12px
+    }
+
+    .script-scenario-group-v14 .scene-material-block {
+      gap: 12px
+    }
+
+    .script-scenario-group-v14 .script-copy-row {
+      padding: 0;
+      background: transparent
+    }
+
+    .scene-material-row-v11 {
+      grid-template-columns: 16px max-content max-content minmax(0, 1fr);
+      column-gap: 8px;
+    }
+
+    .scene-material-row-v11>.b-tag {
+      margin-left: -4px
+    }
+
+    #free-panel .opp-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    #free-panel .opp-row .b-tag {
+      margin: 0
+    }
+
+    #session-detail>.section.hero .scene-metric-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    #session-detail .scene-enter-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--primary);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+
+    @media(max-width:1100px) {
+      #session-detail>.section.hero .scene-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    @media(max-width:760px) {
+      #session-detail>.section.hero .scene-metric-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    html,
+    body,
+    .app {
+      width: 100%;
+      min-width: 0
+    }
+
+    body {
+      overflow-x: hidden
+    }
+
+    .topbar {
+      width: 100%;
+      min-width: 0
+    }
+
+    .main {
+      width: calc(100% - var(--figma-sidebar-width));
+      min-width: 0;
+      margin-left: var(--figma-sidebar-width)
+    }
+
+    .footer-note {
+      width: calc(100% - var(--figma-sidebar-width));
+      min-width: 0;
+      left: var(--figma-sidebar-width);
+      max-width: none;
+      box-sizing: border-box;
+    }
+
+    .scroll,
+    .right-sticky {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .scroll::-webkit-scrollbar,
+    .right-sticky::-webkit-scrollbar {
+      width: 0;
+      height: 0
+    }
+
+    @media(max-width:1439px) {
+
+      .app,
+      .topbar {
+        width: 100%;
+        min-width: 0
+      }
+
+      .main {
+        width: calc(100% - var(--figma-sidebar-width));
+        min-width: 0
+      }
+
+      .footer-note {
+        width: calc(100% - var(--figma-sidebar-width));
+        min-width: 0
+      }
+    }
+
+    @media(max-width:1100px) {
+      :root {
+        --figma-sidebar-width: 350px
+      }
+    }
+
+    .pc-updated-at {
+      flex: 0 0 auto;
+      color: #8D96A3;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+      white-space: nowrap;
+    }
+
+    /* ===== V0.15 — 自由圈客专项修复 ===== */
+    #free-panel .free-condition-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    #free-panel .free-condition-tags .b-tag {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .free-summary-v15 .scene-metric-grid {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .free-summary-v15 .scene-metric {
+      width: 100%;
+      min-width: 0;
+      padding: 16px;
+      border: 0;
+      border-radius: 10px;
+      background: #F5F7FA;
+      box-shadow: none;
+    }
+
+    .free-script-copy {
+      width: 100%;
+      min-height: 0;
+      max-height: none;
+      overflow: visible;
+      padding: 16px;
+      border: 0;
+      border-radius: 10px;
+      background: #F5F7FA;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 26px;
+      font-weight: 400;
+      font-style: normal;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    @media(max-width:1100px) {
+      .free-summary-v15 .scene-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    @media(max-width:760px) {
+      .free-summary-v15 .scene-metric-grid {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">AI</div>
+        <div>
+          <div class="brand-title">AI投顾 · 服务清单工作台</div>
+          <div class="brand-sub">场景机会生成 → 客户会话编排 → 整合话术 → 合规触达 → 服务闭环</div>
+        </div>
+      </div>
+      <div class="top-stats">
+        <div class="tstat"><b>46</b><span>服务机会</span></div>
+        <div class="tstat"><b>22</b><span>涉及客户</span></div>
+        <div class="tstat"><b>7</b><span>已服务客户</span></div>
+        <div class="top-divider"></div>
+        <div class="top-date">7月8日 周三</div>
+        <div class="top-avatar">顾</div>
+      </div>
+    </header>
+    <main class="main">
+      <aside class="col">
+        <div class="col-hd">
+          <div>
+            <div class="col-title">客户服务会话队列</div>
+            <div class="col-desc">默认按客户聚合，而非单任务列表</div>
+          </div>
+          <div class="tabs"><button class="tab active" onclick="switchLeft('session',this)">会话</button><button
+              class="tab" onclick="switchLeft('scene',this)">场景</button></div>
+        </div>
+        <div class="scroll" id="left-session">
+          <div class="queue-summary">
+            <div class="mini"><b>8</b><span>多机会客户</span></div>
+            <div class="mini"><b>3</b><span>重点客户</span></div>
+          </div>
+          <div class="tabs" style="margin-bottom:6px;flex-wrap:wrap" id="dim-filter">
+            <button class="tab active" onclick="setDimFilter('all',this)">全部</button>
+            <button class="tab" onclick="setDimFilter('市场',this)">市场条件</button>
+            <button class="tab" onclick="setDimFilter('产品',this)">产品条件</button>
+            <button class="tab" onclick="setDimFilter('客户',this)">客户条件</button>
+          </div>
+          <div class="tabs" style="margin-bottom:10px;flex-wrap:wrap;display:none" id="cond-filter"></div>
+          <input placeholder="请输入客户姓名/资金账号"
+            style="width:100%;box-sizing:border-box;font-size:12px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fff"
+            oninput="custSearch=this.value.trim();custListLimit=10;renderCustomers()">
+          <div id="customer-list"></div>
+        </div>
+        <div class="scroll hidden" id="left-scene">
+          <div class="tabs" style="margin-bottom:12px"><button class="tab active" id="sm-preset"
+              onclick="setSceneMode('preset')">重点场景（推荐）</button><button class="tab" id="sm-free"
+              onclick="setSceneMode('free')">自由圈客</button></div>
+          <div id="preset-panel">
+            <div class="scene-list">
+              <div class="scene-card active" data-scene="S1" onclick="selectScene('S1')">
+                <h3>热点板块活跃 × 持仓风格</h3>
+                <p>热点板块活跃后，匹配客户持仓风格、偏好方向与 AI选好股相关信号，识别服务机会。</p>
+                <div class="opp-row"><span class="opp main">热点活跃·风格不匹配</span><span class="opp">热点活跃·风格匹配</span></div>
+              </div>
+              <div class="scene-card" data-scene="S2" onclick="selectScene('S2')">
+                <h3>AI信号命中 × 持仓/关注</h3>
+                <p>AI选好股发出新信号，并命中客户持仓、自选、浏览或关注标的。</p>
+                <div class="opp-row"><span class="opp main">AI信号命中·持仓</span><span class="opp">AI信号命中·关注</span></div>
+              </div>
+              <div class="scene-card" data-scene="S3" onclick="selectScene('S3')">
+                <h3>产品信号表现不佳 × 跟投情况</h3>
+                <p>近期信号胜率偏弱或客户偏好板块承压，需要主动解释、维护信任并引导优化偏好设置。</p>
+                <div class="opp-row"><span class="opp main">信号表现不佳·跟投亏损</span><span class="opp defer">信号表现不佳·未跟投</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="free-panel" style="display:none"></div>
+        </div>
+      </aside>
+      <section class="col">
+        <div class="col-hd">
+          <div>
+            <div class="col-title">本次客户服务会话</div>
+            <div class="col-desc">触达前实时扫描客户待服务机会，并生成服务主线</div>
+          </div>
+        </div>
+        <div class="scroll" id="session-detail"></div>
+        <div class="footer-note"><span>服务后统一追踪：工具打开、信号查看、附件阅读、偏好设置、自选添加、跟投情况</span><button class="btn secondary"
+            onclick="markDone()">标记已服务</button></div>
+      </section>
+      <aside class="col">
+        <div class="col-hd">
+          <div>
+            <div class="col-title">AI整合话术与合规</div>
+            <div class="col-desc">从场景话术升级为客户级会话话术</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center" id="right-header-btns"><button class="btn primary"
+              id="hd-btn-phone" style="padding:5px 10px;font-size:12px;border-radius:10px"
+              onclick="toast('已进入电话触达确认')"><img class="phone-call-icon" src="assets/dianhua2.png" alt=""
+                aria-hidden="true">电话</button><button class="btn green" id="hd-btn-wecom"
+              style="padding:5px 10px;font-size:12px;border-radius:10px" onclick="toast('已进入企微触达确认')">💬 企微</button>
+          </div>
+        </div>
+        <div class="right-sticky" id="script-panel"></div>
+      </aside>
+    </main>
+  </div>
+  <script>
+    const sessions = [
+      {id: 'wang', name: '王女士', level: 'P0', channel: '建议电话', count: 3, main: 'S2-A2 AI信号命中持仓', merge: 'S1-A2 市场热点作为背景补充', defer: 'S3-1 产品表现说明暂缓', reason: '当前存在强相关持仓信号，且客户对相关标的已有关注。本次宜围绕“信号命中 + 个股诊断”建立参考视角，市场热点只作为背景，不主动提近期信号胜率偏弱，避免削弱信任。', goal: '降低客户理解成本，帮助客户关注信号逻辑与个股诊断，不推动立即交易。', profile: ['近7天工具访问 4次', '当前持仓命中新信号', '标的接近观察区间', '近一月账户表现承压'], materials: [['个股诊断', '中科曙光基本面、资金面、消息面综合诊断，剔除短期驱动和收益承诺表达。', 1], ['板块诊断', '存储芯片与AI算力板块近期活跃度与资金流入分析，可作为行业背景补充。', 1], ['产品历史战绩', '近一月推荐信号胜率统计，用于向客户解释信号表现。', 0]], script: {phone: '王女士，跟您同步一条 AI选好股 的新信号。今天 AI选好股在【中科曙光】上触发了买入信号，这个方向近期也受到 AI算力需求和产业景气改善的关注。这里我主要给您补充一个参考视角：一方面可以看信号给出的触发逻辑，另一方面也可以结合个股诊断，从基本面、资金面和消息面多维度观察。近期市场分化比较明显，不同标的节奏差异也会比较大，所以这条信号更适合作为后续跟踪和验证判断的参考。您可以打开 APP首页 -> AI选好股 -> 查看信号，先关注信号逻辑和后续变化，不急于操作。', wecom: '王女士，跟您同步一条 AI选好股 新信号：【中科曙光】今日触发买入信号。近期 AI算力方向关注度有所提升，这条信号可以作为后续观察该标的的一个参考。我也附上个股诊断，方便您从基本面、资金面和消息面多一个判断视角。路径：APP首页 -> AI选好股 -> 查看信号。先关注逻辑和变化，不急于操作。', follow: '如果客户追问近期市场热点，可补充说明：AI算力和存储芯片方向近期活跃度提升，但短期波动也会加大，建议先结合工具信号和诊断材料观察，不急于做交易决策。'}, source: ['S2-A2', 'S1-A2'], risk: '暂缓 S3-1：不在本次主动提“近期信号胜率偏弱”，避免与新信号沟通目标冲突。'},
+      {id: 'qian', name: '钱女士', level: 'P0', channel: '建议企微', count: 2, main: 'S2-A2 AI信号命中持仓', merge: 'S1-A2 市场热点作为背景补充', defer: '无', reason: '客户同样命中【中科曙光】买入信号，且适合使用与同标的客户一致的话术结构，仅替换客户称谓和个别服务细节。', goal: '作为同标的强相关信号客户，可进入 S2-A2｜中科曙光 分组群发，话术保持同一结构。', profile: ['当前持仓命中新信号', '近7天工具访问 2次', '标的为中科曙光', '适合企微轻触达'], materials: [['个股诊断', '中科曙光诊断材料与同组客户共享，客户称谓和触达语气按客户替换。', 1], ['板块诊断', 'AI算力板块近期关注度提升，可作为背景补充。', 1]], script: {phone: '钱女士，跟您同步一条 AI选好股 的新信号。今天 AI选好股在【中科曙光】上触发了买入信号，这个方向近期也受到 AI算力需求和产业景气改善的关注。您可以结合信号逻辑和个股诊断做进一步观察，先关注后续变化，不急于操作。', wecom: '钱女士，跟您同步一条 AI选好股 新信号：【中科曙光】今日触发买入信号。我也附上个股诊断，方便您从基本面、资金面和消息面多一个判断视角。路径：APP首页 -> AI选好股 -> 查看信号。先关注逻辑和变化，不急于操作。', follow: '如客户追问，可补充中科曙光个股诊断和 AI算力方向背景，但不直接给交易建议。'}, source: ['S2-A2', 'S1-A2'], risk: '同组群发仅限同一标的【中科曙光】，不同标的客户必须拆组。'},
+      {id: 'chen', name: '陈先生', level: 'P0', channel: '建议企微', count: 2, main: 'S1-B1 热点方向选对但未落地', merge: 'AI选好股工具筛选作为辅助', defer: '无', reason: '客户前期关注方向与机器人热点接近，本次适合用企微做市场同步，并引导从方向判断落到具体标的筛选。', goal: '强化客户方向判断的正向反馈，引导查看 AI选好股相关方向信号。', profile: ['前期关注机器人方向', '热点匹配度高', '适合企微轻触达', '可分组发送'], materials: [['板块诊断', '机器人板块政策加码、订单预期升温，产业链关注度提升。', 1], ['个股诊断', 'AI选好股已有相关方向信号，板块内标的综合诊断可辅助筛选。', 1]], script: {phone: '陈先生，跟您同步一个和您前期关注方向比较接近的市场动态。机器人板块近期活跃度明显提升，短期和主线关注度都较高，主要受政策加码和订单预期升温推动。从板块诊断来看，相关驱动因素仍值得跟踪，后续表现可以继续观察。这个方向目前已进入热点观察范围，接下来更关键的是怎么把方向判断进一步落到具体标的筛选上。AI选好股里也有相关方向信号，您可以打开看看，先作为参考观察，不急着操作。', wecom: '陈先生，跟您同步一个和您前期关注方向比较接近的市场动态。机器人板块近期活跃度明显提升，短期和主线关注度都较高，主要受政策加码和订单预期升温推动。这个方向已进入热点观察范围，下一步可以借助 AI选好股把方向判断落到具体标的筛选上。路径：APP首页 -> AI选好股 -> 查看信号。先作为参考观察，不急着操作。', follow: '如果客户问具体标的，可引导其查看 AI选好股中的信号详情和板块诊断配图，不直接给出买入建议。'}, source: ['S1-B1'], risk: '避免表达“我看到您关注/浏览过这个方向”，统一替换为“和您前期关注方向比较接近”。'},
+      {id: 'liu', name: '刘先生', level: 'P0', channel: '建议企微', count: 1, main: 'S1-B1 热点方向选对但未落地', merge: 'AI选好股工具筛选作为辅助', defer: '无', reason: '客户同属机器人热点方向，且为 S1-B1 分支，可与陈先生进入同一“机器人板块”分组，使用同一话术结构。', goal: '通过同一热点板块服务组，批量同步市场动态，并引导查看 AI选好股相关方向信号。', profile: ['前期关注机器人方向', '热点匹配度高', '无相关持仓', '可分组发送'], materials: [['板块诊断', '机器人板块政策加码、订单预期升温，产业链关注度提升。', 1], ['个股诊断', 'AI选好股已有机器人方向相关信号，板块内标的综合诊断可辅助筛选。', 1]], script: {phone: '刘先生，跟您同步一个和您前期关注方向比较接近的市场动态。机器人板块近期活跃度明显提升，短期和主线关注度都较高。接下来更关键的是怎么把方向判断进一步落到具体标的筛选上，AI选好股里也有相关方向信号，可以先作为参考观察，不急着操作。', wecom: '刘先生，跟您同步一个和您前期关注方向比较接近的市场动态。机器人板块近期活跃度明显提升，短期和主线关注度都较高。您可以借助 AI选好股把方向判断落到具体标的筛选上。路径：APP首页 -> AI选好股 -> 查看信号。先作为参考观察，不急着操作。', follow: '如果客户问具体标的，可引导查看 AI选好股信号详情和板块诊断，不直接给出买入建议。'}, source: ['S1-B1'], risk: '同组群发仅限同一分支 S1-B1 且同一热点板块【机器人板块】。'},
+      {id: 'zhu', name: '朱女士', level: 'P0', channel: '建议企微', count: 1, main: 'S1-B1 热点方向选对但未落地', merge: 'AI选好股工具筛选作为辅助', defer: '无', reason: '客户同属机器人热点方向，且为 S1-B1 分支，可与陈先生、刘先生进入同一“机器人板块”服务组。', goal: '通过同一热点板块服务组，批量同步市场动态，并引导查看 AI选好股相关方向信号。', profile: ['前期关注机器人方向', '热点匹配度高', '无相关持仓', '可分组发送'], materials: [['板块诊断', '机器人板块政策加码、订单预期升温，产业链关注度提升。', 1], ['个股诊断', 'AI选好股已有机器人方向相关信号，板块内标的综合诊断可辅助筛选。', 1]], script: {phone: '朱女士，跟您同步一个和您前期关注方向比较接近的市场动态。机器人板块近期活跃度明显提升，短期和主线关注度都较高。接下来更关键的是怎么把方向判断进一步落到具体标的筛选上，AI选好股里也有相关方向信号，可以先作为参考观察，不急着操作。', wecom: '朱女士，跟您同步一个和您前期关注方向比较接近的市场动态。机器人板块近期活跃度明显提升，短期和主线关注度都较高。您可以借助 AI选好股把方向判断落到具体标的筛选上。路径：APP首页 -> AI选好股 -> 查看信号。先作为参考观察，不急着操作。', follow: '如果客户问具体标的，可引导查看 AI选好股信号详情和板块诊断，不直接给出买入建议。'}, source: ['S1-B1'], risk: '同组群发仅限同一分支 S1-B1 且同一热点板块【机器人板块】。'},
+      {id: 'zhou', name: '周女士', level: 'P0', channel: '建议电话', count: 2, main: 'S3-2 产品体验维护', merge: '月度使用攻略 + 偏好优化', defer: 'S1热点机会暂缓', reason: '客户近期跟投体验不佳，且偏好板块近一个月整体承压。本次应先维护信任、解释原因，不宜同时推新热点。', goal: '承认近期体验，解释市场与偏好板块影响，引导优化偏好设置。', profile: ['近一月信号胜率 42%', '偏好科技板块承压', '跟投体验偏弱', '需人工重点确认'], materials: [['产品历史战绩', '近一个月推荐信号胜率统计，用于向客户解释表现原因。', 0], ['板块诊断', '客户偏好的科技板块近一月走势与大盘对比分析。', 1], ['AI投顾月度使用攻略', '包含近期信号回顾、偏好设置与使用建议。', 1]], script: {phone: '周女士，跟您同步一下 AI选好股 近期信号表现情况。近一个月，推荐给您的部分信号表现确实不算理想。除了市场本身风格切换较快，另外一个重要原因是相关偏好板块近一个月整体表现偏弱，对部分信号表现有一定影响。这种情况下，建议先结合 AI投顾月度使用攻略看一下偏好设置是否需要优化，比如关注行业、信号频率或风格偏好。攻略里也包含近期信号回顾和工具使用建议，您可以先看一下。后续信号表现有变化，我也会继续同步，您有任何需要随时找我。', wecom: '周女士，跟您同步一下 AI选好股 近期信号表现情况。近一个月部分信号表现确实不算理想，主要和市场风格切换较快、相关偏好板块阶段性偏弱有关。我给您准备了一份 AI投顾月度使用攻略，里面有近期信号回顾和偏好设置建议，您可以先看一下。后续有变化我也会继续同步。', follow: '若客户表达不满，优先解释市场环境和偏好板块影响，不推动退签，不立即推新信号。'}, source: ['S3-2'], risk: '暂缓 S1 热点机会：本次不主动推新热点，避免客户感知为“表现不好还继续推荐”。'}
+    ];
+    let current = sessions[0]; let currentScene = 'S1'; let currentSceneGroupIndex = 0; let groupExpanded = {}; let scriptMode = 'phone'; let selectedScenarios = {}; let currentSceneFilter = 'all'; let currentBranchFilter = ''; let showSingleScene = false; let showUnserved = false; let sceneMode = 'preset'; let freeSel = {}; let currentDim = 'all'; let currentCond = ''; let freeComboId = ''; let custSearch = ''; let custListLimit = 10;
+    const sceneBranches = {S1: [{id: 'S1-A', name: '市场热点·风格不匹配'}, {id: 'S1-B', name: '市场热点·风格匹配'}], S2: [{id: 'S2-A', name: '强相关信号·持仓'}, {id: 'S2-B', name: '强相关信号·关注'}], S3: [{id: 'S3-1', name: '信号弱势·跟投亏损'}, {id: 'S3-2', name: '信号弱势·未跟投'}]};
+    const conditionLib = {hot: {cat: '市场', name: '热点板块活跃', period: '近5日', side: '市场', profile: '客户持仓/关注方向与近期热点板块关联', current: '热点板块近5日活跃度与资金流入情况', material: [['板块诊断', 1]]}, abn: {cat: '市场', name: '异动板块', period: '近1日', side: '市场', profile: '客户关注方向出现盘中异动', current: '异动板块实时涨跌与驱动原因', material: [['板块诊断', 1]]}, sig_hold: {cat: '产品', name: 'AI信号命中持仓', period: '当日', side: '产品', profile: 'AI选好股新信号命中客户当前持仓', current: '信号有效性与持仓核验（是否仍持有）', material: [['个股诊断', 1]]}, sig_watch: {cat: '产品', name: 'AI信号命中关注', period: '当日', side: '产品', profile: 'AI选好股新信号命中客户自选/浏览标的', current: '信号有效性与客户关注状态', material: [['个股诊断', 1]]}, perf_good: {cat: '产品', name: '产品信号表现好(≥70)', period: '近一月', side: '产品', profile: '近一月AI信号胜率表现良好', current: '信号胜率统计口径与更新时间', material: [['产品历史战绩', 0]]}, perf_bad: {cat: '产品', name: '产品信号表现不佳(<50)', period: '近一月', side: '产品', profile: '近一月AI信号胜率偏弱，需维护信任', current: '信号胜率统计与偏好板块近期走势', material: [['产品历史战绩', 0]]}, style: {cat: '客户', name: '持仓风格匹配', period: '当前', side: '客户', grade: ['高', '中', '低'], profile: '客户持仓风格与热点方向的匹配度', current: '客户当前持仓结构与风格分布', material: []}, abs: {cat: '客户', name: '账户绝对收益', period: '近三月', side: '客户', grade: ['盈利', '亏损'], profile: '客户账户近三月绝对收益表现', current: '账户实时盈亏与持仓浮动', material: []}, excess: {cat: '客户', name: '超额收益', period: '近三月', side: '客户', grade: ['跑赢', '跑输'], profile: '客户账户相对基准的超额收益', current: '账户超额收益与基准对比', material: []}, hold_perf: {cat: '客户', name: '标的持有表现', period: '当前', side: '客户', grade: ['盈利', '亏损'], profile: '客户对命中标的的持有盈亏', current: '标的持仓成本与最新价盈亏', material: []}, invest: {cat: '客户', name: '累计跟投情况', period: '累计', side: '客户', grade: ['有跟投', '无跟投'], profile: '客户历史是否跟投AI信号', current: '累计跟投笔数与最近跟投时间', material: []}, invest_pl: {cat: '客户', name: '累计跟投盈亏', period: '累计', side: '客户', grade: ['盈利', '亏损'], profile: '客户累计跟投的盈亏结果', current: '累计跟投盈亏金额', material: []}, visit: {cat: '客户', name: '工具访问情况', period: '近7日', side: '客户', grade: ['有访问', '无访问'], profile: '客户近7日AI选好股工具访问活跃度', current: '近7日工具访问次数与最近访问时间', material: [['AI投顾月度使用攻略', 1]]}};
+    const custConds = {wang: ['sig_hold', 'hold_perf:亏损', 'style:中', 'abs:亏损', 'visit:有访问'], qian: ['sig_hold', 'style:中', 'abs:亏损', 'visit:有访问'], chen: ['hot', 'style:低', 'abs:盈利', 'visit:有访问'], liu: ['hot', 'style:高', 'abs:盈利', 'visit:无访问'], zhu: ['hot', 'style:中', 'abs:亏损', 'visit:无访问'], zhou: ['perf_bad', 'invest:有跟投', 'invest_pl:亏损', 'abs:亏损', 'excess:跑输']};
+    const presetScenes = [{id: 'S1-A1', name: '热点活跃·风格不匹配', conds: ['hot', 'style:低', 'abs:盈利']}, {id: 'S2-A2', name: 'AI信号命中·持仓亏损', conds: ['sig_hold', 'hold_perf:亏损']}, {id: 'S3-A', name: '信号表现不佳·跟投亏损', conds: ['perf_bad', 'invest:有跟投', 'invest_pl:亏损']}];
+    const freeCombos = [{id: 'fc1', name: '账户承压·近期活跃客群', by: '顾问·张明', time: '09:12', conds: ['abs:亏损', 'visit:有访问']}, {id: 'fc2', name: '热点关注·高风格客群', by: '顾问·张明', time: '09:40', conds: ['hot', 'style:高']}, {id: 'fc3', name: '跟投亏损·信号偏弱客群', by: '顾问·李蕾', time: '10:05', conds: ['perf_bad', 'invest_pl:亏损']}, {id: 'fc4', name: '持仓命中信号·中性风格', by: '顾问·李蕾', time: '10:22', conds: ['sig_hold', 'style:中']}];
+    function condBase(t) {return t.split(':')[0]}
+    function condVal(t) {return t.split(':')[1] || ''}
+    function condDef(t) {return conditionLib[condBase(t)]}
+    function condLabel(t) {const d = condDef(t); if (!d) return t; const v = condVal(t); return d.name + (v ? '·' + v : '')}
+    function condsOf(uid) {return custConds[uid] || []}
+    function sameSet(a, b) {if (a.length !== b.length) return false; const sb = new Set(b); return a.every(x => sb.has(x))}
+    function isKeyCust(uid) {const cs = condsOf(uid); return presetScenes.some(p => p.conds.every(c => cs.includes(c)))}
+    function freeKeys() {return Object.keys(freeSel).filter(k => freeSel[k])}
+    function matchFreeCustomers() {const keys = freeKeys(); if (!keys.length) return []; return sessions.filter(s => {const cs = condsOf(s.id); return keys.every(k => cs.includes(k))})}
+    function matchFreePreset() {const keys = freeKeys().slice(); return presetScenes.find(p => sameSet(p.conds, keys))}
+    function matchCustomersByConds(conds) {return sessions.filter(s => {const cs = condsOf(s.id); return conds.every(k => cs.includes(k))})}
+    function selectFreeCombo(id) {freeComboId = id; renderFreePanel(); renderFreeResult()}
+    function matchedPresets(uid) {const cs = condsOf(uid); return presetScenes.filter(p => p.conds.every(c => cs.includes(c)))}
+    function setDimFilter(dim, btn) {currentDim = dim; currentCond = ''; document.querySelectorAll('#dim-filter .tab').forEach(b => b.classList.remove('active')); if (btn) btn.classList.add('active'); const cf = document.getElementById('cond-filter'); if (dim === 'all') {cf.style.display = 'none'; cf.innerHTML = ''} else {const items = Object.keys(conditionLib).filter(k => conditionLib[k].cat === dim); cf.style.display = 'flex'; cf.innerHTML = '<button class="tab active" onclick="setCondFilter(\'\',this)">全部</button>' + items.map(k => '<button class="tab" onclick="setCondFilter(\'' + k + '\',this)">' + conditionLib[k].name + '</button>').join('')} renderCustomers()}
+    function setCondFilter(key, btn) {currentCond = key; if (btn) {document.querySelectorAll('#cond-filter .tab').forEach(b => b.classList.remove('active')); btn.classList.add('active')} renderCustomers()}
+    function scenarioInfo(sid) {const map = {'S2-A2': {title: 'AI信号命中持仓 · 标的持有亏损', desc: 'AI选好股触发买入信号，命中客户持仓，且标的当前持有亏损。', branch: 'S2-A', target: '中科曙光', trigger: '产品信号：AI选好股当日触发买入信号并命中持仓', custFactor: '标的持有亏损，需结合信号有效性与持仓核验', profileL: ['AI选好股新信号命中持仓（信号标的：中科曙光）', '用户信号闭环胜率 58%', '信号标的所属概念（同花顺）：AI算力'], profileR: ['跟单状态：跟单中，部分已清仓', '累计跟单盈亏率 -3.2%', '场内持仓命中该热点概念（覆盖度 42%）']}, 'S1-A2': {title: '热点板块活跃 · 持仓风格关联', desc: '存储芯片/AI算力方向近期活跃，与客户持仓风格关联，可作为背景补充。', branch: 'S1-A', target: 'AI算力/存储芯片', trigger: '市场热点：AI算力/存储芯片方向近5日活跃度提升', custFactor: '客户持仓/关注风格与热点方向关联', profileL: ['热点板块活跃（近5日）：AI算力/存储芯片', '信号标的所属行业（申万二级）与热点关联'], profileR: ['场内持仓按同花顺热点概念分布：AI算力/存储芯片', '持仓覆盖该热点概念 覆盖度 42%', '客户市场风格分布：成长占比偏高', '近7日产品访问 4次']}, 'S3-1': {title: '产品信号表现不佳 · 累计跟投亏损', desc: '近一月AI推荐信号表现偏弱，客户累计跟投亏损，需关注信任。', branch: 'S3-1', target: '信号胜率偏弱', trigger: '产品表现：近一月信号闭环胜率低于50%', custFactor: '客户累计跟投亏损，偏好板块近期承压', profileL: ['近一月信号闭环胜率 42%', '信号闭环平均收益率 -1.8%'], profileR: ['累计跟单盈亏率 -6.4%', '偏好行业（申万二级）近一月整体承压', '账户近三月绝对收益：亏损']}, 'S1-B1': {title: '热点板块活跃 · 方向匹配未落地', desc: '客户关注方向与当前热点匹配，但未落地为具体持仓。', branch: 'S1-B', target: '机器人板块', trigger: '市场热点：机器人板块近5日活跃度提升', custFactor: '客户前期关注该方向，场内无相关持仓', profileL: ['热点板块活跃（近5日）：机器人', '产品信号池已有机器人方向信号（待发出）'], profileR: ['前期关注方向命中该热点概念：机器人', '场内无相关持仓（持仓覆盖度 0）', '近7日产品访问：有访问']}, 'S3-2': {title: '产品信号表现不佳 · 未跟投体验维护', desc: '客户近期跟投体验偏弱，建议先维护信任。', branch: 'S3-2', target: '科技偏好板块', trigger: '产品表现：近一月信号闭环胜率偏弱', custFactor: '客户偏好科技板块近期承压，跟单次数为0', profileL: ['近一月信号闭环胜率 42%', '偏好科技板块市场风格近一月偏弱'], profileR: ['跟单次数 0（未跟投）', '账户近三月绝对收益：亏损', '近7日存在负反馈记录 1条']}, 'S1热点机会暂缓': {title: '热点机会暂缓 · 本次不主动推', desc: '客户处于体验维护期，热点机会本次暂缓，不主动叠加新信号。', branch: 'S1', target: '新热点机会', trigger: '市场热点：存在新热点机会', custFactor: '客户处于体验维护期，暂缓推送', profileL: ['热点板块活跃，但本次优先级下调', '不主动叠加新信号推送'], profileR: ['客户处于体验维护期']}}; return map[sid] || {title: sid, desc: '场景详情待确认', branch: sid, target: '待识别', trigger: '待补充', custFactor: '待补充', profileL: ['市场/产品条件待补充'], profileR: ['客户条件待补充']}}
+    function isServedToday(uid) {return {wang: false, qian: false, chen: true, liu: false, zhu: false, zhou: true}[uid] || false}
+    function custMeta(id) {const m = {wang: {acct: '8863027489', gender: '女', tags: ['高客五星', 'C4中高风险', '稳健型'], asset: '2,356.88万', mv: '3,235.68万', phone: '139****5678', pnl: [['2 未止损', 'pill-orange'], ['1 已盈利', 'pill-green']]}, qian: {acct: '8863027490', gender: '女', tags: ['金卡', 'C3中风险', '平衡型'], asset: '1,208.30万', mv: '986.20万', phone: '138****2233', pnl: [['1 已止损', 'pill-red']]}, chen: {acct: '8863027491', gender: '男', tags: ['高客五星', 'C4中高风险', '积极型'], asset: '1,860.50万', mv: '1,540.00万', phone: '137****8890', pnl: [['1 已盈利', 'pill-green']]}, liu: {acct: '8863027492', gender: '男', tags: ['金卡', 'C4中高风险', '积极型'], asset: '620.40万', mv: '420.10万', phone: '136****4521', pnl: [['1 关注', 'pill-blue']]}, zhu: {acct: '8863027493', gender: '女', tags: ['银卡', 'C3中风险', '平衡型'], asset: '318.60万', mv: '205.30万', phone: '135****7788', pnl: [['1 关注', 'pill-blue']]}, zhou: {acct: '8863027494', gender: '女', tags: ['高客五星', 'C4中高风险', '稳健型'], asset: '2,010.00万', mv: '1,680.50万', phone: '134****9900', pnl: [['1 已止损', 'pill-red']]}}; return m[id] || {acct: '—', gender: '—', tags: ['—'], asset: '—', mv: '—', phone: '—', pnl: []}}
+    function isMultiScene(uid) {return {wang: true, qian: true, chen: false, liu: false, zhu: false, zhou: false}[uid] || false}
+    function getPositions(uid) {const map = {wang: [{name: '中科曙光', code: '603019', qty: '2,000', avail: '2,000', cost: '38.20', price: '39.06', pl: '+1,720.00', plPct: '+2.3%', date: '2026-06-15'}], qian: [], zhou: []}; return map[uid] || []}
+    function getTrades(uid) {const map = {wang: [{date: '2026-07-08', time: '09:42', name: '中科曙光', code: '603019', dir: '买入', qty: '500', price: '39.06', amt: '19,530.00'}, {date: '2026-07-05', time: '14:30', name: '中科曙光', code: '603019', dir: '买入', qty: '300', price: '37.80', amt: '11,340.00'}, {date: '2026-06-15', time: '10:15', name: '中科曙光', code: '603019', dir: '买入', qty: '1,200', price: '38.20', amt: '45,840.00'}], qian: [{date: '2026-07-08', time: '10:58', name: '中科曙光', code: '603019', dir: '卖出', qty: '800', price: '38.90', amt: '31,120.00'}], zhou: []}; return map[uid] || []}
+    function preContactCards(s) {const all = preContactChecks(s); return all.filter(m => m.title !== '持仓核验' && m.title !== '实时行情')}
+    function getScenarioMaterials(sid) {const map = {'S2-A2': [['个股诊断', '中科曙光基本面、资金面、消息面综合诊断', 1], ['板块诊断', 'AI算力板块景气度与资金流入分析', 1]], 'S1-A2': [['板块诊断', 'AI算力/存储芯片板块活跃度与资金流入分析', 1], ['AI投顾月度使用攻略', '信号查看与工具使用指引', 1]], 'S3-1': [['产品历史战绩', '近一月推荐信号胜率统计', 0], ['AI投顾月度使用攻略', '近期信号回顾与偏好设置建议', 1]], 'S1-B1': [['板块诊断', '机器人板块政策加码、订单预期升温分析', 1], ['个股诊断', '板块内相关标的综合诊断', 1]], 'S3-2': [['产品历史战绩', '近期跟投信号表现回顾', 0], ['AI投顾月度使用攻略', '偏好优化与使用建议', 1]]}; return map[sid] || [['板块诊断', '场景相关板块分析', 1]]}
+    function showChartTip(e, name, code) {const tip = document.getElementById('chart-tip'); tip.innerHTML = '<div style="font-weight:600;font-size:13px;margin-bottom:4px">' + name + ' ' + code + '</div><div style="font-size:12px;color:#E53E3E">现价 39.06 ▼ -2.1%</div><div style="font-size:11px;color:var(--sub);margin-top:4px">今开 39.50｜最高 39.68｜最低 38.92</div><div style="font-size:11px;color:var(--sub)">成交量 4,280万｜换手 2.36%</div><div style="margin-top:6px;width:180px;height:80px;background:#F8FAFD;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sub)">📈 分时/日K 示意区</div>'; tip.style.display = 'block'; tip.style.left = (e.clientX + 12) + 'px'; tip.style.top = (e.clientY - 10) + 'px'}
+    function hideChartTip() {const tip = document.getElementById('chart-tip'); if (tip) tip.style.display = 'none'}
+    function init() {const tip = document.createElement('div'); tip.id = 'chart-tip'; tip.style.cssText = 'display:none;position:fixed;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);pointer-events:none;min-width:200px'; document.body.appendChild(tip); renderCustomers(); renderSession(current); renderScript(current)}
+    function sceneSessions(scene) {return sessions.filter(s => s.source.some(x => x.startsWith(scene)) || s.main.startsWith(scene) || s.merge.startsWith(scene) || s.defer.startsWith(scene))}
+    function getSceneMeta(s, scene) {const branchName = {'S1-A': '热点活跃·风格不匹配', 'S1-B': '热点活跃·风格匹配', 'S2-A': 'AI信号命中·持仓', 'S2-B': 'AI信号命中·关注', 'S3-1': '信号表现不佳·跟投亏损', 'S3-2': '信号表现不佳·未跟投'}; const map = {wang: {S1: ['S1-A2', 'AI算力/存储芯片方向'], S2: ['S2-A2', '中科曙光'], S3: ['S3-1', '信号胜率偏弱']}, qian: {S1: ['S1-A2', 'AI算力/存储芯片方向'], S2: ['S2-A2', '中科曙光']}, chen: {S1: ['S1-B1', '机器人板块']}, liu: {S1: ['S1-B1', '机器人板块']}, zhu: {S1: ['S1-B1', '机器人板块']}, zhou: {S1: ['S1热点暂缓', '新热点机会暂缓'], S3: ['S3-2', '科技偏好板块']}}; const hit = map[s.id] && map[s.id][scene]; if (hit) {const bn = (hit[0] || '').replace(/[12]$/, ''); return {branch: branchName[bn] || hit[0], target: hit[1]}} return {branch: scene, target: '待识别标的/板块'}}
+    function buildSceneGroups(scene, list) {const map = {}; list.forEach(s => {const m = getSceneMeta(s, scene); const key = m.branch + '|' + m.target; if (!map[key]) map[key] = {branch: m.branch, target: m.target, customers: []}; map[key].customers.push(s)}); const gs = Object.values(map); gs.forEach(g => g.customers.sort((a, b) => (isServedToday(a.id) ? 1 : 0) - (isServedToday(b.id) ? 1 : 0))); return gs}
+    function setHeaderBtns(showPhone) {const hd = document.getElementById('right-header-btns'); if (!hd) return; hd.style.display = 'flex'; const pb = document.getElementById('hd-btn-phone'); if (pb) pb.style.display = showPhone ? '' : 'none'}
+    function selectScene(scene) {currentScene = scene; currentSceneGroupIndex = 0; groupExpanded = {}; showSingleScene = false; showUnserved = false; document.querySelectorAll('.scene-card').forEach(c => c.classList.toggle('active', c.dataset.scene === scene)); setHeaderBtns(false); renderSceneDetail(scene); renderSelectedSceneGroupScript(scene)}
+    function renderSceneDetail(scene) {const list = sceneSessions(scene).filter(s => {if (showSingleScene && isMultiScene(s.id)) return false; if (showUnserved && isServedToday(s.id)) return false; return true}); const sceneName = {S1: '热点板块活跃 × 持仓风格', S2: 'AI信号命中 × 持仓/关注', S3: '产品信号表现不佳 × 跟投情况'}[scene]; const groups = buildSceneGroups(scene, list); if (currentSceneGroupIndex >= groups.length) currentSceneGroupIndex = 0; const groupHtml = groups.map((g, i) => {const key = scene + '-' + i; const expanded = !!groupExpanded[key]; const visible = expanded ? g.customers : g.customers.slice(0, 2); const more = g.customers.length > 2; const sample = g.customers[0]; const si = scenarioInfo((sample.source || []).find(x => x.startsWith(scene)) || (sample.source || [])[0] || scene); return `<div class="section" onclick="selectSceneGroup('${scene}',${i})" style="cursor:pointer;${i === currentSceneGroupIndex ? 'border-color:#9BB6FF;box-shadow:0 0 0 3px #EDF3FF;background:#FBFDFF' : ''}"><div class="section-hd"><div><div class="section-title">${g.branch}｜${g.target}</div><div class="section-sub">🏦 ${(si.profileL || []).join('；')}</div></div><span class="badge ${g.customers.length > 1 ? 'b-green' : 'b-orange'}">${g.customers.length > 1 ? '同话术服务组' : '建议单独处理'}</span></div><table class="customer-table"><thead><tr><th>客户</th><th>服务状态</th><th>机会</th><th>客户条件</th><th>操作</th></tr></thead><tbody>${visible.map(s => {const ci = scenarioInfo((s.source || []).find(x => x.startsWith(scene)) || (s.source || [])[0] || scene); return '<tr><td>' + s.name + '</td><td>' + (isServedToday(s.id) ? '<span class="badge b-green">已服务</span>' : '<span class="badge b-orange">未服务</span>') + '</td><td>' + s.count + '个</td><td style="font-size:11px;line-height:1.6">' + (ci.profileR || []).map(x => '· ' + x).join('<br>') + '</td><td><button class="btn secondary" style="padding:5px 8px;font-size:11px" onclick="event.stopPropagation();selectSession(\'' + s.id + '\')">进入会话</button></td></tr>'}).join('')}</tbody></table>${more ? '<div style="padding:8px 10px 0;text-align:center"><button class="btn secondary" style="padding:7px 12px" onclick="event.stopPropagation();toggleSceneGroupCustomers(\'' + scene + '\',' + i + ')">' + (expanded ? '收起' : '展开全部 ' + g.customers.length + ' 位客户') + '</button></div>' : ''}</div>`}).join('') || '<div class="section"><div class="section-title">暂无涉及客户</div></div>'; document.getElementById('session-detail').innerHTML = '<div class="section hero"><div class="section-hd"><div><div class="section-title">' + sceneName + '</div><div class="section-sub">群发建议优先单场景未服务客户；多场景/已服务客户建议进入会话一对一处理。</div></div><span class="badge b-blue">涉及 ' + list.length + ' 位客户</span></div><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;padding:5px 10px;border-radius:8px;background:#F8FAFD;border:1px solid var(--line)"><input type="checkbox" ' + (showSingleScene ? 'checked' : '') + ' onchange="showSingleScene=this.checked;renderSceneDetail(' + scene + ');renderSelectedSceneGroupScript(' + scene + ')" style="accent-color:var(--blue);width:14px;height:14px;cursor:pointer">仅看单场景客户</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;padding:5px 10px;border-radius:8px;background:#F8FAFD;border:1px solid var(--line)"><input type="checkbox" ' + (showUnserved ? 'checked' : '') + ' onchange="showUnserved=this.checked;renderSceneDetail(' + scene + ');renderSelectedSceneGroupScript(' + scene + ')" style="accent-color:var(--blue);width:14px;height:14px;cursor:pointer">仅看未服务客户</label></div><div class="scene-metric-grid"><div class="scene-metric"><b>' + list.length + '</b><span>涉及客户</span></div><div class="scene-metric"><b>' + groups.length + '</b><span>同话术服务组</span></div></div>' + groupHtml}
+    function selectSceneGroup(scene, index) {currentSceneGroupIndex = index; renderSceneDetail(scene); renderSelectedSceneGroupScript(scene)}
+    function toggleSceneGroupCustomers(scene, index) {const key = scene + '-' + index; groupExpanded[key] = !groupExpanded[key]; currentSceneGroupIndex = index; renderSceneDetail(scene); renderSelectedSceneGroupScript(scene)}
+    function renderSelectedSceneGroupScript(scene) {const groups = buildSceneGroups(scene, sceneSessions(scene)); const g = groups[currentSceneGroupIndex]; if (!g) {renderSceneScript(scene); return } const names = g.customers.map(c => c.name).join('、'); const sample = g.customers[0]; const script = sample.script.wecom || sample.script.phone; const noName = script.replace(/王女士|钱女士|陈先生|刘先生|朱女士|周女士/g, '客户'); const canBatch = g.customers.length > 1; document.getElementById('script-panel').innerHTML = `<div class="script-card"><div class="script-hd"><strong>${g.branch}｜${g.target}</strong><span class="badge ${canBatch ? 'b-green' : 'b-orange'}">${canBatch ? '同话术服务组' : '建议单独处理'}</span></div><div class="script-body"><div class="script-text" style="min-height:160px;font-size:13px">${noName}</div><div style="margin-top:8px;padding:10px 12px;background:#EEF4FF;border-radius:10px"><div style="font-size:12px;font-weight:700;margin-bottom:6px">📎 发送素材（全组统一）</div>${sample.materials.map(m => '<label style="display:flex;align-items:center;gap:6px;padding:3px 0;cursor:pointer;font-size:12px">' + (m[2] ? '<input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;cursor:pointer">' : '<input type="checkbox" disabled style="width:14px;height:14px">') + '<span' + (m[2] ? '' : ' style="color:var(--muted)"') + '>' + m[0] + '</span>' + (m[2] ? '' : '<span class="badge b-orange" style="font-size:10px;padding:1px 6px">不可发送</span>') + '</label>').join('')}</div><div class="actions" style="margin-top:8px"><button class="btn secondary" style="width:100%" onclick="toast('话术+素材已复制')">📋 复制话术+素材</button></div><div class="source" style="margin-top:6px"><span class="badge b-blue">同分支</span><span class="badge b-green">同标的/板块</span><span class="badge b-orange">群发话术已去个性化</span></div><div class="compliance" style="margin-top:8px"><div class="comp-title">本组客户</div><div class="checks"><div class="check">✓ ${names}</div><div class="check">✓ 分组依据：${g.branch} + ${g.target}</div><div class="check">✓ 群发话术不包含客户级变量，全组统一</div></div></div><div class="risk" style="margin-top:8px"><div class="risk-title">群发边界</div><div class="risk-row">不同信号标的、不同热点板块、不同预警原因不得并入本组。</div><div class="risk-row">如客户同时命中其他高优先级会话，需进入客户服务会话做实时编排。</div></div></div></div>`}
+    function renderSceneScript(scene) {const tips = {S1: 'S1 下不能只按“市场热点”粗粒度群发，应继续拆到 S1-A/S1-B 分支，并按同一热点板块或同一信号方向形成“同话术服务组”。只有同分支、同板块、同话术变量结构的客户，才适合进入同一服务组。', S2: 'S2 的群发边界更严格：必须按同一分支 + 同一信号标的聚合，例如同为 S2-A2 且均命中“中科曙光”的客户，才能使用同一组话术结构；不同标的必须拆组。', S3: 'S3 可按同一预警原因聚合：市场原因可统一说明，偏好板块原因则需按同一偏好板块拆组。体验维护类场景优先保证解释一致性，不宜混入新信号推荐。'}[scene]; document.getElementById('script-panel').innerHTML = `<div class="script-card"><div class="script-hd"><strong>${scene} 分组群发规则</strong><span class="badge b-purple">同话术服务组</span></div><div class="script-body"><div class="script-text" style="min-height:160px">${tips}</div><div class="source"><span class="badge b-blue">同分支</span><span class="badge b-green">同标的/板块</span><span class="badge b-orange">变量替换</span></div></div></div><div class="compliance"><div class="comp-title">场景视图使用原则</div><div class="checks"><div class="check">✓ 场景维度用于运营归因、分支拆解和客户筛选</div><div class="check">✓ 服务组只在话术结构一致时成立</div><div class="check">✓ 不同信号标的、不同热点板块、不同预警原因必须拆组</div><div class="check">✓ 最终触达仍以客户级会话编排为准</div></div></div>`}
+    function renderCustomers() {let list = currentCond ? sessions.filter(s => condsOf(s.id).some(t => condBase(t) === currentCond)) : sessions.slice(); if (custSearch) list = list.filter(s => s.name.includes(custSearch) || custMeta(s.id).acct.includes(custSearch)); list = list.slice().sort((a, b) => (isServedToday(a.id) ? 1 : 0) - (isServedToday(b.id) ? 1 : 0)); const box = document.getElementById('customer-list'); if (!list.length) {box.innerHTML = '<div style="padding:20px 10px;text-align:center;font-size:12px;color:var(--muted)">未找到匹配客户，请检查姓名或资金账号</div>'; return } const visible = list.slice(0, custListLimit); const card = s => {const m = custMeta(s.id); const kk = isKeyCust(s.id); const sv = isServedToday(s.id); const mp = matchedPresets(s.id); const stat = mp.length ? mp.map(p => '<span class="pill pill-red">重点 · ' + p.name + '</span>').join('') : '<span class="pill" style="color:var(--muted);background:#F1F5F9">非重点</span>'; return `<div class="customer-card ${s.id === current.id ? 'active' : ''}" onclick="selectSession('${s.id}')"><div class="cust-head"><div class="cust-avatar">${s.name.charAt(0)}</div><div style="flex:1;min-width:0"><div class="cust-top"><div class="cust-name">${s.name} <span class="cust-acct">${m.acct}</span></div><span class="badge ${sv ? 'b-green' : 'b-orange'}">${sv ? '已服务' : '未服务'}</span><span class="badge" style="${kk ? 'color:var(--red);background:var(--red-bg)' : 'color:var(--muted);background:#F1F5F9'}">${kk ? '重点' : '非重点'}</span></div><div class="cust-tags">${m.gender} · ${m.tags.join(' · ')}</div></div></div><div style="margin-top:8px">${stat}</div><div class="cust-line">${s.count}个命中条件组合<br>${s.source.map(x => scenarioInfo(x).title).join('<br>')}</div></div>`}; let html = ''; visible.forEach((v, i) => {if (i > 0 && isServedToday(v.id) && !isServedToday(visible[i - 1].id)) html += '<div style="display:flex;align-items:center;gap:8px;margin:12px 0 10px;font-size:11px;color:var(--muted)"><div style="flex:1;height:1px;background:#D8DEE9"></div>以下为已服务客户<div style="flex:1;height:1px;background:#D8DEE9"></div></div>'; html += card(v)}); if (list.length > custListLimit) html += '<div style="text-align:center;margin:10px 0 4px"><button class="btn secondary" style="padding:7px 14px;font-size:12px" onclick="custListLimit+=10;renderCustomers()">加载更多（剩余 ' + (list.length - custListLimit) + ' 位）</button></div>'; box.innerHTML = html}
+    function selectSession(id) {current = sessions.find(s => s.id === id); scriptMode = 'phone'; setHeaderBtns(true); const ids = [...(current.source || [])];[current.main, current.merge, current.defer].forEach(t => {if (t && t !== '无') {const m = t.match(/^(S\d[^\s]*)/); if (m && !ids.includes(m[1])) ids.push(m[1])} }); current._scenarios = ids; selectedScenarios = {}; ids.forEach(id => selectedScenarios[id] = true); document.getElementById('left-session').classList.remove('hidden'); document.getElementById('left-scene').classList.add('hidden'); document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', i === 0)); renderCustomers(); renderSession(current); renderScript(current)}
+    function preContactChecks(s) {const map = {wang: [{title: '持仓核验', status: '仍持有', badge: 'b-green', value: '中科曙光｜2,000股｜成本 38.20｜现价 39.06｜当前浮盈 +2.3%', note: 'AI触发时浮盈约 +4.8%，当前盈利收窄，话术需避免暗示收益扩大。', action: '查看持仓'}, {title: '实时行情', status: '波动中', badge: 'b-orange', value: '中科曙光 39.06｜-2.1%｜成交额较昨日放大 18%', note: '行情较触发时回落，建议话术增加“短期波动较大，先观察”的降压表达。', action: '查看行情'}, {title: '信号有效性', status: '有效', badge: 'b-green', value: 'AI选好股买入信号仍在有效期｜触发时间 09:42｜未撤销', note: '可继续作为本次服务主线，但需结合最新行情提示风险。', action: '查看信号'}, {title: '客户新动作', status: '无新操作', badge: 'b-blue', value: '近30分钟无清仓/调仓记录｜无新的服务记录', note: '可按当前客户级会话继续触达。', action: '查看动作'}], qian: [{title: '持仓核验', status: '已清仓', badge: 'b-red', value: '中科曙光｜AI触发时持仓 800股｜当前持仓 0股', note: '不得再使用“命中持仓”话术，应改为“前期关注标的动态同步”。', action: '查看持仓'}, {title: '实时行情', status: '波动中', badge: 'b-orange', value: '中科曙光 39.06｜-2.1%｜盘中回撤明显', note: '不建议继续使用同标的持仓触达话术。', action: '查看行情'}, {title: '信号有效性', status: '有效', badge: 'b-green', value: 'AI选好股信号仍有效，但客户状态已不满足“持仓命中”。', note: '需从同话术服务组中移出，进入单独处理。', action: '查看信号'}, {title: '客户新动作', status: '有新动作', badge: 'b-red', value: '10:58 已卖出全部中科曙光', note: '触达前必须改写话术或人工确认。', action: '查看动作'}], zhou: [{title: '产品表现', status: '需核验', badge: 'b-orange', value: '近一月信号表现统计更新至今日 10:30', note: '引用胜率前需确认统计口径和更新时间。', action: '查看表现'}, {title: '偏好板块', status: '阶段承压', badge: 'b-orange', value: '科技板块近20日 -6.4%，今日 +0.8%', note: '若近期已有反弹，解释重心需从“持续偏弱”调整为“前期承压、近期修复”。', action: '查看板块'}, {title: '客户行为', status: '有更新', badge: 'b-blue', value: '昨日修改关注行业：新增半导体，降低新能源权重', note: '话术可补充偏好设置优化结果。', action: '查看行为'}, {title: '触达策略', status: '人工优先', badge: 'b-red', value: '近7日存在负反馈记录 1条', note: '建议电话安抚，不建议直接企微群发。', action: '查看记录'}]}; return map[s.id] || [{title: '持仓/关注状态', status: '待核验', badge: 'b-orange', value: '展示客户是否仍持有、关注或适用于该场景。', note: '状态不一致时，不可沿用生成时话术。', action: '查看状态'}, {title: '实时行情', status: '待核验', badge: 'b-orange', value: '展示标的/板块最新价格、涨跌幅、波动原因和市场背景。', note: '行情大幅变化时需改写话术。', action: '查看行情'}, {title: '客户最新动作', status: '待核验', badge: 'b-orange', value: '展示是否已清仓、已操作、已修改偏好或已有其他服务记录。', note: '有新动作时需重新编排服务主线。', action: '查看动作'}, {title: '话术调整', status: '待确认', badge: 'b-blue', value: '展示是否需要改写话术、转人工确认或暂缓触达。', note: '核验不通过时不能直接发起触达。', action: '查看建议'}]}
+    function viewRealtimeDetail(action, name) {toast(action + '：已打开 ' + name + ' 的实时明细')}
+    function pcBlock(title, type, ctrl, body, note) {const tc = type === '列表' ? 'b-blue' : type === '指标卡' ? 'b-green' : 'b-orange'; return '<div style="border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden"><div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#F8FAFD;border-bottom:1px solid var(--line);flex-wrap:wrap"><strong style="font-size:13px">' + title + '</strong><span class="badge ' + tc + '">' + type + '</span>' + (note ? '<span style="font-size:11px;color:var(--muted)">' + note + '</span>' : '') + '<div style="margin-left:auto;display:flex;gap:6px;align-items:center">' + (ctrl || '') + '</div></div><div style="padding:10px 12px">' + body + '</div></div>'}
+    function pcPeriod(def) {const ops = ['近一周', '近一月', '近三月']; return '<select style="font-size:11px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;color:var(--sub);background:#fff" onchange="toast(' + String.fromCharCode(39) + '已切换时间周期：' + String.fromCharCode(39) + '+this.value)">' + ops.map(o => '<option' + (o === def ? ' selected' : '') + '>' + o + '</option>').join('') + '</select>'}
+    function pcMetrics(arr) {return '<div class="scene-metric-grid">' + arr.map(m => '<div class="scene-metric"><b>' + m[1] + '</b><span>' + m[0] + '</span></div>').join('') + '</div>'}
+    function preCheckComponents(s) {const pos = getPositions(s.id); const trd = getTrades(s.id); const posRows = (pos.length ? pos : [{name: '-', code: '-', qty: '-', avail: '-', cost: '-', price: '-', pl: '-', plPct: '-', date: '-'}]).map(p => '<tr><td>' + (p.name === '-' ? '-' : '<span style="color:#2563EB;cursor:help;border-bottom:1px dashed #2563EB" onmouseenter="showChartTip(event,\'' + p.name + '\',\'' + p.code + '\')" onmouseleave="hideChartTip()">' + p.name + '</span>') + '</td><td>' + p.code + '</td><td>' + p.qty + '</td><td>' + p.avail + '</td><td>' + p.cost + '</td><td>' + p.price + '</td><td style="color:' + ('+-'.includes(p.pl.charAt(0)) ? (p.pl.startsWith('+') ? '#2E7D32' : '#E53E3E') : 'var(--sub)') + '">' + p.pl + '</td><td style="color:' + ('+-'.includes(p.plPct.charAt(0)) ? (p.plPct.startsWith('+') ? '#2E7D32' : '#E53E3E') : 'var(--sub)') + '">' + p.plPct + '</td><td>' + p.date + '</td></tr>').join(''); const trdRows = (trd.length ? trd : [{date: '-', time: '-', name: '-', code: '-', dir: '-', qty: '-', price: '-', amt: '-'}]).map(t => '<tr><td>' + t.date + '</td><td>' + t.time + '</td><td>' + t.name + '</td><td>' + t.code + '</td><td style="color:' + (t.dir === '买入' ? '#E53E3E' : t.dir === '卖出' ? '#2E7D32' : 'var(--sub)') + '">' + t.dir + '</td><td>' + t.qty + '</td><td>' + t.price + '</td><td>' + t.amt + '</td><td>已成交</td></tr>').join(''); const sig = s.id === 'zhou' ? {n: '恒润股份', c: '603985', t: '06-30 09:35', dir: '买入', type: '趋势信号', price: '45.20', st: '已闭环', concept: '机器人', plate: '机械设备', why: '前期信号，近一月表现偏弱，已纳入表现统计'} : {n: '中科曙光', c: '603019', t: '今日 09:42', dir: '买入', type: '趋势信号', price: '38.85', st: '有效', concept: 'AI算力', plate: '计算机设备', why: 'AI算力景气度回升，资金关注度提升，趋势结构改善'}; const perf = s.id === 'zhou' ? ['10', '42%', '-1.8%'] : ['12', '58%', '+2.6%']; const use = s.id === 'zhou' ? [['跟单次数', '8次'], ['跟单金额', '18.4万'], ['累计跟单盈亏', '-1.2万']] : [['跟单次数', '5次'], ['跟单金额', '12.6万'], ['累计跟单盈亏', '-0.4万']]; const dimCtrl = '<select style="font-size:11px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;color:var(--sub);background:#fff" onchange="toast(\'已切换分析维度：\'+this.value)"><option selected>按概念</option><option>按行业</option></select>'; const sigSearch = '<input placeholder="搜索信号标的（名称/代码）" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:6px;width:160px" onchange="toast(\'搜索信号标的：\'+this.value)">'; return pcBlock('信号详情', '列表', '', '<table class="customer-table"><thead><tr><th>信号标的</th><th>信号时间</th><th>信号方向</th><th>信号类型</th><th>信号价格</th><th>信号状态</th><th>所属概念</th><th>所属板块</th><th>推荐理由</th></tr></thead><tbody><tr><td>' + sig.n + '（' + sig.c + '）</td><td>' + sig.t + '</td><td style="color:#E53E3E">' + sig.dir + '</td><td>' + sig.type + '</td><td>' + sig.price + '</td><td>' + sig.st + '</td><td>' + sig.concept + '</td><td>' + sig.plate + '</td><td>' + sig.why + '</td></tr></tbody></table>') + pcBlock('产品信号表现', '指标卡', pcPeriod('近一月'), pcMetrics([['推送信号数', perf[0]], ['闭环信号胜率', perf[1]], ['平均闭环收益率', perf[2]]])) + pcBlock('账户持仓分析结果', '列表', dimCtrl, '<table class="customer-table"><thead><tr><th>概念板块名称</th><th>是否热点概念</th><th>持仓数量</th><th>持仓金额</th><th>持仓占比</th></tr></thead><tbody><tr><td>AI算力</td><td><span class="badge b-red">热点</span></td><td>3个标的</td><td>7.8万</td><td>32%</td></tr><tr><td>存储芯片</td><td><span class="badge b-red">热点</span></td><td>2个标的</td><td>5.1万</td><td>21%</td></tr><tr><td>创新药</td><td>—</td><td>1个标的</td><td>3.4万</td><td>14%</td></tr></tbody></table>') + pcBlock('账户收益趋势', '趋势图', pcPeriod('近一月'), '<svg viewBox="0 0 600 120" style="width:100%;height:120px" preserveAspectRatio="none"><polyline points="0,80 60,75 120,85 180,70 240,78 300,65 360,72 420,60 480,66 540,55 600,58" fill="none" stroke="#2563EB" stroke-width="2"/><polyline points="0,85 60,82 120,80 180,76 240,79 300,74 360,76 420,70 480,72 540,68 600,66" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 3"/></svg><div style="display:flex;gap:14px;font-size:11px;color:var(--sub);margin-top:4px"><span><span style="display:inline-block;width:14px;height:2px;background:#2563EB;vertical-align:middle;margin-right:4px"></span>本账户收益</span><span><span style="display:inline-block;width:14px;height:2px;background:#94A3B8;vertical-align:middle;margin-right:4px"></span>万得全A（881001.WI）</span></div>') + pcBlock('持仓明细', '列表', '', '<table class="customer-table"><thead><tr><th>证券名称</th><th>证券代码</th><th>当前数量</th><th>可用数量</th><th>成本价</th><th>最新价</th><th>盈亏金额</th><th>盈亏比例</th><th>建仓日期</th></tr></thead><tbody>' + posRows + '</tbody></table>', '鼠标移入证券名称可查看实时行情（分时｜日K）') + pcBlock('交易流水', '列表', '', '<table class="customer-table"><thead><tr><th>交易日期</th><th>发生时间</th><th>证券名称</th><th>证券代码</th><th>买卖方向</th><th>成交数量</th><th>成交价格</th><th>成交金额</th><th>处理标志</th></tr></thead><tbody>' + trdRows + '</tbody></table>', '联动持仓明细：开始日期取对应标的建仓日') + pcBlock('客户产品信号使用统计', '指标卡', pcPeriod('近一月'), pcMetrics(use)) + pcBlock('客户产品信息跟投明细', '列表', sigSearch + pcPeriod('近一月'), '<table class="customer-table"><thead><tr><th>信号ID</th><th>信号标的</th><th>信号时间</th><th>信号方向</th><th>信号价格</th><th>跟单金额</th><th>跟单价格</th><th>跟单时间</th></tr></thead><tbody><tr><td>SIG-2418</td><td>中科曙光（603019）</td><td>06-28 10:02</td><td style="color:#E53E3E">买入</td><td>36.90</td><td>3.7万</td><td>37.02</td><td>06-28 10:15</td></tr><tr><td>SIG-2377</td><td>金山办公（688111）</td><td>06-15 13:40</td><td style="color:#E53E3E">买入</td><td>286.50</td><td>4.2万</td><td>287.10</td><td>06-15 14:02</td></tr></tbody></table>') + pcBlock('产品签约/访问情况', '指标卡', pcPeriod('近一周'), pcMetrics([['签约时间', '2026-03-12'], ['收费方式', '按年订阅'], ['产品访问次数', '4次']]))}
+    function renderSession(s) {const cm = custMeta(s.id); document.getElementById('session-detail').innerHTML = `<div class="section" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div class="cust-avatar" style="width:44px;height:44px;font-size:18px">${s.name.charAt(0)}</div><div><div style="display:flex;align-items:center;gap:8px"><strong style="font-size:17px">${s.name}</strong><span class="cust-acct">${cm.acct}</span><span style="color:var(--blue);font-size:12px;cursor:pointer" onclick="toast('已打开客户详情')">客户详情 ›</span></div><div class="cust-tags" style="margin-top:3px">${cm.gender} · ${cm.tags.join(' · ')}</div></div><div style="display:flex;gap:22px;margin-left:auto;align-items:center;flex-wrap:wrap"><div class="prof-metric"><span>总资产(元)</span><b>${cm.asset}</b></div><div class="prof-metric"><span>证券市值(元)</span><b>${cm.mv}</b></div><div class="prof-metric"><span>手机号</span><b>${cm.phone}</b></div></div></div><div class="section hero"><div class="section-hd"><div><div class="section-title">触发场景与画像依据</div><div class="section-sub">AI识别触发因素与客户因子，员工据此判断服务策略</div></div><span class="badge b-blue"></span></div><div style="display:flex;flex-direction:column;gap:12px">${(s._scenarios || s.source).map(sid => {const info = scenarioInfo(sid); return '<div style="border:1px solid var(--line);border-radius:12px;overflow:hidden"><div style="padding:12px;background:#FBFDFF;border-bottom:1px solid var(--line)"><div style="display:flex;gap:8px;align-items:center"><div style="flex-shrink:0;width:8px;height:8px;border-radius:4px;background:var(--blue)"></div><strong style="font-size:14px">' + info.title + '</strong></div></div><div style="display:grid;grid-template-columns:1fr 1fr"><div style="padding:10px 12px;background:#EEF4FF;font-size:11px;color:#1D4ED8;line-height:1.8;border-right:1px solid var(--line)"><strong style="font-size:12px">🏦 市场 / 产品条件</strong><div style="margin-top:4px">' + (info.profileL || []).map(x => '· ' + x).join('<br>') + '</div></div><div style="padding:10px 12px;background:#FFF7E8;font-size:11px;color:#92400E;line-height:1.8"><strong style="font-size:12px">👤 客户条件</strong><div style="margin-top:4px">' + (info.profileR || []).map(x => '· ' + x).join('<br>') + '</div></div></div></div>'}).join('')}</div></div><div class="section"><div class="section-hd"><div><div class="section-title">服务前实时核验</div><div class="section-sub">员工触达前必须查看的动态数据；AI画像依据只代表机会生成时状态。</div></div><button class="btn secondary" style="padding:7px 12px" onclick="toast('已刷新实时行情、持仓状态和信号有效性')">刷新核验</button></div>${preCheckComponents(s)}<div class="risk" style="margin-top:12px"><div class="risk-title">话术使用前置条件</div><div class="risk-row">若客户已清仓、盈亏状态明显变化、信号失效或行情大幅波动，需先调整话术，不可直接沿用 AI 初始生成内容。</div></div></div><div class="section"><div class="section-hd"><div class="section-title">本次服务素材</div><div class="section-sub">点击卡片可查看相关报告/详情</div></div><div class="material-grid">${s.materials.map(m => `<div class="mat" style="cursor:pointer" onclick="toast('已打开：${m[0]} 详情')"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h4>${m[0]}</h4><span class="badge ${m[2] ? 'b-green' : 'b-orange'}">${m[2] ? '可发送' : '不可发送'}</span></div><p>${m[1]}</p><div style="font-size:11px;color:var(--blue);margin-top:6px">查看详情 →</div></div>`).join('')}</div></div>`}
+    function renderScript(s) {const txt = s.script[scriptMode]; document.getElementById('script-panel').innerHTML = `<div class="script-card"><div class="script-hd"><strong>场景话术与素材</strong></div><div class="script-body">${(s._scenarios || s.source).map(sid => {const info = scenarioInfo(sid); const stxt = s.script.phone; const mats = getScenarioMaterials(sid); return '<div style="margin-bottom:10px;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden"><div style="padding:10px 12px;background:#F8FAFD;border-bottom:1px solid var(--line)"><div style="font-weight:700;font-size:13px">' + info.title + '</div></div><div class="script-text" contenteditable="true" style="min-height:auto;font-size:12px;padding:10px;border-bottom:1px solid var(--line)">' + stxt + '</div><div style="padding:8px 12px;background:#EEF4FF"><div style="font-size:11px;font-weight:700;margin-bottom:4px">📎 场景素材</div>' + mats.map(m => {const ok = m[2] !== 0; return '<label style="display:flex;align-items:center;gap:6px;padding:2px 0;cursor:pointer;font-size:12px">' + (ok ? '<input type="checkbox" checked style="accent-color:var(--blue);width:13px;height:13px;cursor:pointer">' : '<input type="checkbox" disabled style="width:13px;height:13px">') + '<span>' + m[0] + '</span><span class="badge ' + (ok ? 'b-green' : 'b-orange') + '" style="font-size:10px;padding:1px 6px">' + (ok ? '可发送' : '不可发送') + '</span><span style="color:var(--sub);font-size:10px">' + m[1] + '</span></label>'}).join('') + '</div><div style="padding:6px 12px;background:#fff"><button class="btn secondary" style="width:100%;padding:6px;font-size:11px" onclick="toast(\'已复制：' + info.title + ' 话术+素材\')">📋 复制话术+素材</button></div></div>'}).join('')}</div></div><div class="compliance"><div class="comp-title">合规审查：通过</div><div class="checks"><div class="check">✓ 未直述客户账户盈亏</div><div class="check">✓ 未暴露持仓/浏览/点击行为</div><div class="check">✓ 未承诺收益或确定性判断</div><div class="check">✓ 未直接建议买入、加仓、调仓或跟投</div><div class="check">✓ 保留"先了解/观察，不急于操作"的降压表达</div></div></div>`}
+    function toggleScriptScenario(sid) {selectedScenarios[sid] = !selectedScenarios[sid]; renderScript(current)}
+    function switchLeft(mode, btn) {document.querySelectorAll('.tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.getElementById('left-session').classList.toggle('hidden', mode !== 'session'); document.getElementById('left-scene').classList.toggle('hidden', mode !== 'scene'); setHeaderBtns(mode !== 'scene'); if (mode === 'scene') setSceneMode(sceneMode); else {renderSession(current); renderScript(current)} }
+    function toggleFlow() {const panel = document.getElementById('flow-panel'); const label = document.getElementById('flow-toggle-label'); if (!panel || !label) return; const open = panel.style.display === 'none'; panel.style.display = open ? 'flex' : 'none'; label.textContent = open ? '收起' : '展开'}
+    function toast(msg) {const t = document.createElement('div'); t.textContent = msg; t.style.cssText = 'position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#14265F;color:white;padding:10px 18px;border-radius:999px;box-shadow:0 12px 30px rgba(0,0,0,.18);z-index:9999;font-size:13px'; document.body.appendChild(t); setTimeout(() => t.remove(), 1600)}
+    function markDone() {toast('已标记为已服务，相关机会已统一回写闭环')}
+    function setSceneMode(mode) {sceneMode = mode; const p = document.getElementById('sm-preset'), f = document.getElementById('sm-free'); if (p) p.classList.toggle('active', mode === 'preset'); if (f) f.classList.toggle('active', mode === 'free'); const pp = document.getElementById('preset-panel'), fp = document.getElementById('free-panel'); if (pp) pp.style.display = mode === 'preset' ? '' : 'none'; if (fp) fp.style.display = mode === 'free' ? '' : 'none'; setHeaderBtns(false); if (mode === 'preset') {selectScene(currentScene)} else {renderFreePanel(); renderFreeResult()} }
+    function toggleFree(tok) {freeSel[tok] = !freeSel[tok]; renderFreePanel(); renderFreeResult()}
+    function clearFree() {freeSel = {}; renderFreePanel(); renderFreeResult()}
+    function renderFreePanel() {let html = '<div style="font-size:12px;color:var(--sub);line-height:1.6;margin-bottom:10px">自由组合客群不会自动触发，由员工每天在智能体内自行搭配条件生成。以下为今日已搭配的组合，点击查看命中客户与展示要素。</div><div class="scene-list">'; freeCombos.forEach(fc => {const custs = matchCustomersByConds(fc.conds); const chips = fc.conds.map(k => '<span class="opp">' + condLabel(k) + '</span>').join(''); html += '<div class="scene-card ' + (fc.id === freeComboId ? 'active' : '') + '" onclick="selectFreeCombo(\'' + fc.id + '\')"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3 style="margin-bottom:0">' + fc.name + '</h3><span class="badge b-blue">' + custs.length + ' 位客户</span></div><div style="font-size:11px;color:var(--muted);margin:6px 0">' + fc.by + ' · ' + fc.time + ' 搭配</div><div class="opp-row">' + chips + '</div></div>'}); html += '</div>'; document.getElementById('free-panel').innerHTML = html}
+    function renderFreeResult() {const fc = freeCombos.find(x => x.id === freeComboId); const detail = document.getElementById('session-detail'); const panel = document.getElementById('script-panel'); if (!fc) {detail.innerHTML = '<div class="section"><div class="section-title">请选择一个自由组合</div><div class="section-sub" style="margin-top:6px">左侧为员工今日在智能体内自由搭配的客群组合，点击任一组合可查看命中客户及其关联画像、服务前核验与关联素材。此类客群不会自动触发，需员工人工筛选处理。</div></div>'; panel.innerHTML = '<div class="script-card"><div class="script-hd"><strong>话术区</strong></div><div class="script-body"><div class="script-text" style="min-height:120px;font-size:13px;color:var(--sub)">尚未选择组合，暂无可推荐话术。</div></div></div>'; return } const keys = fc.conds; const custs = matchCustomersByConds(keys).slice().sort((a, b) => (isServedToday(a.id) ? 1 : 0) - (isServedToday(b.id) ? 1 : 0)); const profiles = [], currents = [], mats = []; const seenM = {}; keys.forEach(k => {const d = condDef(k); if (!d) return; if (d.profile && profiles.indexOf(d.profile) < 0) profiles.push(d.profile); if (d.current && currents.indexOf(d.current) < 0) currents.push(d.current); (d.material || []).forEach(m => {if (!seenM[m[0]]) {seenM[m[0]] = 1; mats.push(m)} })}); const condChips = keys.map(k => '<span class="opp main">' + condLabel(k) + '</span>').join(''); const custHtml = custs.length ? custs.map(s => {const m = custMeta(s.id); const badge = (isServedToday(s.id) ? '<span class="badge b-green">已服务</span> ' : '<span class="badge b-orange">未服务</span> ') + (isKeyCust(s.id) ? '<span class="badge b-red">重点</span>' : '<span class="badge" style="color:var(--muted);background:#F1F5F9">非重点</span>'); return '<tr><td>' + s.name + '</td><td>' + m.acct + '</td><td>' + m.tags.join(' · ') + '</td><td>' + badge + '</td><td><button class="btn secondary" style="padding:5px 8px;font-size:11px" onclick="selectSession(\'' + s.id + '\')">进入会话</button></td></tr>'}).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted)">当前组合暂无命中客户</td></tr>'; detail.innerHTML = '<div class="section hero"><div class="section-hd"><div><div class="section-title">' + fc.name + '</div><div class="section-sub">' + fc.by + ' · ' + fc.time + ' 搭配｜员工自由组合，需人工筛选处理，不自动触达</div></div><span class="badge b-blue">自由组合</span></div><div style="margin-bottom:10px;display:flex;gap: 8px;">' + condChips + '</div><div class="scene-metric-grid"><div class="scene-metric"><b>' + custs.length + '</b><span>命中客户</span></div><div class="scene-metric"><b>' + custs.filter(s => isKeyCust(s.id)).length + '</b><span>其中重点</span></div><div class="scene-metric"><b>' + profiles.length + '</b><span>关联画像</span></div><div class="scene-metric"><b>' + mats.length + '</b><span>关联素材</span></div></div></div><div class="section"><div class="section-title">命中客户</div><table class="customer-table" style="margin-top:8px"><thead><tr><th>客户</th><th>账号</th><th>标签</th><th>服务状态</th><th>操作</th></tr></thead><tbody>' + custHtml + '</tbody></table></div><div class="section"><div class="section-title">关联画像（并集去重）</div><div class="section-sub" style="margin-bottom:8px">触发归因：说明客户为何命中该条件组合</div>' + profiles.map(p => '<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:var(--blue)">•</span><span style="font-size:13px">' + p + '</span></div>').join('') + '</div><div class="section"><div class="section-title">服务前实时核验（并集去重）</div><div class="section-sub" style="margin-bottom:8px">触达前需刷新的动态数据，画像仅代表机会生成时状态</div>' + (currents.map(c => '<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:var(--orange)">◆</span><span style="font-size:13px">' + c + '</span></div>').join('') || '<div style="font-size:12px;color:var(--muted)">该组合无额外实时核验项</div>') + '</div><div class="section"><div class="section-title">关联服务素材（并集去重）</div><div class="material-grid" style="margin-top:8px">' + (mats.length ? mats.map(m => '<div class="mat"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h4>' + m[0] + '</h4><span class="badge ' + (m[1] ? 'b-green' : 'b-orange') + '">' + (m[1] ? '可发送' : '不可发送') + '</span></div><p style="margin-top:6px">' + (m[1] ? '可作为附件直接发送给客户' : '仅供员工参考，不可直接发送') + '</p></div>').join('') : '<div style="font-size:12px;color:var(--muted)">该组合暂无关联素材</div>') + '</div></div>'; panel.innerHTML = '<div class="script-card"><div class="script-hd"><strong>话术区</strong><span class="badge b-orange">自由组合</span></div><div class="script-body"><div class="script-text" style="min-height:120px;font-size:13px;color:var(--sub)">自由组合客群由员工人工筛选处理，暂不提供自动推荐话术，可结合上方命中客户画像与服务素材自行设计。</div></div></div>'}
+
+    /* Figma UI runtime adapter: preserves the prototype data and event functions. */
+    const legacyToast = toast;
+    toast = function (message) {
+      document.querySelectorAll('.toast-ui').forEach(node => node.remove());
+      const node = document.createElement('div');
+      node.className = 'toast-ui';
+      node.setAttribute('role', 'status');
+      node.textContent = message;
+      document.body.appendChild(node);
+      window.setTimeout(() => node.remove(), 1600);
+    };
+    function normalizeRenderedUI(root = document) {
+      root.querySelectorAll('.script-text').forEach(el => {
+        el.classList.add('draft-textarea');
+        el.setAttribute('role', 'textbox');
+        el.setAttribute('aria-multiline', 'true');
+        const resize = () => {
+          el.classList.remove('is-overflowing');
+          el.style.height = 'auto';
+          const max = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--draft-max-height')) || 320;
+          if (el.scrollHeight > max) {
+            el.classList.add('is-overflowing');
+            el.style.height = max + 'px';
+          } else {
+            el.style.height = el.scrollHeight + 'px';
+          }
+        };
+        if (!el.dataset.autogrowBound) {
+          el.addEventListener('input', resize);
+          el.dataset.autogrowBound = 'true';
+        }
+        requestAnimationFrame(resize);
+      });
+      root.querySelectorAll('button').forEach(button => {
+        const label = button.textContent.replace(/\s+/g, ' ').trim();
+        if (label.includes('复制')) {
+          button.classList.add('copy-action');
+          button.textContent = label.replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+/, '');
+        }
+        if (label === '展开' || label === '收起') {
+          button.classList.add('task-toggle');
+          button.setAttribute('aria-expanded', String(label === '收起'));
+        }
+      });
+      const replacements = [['📞', ''], ['💬', ''], ['📎', ''], ['📋', ''], ['🏦', ''], ['👤', '']];
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let textNode;
+      while ((textNode = walker.nextNode())) {
+        let value = textNode.nodeValue;
+        replacements.forEach(([from, to]) => {value = value.split(from).join(to)});
+        if (value !== textNode.nodeValue) textNode.nodeValue = value;
+      }
+    }
+    const uiObserver = new MutationObserver(records => {
+      records.forEach(record => record.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) normalizeRenderedUI(node);
+      }));
+    });
+    uiObserver.observe(document.body, {childList: true, subtree: true});
+    window.addEventListener('resize', () => normalizeRenderedUI(document));
+
+    /* V0.7 semantic render adapters */
+    function profileTagsV7(meta) {
+      return [meta.gender, ...meta.tags].map(tag => `<span class="profile-tag">${tag}</span>`).join('');
+    }
+    function enhanceCustomerCardsV7(root = document) {
+      root.querySelectorAll('.customer-card').forEach(card => {
+        card.querySelector('.cust-avatar')?.remove();
+        card.querySelectorAll('.badge').forEach(tag => {
+          if (tag.textContent.trim() === '重点') {
+            tag.classList.add('priority-tag');
+            tag.style.removeProperty('color');
+            tag.style.removeProperty('background');
+          }
+        });
+        const tags = card.querySelector('.cust-tags');
+        if (tags && !tags.dataset.tagsV7) {
+          const values = tags.textContent.split('·').map(v => v.trim()).filter(Boolean);
+          tags.innerHTML = values.map(v => `<span class="profile-tag">${v}</span>`).join('');
+          tags.dataset.tagsV7 = 'true';
+        }
+      });
+    }
+    function renderProfileSummaryV7(s) {
+      const meta = custMeta(s.id);
+      const first = document.querySelector('#session-detail>.section');
+      if (!first) return;
+      first.className = 'section profile-summary';
+      first.innerHTML = `
+    <div class="profile-identity">
+      <div class="profile-avatar" aria-hidden="true">${s.name.charAt(0)}</div>
+      <div class="profile-identity-copy">
+        <div class="profile-name-row">
+          <strong style="font-size:18px;line-height:24px">${s.name}</strong>
+          <span class="cust-acct">${meta.acct}</span>
+          <button type="button" class="client-detail-link" onclick="toast('已打开客户详情')">客户详情</button>
+        </div>
+        <div class="profile-tags">${profileTagsV7(meta)}</div>
+      </div>
+    </div>
+    <div class="profile-metrics">
+      <div class="prof-metric metric-card metric-assets"><span>总资产（元）</span><b>${meta.asset}</b></div>
+      <div class="prof-metric metric-card metric-market"><span>证券市值（元）</span><b>${meta.mv}</b></div>
+      <div class="phone-module">
+        <div class="phone-copy"><span>手机号</span><b>${meta.phone}</b></div>
+        <button type="button" class="phone-call-btn" onclick="toast('已进入电话触达确认：${s.name}')">电话</button>
+      </div>
+    </div>`;
+    }
+    function renderScenarioBasisV7(s) {
+      const hero = document.querySelector('#session-detail>.section.hero');
+      if (!hero) return;
+      const cards = (s._scenarios || s.source).map(sid => {
+        const info = scenarioInfo(sid);
+        return `<article class="scenario-card-v7">
+      <div class="scenario-card-title">${info.title}</div>
+      <div class="scenario-columns">
+        <div class="scenario-column market"><strong>市场 / 产品条件</strong><div>${(info.profileL || []).map(x => `· ${x}`).join('<br>')}</div></div>
+        <div class="scenario-column customer"><strong>客户条件</strong><div>${(info.profileR || []).map(x => `· ${x}`).join('<br>')}</div></div>
+      </div>
+    </article>`;
+      }).join('');
+      hero.innerHTML = `<div class="section-hd"><div><div class="section-title">触发场景与画像依据</div><div class="section-sub">AI识别触发因素与客户因子，员工据此判断服务策略</div></div></div><div style="display:flex;flex-direction:column;gap:12px">${cards}</div>`;
+    }
+    function enhanceRealtimeV7() {
+      const sections = [...document.querySelectorAll('#session-detail>.section')];
+      const section = sections.find(node => node.querySelector('.section-title')?.textContent.trim() === '服务前实时核验');
+      if (!section) return;
+      section.querySelector('.section-hd')?.classList.add('realtime-heading');
+      const refresh = [...section.querySelectorAll('button')].find(button => button.textContent.includes('刷新核验'));
+      if (refresh) refresh.classList.add('refresh-check');
+      section.querySelectorAll('.pc-block').forEach(block => {
+        if (block.querySelector('.pc-title')?.textContent.trim() === '账户收益趋势') {
+          block.classList.add('trend-chart');
+          const legend = block.querySelector('.trend-legend');
+          if (legend) legend.classList.add('trend-legend');
+        }
+      });
+    }
+    const pcBlockV6 = pcBlock;
+    pcBlock = function (title, type, ctrl, body, note) {
+      const typeClass = type === '列表' ? 'list' : type === '指标卡' ? 'metric' : 'chart';
+      const updateTimeTitles = new Set([
+        '信号详情',
+        '产品信号表现',
+        '账户持仓分析结果',
+        '账户收益趋势',
+        '客户产品信息跟投明细',
+        '客户产品信号使用统计',
+        '产品签约/访问情况'
+      ]);
+      const titleMeta = updateTimeTitles.has(title)
+        ? '<span class="pc-updated-at">更新时间：2026-07-28 09:57:16</span>'
+        : `<span class="view-tag ${typeClass}">${type}</span>`;
+      const enhancedBody = title === '账户收益趋势'
+        ? body.replace('<svg ', '<svg class="trend-chart" ')
+          .replace('background:#2563EB', 'background:#F93838')
+          .replace('background:#94A3B8', 'background:#2B73FF')
+          .replace('<div style="display:flex;gap:14px;font-size:11px;color:var(--sub);margin-top:4px">', '<div class="trend-legend" style="display:flex;gap:14px;font-size:11px;color:var(--sub);margin-top:4px">')
+        : body;
+      return `<section class="pc-block" data-type="${type}" data-title="${title}">
+    <header class="pc-head">
+      <strong class="pc-title">${title}</strong>
+      ${titleMeta}
+      ${note ? `<span class="pc-note">${note}</span>` : ''}
+      <div class="pc-controls">${ctrl || ''}</div>
+    </header>
+    <div class="pc-body">${enhancedBody}</div>
+  </section>`;
+    };
+    pcPeriod = function (def) {
+      const options = ['近一周', '近一月', '近三月'];
+      return `<select class="period-select" aria-label="时间周期" onchange="toast('已切换时间周期：'+this.value)">${options.map(item => `<option${item === def ? ' selected' : ''}>${item}</option>`).join('')}</select>`;
+    };
+    const renderSessionV6 = renderSession;
+    renderSession = function (s) {
+      renderSessionV6(s);
+      renderProfileSummaryV7(s);
+      renderScenarioBasisV7(s);
+      enhanceRealtimeV7();
+      enhanceCustomerCardsV7(document);
+      normalizeRenderedUI(document);
+    };
+    function enhanceScriptV7() {
+      document.querySelectorAll('#script-panel .script-body>div').forEach(scenario => {
+        scenario.classList.add('script-scenario');
+        const children = [...scenario.children];
+        if (children[0]) children[0].classList.add('script-scenario-title');
+        if (children[2]) {
+          children[2].classList.add('scenario-materials');
+          const title = children[2].firstElementChild;
+          if (title) title.classList.add('scenario-materials-title');
+          children[2].querySelectorAll('label').forEach(label => label.classList.add('scenario-material-row'));
+        }
+      });
+      normalizeRenderedUI(document);
+    };
+    const renderScriptV6 = renderScript;
+    renderScript = function (s) {
+      renderScriptV6(s);
+      enhanceScriptV7();
+    };
+    switchLeft = function (mode, button) {
+      const modeTabs = button?.closest('.col-hd')?.querySelectorAll('.tab') || [];
+      modeTabs.forEach(tab => tab.classList.remove('active'));
+      button?.classList.add('active');
+      document.getElementById('left-session').classList.toggle('hidden', mode !== 'session');
+      document.getElementById('left-scene').classList.toggle('hidden', mode !== 'scene');
+      setHeaderBtns(mode !== 'scene');
+      if (mode === 'scene') setSceneMode(sceneMode);
+      else {
+        renderSession(current);
+        renderScript(current);
+      }
+    };
+    const normalizeRenderedUIV6 = normalizeRenderedUI;
+    normalizeRenderedUI = function (root = document) {
+      normalizeRenderedUIV6(root);
+      enhanceCustomerCardsV7(root);
+    };
+    /* V0.10 semantic component adapters */
+    renderScenarioBasisV7 = function (s) {
+      const hero = document.querySelector('#session-detail>.section.hero');
+      if (!hero) return;
+      const cards = (s._scenarios || s.source).map(sid => {
+        const info = scenarioInfo(sid);
+        return `<article class="scenario-card-v7">
+      <div class="scenario-card-title"><span>${info.title}</span><span class="triggered-tag">已触发</span></div>
+      <div class="scenario-columns">
+        <div class="scenario-column market"><strong>市场 / 产品条件</strong><div>${(info.profileL || []).map(x => `· ${x}`).join('<br>')}</div></div>
+        <div class="scenario-column customer"><strong>客户条件</strong><div>${(info.profileR || []).map(x => `· ${x}`).join('<br>')}</div></div>
+      </div>
+    </article>`;
+      }).join('');
+      hero.innerHTML = `<div class="section-hd"><div><div class="section-title">触发场景与画像依据</div><div class="section-sub">AI识别触发因素与客户因子，员工据此判断服务策略</div></div></div><div style="display:flex;flex-direction:column;gap:12px">${cards}</div>`;
+    };
+    enhanceRealtimeV7 = function () {
+      const sections = [...document.querySelectorAll('#session-detail>.section')];
+      const section = sections.find(node => node.querySelector('.section-title')?.textContent.trim() === '服务前实时核验');
+      if (!section) return;
+      section.querySelector('.section-hd')?.classList.add('realtime-heading');
+      const refresh = [...section.querySelectorAll('button')].find(button => button.textContent.includes('刷新核验'));
+      if (refresh) refresh.classList.add('refresh-check');
+      section.querySelectorAll('input').forEach(input => {
+        if (input.placeholder) input.classList.add('search-input');
+      });
+      section.querySelectorAll('.pc-block').forEach(block => {
+        if (block.dataset.title === '账户收益趋势') {
+          block.querySelectorAll('polyline').forEach(line => line.removeAttribute('stroke-dasharray'));
+        }
+      });
+    };
+    renderScript = function (s) {
+      const scenarios = (s._scenarios || s.source).map(sid => {
+        const info = scenarioInfo(sid);
+        const mats = getScenarioMaterials(sid);
+        const materialRows = mats.map(m => {
+          const ok = m[2] !== 0;
+          return `<label class="scenario-material-item">
+        <input type="checkbox"${ok ? ' checked' : ' disabled'}>
+        <span>${m[0]}</span>
+        <span class="badge ${ok ? 'b-green' : 'b-orange'}">${ok ? '可发送' : '不可发送'}</span>
+        <span class="scenario-material-desc">${m[1]}</span>
+      </label>`;
+        }).join('');
+        return `<article class="script-scenario-v10">
+      <div class="script-scenario-head">${info.title}</div>
+      <div class="script-text draft-textarea" contenteditable="true">${s.script.phone}</div>
+      <div class="scenario-material-list">
+        <div class="scenario-material-list-title">场景素材</div>
+        ${materialRows}
+      </div>
+      <div class="script-copy-row">
+        <button class="btn secondary copy-action script-copy-btn" type="button" onclick="toast('已复制：${info.title} 话术+素材')">复制话术+素材</button>
+      </div>
+    </article>`;
+      }).join('');
+      document.getElementById('script-panel').innerHTML = `<div class="script-card">
+    <div class="script-hd"><strong>场景话术与素材</strong></div>
+    <div class="script-body">${scenarios}</div>
+  </div>
+  <div class="compliance"><div class="comp-title">合规审查：通过</div><div class="checks">
+    <div class="check">✓ 未直述客户账户盈亏</div>
+    <div class="check">✓ 未暴露持仓/浏览/点击行为</div>
+    <div class="check">✓ 未承诺收益或确定性判断</div>
+    <div class="check">✓ 未直接建议买入、加仓、调仓或跟投</div>
+    <div class="check">✓ 保留“先了解/观察，不急于操作”的降压表达</div>
+  </div></div>`;
+      normalizeRenderedUI(document.getElementById('script-panel'));
+    };
+    const normalizeRenderedUIV10 = normalizeRenderedUI;
+    normalizeRenderedUI = function (root = document) {
+      normalizeRenderedUIV10(root);
+      root.querySelectorAll?.('input').forEach(input => {
+        const placeholder = input.getAttribute('placeholder') || '';
+        if (placeholder.includes('搜索') || placeholder.includes('请输入')) input.classList.add('search-input');
+      });
+      root.querySelectorAll?.('.mat').forEach(card => {
+        const link = [...card.children].find(node => node.textContent.trim().startsWith('查看详情'));
+        if (link) link.classList.add('material-detail-link');
+      });
+    };
+    /* ===== V0.11 semantic render layer ===== */
+    function bTag(text, style = 'line', color = 'neutral', size = 'regular') {
+      return `<span class="b-tag b-tag--${style} b-tag--${color}${size === 'small' ? ' b-tag--small' : ''}">${text}</span>`;
+    }
+    function applyBTagSystem(root = document) {
+      const nodes = root.matches?.('.badge,.profile-tag,.view-tag,.triggered-tag,.opp,.pill')
+        ? [root, ...root.querySelectorAll?.('.badge,.profile-tag,.view-tag,.triggered-tag,.opp,.pill') || []]
+        : [...root.querySelectorAll?.('.badge,.profile-tag,.view-tag,.triggered-tag,.opp,.pill') || []];
+      nodes.forEach(node => {
+        if (node.classList.contains('b-tag')) return;
+        let style = 'line', color = 'neutral', size = 'regular';
+        if (node.classList.contains('view-tag')) {style = 'filled'; size = 'small'; color = node.classList.contains('metric') ? 'purple' : node.classList.contains('chart') ? 'red' : 'blue'}
+        else if (node.classList.contains('triggered-tag')) {style = 'line'; color = 'blue'; size = 'small'}
+        else if (node.classList.contains('b-blue') || node.classList.contains('main') || node.classList.contains('pill-blue')) color = 'blue';
+        else if (node.classList.contains('b-green') || node.classList.contains('pill-green')) color = 'green';
+        else if (node.classList.contains('b-orange') || node.classList.contains('pill-orange')) color = 'orange';
+        else if (node.classList.contains('b-red') || node.classList.contains('pill-red') || node.classList.contains('defer')) color = 'red';
+        else if (node.classList.contains('b-purple')) color = 'purple';
+        node.classList.add('b-tag', `b-tag--${style}`, `b-tag--${color}`);
+        if (size === 'small') node.classList.add('b-tag--small');
+      });
+    }
+
+    profileTagsV7 = function (meta) {
+      return [meta.gender, ...meta.tags].map(label => bTag(label, 'line', 'neutral')).join('');
+    };
+    renderProfileSummaryV7 = function (s) {
+      const meta = custMeta(s.id);
+      const first = document.querySelector('#session-detail>.section');
+      if (!first) return;
+      first.className = 'section profile-summary';
+      first.innerHTML = `
+    <div class="profile-identity">
+      <div class="profile-avatar" aria-hidden="true">${s.name.charAt(0)}</div>
+      <div class="profile-identity-copy">
+        <div class="profile-name-row">
+          <strong style="font-size:18px;line-height:24px">${s.name}</strong>
+          <span class="cust-acct">${meta.acct}</span>
+          <button type="button" class="client-detail-link" onclick="toast('已打开客户详情')">客户详情</button>
+        </div>
+        <div class="profile-tags">${profileTagsV7(meta)}</div>
+      </div>
+    </div>
+    <div class="profile-metrics">
+      <div class="prof-metric metric-card metric-assets"><span>总资产（元）</span><b>${meta.asset}</b></div>
+      <div class="prof-metric metric-card metric-market"><span>证券市值（元）</span><b>${meta.mv}</b></div>
+      <div class="phone-module">
+        <div class="phone-copy"><span>手机号</span><b>${meta.phone}</b></div>
+        <button type="button" class="phone-call-btn" onclick="toast('已进入电话触达确认：${s.name}')">
+          <img class="phone-call-icon" src="assets/dianhua.png" alt="" aria-hidden="true">电话
+        </button>
+      </div>
+    </div>`;
+    };
+    renderScenarioBasisV7 = function (s) {
+      const hero = document.querySelector('#session-detail>.section.hero');
+      if (!hero) return;
+      const cards = (s._scenarios || s.source).map(sid => {
+        const info = scenarioInfo(sid);
+        return `<article class="scenario-card-v7">
+      <div class="scenario-card-title"><span>${info.title}</span>${bTag('已触发', 'line', 'blue', 'small')}</div>
+      <div class="scenario-columns">
+        <div class="scenario-column market"><strong>市场 / 产品条件</strong><div>${(info.profileL || []).map(x => `· ${x}`).join('<br>')}</div></div>
+        <div class="scenario-column customer"><strong>客户条件</strong><div>${(info.profileR || []).map(x => `· ${x}`).join('<br>')}</div></div>
+      </div>
+    </article>`;
+      }).join('');
+      hero.innerHTML = `<div class="scenario-basis-head"><div class="section-title">触发场景与画像依据</div><div class="section-sub">AI识别触发因素与客户因子，员工据此判断服务策略</div></div><div style="display:flex;flex-direction:column;gap:12px">${cards}</div>`;
+    };
+    pcMetrics = function (arr) {
+      return '<div class="scene-metric-grid">' + arr.map(item => {
+        const value = String(item[1]);
+        const tone = /^\+/.test(value) ? 'is-profit' : /^[-−]/.test(value) ? 'is-loss' : 'is-neutral';
+        return `<div class="scene-metric"><b class="${tone}">${value}</b><span>${item[0]}</span></div>`;
+      }).join('') + '</div>';
+    };
+
+    renderScript = function (s) {
+      const scenarios = (s._scenarios || s.source).map(sid => {
+        const info = scenarioInfo(sid);
+        const rows = getScenarioMaterials(sid).map(material => {
+          const sendable = material[2] !== 0;
+          return `<label class="scene-material-row-v11">
+        <input type="checkbox"${sendable ? ' checked' : ' disabled'} aria-label="选择${material[0]}">
+        <span>${material[0]}</span>
+        ${bTag(sendable ? '可发送' : '不可发送', 'line', sendable ? 'blue' : 'neutral')}
+        <span class="scene-material-desc">${material[1]}</span>
+      </label>`;
+        }).join('');
+        return `<div class="scene-copy-block">
+        <div class="scene-copy-title">${info.title}</div>
+        <div class="script-text draft-textarea" contenteditable="true" role="textbox" aria-multiline="true">${s.script.phone}</div>
+      </div>
+      <div class="script-risk-note">适用于 C3 及以上风险等级客户</div>
+      <div class="scene-material-block">
+        <div class="scene-material-title">场景素材</div>
+        <div class="scene-material-list-v11">${rows}</div>
+      </div>
+      <div class="script-copy-row">
+        <button class="btn secondary copy-action script-copy-btn" type="button" onclick="toast('已复制：${info.title} 话术+素材')">复制话术+素材</button>
+      </div>`;
+      }).join('');
+  document.getElementById('script-panel').innerHTML = `<div class="script-card script-card-v11">
+    <div class="script-hd"><strong>场景话术与素材</strong></div>
+    <div class="script-body">${scenarios}</div>
+  </div>
+  <div class="compliance"><div class="comp-title">合规审查：通过</div><div class="checks">
+    <div class="check">✓ 未直述客户账户盈亏</div>
+    <div class="check">✓ 未暴露持仓/浏览/点击行为</div>
+    <div class="check">✓ 未承诺收益或确定性判断</div>
+    <div class="check">✓ 未直接建议买入、加仓、调仓或跟投</div>
+    <div class="check">✓ 保留“先了解/观察，不急于操作”的降压表达</div>
+  </div></div>`;
+      normalizeRenderedUI(document.getElementById('script-panel'));
+      applyBTagSystem(document.getElementById('script-panel'));
+    };
+
+    function sceneNameV11(scene) {
+      return {S1: '热点板块活跃 × 持仓风格', S2: 'AI信号命中 × 持仓/关注', S3: '产品信号表现不佳 × 跟投情况'}[scene] || scene;
+    }
+    renderSceneDetail = function (scene) {
+      const list = sceneSessions(scene).filter(s => {
+        if (showSingleScene && isMultiScene(s.id)) return false;
+        if (showUnserved && isServedToday(s.id)) return false;
+        return true;
+      });
+      const groups = buildSceneGroups(scene, list);
+      if (currentSceneGroupIndex >= groups.length) currentSceneGroupIndex = 0;
+      const groupHtml = groups.map((group, index) => {
+        const key = `${scene}-${index}`;
+        const expanded = !!groupExpanded[key];
+        const visible = expanded ? group.customers : group.customers.slice(0, 2);
+        const sample = group.customers[0];
+        const info = scenarioInfo((sample.source || []).find(x => x.startsWith(scene)) || (sample.source || [])[0] || scene);
+        return `<section class="section scene-group-v11${index === currentSceneGroupIndex ? ' is-active' : ''}" onclick="selectSceneGroup('${scene}',${index})">
+      <div class="section-hd"><div><div class="section-title">${group.branch}｜${group.target}</div><div class="section-sub">${(info.profileL || []).join('；')}</div></div>
+        ${bTag(group.customers.length > 1 ? '同话术服务组' : '建议单独处理', 'line', group.customers.length > 1 ? 'blue' : 'red')}</div>
+      <div class="scene-table-wrap"><table class="customer-table"><thead><tr><th>客户</th><th>服务状态</th><th>机会</th><th>客户条件</th><th>操作</th></tr></thead><tbody>
+        ${visible.map(customer => {
+          const ci = scenarioInfo((customer.source || []).find(x => x.startsWith(scene)) || (customer.source || [])[0] || scene);
+          return `<tr><td>${customer.name}</td><td>${bTag(isServedToday(customer.id) ? '已服务' : '未服务', 'line', isServedToday(customer.id) ? 'green' : 'blue')}</td><td>${customer.count}个</td><td>${(ci.profileR || []).map(x => '· ' + x).join('<br>')}</td><td><button class="scene-enter-btn" type="button" onclick="event.stopPropagation();selectSession('${customer.id}')">进入会话</button></td></tr>`;
+        }).join('')}
+      </tbody></table></div>
+      ${group.customers.length > 2 ? `<div class="scene-expand-row"><button type="button" class="task-toggle" onclick="event.stopPropagation();toggleSceneGroupCustomers('${scene}',${index})">${expanded ? '收起' : '展开全部 ' + group.customers.length + ' 位客户'}</button></div>` : ''}
+    </section>`;
+      }).join('') || '<section class="section"><div class="section-title">暂无涉及客户</div></section>';
+      document.getElementById('session-detail').innerHTML = `<div class="scene-view-v11">
+    <section class="section scene-overview-v11">
+      <div class="section-hd"><div><div class="section-title">${sceneNameV11(scene)}</div><div class="section-sub">群发建议优先单场景未服务客户；多场景/已服务客户建议进入会话一对一处理。</div></div>${bTag(`涉及 ${list.length} 位客户`, 'line', 'blue')}</div>
+      <div class="scene-filter-row">
+        <label class="scene-filter"><input type="checkbox"${showSingleScene ? ' checked' : ''} onchange="showSingleScene=this.checked;renderSceneDetail('${scene}');renderSelectedSceneGroupScript('${scene}')">仅看单场景客户</label>
+        <label class="scene-filter"><input type="checkbox"${showUnserved ? ' checked' : ''} onchange="showUnserved=this.checked;renderSceneDetail('${scene}');renderSelectedSceneGroupScript('${scene}')">仅看未服务客户</label>
+      </div>
+      <div class="scene-metric-grid"><div class="scene-metric"><b>${list.length}</b><span>涉及客户</span></div><div class="scene-metric"><b>${groups.length}</b><span>同话术服务组</span></div></div>
+    </section>${groupHtml}
+  </div>`;
+      applyBTagSystem(document.getElementById('session-detail'));
+    };
+    renderSelectedSceneGroupScript = function (scene) {
+      const groups = buildSceneGroups(scene, sceneSessions(scene));
+      const group = groups[currentSceneGroupIndex];
+      if (!group) {renderSceneScript(scene); return }
+      const sample = group.customers[0];
+      const names = group.customers.map(c => c.name).join('、');
+      const script = (sample.script.wecom || sample.script.phone).replace(/王女士|钱女士|陈先生|刘先生|朱女士|周女士/g, '客户');
+      const materials = getScenarioMaterials((sample.source || []).find(x => x.startsWith(scene)) || (sample.source || [])[0] || scene);
+      document.getElementById('script-panel').innerHTML = `<div class="scene-panel-v11">
+    <div class="script-card script-card-v11">
+      <div class="script-hd"><strong>AI整合话术与合规</strong></div>
+      <div class="script-body">
+        <div class="scene-copy-block"><div class="scene-copy-title">${group.branch}｜${group.target}</div><div class="script-text draft-textarea">${script}</div></div>
+        <div class="script-risk-note">适用于 C3 及以上风险等级客户</div>
+        <div class="scene-material-block"><div class="scene-material-title">场景素材</div><div class="scene-material-list-v11">
+          ${materials.map(m => `<label class="scene-material-row-v11"><input type="checkbox"${m[2] !== 0 ? ' checked' : ' disabled'}><span>${m[0]}</span>${bTag(m[2] !== 0 ? '可发送' : '不可发送', 'line', m[2] !== 0 ? 'blue' : 'neutral')}<span class="scene-material-desc">${m[1]}</span></label>`).join('')}
+        </div></div>
+        <div class="script-copy-row"><button class="btn secondary copy-action script-copy-btn" type="button" onclick="toast('话术+素材已复制')">复制话术+素材</button></div>
+      </div>
+    </div>
+    <section class="scene-summary-good"><div class="scene-summary-title">本组客户</div><div class="scene-summary-content"><span>✓ ${names}</span><span>✓ 群发话术不包含客户级变量，全组统一</span><span>✓ 分组依据：${group.branch} + ${group.target}</span></div></section>
+    <section class="scene-summary-risk"><div class="scene-summary-title">群发边界</div><div class="scene-summary-content"><span>不同信号标的、不同热点板块、不同预警原因不得并入本组。</span><span>如客户同时命中其他高优先级会话，需进入客户服务会话做实时编排。</span></div></section>
+  </div>`;
+      normalizeRenderedUI(document.getElementById('script-panel'));
+      applyBTagSystem(document.getElementById('script-panel'));
+    };
+
+    const normalizeRenderedUIV11 = normalizeRenderedUI;
+    normalizeRenderedUI = function (root = document) {
+      normalizeRenderedUIV11(root);
+      applyBTagSystem(root);
+    };
+    function enhanceCustomerOpportunityTagsV12(root = document) {
+      const cards = root.matches?.('.customer-card') ? [root] : [...root.querySelectorAll?.('.customer-card') || []];
+      cards.forEach(card => {
+        if (card.dataset.opportunityTagsV12) return;
+        const detail = card.querySelector('.cust-line');
+        const legacyRow = detail?.previousElementSibling;
+        if (!legacyRow || legacyRow.classList.contains('customer-opportunity-stack')) return;
+        const stack = document.createElement('div');
+        stack.className = 'customer-opportunity-stack';
+        stack.innerHTML = `<div class="customer-opportunity-row customer-opportunity-primary">${bTag('热点活跃·风格不匹配', 'line', 'blue')}</div>
+      <div class="customer-opportunity-row customer-opportunity-secondary">${legacyRow.innerHTML}</div>`;
+        legacyRow.replaceWith(stack);
+        card.dataset.opportunityTagsV12 = 'true';
+        applyBTagSystem(stack);
+      });
+    }
+    const normalizeRenderedUIV12 = normalizeRenderedUI;
+    normalizeRenderedUI = function (root = document) {
+      normalizeRenderedUIV12(root);
+      enhanceCustomerOpportunityTagsV12(root);
+    };
+    function enhanceScenarioGroupsV14(root = document) {
+      const bodies = root.matches?.('.script-card-v11>.script-body')
+        ? [root]
+        : [...root.querySelectorAll?.('.script-card-v11>.script-body') || []];
+      bodies.forEach(body => {
+        if (body.dataset.scenarioGroupsV14) return;
+        const children = [...body.children];
+        children.forEach((child, index) => {
+          if (!child.classList.contains('scene-copy-block')) return;
+          const group = document.createElement('section');
+          group.className = 'script-scenario-group-v14';
+          body.insertBefore(group, child);
+          group.appendChild(child);
+          let nextIndex = index + 1;
+          const riskNote = children[nextIndex];
+          if (riskNote?.classList.contains('script-risk-note')) {
+            group.appendChild(riskNote);
+            nextIndex += 1;
+          }
+          const material = children[nextIndex];
+          const copyRow = children[nextIndex + 1];
+          if (material?.classList.contains('scene-material-block')) group.appendChild(material);
+          if (copyRow?.classList.contains('script-copy-row')) group.appendChild(copyRow);
+        });
+        body.dataset.scenarioGroupsV14 = 'true';
+      });
+    }
+    function enhanceUnifiedActionsV14(root = document) {
+      const buttons = root.matches?.('button') ? [root] : [...root.querySelectorAll?.('button') || []];
+      buttons.forEach(button => {
+        if (button.textContent.trim() !== '进入会话') return;
+        button.classList.remove('btn', 'secondary');
+        button.classList.add('scene-enter-btn');
+        button.removeAttribute('style');
+      });
+    }
+    const normalizeRenderedUIV14 = normalizeRenderedUI;
+    normalizeRenderedUI = function (root = document) {
+      normalizeRenderedUIV14(root);
+      enhanceScenarioGroupsV14(root);
+      enhanceUnifiedActionsV14(root);
+      applyBTagSystem(root);
+    };
+    function setBTagColorV15(tag, color) {
+      ['blue', 'neutral', 'red', 'green', 'orange', 'yellow', 'cyan', 'sky', 'deepblue', 'purple', 'pink']
+        .forEach(name => tag.classList.remove(`b-tag--${name}`));
+      tag.classList.add(`b-tag--${color}`);
+    }
+    function enhanceFreePanelV15() {
+      document.querySelectorAll('#free-panel .scene-card').forEach(card => {
+        const row = card.querySelector('.opp-row');
+        if (!row) return;
+        row.classList.add('free-condition-tags');
+        const tags = [...row.querySelectorAll('.opp,.b-tag')];
+        tags.forEach((tag, index) => {
+          applyBTagSystem(tag);
+          setBTagColorV15(tag, index === 0 ? 'blue' : 'neutral');
+          tag.classList.add('b-tag--line');
+        });
+      });
+    }
+    function enhanceFreeResultV15() {
+      if (sceneMode !== 'free') return;
+      const detail = document.getElementById('session-detail');
+      const summary = detail?.querySelector('.section.hero');
+      if (summary) summary.classList.add('free-summary-v15');
+      const panel = document.getElementById('script-panel');
+      panel?.querySelectorAll('.script-text,.draft-textarea').forEach(copy => {
+        copy.classList.remove('script-text', 'draft-textarea', 'is-overflowing');
+        copy.classList.add('free-script-copy');
+        copy.removeAttribute('contenteditable');
+        copy.removeAttribute('role');
+        copy.removeAttribute('aria-multiline');
+        copy.removeAttribute('style');
+        delete copy.dataset.autogrowBound;
+      });
+    }
+    const renderFreePanelV15 = renderFreePanel;
+    renderFreePanel = function () {
+      renderFreePanelV15();
+      enhanceFreePanelV15();
+    };
+    const renderFreeResultV15 = renderFreeResult;
+    renderFreeResult = function () {
+      renderFreeResultV15();
+      enhanceFreePanelV15();
+      enhanceFreeResultV15();
+      normalizeRenderedUI(document.getElementById('session-detail'));
+      applyBTagSystem(document.getElementById('script-panel'));
+    };
+    init();
+    normalizeRenderedUI(document);
+    enhanceCustomerCardsV7(document);
+  </script>
+</body>
+
+</html>
