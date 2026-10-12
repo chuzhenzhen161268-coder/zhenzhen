@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI+客户服务清单</title>
+<!--
+  AI+客户服务清单 Demo 主工作台页面
+  与原 React 路由 /ai-service-list?taskId=xxx 一一对应
+  还原自 src/features/ai-service-list/components/AiServiceListPage.tsx 及其 23 个子组件
+  图标资源：../assets/ai-service-icons/（与源码 assetUrl('ai-service-icons/…') 引用一一对应，同源 public/ai-service-icons）
+
+  边界状态注入（URL ?state=）：normal / empty / error / 403 / slow / no-wx / broadcast-done / call-fail
+  详见 ../mock-api.js 头部注释与 PRD 附录 D
+  打开方式：直接双击本文件（file:// 协议）即可运行；也可通过 HTTP 服务器访问
+-->
+<link rel="stylesheet" href="../design-tokens.css">
+<link rel="stylesheet" href="../shared/layout.css">
+<style>
+  /* ===== 页面私有补充样式（骨架屏整体布局，layout.css 提供 .skeleton-line 动画） ===== */
+  .sk-topbar { height: var(--size-topbar-height); background: #fff; border-bottom: 2px solid #f3f6f9; display: flex; align-items: center; padding: 0 20px; }
+  .sk-main { display: flex; height: calc(100vh - var(--size-topbar-height)); }
+  .sk-left { width: var(--size-panel-width); background: #fff; border-right: 1px solid #f3f6f9; padding: 16px; }
+  .sk-right { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* 通话结果弹窗按钮态 */
+  .call-result-mask { background: transparent; }
+
+  /* contentEditable 话术区 placeholder（空话术时由 JS 切换） */
+  .script-editable.empty::before { content: ''; }
+
+  /* 事件 Popover 遮罩 */
+  .event-pop-mask { position: fixed; inset: 0; z-index: 199; }
+
+  /* 概念列表"详情"按钮箭头 */
+  .concept-more .arr, .script-expand-btn .arr { font-size: 10px; }
+
+  /* V1.1：仅覆盖客户列表、群发选择与信号模块，沿用原页面 token 与组件语义 */
+  .client-sort-row { display:flex; align-items:center; gap:6px; padding:0 var(--space-5); margin:-4px 0 var(--space-4); }
+  .client-sort-select, .bc-filter-input, .bc-filter-select { height:28px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); background:#fff; color:var(--color-text-primary); font:inherit; font-size:12px; padding:0 7px; }
+  .client-sort-select { flex:1; min-width:0; }
+  .sort-order-btn { width:28px; height:28px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); color:var(--color-primary); font-size:14px; }
+  .bc-filter-panel { padding:10px; margin-top:8px; border:1px solid rgba(46,113,251,.2); border-radius:var(--radius-lg); background:var(--color-bg-page); }
+  .bc-filter-title { display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:var(--font-weight-bold); }
+  .bc-filter-reset { color:var(--color-primary); font-size:12px; }
+  .bc-filter-group { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
+  .bc-filter-input { min-width:0; width:100%; }
+  .bc-filter-select { width:100%; margin-top:6px; }
+  .bc-filter-note { margin-top:8px; color:var(--color-text-tertiary); font-size:12px; line-height:18px; }
+  .client-card.broadcast-locked { opacity:.62; cursor:not-allowed; }
+  .client-card.broadcast-locked .batch-checkbox { border-color:#d0d9e2; background:#eef1f6; }
+  .client-card.broadcast-locked .batch-checkbox::after { content:'—'; color:#7f889c; font-size:14px; }
+  .client-card.broadcast-locked .batch-checkbox svg { display:none; }
+  .broadcast-lock-note { margin-top:4px; color:#168f5c; font-size:12px; }
+  .signal-section-head { display:flex; align-items:center; justify-content:space-between; margin:20px 0 8px; padding:0 2px; }
+  .signal-section-title { display:flex; align-items:center; gap:6px; font-size:16px; font-weight:700; color:var(--color-text-primary); }
+  .signal-count { border-radius:4px; background:var(--color-primary); padding:1px 6px; font-size:12px; font-weight:700; color:#fff; }
+  .signal-toggle-all { color:var(--color-primary); font-size:12px; font-weight:var(--font-weight-semibold); }
+  .client-metrics-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:16px; }
+  .signal-card.collapsed { padding:0; overflow:hidden; }
+  .signal-card.collapsed .signal-head { align-items:center; padding:14px 20px; }
+  .signal-head-actions { display:flex; flex-shrink:0; align-items:center; gap:12px; }
+  .signal-card-toggle { flex-shrink:0; color:var(--color-primary); font-size:12px; font-weight:var(--font-weight-semibold); }
+  @media (max-width:760px) { .client-metrics-grid { grid-template-columns:1fr; gap:8px; } }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ===== 加载骨架屏（对应 AiServiceListPage isLoading 分支） ===== -->
+  <div id="skeletonView">
+    <div class="sk-topbar"><div class="skeleton-line w40" style="width:200px"></div></div>
+    <div class="sk-main">
+      <div class="sk-left">
+        <div class="skeleton-line w70"></div>
+        <div class="skeleton-line w100"></div>
+        <div class="skeleton-line w100"></div>
+        <div class="skeleton-line w70"></div>
+        <div class="skeleton-line w100"></div>
+        <div class="skeleton-line w40"></div>
+      </div>
+      <div class="sk-right">
+        <div class="skeleton-card">
+          <div class="skeleton-line w40"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w100"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line w70"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w70"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w40"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 错误 / 权限不足 / 空数据（对应 isError 与 !data 分支） ===== -->
+  <div id="stateView" class="state-view" style="display:none">
+    <div class="state-icon" id="stateIcon">⚠️</div>
+    <div class="state-title" id="stateTitle">页面加载失败</div>
+    <div class="state-desc" id="stateDesc"></div>
+    <span class="state-code" id="stateCode" style="display:none"></span>
+    <button class="state-retry-btn" id="stateRetryBtn">重试</button>
+  </div>
+
+  <!-- ===== 正常视图 ===== -->
+  <div id="mainView" style="display:none;flex:1;flex-direction:column;min-height:0">
+
+    <!-- TopBar（fixed，对应 TopBar.tsx） -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <img class="topbar-logo" src="../assets/ai-service-icons/logo.png" alt="国金证券">
+        <span class="topbar-sep"></span>
+        <span class="topbar-title" id="topbarTitle"></span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-stat"><b class="font-num" id="statPending">0</b><span>待服务</span></div>
+        <div class="topbar-stat"><b class="font-num" id="statDone">0</b><span>已完成</span></div>
+        <span class="topbar-date" id="topbarDate"></span>
+        <img class="topbar-avatar" src="../assets/ai-service-icons/Frame23.png" alt="用户头像">
+      </div>
+    </header>
+
+    <div class="app-body">
+
+      <!-- 左栏（对应 ClientListPanel.tsx） -->
+      <aside id="clientPanel" class="client-panel">
+        <!-- 展开态头部 / 折叠态展开按钮（JS 渲染） -->
+        <div id="panelHeadSlot"></div>
+        <div id="filterTabsSlot"></div>
+        <div class="panel-broadcast-slot" id="broadcastToolbarSlot"></div>
+        <div class="client-list-scroll scroll-area" id="clientListScroll">
+          <div id="clientList"></div>
+          <div class="side-scroll-thumb" id="sideScrollThumb"></div>
+        </div>
+      </aside>
+
+      <!-- 右面板（对应 RightPanel.tsx） -->
+      <main class="right-panel">
+        <div id="callBarSlot"></div>
+        <div class="right-scroll scroll-area" id="rightScroll">
+          <div id="completedBannerSlot"></div>
+          <div id="portraitSlot"></div>
+          <div id="serviceRefSlot"></div>
+          <div id="signalSlot"></div>
+        </div>
+        <div id="serviceFooterSlot"></div>
+      </main>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== 企微一键群发弹窗（对应 BroadcastModal.tsx，closable=false 不支持遮罩关闭） ===== -->
+<div class="modal-mask" id="broadcastModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">企微一键群发</span>
+      <button class="modal-close" data-action="close-broadcast-modal" aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="broadcastModalBody"></div>
+    <div class="modal-foot">
+      <span class="modal-foot-hint">将通过企微一键群发发送，并同步记录服务动作</span>
+      <button class="bc-send-btn" id="broadcastSendBtn"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 当前热门概念弹窗（对应 PopularConceptsModal.tsx） ===== -->
+<div class="modal-mask" id="conceptModal">
+  <div class="modal w-560">
+    <div class="modal-head">
+      <span class="modal-title" id="conceptModalTitle">当前热门概念</span>
+      <button class="modal-close" data-action="close-concept-modal" aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="concepts-grid" id="conceptGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/components.js"></script>
+<script src="../shared/realtime-data.js"></script>
+<script src="../mock-data.js"></script>
+<script src="../mock-api.js"></script>
+<script>
+/**
+ * AI+客户服务清单 Demo 主逻辑
+ * 还原 AiServiceListPage.tsx 编排 + store.ts 状态 + transform.ts 数据转换 +
+ * broadcast.ts / clientSort.ts 工具 + 各子组件渲染与交互。
+ * 依赖：window.UI（components.js）、window.DemoFormat、window.buildDiagUrl、
+ *       window.RealtimeData（realtime-data.js）、window.mockApi（mock-api.js）
+ */
+;(function () {
+
+  var UI = window.UI
+  var F = window.DemoFormat
+  var buildDiagUrl = window.buildDiagUrl
+  var RT = window.RealtimeData
+  var api = window.mockApi
+
+  /** 当前登录员工工号（模拟 useUserInfo().user.ehrAccount，用于拼接诊断链接 employeeId） */
+  var EMPLOYEE_ID = 'E10086'
+
+  // ==================== 常量（对应 sceneConfig.ts / ClientCard / PortraitCard / BroadcastDropdown） ====================
+
+  var SIGNAL_TYPE_LABELS = {
+    loss_unstopped: '亏损未止损',
+    loss_stopped: '亏损已止损',
+    profit_done: '盈利已了结',
+    unsigned: '未签约',
+  }
+
+  /** 群发分类 → 话术类型标签（对应 BROADCAST_TYPE_LABELS，用于"XX话术已群发"标记） */
+  var BROADCAST_TYPE_LABELS = {
+    loss: '亏损未止损',
+    loss_stopped: '亏损已止损',
+    profit: '已盈利',
+    prospect: '未签约',
+  }
+
+  /** 左栏筛选 Tab（对应 ClientListPanel FILTER_TABS） */
+  var FILTER_TABS = [
+    { key: 'all', label: '全部' },
+    { key: 'loss', label: '亏损' },
+    { key: 'profit', label: '盈利' },
+    { key: 'prospect', label: '未签约' },
+  ]
+
+  /** 客户卡片信号药丸（对应 ClientCard SIGNAL_PILL_CONFIG：亏损绿/已止损灰/已盈利红/未签约灰） */
+  var SIGNAL_PILL_CONFIG = [
+    { key: 'loss_unstopped', label: '未止损', cls: 'loss-unstopped' },
+    { key: 'loss_stopped', label: '已止损', cls: 'loss-stopped' },
+    { key: 'profit_done', label: '已盈利', cls: 'profit-done' },
+    { key: 'unsigned', label: '未签约', cls: 'unsigned' },
+  ]
+
+  /** 画像卡"本次服务"汇总（对应 PortraitCard SCENE_SUMMARY_CONFIG） */
+  var SCENE_SUMMARY_CONFIG = [
+    { key: 'loss_unstopped', label: '未止损', cls: 'loss' },
+    { key: 'loss_stopped', label: '已止损', cls: 'loss' },
+    { key: 'profit_done', label: '已盈利', cls: 'profit' },
+    { key: 'unsigned', label: '未签约', cls: 'gray' },
+  ]
+
+  /** 群发下拉分类（对应 BroadcastDropdown CATEGORY_CONFIG） */
+  var CATEGORY_CONFIG = [
+    { key: 'loss', label: '亏损未止损', dot: 'loss' },
+    { key: 'loss_stopped', label: '亏损已止损', dot: 'loss-stopped' },
+    { key: 'profit', label: '盈利已了结', dot: 'profit' },
+    { key: 'prospect', label: '未签约', dot: 'prospect' },
+  ]
+
+  /** 信号类型 → 指示器颜色（对应 SIGNAL_INDICATOR_CLASS） */
+  var SIGNAL_INDICATOR = {
+    loss_unstopped: 'loss',
+    loss_stopped: 'loss',
+    profit_done: 'profit',
+    unsigned: 'default',
+  }
+
+  /** 信号类型标签色调（对应 SignalCardHeader getTypeTagClass） */
+  function signalTagCls(signalType) {
+    if (signalType === 'loss_unstopped' || signalType === 'loss_stopped') return 'signal-type loss'
+    if (signalType === 'profit_done') return 'signal-type profit'
+    return ''
+  }
+
+  // ==================== 状态（对应 store.ts 初始值 + 页面局部状态） ====================
+
+  var state = {
+    taskId: api.taskId,
+    pageData: null,      // PageDataResp 原始响应（businessLine/createTime/defaultScripts…）
+    clients: [],         // transformPageData 转换后的前端 Client[]
+    currentUuid: null,   // 当前选中客户
+    filterTab: 'all',    // 筛选 Tab
+    sortKey: 'urgency',  // V1.1：客户列表排序字段
+    sortOrder: 'desc',   // V1.1：升序 / 降序
+    collapsed: false,    // 左栏折叠
+    selectMode: false,   // 群发选择模式
+    selectedUuids: [],   // 群发已选 UUID
+    taskDrawerOpen: false,
+    plus0Map: {},        // +0 外显开关（按客户记忆）
+    // 群发
+    broadcastModalOpen: false,
+    broadcastCategory: null,
+    broadcastScript: '',
+    broadcastScriptEdited: '', // 弹窗内实时输入（对应 BroadcastModal currentScript）
+    dropdownOpen: false,
+    sending: false,
+    broadcastExpanded: false, // 接收人超 10 人折叠展开
+    broadcastFilters: { totalMin: '', totalMax: '', secMin: '', secMax: '', status: 'unsent' },
+    // 懒加载缓存
+    tasksMap: {},        // clientId -> Task[]（含勾选状态）
+    contactsMap: {},     // clientId -> IContactInfoResult
+    marketData: [],      // 当前客户 MarketDataResp
+    // 通话（对应 useCall currentCall + 定时器模拟 dev 环境状态机）
+    call: null,          // { phase, calledNumber, clientName, duration, tickTimer, phaseTimer }
+    // 交互浮层
+    activeEvent: null,   // { signalId, idx } 事件 Popover
+    activeSceneDesc: null, // signalId 场景描述 Popover
+    conceptModal: null,  // ConceptItem[]
+    // 完成服务
+    completeLoading: false,
+    completeDoneTip: false,
+    serviceNote: '',     // 服务内容输入
+  }
+
+  // ==================== 数据转换（对应 transform.ts） ====================
+
+  /** ISMP 优先级编码 → 前端 urgency（mapPriority：优先描述匹配，fallback code） */
+  function mapPriority(code, desc) {
+    if (desc.indexOf('紧急') >= 0) return 'urgent'
+    if (desc.indexOf('较高') >= 0) return 'high'
+    if (desc.indexOf('一般') >= 0) return 'normal'
+    if (desc.indexOf('低') >= 0) return 'low'
+    if (code === 9) return 'urgent'
+    if (code === 3) return 'normal'
+    return 'low'
+  }
+
+  /** ISMP 任务 → 前端 Task（endTime 点号转横杠；taskDesc 可能为 null） */
+  function transformTask(t) {
+    return {
+      taskId: String(t.taskId),
+      templateId: t.templateId,
+      name: t.taskName,
+      desc: t.taskDesc != null ? t.taskDesc : '',
+      urgency: mapPriority(t.priority, t.priorityDesc || ''),
+      required: t.mustDo === 1,
+      priorityDesc: t.priorityDesc,
+      mustDoDesc: t.mustDoDesc,
+      category: 'service',
+      dueDate: String(t.endTime || '').replace(/\./g, '-'),
+      done: false,
+      checked: false,
+    }
+  }
+
+  /** 画像 → ClientBasicInfo（对应 buildBasicInfo） */
+  function buildBasicInfo(p) {
+    var r = F.parseRiskLevel(p.customerRiskLevel)
+    return {
+      name: p.customerName,
+      gender: p.customerGender,
+      level: p.customerLevel,
+      riskCode: r.riskCode,
+      riskLabel: r.riskLabel,
+      style: p.customerStyle != null ? p.customerStyle : '',
+      accountNo: p.accountNo,
+      phoneMasked: F.maskPhone(p.phoneNo != null ? p.phoneNo : ''),
+      phoneFull: p.phoneNo != null ? p.phoneNo : '',
+      totalAsset: p.totalAsset != null ? p.totalAsset : '',
+      secAsset: p.holdingAsset != null ? p.holdingAsset : '',
+    }
+  }
+
+  /** API 标的 → 前端 Security（对应 transformSecurity） */
+  function transformSecurity(s, uuid) {
+    var events = (s.events || []).map(function (e) {
+      return { label: e.label, content: e.content, type: e.type, event_type: e.event_type }
+    })
+    var subtypes = s.signalSubtype || []
+    var subtypeLabel = subtypes.length > 0 ? subtypes[0] : ''
+    return {
+      signalId: s.securityCode + '_' + s.sceneCode + '_' + uuid,
+      securityType: s.securityType,
+      securityCode: s.securityCode,
+      securityName: s.securityName,
+      signalType: s.signalType,
+      signalSubtype: subtypeLabel,
+      scenario: s.scenario,
+      events: events,
+      sceneCode: s.sceneCode,
+      sceneScript: s.sceneScript,
+      signalReturn: s.signalReturn,
+      diagnosisUrls: s.diagnosisUrls || [],
+      keyData: (s.keyData || []).map(function (d) {
+        return { label: d.label, value: d.value, cls: d.cls, tone: d.cls === 'red' ? 'profit-tone' : d.cls === 'green' ? 'loss-tone' : undefined }
+      }),
+      serviceRef: (s.serviceRef || []).map(function (r) { return { title: r.title, text: r.text } }),
+      typeLabel: subtypeLabel || SIGNAL_TYPE_LABELS[s.signalType] || '',
+    }
+  }
+
+  /** API 客户 → 前端 Client（对应 transformCustomer） */
+  function transformCustomer(c, portrait) {
+    var basicInfo = portrait
+      ? buildBasicInfo(portrait)
+      : {
+          name: '', gender: '', level: '', riskCode: '', riskLabel: '', style: '',
+          accountNo: '', phoneMasked: '', phoneFull: '', totalAsset: '0.00万', secAsset: '0.00万',
+        }
+    return {
+      uuid: c.uuid,
+      clientId: c.clientId,
+      basicInfo: basicInfo,
+      wxBroadcastStatus: c.wxBroadcastStatus === 1,
+      wxBroadcastTime: c.wxBroadcastTime,
+      securities: (c.securityList || []).map(function (s) { return transformSecurity(s, c.uuid) }),
+      completed: c.serveStatus === 1,
+      tasks: [],
+      tasksLoaded: false,
+      lastBroadcast: null,
+      monthlySignalMetrics: c.monthlySignalMetrics || null,
+    }
+  }
+
+  /** PageDataResp → Client[]（对应 transformPageData：customerPortraits 按 uuid 关联） */
+  function transformPageData(resp) {
+    var map = {}
+    ;(resp.customerPortraits || []).forEach(function (p) { map[p.uuid] = p })
+    return (resp.customers || []).map(function (c) { return transformCustomer(c, map[c.uuid]) })
+  }
+
+  // ==================== 群发工具（对应 broadcast.ts） ====================
+
+  /** 客户主分组（窄口径互斥：loss_unstopped→loss→loss_stopped→profit→prospect） */
+  function getClientPrimaryGroup(client) {
+    var has = function (t) { return client.securities.some(function (s) { return s.signalType === t }) }
+    if (has('loss_unstopped')) return 'loss'
+    if (has('loss_stopped')) return 'loss_stopped'
+    if (has('profit_done')) return 'profit'
+    if (has('unsigned')) return 'prospect'
+    return null
+  }
+
+  /** 客户命中全部分类（宽口径：一位客户可属多分类，用于下拉计数） */
+  function getClientGroups(client) {
+    var SIGNAL_TO_CATEGORY = {
+      loss_unstopped: 'loss', loss_stopped: 'loss_stopped',
+      profit_done: 'profit', unsigned: 'prospect',
+    }
+    var groups = []
+    client.securities.forEach(function (s) {
+      var cat = SIGNAL_TO_CATEGORY[s.signalType]
+      if (cat && groups.indexOf(cat) < 0) groups.push(cat)
+    })
+    return groups
+  }
+
+  /** 跨分类检测（接收人 primaryGroup 去重后的数组，>1 即跨分类） */
+  function checkMixedGroups(clients) {
+    var types = []
+    clients.forEach(function (c) {
+      var t = getClientPrimaryGroup(c)
+      if (t && types.indexOf(t) < 0) types.push(t)
+    })
+    return types
+  }
+
+  /** 按分类从 defaultScripts 查预置话术（对应 getBroadcastScript 反向映射） */
+  function getBroadcastScript(scripts, category) {
+    var CATEGORY_TO_SIGNAL = { loss: 'loss_unstopped', loss_stopped: 'loss_stopped', profit: 'profit_done', prospect: 'unsigned' }
+    var hit = (scripts || []).find(function (s) { return s.signalType === CATEGORY_TO_SIGNAL[category] })
+    return hit ? hit.content : ''
+  }
+
+  // ==================== 排序 / 筛选（对应 clientSort.ts） ====================
+
+  function getPriorityRank(client) {
+    var hasLoss = client.securities.some(function (s) {
+      return s.signalType === 'loss_unstopped' || s.signalType === 'loss_stopped'
+    })
+    var hasProfit = client.securities.some(function (s) { return s.signalType === 'profit_done' })
+    var hasProspect = client.securities.some(function (s) { return s.signalType === 'unsigned' })
+    if (hasLoss) return 0
+    if (hasProfit) return 1
+    if (hasProspect) return 2
+    return 3
+  }
+
+  function clientUrgency(client) {
+    return client.tasks.filter(function (t) { return !t.done }).length * 5 + client.securities.length
+  }
+
+  function assetValue(value) {
+    return Number(String(value == null ? '' : value).replace(/[^0-9.-]/g, '')) || null
+  }
+
+  function prospectSignalReturn(client) {
+    var values = client.securities.filter(function (s) { return s.signalType === 'unsigned' })
+      .map(function (s) { return Number(s.signalReturn) })
+      .filter(function (value) { return !isNaN(value) })
+    return values.length ? Math.max.apply(null, values) : null
+  }
+
+  function selectedSortValue(client) {
+    if (state.sortKey === 'totalAsset') return assetValue(client.basicInfo.totalAsset)
+    if (state.sortKey === 'secAsset') return assetValue(client.basicInfo.secAsset)
+    if (state.sortKey === 'signalReturn') return prospectSignalReturn(client)
+    return null
+  }
+
+  function sortClients(clients) {
+    return clients.slice().sort(function (a, b) {
+      if (a.completed !== b.completed) return a.completed ? 1 : -1
+      var rankDiff = getPriorityRank(a) - getPriorityRank(b)
+      if (rankDiff !== 0) return rankDiff
+      var av = selectedSortValue(a)
+      var bv = selectedSortValue(b)
+      if (state.sortKey !== 'urgency' && av !== bv) {
+        if (av == null) return 1
+        if (bv == null) return -1
+        return state.sortOrder === 'asc' ? av - bv : bv - av
+      }
+      var ap = clientUrgency(a)
+      var bp = clientUrgency(b)
+      return bp - ap
+    })
+  }
+
+  function filterClients(clients, tab) {
+    if (tab === 'all') return clients
+    return clients.filter(function (c) {
+      return c.securities.some(function (s) {
+        if (tab === 'loss') return s.signalType === 'loss_unstopped' || s.signalType === 'loss_stopped'
+        if (tab === 'profit') return s.signalType === 'profit_done'
+        if (tab === 'prospect') return s.signalType === 'unsigned'
+        return false
+      })
+    })
+  }
+
+  function filterAndSortClients(clients, tab) {
+    return sortClients(filterClients(clients, tab))
+  }
+
+  function isTodayBroadcast(client) {
+    return F.isBroadcastToday(client.wxBroadcastTime)
+  }
+
+  function broadcastCandidates() {
+    var filters = state.broadcastFilters
+    return state.clients.filter(function (client) {
+      if (client.completed || getClientGroups(client).indexOf(state.broadcastCategory) < 0) return false
+      var total = assetValue(client.basicInfo.totalAsset)
+      var sec = assetValue(client.basicInfo.secAsset)
+      if (filters.totalMin !== '' && (total == null || total < Number(filters.totalMin) * 10000)) return false
+      if (filters.totalMax !== '' && (total == null || total > Number(filters.totalMax) * 10000)) return false
+      if (filters.secMin !== '' && (sec == null || sec < Number(filters.secMin) * 10000)) return false
+      if (filters.secMax !== '' && (sec == null || sec > Number(filters.secMax) * 10000)) return false
+      if (filters.status === 'sent' && !isTodayBroadcast(client)) return false
+      if (filters.status === 'unsent' && isTodayBroadcast(client)) return false
+      return true
+    })
+  }
+
+  // ==================== 通用工具 ====================
+
+  function $(id) { return document.getElementById(id) }
+
+  var NODATA_ICON = '../assets/ai-service-icons/nodata.png'
+
+  function nodataIconHtml() {
+    return '<img class="nodata-img" src="' + NODATA_ICON + '" alt="">'
+  }
+
+  function esc(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+  }
+
+  function findClient(uuid) {
+    return state.clients.find(function (c) { return c.uuid === uuid }) || null
+  }
+
+  function currentClient() {
+    return state.currentUuid ? findClient(state.currentUuid) : null
+  }
+
+  /** 展示用电话：contacts type=1 优先，兜底画像 phoneNo（对应 AiServiceListPage displayPhone） */
+  function displayPhoneOf(client) {
+    if (!client) return ''
+    var contacts = state.contactsMap[client.clientId]
+    var p = contacts && contacts.list
+      ? (contacts.list.find(function (c) { return c.type === '1' }) || {}).phone
+      : undefined
+    return p != null && p !== undefined && p !== '' ? p : (client.basicInfo.phoneFull || '')
+  }
+
+  /** 北京时间格式化：createTime(UTC ISO) + 8h → "M月D日 周X"（对应 TopBar formatDateStr） */
+  function formatCreateDate(createTime) {
+    var t = new Date(createTime).getTime()
+    if (isNaN(t)) return ''
+    var d = new Date(t + 8 * 3600000)
+    var week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][d.getUTCDay()]
+    return (d.getUTCMonth() + 1) + '月' + d.getUTCDate() + '日 ' + week
+  }
+
+  /** 事件前缀（对应 EventsSection getEventPrefix） */
+  function eventPrefix(eventType) {
+    if (eventType === 'hotspot') return '热点：'
+    if (eventType === 'anomaly') return '异动：'
+    return ''
+  }
+
+  /** 事件药丸色调（positive 红 / negative 绿 / 其他灰） */
+  function eventTone(type) {
+    if (type === 'positive') return 'positive'
+    if (type === 'negative') return 'negative'
+    return 'neutral'
+  }
+
+  /** 事件标签超 10 字截断（对应 EventsSection label.slice(0, 10)） */
+  function eventLabelShort(label) {
+    return label.length > 10 ? label.slice(0, 10) + '...' : label
+  }
+
+  /** 当前客户行情合并（对应 RightPanel securities memo：securityCode+sceneCode 匹配） */
+  function mergedSecurities(client) {
+    if (!client) return []
+    if (!state.marketData || state.marketData.length === 0) return client.securities
+    return client.securities.map(function (s) {
+      var item = state.marketData.find(function (d) {
+        return d.securityCode === s.securityCode && d.sceneCode === s.sceneCode
+      })
+      if (!item) return s
+      var copy = Object.assign({}, s)
+      copy.keyData = RT.mapFieldsToKeyData(item.fieldsMap, s.sceneCode)
+      return copy
+    })
+  }
+
+  /** 当前时间 YYYY-MM-DD HH:mm:ss（对应 utils/date getCurrentTime，用于 completeService.serviceDate） */
+  function currentTimeStr() {
+    var d = new Date()
+    var p = function (n) { return (n < 10 ? '0' : '') + n }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' +
+      p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds())
+  }
+
+  // ==================== TopBar（对应 TopBar.tsx） ====================
+
+  function renderTopBar() {
+    var data = state.pageData
+    var done = state.clients.filter(function (c) { return c.completed }).length
+    $('topbarTitle').textContent = data.businessLine || ''
+    $('statPending').textContent = state.clients.length - done
+    $('statDone').textContent = done
+    $('topbarDate').textContent = '生成时间：' + formatCreateDate(data.createTime)
+  }
+
+  // ==================== 左栏（对应 ClientListPanel / ClientCard / BroadcastToolbar / BroadcastDropdown） ====================
+
+  /** 面板头部 + 筛选Tab（折叠时隐藏） */
+  function renderPanelHead() {
+    var el = $('panelHeadSlot')
+    var tabsEl = $('filterTabsSlot')
+    var toolbarEl = $('broadcastToolbarSlot')
+    if (state.collapsed) {
+      el.innerHTML =
+        '<div class="panel-expand-wrap">' +
+        '  <button class="panel-expand-btn" data-action="toggle-collapse" aria-label="展开客户列表">' +
+        '    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>' +
+        '  </button>' +
+        '</div>'
+      tabsEl.innerHTML = ''
+      toolbarEl.innerHTML = ''
+      toolbarEl.style.display = 'none'
+      return
+    }
+    toolbarEl.style.display = ''
+    el.innerHTML =
+      '<div class="panel-head">' +
+      '  <span class="panel-head-title">客户列表</span>' +
+      '  <button class="panel-collapse-btn" data-action="toggle-collapse" aria-label="收起客户列表">‹</button>' +
+      '</div>'
+    tabsEl.innerHTML = '<div class="filter-tabs">' + FILTER_TABS.map(function (t) {
+      return '<button class="filter-tab' + (state.filterTab === t.key ? ' active' : '') +
+        '" data-action="set-filter" data-tab="' + t.key + '">' + t.label + '</button>'
+    }).join('') + '</div>' + renderSortControl()
+    renderBroadcastToolbar()
+  }
+
+  function renderSortControl() {
+    var options = [
+      { key: 'urgency', label: '默认排序' },
+      { key: 'totalAsset', label: '总资产' },
+      { key: 'secAsset', label: '证券市值' },
+    ]
+    if (state.filterTab === 'prospect') options.push({ key: 'signalReturn', label: '信号收益率' })
+    if (options.every(function (item) { return item.key !== state.sortKey })) state.sortKey = 'urgency'
+    return '<div class="client-sort-row"><select class="client-sort-select" data-role="client-sort">' +
+      options.map(function (item) { return '<option value="' + item.key + '"' + (item.key === state.sortKey ? ' selected' : '') + '>' + item.label + '</option>' }).join('') +
+      '</select>' + (state.sortKey === 'urgency' ? '' : '<button class="sort-order-btn" data-action="toggle-sort-order" title="切换排序方向">' + (state.sortOrder === 'asc' ? '↑' : '↓') + '</button>') + '</div>'
+  }
+
+  /** 群发工具条（对应 BroadcastToolbar）+ 分类下拉（BroadcastDropdown） */
+  function renderBroadcastToolbar() {
+    var el = $('broadcastToolbarSlot')
+    if (state.selectMode) {
+      var n = state.selectedUuids.length
+      el.innerHTML =
+        '<div class="bb-select-bar">' +
+        '  <span class="bb-select-count">已选 ' + n + ' 人</span>' +
+        '  <span class="confirm-btns" style="gap:6px">' +
+        '    <button class="bb-cancel-btn" data-action="cancel-select">取消</button>' +
+        '    <button class="bb-next-btn' + (n > 0 ? ' enabled' : '') + '" data-action="open-broadcast-modal"' +
+        (n === 0 ? ' disabled' : '') + '>下一步</button>' +
+        '  </span>' +
+        '</div>' + renderBroadcastFilterPanel()
+      return
+    }
+    var dropdown = ''
+    if (state.dropdownOpen) {
+      dropdown = '<div class="bb-dropdown">' + CATEGORY_CONFIG.map(function (cat) {
+        var total = state.clients.filter(function (c) {
+          return !c.completed && getClientGroups(c).indexOf(cat.key) >= 0
+        }).length
+        return '<button class="bb-dd-item' + (total === 0 ? ' disabled' : '') + '"' +
+          (total === 0 ? ' disabled' : '') + ' data-action="select-category" data-cat="' + cat.key + '">' +
+          '  <span class="left"><span class="bb-dd-dot ' + cat.dot + '"></span>' + cat.label + '</span>' +
+          '  <span class="bb-dd-count">' + total + ' 人</span>' +
+          '</button>'
+      }).join('') + '</div>'
+    }
+    el.innerHTML =
+      '<div class="broadcast-bar">' +
+      '  <button class="bb-main-btn' + (state.dropdownOpen ? ' open' : '') + '" data-action="toggle-dropdown">' +
+      '    <span class="label"><img class="bc-icon" src="../assets/ai-service-icons/fenxiang.png" alt="群发">企微群发通用话术</span>' +
+      '    <img class="chev" src="../assets/ai-service-icons/jiantou1.png" alt="展开">' +
+      '  </button>' + dropdown +
+      '</div>'
+  }
+
+  function renderBroadcastFilterPanel() {
+    var f = state.broadcastFilters
+    var matched = broadcastCandidates()
+    var available = matched.filter(function (client) { return !isTodayBroadcast(client) }).length
+    return '<div class="bc-filter-panel">' +
+      '<div class="bc-filter-title"><span>批量筛选</span><button class="bc-filter-reset" data-action="reset-broadcast-filters">重置</button></div>' +
+      '<div class="bc-filter-group">' +
+      '<input class="bc-filter-input" data-filter="totalMin" inputmode="decimal" value="' + esc(f.totalMin) + '" placeholder="总资产下限（万）">' +
+      '<input class="bc-filter-input" data-filter="totalMax" inputmode="decimal" value="' + esc(f.totalMax) + '" placeholder="总资产上限（万）">' +
+      '<input class="bc-filter-input" data-filter="secMin" inputmode="decimal" value="' + esc(f.secMin) + '" placeholder="证券市值下限（万）">' +
+      '<input class="bc-filter-input" data-filter="secMax" inputmode="decimal" value="' + esc(f.secMax) + '" placeholder="证券市值上限（万）">' +
+      '</div><select class="bc-filter-select" data-filter="status"><option value="unsent"' + (f.status === 'unsent' ? ' selected' : '') + '>未群发</option><option value="all"' + (f.status === 'all' ? ' selected' : '') + '>全部</option><option value="sent"' + (f.status === 'sent' ? ' selected' : '') + '>已群发</option></select>' +
+      '<div class="bc-filter-note">匹配 ' + matched.length + ' 人，可发送 ' + available + ' 人</div></div>'
+  }
+
+  /** 客户卡片（对应 ClientCard） */
+  function clientCardHtml(c) {
+    var selected = c.uuid === state.currentUuid
+    var checked = state.selectedUuids.indexOf(c.uuid) >= 0
+    var pendingTasks = c.tasks.filter(function (t) { return !t.done }).length
+    var broadcastToday = isTodayBroadcast(c)
+
+    // 折叠态：48×48 头像块
+    if (state.collapsed) {
+      return '<div data-action="select-client" data-uuid="' + c.uuid + '" style="display:flex;justify-content:center;padding:8px 0;cursor:pointer;' +
+        (selected ? 'background:var(--color-bg-page);' : '') + (c.completed ? 'opacity:0.45;' : '') + '">' +
+        '<div class="collapsed-avatar' + (selected ? ' selected' : '') + '">' + esc(c.basicInfo.name.charAt(0)) + '</div></div>'
+    }
+
+    // 信号药丸聚合
+    var counts = {}
+    c.securities.forEach(function (s) { counts[s.signalType] = (counts[s.signalType] || 0) + 1 })
+    var pills = SIGNAL_PILL_CONFIG.map(function (p) {
+      var n = counts[p.key] || 0
+      if (n === 0) return ''
+      return '<span class="signal-pill ' + p.cls + '">' + n + ' ' + p.label + '</span>'
+    }).join('')
+
+    // 今日已群发标记
+    var broadcastMark = ''
+    if (broadcastToday) {
+      var markText = c.lastBroadcast
+        ? c.lastBroadcast.date + ' ' + (BROADCAST_TYPE_LABELS[c.lastBroadcast.type] || '') + '话术已群发'
+        : '今日已群发'
+      broadcastMark = '<div class="broadcast-mark">✓ ' + esc(markText) + '</div>'
+    }
+
+    var cls = 'client-card' +
+      (state.selectMode ? ' select-mode' : '') +
+      (state.selectMode && checked ? ' checked' : '') +
+      (state.selectMode && broadcastToday ? ' broadcast-locked' : '') +
+      (!state.selectMode && selected ? ' selected' : '') +
+      (c.completed ? ' completed' : '')
+
+    var left = ''
+    if (state.selectMode) {
+      left = '<span class="batch-checkbox' + (checked ? ' checked' : '') + '">' +
+        '<svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="white" stroke-width="2"><polyline points="1 5 4.5 8.5 11 1.5"/></svg></span>'
+    } else {
+      left = '<div class="client-avatar' + (selected ? ' selected' : '') + '">' + esc(c.basicInfo.name.charAt(0)) + '</div>'
+    }
+
+    var dot = (pendingTasks > 0 && !c.completed && !state.selectMode) ? '<span class="task-dot"></span>' : ''
+    var doneMark = c.completed ? '<span class="completed-check">✓</span>' : ''
+
+    return '<div class="' + cls + '" data-action="select-client" data-uuid="' + c.uuid + '">' +
+      left +
+      '<div class="client-card-body">' +
+      '  <div class="client-name-row">' +
+      '    <span class="client-name">' + esc(c.basicInfo.name) + '</span>' +
+      (c.basicInfo.accountNo ? '<span class="client-account">' + esc(c.basicInfo.accountNo) + '</span>' : '') +
+      dot + doneMark +
+      '  </div>' +
+      '  <div class="client-sub">' + esc(c.basicInfo.level) + ' · ' + esc(c.basicInfo.riskCode) + esc(c.basicInfo.riskLabel) + '</div>' +
+      (pills ? '<div class="signal-pills">' + pills + '</div>' : '') +
+      broadcastMark +
+      (state.selectMode && broadcastToday ? '<div class="broadcast-lock-note">今日已群发，不可选择</div>' : '') +
+      '</div>' +
+      '</div>'
+  }
+
+  /** 客户列表渲染（对应 AiServiceListPage sortedClients → ClientListPanel） */
+  function renderClientList() {
+    var el = $('clientList')
+    var list = state.selectMode ? sortClients(broadcastCandidates()) : filterAndSortClients(state.clients, state.filterTab)
+    if (list.length === 0) {
+      el.innerHTML = '<div class="list-empty"><div class="icon">' + nodataIconHtml() + '</div><div class="text">暂无该分类客户</div></div>'
+      return
+    }
+    el.innerHTML = list.map(clientCardHtml).join('')
+  }
+
+  /** 自定义滚动指示器（对应 useSideScroll：仅滚动时可见） */
+  function initSideScroll() {
+    var scrollEl = $('clientListScroll')
+    var thumb = $('sideScrollThumb')
+    scrollEl.addEventListener('scroll', function () {
+      var max = scrollEl.scrollHeight - scrollEl.clientHeight
+      if (max <= 0) { thumb.classList.remove('visible'); return }
+      var ratio = scrollEl.scrollTop / max
+      var h = Math.max(24, scrollEl.clientHeight * (scrollEl.clientHeight / scrollEl.scrollHeight))
+      thumb.style.height = h + 'px'
+      thumb.style.top = (ratio * (scrollEl.clientHeight - h)) + 'px'
+      thumb.classList.add('visible')
+      clearTimeout(scrollEl._hideTimer)
+      scrollEl._hideTimer = setTimeout(function () { thumb.classList.remove('visible') }, 800)
+    })
+  }
+
+  // ==================== 画像卡（对应 PortraitCard.tsx + TaskDrawer/TaskRow） ====================
+
+  function renderPortraitCard() {
+    var el = $('portraitSlot')
+    var c = currentClient()
+    if (!c) { el.innerHTML = ''; return }
+    var b = c.basicInfo
+    var pendingTaskCount = c.tasks.filter(function (t) { return !t.done }).length
+    var maskedPhone = F.maskPhone(displayPhoneOf(c) || b.phoneFull || b.phoneMasked)
+    var plus0On = !!state.plus0Map[c.uuid]
+
+    // “本次服务”信号汇总
+    var counts = {}
+    c.securities.forEach(function (s) { counts[s.signalType] = (counts[s.signalType] || 0) + 1 })
+    var summaryItems = SCENE_SUMMARY_CONFIG.filter(function (item) { return (counts[item.key] || 0) > 0 })
+    var summaryHtml = summaryItems.length > 0
+      ? summaryItems.map(function (item) {
+          return '<span class="scene-summary-item"><b class="' + item.cls + '">' + counts[item.key] + '</b> ' + item.label + '</span>'
+        }).join('')
+      : '<span class="scene-summary-item"><b style="color:var(--color-primary)">—</b></span>'
+
+    var drawerHtml = ''
+    if (state.taskDrawerOpen && c) {
+      drawerHtml = '<div class="task-drawer">' + c.tasks.map(taskRowHtml).join('') + '</div>'
+    }
+
+    el.innerHTML =
+      '<div style="flex-shrink:0">' +
+      '<div class="portrait-card' + (pendingTaskCount > 0 ? ' has-tasks' : '') +
+      (state.taskDrawerOpen ? ' drawer-open' : '') + '">' +
+      '  <div class="profile-top">' +
+      '    <div class="profile-avatar">' + esc(b.name.charAt(0)) + '</div>' +
+      '    <div class="profile-info">' +
+      '      <div class="profile-name-row">' +
+      '        <span class="profile-name">' + esc(b.name) + '</span>' +
+      '        <span class="profile-account">' + esc(b.accountNo) + '</span>' +
+      '        <a class="profile-detail-link" data-action="open-customer-detail" data-client-id="' + esc(c.clientId) + '">↗ 客户详情</a>' +
+      '      </div>' +
+      '      <div class="profile-tags">' +
+      '        <span class="profile-tag">' + esc(b.gender) + '</span>' +
+      '        <span class="profile-tag">' + esc(b.level || '无') + '</span>' +
+      '        <span class="profile-tag">' + esc(b.riskCode) + ' ' + esc(b.riskLabel) + '</span>' +
+      '      </div>' +
+      '    </div>' +
+      '    <div class="profile-metrics">' +
+      '      <div class="metric-item"><div class="metric-label">总资产（元）</div><div class="metric-value">' + esc(b.totalAsset) + '</div></div>' +
+      '      <div class="metric-sep"></div>' +
+      '      <div class="metric-item"><div class="metric-label">证券市值（元）</div><div class="metric-value">' + esc(b.secAsset) + '</div></div>' +
+      '      <div class="metric-sep"></div>' +
+      '      <div class="metric-item"><div class="metric-label">本次服务</div><div class="scene-summary">' + summaryHtml + '</div></div>' +
+      '      <div class="phone-wrap">' +
+      '        <div class="plus0-toggle' + (plus0On ? ' on' : '') + '" data-action="toggle-plus0" data-uuid="' + c.uuid + '" title="拨打时自动在号码前加0">' +
+      '          <span class="plus0-box"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="#fff" stroke-width="1.5"><polyline points="1 3.5 4 1 7 3.5" transform="rotate(-45 4 2.5)"/></svg></span>' +
+      '          <span class="plus0-label">+0</span>' +
+      '        </div>' +
+      '        <span class="phone-masked">' + esc(maskedPhone) + '</span>' +
+      '        <button class="call-btn" data-action="make-call"' + (state.call ? ' disabled' : '') + '>' +
+      '          <img class="call-btn-icon" src="../assets/ai-service-icons/dianhua.png" alt="电话">' +
+      '          电话' +
+      '        </button>' +
+      '      </div>' +
+      '    </div>' +
+      '  </div>' +
+      (pendingTaskCount > 0
+        ? '<div class="task-line" data-action="toggle-task-drawer">' +
+          '  <span class="task-line-title">待处理任务</span>' +
+          '  <span class="task-count-badge"><b>' + pendingTaskCount + '</b> 条</span>' +
+          '  <button class="task-toggle-btn">' + (state.taskDrawerOpen ? '收起' : '展开') +
+          '    <img class="task-arrow-icon" src="../assets/ai-service-icons/' + (state.taskDrawerOpen ? 'jiantou2' : 'jiantou1') + '.png" alt="' + (state.taskDrawerOpen ? '收起' : '展开') + '">' +
+          '  </button>' +
+          '</div>'
+        : '') +
+      '</div>' + drawerHtml +
+      '</div>'
+  }
+
+  /** 任务行（对应 TaskRow：逾期红字、紧急/必做红标签） */
+  function taskRowHtml(t) {
+    var overdue = F.isTaskOverdue(t.dueDate, t.done)
+    var dueDisplay = ''
+    if (t.dueDate) {
+      var parts = t.dueDate.split('-')
+      dueDisplay = parts.length === 3 ? parts[1] + '-' + parts[2] : t.dueDate
+    }
+    var isChecked = t.done || t.checked
+    var tags = ''
+    if (t.priorityDesc || t.mustDoDesc) {
+      tags = '<span class="task-tag' + (t.priorityDesc === '紧急' ? ' red' : '') + '">' + esc(t.priorityDesc) + '</span>' +
+        (t.mustDoDesc ? '<span class="task-tag' + (t.mustDoDesc === '必做' ? ' red' : '') + '">' + esc(t.mustDoDesc) + '</span>' : '')
+    }
+    return '<div class="task-row">' +
+      '  <button class="task-check' + (isChecked ? ' checked' : '') + '" data-action="toggle-task-check" data-task-id="' + esc(t.taskId) + '"' + (t.done ? ' disabled' : '') + '>' + (isChecked ? '✓' : '') + '</button>' +
+      '  <div class="task-content">' +
+      '    <strong class="task-name' + (t.done ? ' done' : '') + '">' + esc(t.name) + '</strong>' +
+      (t.desc ? '<p class="task-desc">' + esc(t.desc) + '</p>' : '') +
+      '  </div>' +
+      '  <div class="task-side">' + tags +
+      (t.dueDate ? '<span class="task-due' + (overdue ? ' overdue' : '') + '">' + (overdue ? '逾期 ' : '') + dueDisplay + '</span>' : '') +
+      '  </div>' +
+      '</div>'
+  }
+
+  // ==================== 服务介绍参考（对应 ServiceRefSection / ServiceOverviewAccordion / ProductGridAccordion） ====================
+
+  /** 整体服务文案（源码 SERVICE_REF_DATA.overview 原文，仅未签约客户显示） */
+  var SERVICE_REF_OVERVIEW = {
+    paragraphs: [
+      '国金"AI+投顾"尊享服务是依托强大AI技术与专业投顾团队，为您在投资方面提供全方面、全流程服务。',
+      '首先，AI投顾依托人工智能与量化策略，从海量数据中帮您捕捉持仓个股操作机会、具备潜力的热点个股，同时提供明确的买卖点建议，帮助您解决"买什么""什么价位买"和"什么价位卖"的难题。',
+      '其次，人工投顾全程陪伴，从您的投资账户实际出发，为您量身定制仓位策略；当AI投顾信号较少或过多时，帮您过滤噪音聚焦市场热门概念，精准锚定投资机会。',
+      '最后，当您有个股诊断、账户优化或任何疑问时，您的专属投顾会为您提供一对一的分析，尤其是在您持仓被套或市场异动时，给予您及时的心理支持和专业建议。',
+      '签约后，您还可选择加入社群，和一群志同道合的股友交流投资心得。除此以外，签约后在佣金宝首页界面，还会呈现AI+服务的3个核心线上内容：',
+      '（1）看市场——这个客观高效反映市场整体情绪变化、识别短期极端情绪，为趋势反转提供预警信号。对应过热和冰点的都有不同的操作方式，参考下面的看风口行业热度榜。',
+      '（2）看风口——动态追踪活跃资金风向标，梳理市场热点催化逻辑。',
+      '（3）专家观点——智能算法甄选，权威专家解析，穿透市场噪音，提炼核心投资洞见。',
+    ],
+    feeTitle: '费用提示',
+    feeParagraph:
+      '你签约的AI+选好股/股票解套/投ETF，账户佣金是叠加万9。现在行情处于慢牛，机会难得，也希望您能够借助我们的AI+投顾服务抓住这波慢牛机会。后续您操作上或者对产品使用有任何问题，也可以随时与我沟通。',
+  }
+
+  /** 下辖三大产品（源码 SERVICE_REF_DATA.products；logo 为 ai-service-icons 图标资源，与源码 assetUrl 引用一致） */
+  var SERVICE_REF_PRODUCTS = [
+    { name: 'AI选好股', logo: 'xuanhaogu.svg', tip: '专注于精选潜力个股并提供实时信号的智能顾问', copy: 'AI选好股是专注于精选潜力个股并提供实时信号的智能顾问。它可以根据您的行业偏好、市值偏好，利用策略模型，为您精选潜力个股并提供买卖信号，力争帮您获得理想投资收益。它是运用底层丰富的宏观、中观、微观选股策略，捕捉市场热点与技术共振的个股机会，并持续监测交易时机，在每个交易日开盘前，为您精选观察池股票并展示参考价格。在盘中，会发送相关标的的实时信号，包括买卖方向、时间及价格等，方便跟随操作。' },
+    { name: 'AI股票解套', logo: 'gupiaojietao.svg', tip: '利用人工智能算法，通过多种方式帮助您解套', copy: 'AI股票解套利用人工智能算法，通过多种方式帮助您解套。如果被套的股票上涨潜力较高，它会帮助您通过"低买高卖"的波段操作，持续降低持仓成本。如果这只股票所处行业有波段潜力更高的个股，它会为您提供同行业高性价比个股并对比参考。如果被套的股票上涨潜力不大它会为您推荐"波段潜力榜"，帮您通过"调仓换股+低买高卖"的方式，力争实现解套。' },
+    { name: 'AI投ETF', logo: 'touETF.svg', tip: '基于国金证券量化策略体系，高效捕捉全球市场动向', copy: 'AI投ETF基于国金证券量化策略体系，更高效的捕捉全球市场动向，提供每日热点投资机会。涵盖国内&全球精选指数，每日为您精选次日热点机会，看好行业同时精选个股机会，提供买卖信号建议，支持一键复制，通过双向条件单为您自动执行买卖策略。还融合了Deepseek辅助策略，为您提供热点机会深度解读，查波段买卖信号的服务。' },
+  ]
+
+  /** 双手风琴独立展开状态（对应两个组件各自的 useState(false)） */
+  var refOverviewOpen = false
+  var refProductsOpen = false
+
+  function renderServiceRefSection() {
+    var el = $('serviceRefSlot')
+    var c = currentClient()
+    // RightPanel：仅当前客户存在未签约信号时渲染（securities.some(signalType === 'unsigned')）
+    if (!c || !c.securities.some(function (s) { return s.signalType === 'unsigned' })) {
+      el.innerHTML = ''
+      return
+    }
+    var overviewBody = refOverviewOpen
+      ? SERVICE_REF_OVERVIEW.paragraphs.map(function (p) { return '<p class="para">' + esc(p) + '</p>' }).join('') +
+        '<p class="fee-title">' + esc(SERVICE_REF_OVERVIEW.feeTitle) + '</p>' +
+        '<p class="para fee-para">' + esc(SERVICE_REF_OVERVIEW.feeParagraph) + '</p>'
+      : ''
+    var productCells = SERVICE_REF_PRODUCTS.map(function (p) {
+      return '<div class="product-cell">' +
+        '<img class="product-logo" src="../assets/ai-service-icons/' + p.logo + '" alt="' + esc(p.name) + '">' +
+        '<p class="product-tip">' + esc(p.tip) + '</p>' +
+        '<p class="product-copy">' + esc(p.copy) + '</p>' +
+        '</div>'
+    }).join('')
+    el.innerHTML =
+      '<div class="service-ref-head"><img class="sr-icon" src="../assets/ai-service-icons/fuwucankao.png" alt="服务参考"><span class="title">服务介绍参考</span></div>' +
+      '<div class="service-ref-body">' +
+      '<div class="ref-accordion overview' + (refOverviewOpen ? ' open' : '') + '">' +
+      '<div class="ref-acc-head" data-action="toggle-ref-overview">' +
+      '<span class="ref-acc-title">AI+投顾 · 整体服务（含费用说明）</span>' +
+      '<span class="ref-acc-arrow">' + (refOverviewOpen ? '收起' : '展开') + '<img class="ref-acc-arrow-icon" src="../assets/ai-service-icons/' + (refOverviewOpen ? 'jiantou2' : 'jiantou1') + '.png" alt="' + (refOverviewOpen ? '收起' : '展开') + '"></span></div>' +
+      '<div class="ref-acc-body">' + overviewBody + '</div>' +
+      '</div>' +
+      '<div class="ref-accordion products' + (refProductsOpen ? ' open' : '') + '">' +
+      '<div class="ref-acc-head" data-action="toggle-ref-products">' +
+      '<span class="ref-acc-title">下辖三大产品</span>' +
+      '<span class="ref-acc-arrow">' + (refProductsOpen ? '收起' : '展开') + '<img class="ref-acc-arrow-icon" src="../assets/ai-service-icons/' + (refProductsOpen ? 'jiantou2' : 'jiantou1') + '.png" alt="' + (refProductsOpen ? '收起' : '展开') + '"></span></div>' +
+      '<div class="ref-acc-body"><div class="product-grid">' + productCells + '</div></div>' +
+      '</div>' +
+      '</div>'
+  }
+
+  // ==================== 信号卡（对应 SignalSection / SignalCard / SignalCardHeader / EventsSection / KeyDataGrid / ScriptSection / DiagnosisEntry） ====================
+
+  /** 组件内部 useState（demo 用 map 持久化：signalId → 状态） */
+  var scriptSavedMap = {}     // "✓ 已保存"提示 2s（ScriptSection saved）
+  var scriptCopiedMap = {}    // 一键复制按钮已复制态 2s（SignalCardHeader copied）
+  var diagCopiedMap = {}      // 诊断复制按钮已复制态 1.4s（DiagnosisEntry copied）
+  var signalExpandedMap = {}  // V1.1：按客户保存标的手动收展状态
+
+  /** 按当前客户 securities 查找信号（诊断入口/事件/话术交互回调用） */
+  function findSecurity(signalId) {
+    var c = currentClient()
+    if (!c) return null
+    return c.securities.find(function (s) { return s.signalId === signalId }) || null
+  }
+
+  /**
+   * 诊断入口（对应 DiagnosisEntry）
+   * mode：sector=板块诊断 / underlying=个股·ETF诊断 / auto=underlying 优先
+   * 链接拼接 scenesId/employeeId/clientId（buildDiagUrl）
+   */
+  function diagnosisEntryHtml(security, mode) {
+    var urls = security.diagnosisUrls || []
+    if (!urls.length) return ''
+    var first = urls[0]
+    var underlyingLabel = security.securityType === 'stock' ? '个股诊断' : 'ETF诊断'
+    var url = null
+    var label = ''
+    if (mode === 'sector') {
+      if (first.sector) { url = first.sector; label = '板块诊断' }
+    } else if (mode === 'underlying') {
+      if (first.underlying) { url = first.underlying; label = underlyingLabel }
+    } else {
+      if (first.underlying) { url = first.underlying; label = underlyingLabel }
+      else if (first.sector) { url = first.sector; label = '板块诊断' }
+    }
+    if (!url) return ''
+    var key = security.signalId + ':' + mode
+    var copied = !!diagCopiedMap[key]
+    return '<div class="diag-entry">' +
+      '<button class="diag-btn" data-action="diag-open" data-sid="' + esc(security.signalId) + '" data-mode="' + mode + '">' +
+      '<img class="diag-icon" src="../assets/ai-service-icons/' + (label.indexOf('板块') >= 0 ? 'bankuai' : 'ETF') + '.png" alt="' + esc(label) + '">' + esc(label) + '结果</button>' +
+      '<button class="diag-copy-btn' + (copied ? ' copied' : '') + '" data-action="diag-copy" data-sid="' + esc(security.signalId) + '" data-mode="' + mode + '">' +
+      (copied ? '✓ 已复制' : '复制') + '</button>' +
+      '</div>'
+  }
+
+  /** 事件区（对应 EventsSection：无事件且无 underlying 诊断时不渲染；仅 underlying 时显示"暂无异动/热点"） */
+  function eventsSectionHtml(security) {
+    var events = security.events || []
+    var hasUnderlying = (security.diagnosisUrls || []).some(function (d) { return !!d.underlying })
+    if (events.length === 0 && !hasUnderlying) return ''
+    var body = ''
+    if (events.length > 0) {
+      body = '<div class="events-list">' + events.map(function (evt, i) {
+        var active = state.activeEvent && state.activeEvent.sid === security.signalId && state.activeEvent.idx === i
+        var pop = active
+          ? '<div class="event-pop-mask" data-action="close-event-pop"></div>' +
+            '<div class="event-popover"><div class="event-popover-title">' + esc(eventPrefix(evt.event_type) + evt.label) + '</div>' +
+            '<div class="event-popover-content">' + esc(evt.content) + '</div></div>'
+          : ''
+        return '<span style="position:relative;display:inline-flex">' +
+          '<button class="event-pill ' + eventTone(evt.type) + '" data-action="toggle-event-pop" data-sid="' + esc(security.signalId) + '" data-idx="' + i + '">' +
+          esc(eventPrefix(evt.event_type) + eventLabelShort(evt.label)) + '</button>' + pop + '</span>'
+      }).join('') + '</div>'
+    } else {
+      body = '<div class="events-empty">暂无异动/热点</div>'
+    }
+    return '<div class="events-section">' +
+      '<div class="events-head"><span class="events-title">关联异动 / 热点</span>' +
+      diagnosisEntryHtml(security, 'sector') + '</div>' +
+      body +
+      '</div>'
+  }
+
+  /** KV 数据网格（对应 KeyDataGrid：5 列 data-box；description 问号 Tooltip；conceptList 前 3 + 详情；multiline 2 行截断 + Tooltip） */
+  function keyDataGridHtml(security) {
+    var clientLevelMetricNames = ['近一月信号胜率', '近一月信号数量', '近一月信号累积收益率']
+    var items = (security.keyData || []).filter(function (item) {
+      return security.signalType === 'unsigned' || clientLevelMetricNames.indexOf(item.label) < 0
+    })
+    if (!items || items.length === 0) return ''
+    var cells = items.map(function (item, i) {
+      var qIcon = item.description
+        ? '<span class="q-icon" data-tip="' + esc(item.description) + '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>'
+        : ''
+      var labelHtml = '<span class="data-label">' + esc(item.label) + qIcon + '</span>'
+      var valueHtml = ''
+      if (item.conceptList) {
+        // 概念列表：前 3 个 rank 徽章 + 名称，"详情"打开当前热门概念弹窗
+        var top3 = item.conceptList.slice(0, 3).map(function (cp) {
+          return '<span class="concept-item"><span class="concept-rank">' + esc(cp.rank) + '</span>' +
+            '<span class="concept-name">' + esc(cp.name) + '</span></span>'
+        }).join('')
+        valueHtml = '<div class="concept-list">' + top3 +
+          '<button class="concept-more" data-action="open-concepts" data-sid="' + esc(security.signalId) + '" data-idx="' + i + '">详情 <span class="arr">›</span></button></div>'
+      } else if (item.multiline) {
+        // 多行文本：2 行截断 + hover Tooltip 完整内容（CSS line-clamp）
+        var mCls = 'data-value multiline' + valueToneClass(item)
+        valueHtml = '<span class="' + mCls + '" data-tip="' + esc(item.value) + '">' + esc(item.value) + '</span>'
+      } else {
+        valueHtml = '<span class="data-value' + valueToneClass(item) + '">' + esc(item.value) + '</span>'
+      }
+      return '<div class="data-box">' + labelHtml + valueHtml + '</div>'
+    }).join('')
+    return '<div class="keydata-grid">' + cells + '</div>'
+  }
+
+  /** 值颜色（对应 KeyDataGrid getValueClass：tone 优先，cls 回退） */
+  function valueToneClass(item) {
+    if (item.tone === 'profit-tone' || item.cls === 'red') return ' profit-tone'
+    if (item.tone === 'loss-tone' || item.cls === 'green') return ' loss-tone'
+    return ''
+  }
+
+  /** 话术区（对应 ScriptSection：风险等级判定 + 可编辑失焦保存 + 折叠/展开） */
+  function scriptSectionHtml(security, riskCode) {
+    var minRiskCode = F.getScriptMinRisk(security.securityCode)
+    var riskSatisfied = F.isRiskLevelSatisfied(riskCode, minRiskCode)
+    var saved = !!scriptSavedMap[security.signalId]
+    var riskHtml = riskSatisfied
+      ? '<div class="risk-hint">话术适用于 ' + esc(minRiskCode) + ' 及以上风险等级客户</div>'
+      : '<div class="risk-warning">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:2px"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>' +
+        '<span>客户风险等级（' + esc(riskCode) + '）低于话术适用等级（' + esc(minRiskCode) + '），请谨慎使用</span></div>'
+    return '<div class="script-section">' +
+      '<div class="script-head">' +
+      '<div class="script-head-left"><span class="script-title">个性化话术</span>' +
+      '<span class="script-saved-tip' + (saved ? ' show' : '') + '">✓ 已保存</span></div>' +
+      diagnosisEntryHtml(security, 'underlying') +
+      '</div>' +
+      riskHtml +
+      '<div class="script-editable-wrap">' +
+      '<div class="script-editable expanded' + (riskSatisfied ? '' : ' risk-warned') +
+      '" contenteditable="true" data-sid="' + esc(security.signalId) + '" data-role="script-edit">' + esc(security.sceneScript || '') + '</div>' +
+      '</div>' +
+      '</div>'
+  }
+
+  /** 单张信号卡（对应 SignalCard = SignalCardHeader + EventsSection + KeyDataGrid + ScriptSection） */
+  function signalCardHtml(security, riskCode, expanded) {
+    var layout = RT.getSceneLayout(security.sceneCode)
+    var indicatorCls = SIGNAL_INDICATOR[security.signalType] || 'default'
+    var tagCls = signalTagCls(security.signalType)
+
+    // 资产类型标签（stock → "个股"）+ 信号类型标签（subtypeLabel 优先）
+    var typeTags =
+      '<span class="type-tag">' + (security.securityType === 'stock' ? '个股' : esc(security.securityType)) + '</span>' +
+      '<span class="type-tag' + (tagCls ? ' ' + tagCls : '') + '">' + esc(security.typeLabel) + '</span>'
+
+    // 场景标题标签（蓝）+ 场景描述标签（有 tooltip 时可点击展开说明）
+    if (layout && layout.title) {
+      typeTags += '<span class="type-tag scene-title">' + esc(layout.title) + '</span>'
+    }
+    if (layout && layout.description) {
+      if (layout.tooltip) {
+        var descActive = state.activeSceneDesc === security.signalId
+        typeTags += '<span style="position:relative;display:inline-flex">' +
+          '<span class="type-tag scene-desc clickable" data-action="toggle-scene-desc" data-sid="' + esc(security.signalId) + '">' +
+          esc(layout.description) +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>' +
+          (descActive
+            ? '<div class="scene-desc-popover">' + esc(String(layout.tooltip).replace(/ /g, '\n')) + '</div>'
+            : '') +
+          '</span>'
+      } else {
+        typeTags += '<span class="type-tag scene-desc">' + esc(layout.description) + '</span>'
+      }
+    }
+
+    // 一键复制（话术 + 板块诊断/个股·ETF诊断链接，已复制态 2s）
+    var copied = !!scriptCopiedMap[security.signalId]
+    var copyBtn = '<button class="copy-btn' + (copied ? ' copied' : '') + '" data-action="copy-script" data-sid="' + esc(security.signalId) + '">' +
+      (copied
+        ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>已复制'
+        : '<img class="copy-btn-icon" src="../assets/ai-service-icons/fuzhi.png" alt="复制">一键复制') +
+      '</button>'
+
+    var header = '<div class="signal-head">' +
+      '<div class="signal-head-left">' +
+      '<span class="signal-indicator ' + indicatorCls + '"></span>' +
+      '<div style="min-width:0">' +
+      '<div class="signal-title-row"><span class="security-name">' + esc(security.securityName) + '</span>' +
+      '<span class="security-code">' + esc(security.securityCode) + '</span></div>' +
+      '<div class="signal-tags">' + typeTags + '</div>' +
+      '</div></div><div class="signal-head-actions">' + (expanded ? copyBtn : '') +
+      '<button class="signal-card-toggle" data-action="toggle-signal-card" data-sid="' + esc(security.signalId) + '">' + (expanded ? '收起 ▴' : '展开 ▾') + '</button></div>' +
+      '</div>'
+    return '<div class="signal-card' + (expanded ? '' : ' collapsed') + '">' + header + (expanded ?
+      eventsSectionHtml(security) + keyDataGridHtml(security) + scriptSectionHtml(security, riskCode) : '') + '</div>'
+  }
+
+  function metricsHtml(client) {
+    var metrics = client.monthlySignalMetrics
+    var hasG123 = client.securities.some(function (security) { return security.signalType !== 'unsigned' })
+    if (!hasG123 || !metrics) return ''
+    return '<div class="client-metrics-grid"><div class="data-box"><span class="data-label">近一月信号胜率</span><span class="data-value">' + esc(metrics.winRate == null ? '--' : metrics.winRate) + '</span></div>' +
+      '<div class="data-box"><span class="data-label">近一月信号数量</span><span class="data-value">' + esc(metrics.count == null ? '--' : metrics.count) + '</span></div>' +
+      '<div class="data-box"><span class="data-label">近一月信号累计收益率</span><span class="data-value' + (String(metrics.returnRate || '').indexOf('-') === 0 ? ' loss-tone' : ' profit-tone') + '">' + esc(metrics.returnRate == null ? '--' : metrics.returnRate) + '</span></div></div>'
+  }
+
+  /** 信号区（对应 SignalSection：标题 + 数量徽标 + 信号卡列表；无信号不渲染） */
+  function signalSectionHtml(securities, riskCode, client) {
+    if (!securities || securities.length === 0) return ''
+    var defaultExpanded = securities.length < 3
+    var allExpanded = securities.every(function (security) {
+      var value = signalExpandedMap[security.signalId]
+      return value == null ? defaultExpanded : value
+    })
+    return '<div class="signal-section-head"><h3 class="signal-section-title">信号 &amp; 关联标的<span class="signal-count">' + securities.length + '</span></h3>' +
+      (securities.length > 1 ? '<button class="signal-toggle-all" data-action="toggle-all-signals">' + (allExpanded ? '一键收起' : '一键展开') + '</button>' : '') + '</div>' + metricsHtml(client) +
+      '<div style="display:flex;flex-direction:column;gap:16px">' +
+      securities.map(function (s) { var value = signalExpandedMap[s.signalId]; return signalCardHtml(s, riskCode, value == null ? defaultExpanded : value) }).join('') +
+      '</div>'
+  }
+
+  // ==================== 通话状态条（对应 CallStatusBar + dev 环境定时器模拟） ====================
+
+  function renderCallBar() {
+    var el = $('callBarSlot')
+    var call = state.call
+    if (!call) { el.innerHTML = ''; return }
+
+    // ended：隐藏状态条，弹出通话结果弹窗（340px 居中，遮罩/确认均关闭）
+    if (call.phase === 'ended' || call.phase === 'ended_no_answer') {
+      var durationText = call.duration > 0 ? F.fmtSecs(call.duration) : '0秒'
+      el.innerHTML =
+        '<div class="call-result-mask" data-action="call-result-confirm"></div>' +
+        '<div class="call-result-popup">' +
+        '<div class="call-result-title">通话已结束</div>' +
+        '<div class="call-result-desc">客户：' + esc(call.clientName) + '，通话时长：' + durationText + '。</div>' +
+        '<button class="call-result-confirm" data-action="call-result-confirm">确认</button>' +
+        '</div>'
+      return
+    }
+
+    var statusText = call.phase === 'dialing'
+      ? '正在拨出 ' + call.calledNumber + ' …'
+      : call.phase === 'ringing' ? '振铃中' : '通话中'
+    var showTimer = call.phase === 'ringing' || call.phase === 'connected'
+    el.innerHTML =
+      '<div class="call-bar' + (state.collapsed ? ' collapsed-panel' : '') + '">' +
+      '<div class="call-bar-left">' +
+      '<span class="call-dot ' + call.phase + '"></span>' +
+      '<span class="call-status-text">' + esc(statusText) + '</span>' +
+      (showTimer ? '<span class="call-timer">' + F.fmtSecs(call.duration) + '</span>' : '') +
+      '</div>' +
+      '<button class="hangup-btn" data-action="hangup">' +
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>' +
+      '挂断</button>' +
+      '</div>'
+  }
+
+  // ==================== 服务底栏（对应 ServiceFooter：已完成时隐藏） ====================
+
+  function renderServiceFooter() {
+    var el = $('serviceFooterSlot')
+    var c = currentClient()
+    if (!c || c.completed) { el.innerHTML = ''; return }
+    el.innerHTML =
+      '<div class="service-footer">' +
+      '<span class="service-footer-label">服务内容</span>' +
+      '<input class="service-note-input" id="serviceNoteInput" type="text" placeholder="记录本次服务内容…选填" value="' + esc(state.serviceNote) + '">' +
+      '<button class="complete-btn" data-action="complete-service"' + (state.completeLoading ? ' disabled' : '') + '>' +
+      (state.completeLoading ? '提交中...' : '完成服务') + '</button>' +
+      '<span class="complete-done-tip' + (state.completeDoneTip ? ' show' : '') + '">✓ 已完成</span>' +
+      '</div>'
+  }
+
+  // ==================== 企微群发弹窗（对应 BroadcastModal） ====================
+
+  /** 接收人列表（selectedUuids 从全部客户筛选） */
+  function broadcastRecipients() {
+    return state.clients.filter(function (c) { return state.selectedUuids.indexOf(c.uuid) >= 0 && !isTodayBroadcast(c) })
+  }
+
+  function renderBroadcastModal() {
+    var maskEl = $('broadcastModal')
+    if (!state.broadcastModalOpen) { UI.closeModal(maskEl); return }
+
+    // 0 接收人时自动关闭（源码 useEffect）
+    var recipients = broadcastRecipients()
+    if (recipients.length === 0) {
+      state.broadcastModalOpen = false
+      UI.closeModal(maskEl)
+      return
+    }
+
+    var mixedGroups = checkMixedGroups(recipients)
+    var isMixed = mixedGroups.length > 1
+    var showExpandBtn = recipients.length > 10
+    var visible = (state.broadcastExpanded || !showExpandBtn) ? recipients : recipients.slice(0, 10)
+
+    // 接收人标签（今日已发 → 黄色警示样式 + "⚠︎今日已发"，可移除）
+    var tags = visible.map(function (c) {
+      var todaySent = F.isBroadcastToday(c.wxBroadcastTime)
+      return '<span class="bc-recipient-tag' + (todaySent ? ' today-sent' : '') + '">' +
+        esc(c.basicInfo.name) + (todaySent ? ' ⚠︎今日已发' : '') +
+        '<button class="bc-recipient-remove" data-action="remove-recipient" data-uuid="' + esc(c.uuid) + '" aria-label="移除">' +
+        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></span>'
+    }).join('')
+
+    // 跨分类警示条（mixedGroups > 1）
+    var mixedWarning = isMixed
+      ? '<div class="mixed-warning">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>' +
+        '<span>当前所选客户特征不统一，建议分开群发</span></div>'
+      : ''
+
+    // 通用话术区（跨分类 → 灰底提示不加载话术；空话术 → placeholder）
+    var isEmptyScript = !state.broadcastScriptEdited
+    var scriptArea = isMixed
+      ? '<div class="bc-mixed-empty">客户特征不统一，请分开群发后查看对应话术</div>'
+      : '<div style="position:relative">' +
+        (isEmptyScript ? '<div class="bc-script-placeholder" id="bcScriptPlaceholder">暂无预置话术，请手动输入群发内容</div>' : '') +
+        '<div class="bc-script-area" id="bcScriptArea" contenteditable="true" data-role="bc-script">' + esc(state.broadcastScriptEdited) + '</div>' +
+        '</div>'
+
+    var canSend = F.canSendBroadcast(state.broadcastScriptEdited) && recipients.length > 0 && !state.sending && !isMixed
+
+    $('broadcastModalBody').innerHTML =
+      '<div class="bc-section-label"><span class="name">接收客户（' + recipients.length + ' 人）</span></div>' +
+      mixedWarning +
+      '<div style="margin-bottom:16px">' +
+      '<div class="bc-recipients">' + tags + '</div>' +
+      (showExpandBtn
+        ? '<button class="bc-expand-btn" data-action="toggle-bc-expand">' +
+          (state.broadcastExpanded ? '收起 ▴' : '展开（共' + recipients.length + '人）▾') + '</button>'
+        : '') +
+      '</div>' +
+      '<div class="bc-section-label"><span class="name">通用话术</span>' +
+      '<span class="bc-preset-badge">WorkBuddy 预置</span></div>' +
+      scriptArea
+
+    var sendBtn = $('broadcastSendBtn')
+    sendBtn.className = 'bc-send-btn' + (canSend ? ' enabled' : '')
+    sendBtn.disabled = !canSend
+    sendBtn.textContent = state.sending ? '发送中...' : '发送（' + recipients.length + '人）'
+    sendBtn.setAttribute('data-action', 'send-broadcast')
+
+    UI.openModal(maskEl)
+  }
+
+  // ==================== 当前热门概念弹窗（对应 PopularConceptsModal） ====================
+
+  function renderConceptModal() {
+    var maskEl = $('conceptModal')
+    if (!state.conceptModal) { UI.closeModal(maskEl); return }
+    var concepts = state.conceptModal
+    $('conceptModalTitle').textContent = '当前热门概念（共' + concepts.length + '个）'
+    $('conceptGrid').innerHTML = concepts.map(function (cp) {
+      return '<div class="concept-cell"><span class="concept-rank">' + esc(cp.rank) + '</span>' +
+        '<span class="concept-name">' + esc(cp.name) + '</span></div>'
+    }).join('')
+    UI.openModal(maskEl)
+  }
+
+  // ==================== 右面板编排（对应 RightPanel） ====================
+
+  function renderRightPanel() {
+    var c = currentClient()
+
+    // 未选择客户 → 空态提示
+    if (!c) {
+      $('completedBannerSlot').innerHTML = ''
+      $('portraitSlot').innerHTML =
+        '<div class="no-client-empty"><div class="inner"><div class="icon">📋</div>' +
+        '<div style="font-size:14px">从左侧选择客户开始服务</div></div></div>'
+      $('serviceRefSlot').innerHTML = ''
+      $('signalSlot').innerHTML = ''
+      renderServiceFooter()
+      renderCallBar()
+      return
+    }
+
+    // 已完成服务 → 绿色横幅
+    $('completedBannerSlot').innerHTML = c.completed
+      ? '<div class="completed-banner">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+        '本次服务已完成</div>'
+      : ''
+
+    renderPortraitCard()
+    renderServiceRefSection()
+
+    // 信号区（行情数据按 securityCode + sceneCode 匹配合并后渲染）
+    var securities = mergedSecurities(c)
+    $('signalSlot').innerHTML = signalSectionHtml(securities, c.basicInfo.riskCode, c)
+
+    renderServiceFooter()
+    renderCallBar()
+  }
+
+  /** 懒加载当前客户数据（对应 useClientTasks + useClientContacts 同时请求 + useMarketData） */
+  function loadClientData(client) {
+    if (!client) return
+
+    // 待办任务（transformTask 转换后写入 client.tasks，对应缓存回写）
+    api.getClientTasks(client.clientId).then(function (res) {
+      client.tasks = (res.result.list || []).map(transformTask)
+      client.tasksLoaded = true
+      renderClientList()
+      renderRightPanel()
+    })
+
+    // 联系电话（type=1 优先于画像 phoneNo）
+    api.getContacts(client.clientId).then(function (res) {
+      state.contactsMap[client.clientId] = res.result
+      renderRightPanel()
+    })
+
+    // 实时行情（securityScenes 非空才请求，对应 enabled 条件）
+    state.marketData = null
+    var scenes = client.securities.map(function (s) {
+      return { securityCode: s.securityCode, sceneCode: s.sceneCode }
+    })
+    if (scenes.length > 0) {
+      api.getMarketData({ taskId: state.taskId, clientId: client.clientId, securityScenes: scenes })
+        .then(function (res) {
+          // 防止快速切换客户后旧请求覆盖新客户数据
+          if (state.currentUuid !== client.uuid) return
+          state.marketData = res.result
+          renderRightPanel()
+        })
+    } else {
+      state.marketData = []
+      renderRightPanel()
+    }
+  }
+
+  /** 全量重渲染（列表 + 右面板） */
+  function renderAll() {
+    renderTopBar()
+    renderPanelHead()
+    renderClientList()
+    renderRightPanel()
+  }
+
+  // ==================== 交互处理（对应 AiServiceListPage 各 handler + store actions） ====================
+
+  /** 选择客户（store.setCurrentUuid：重置任务抽屉；选择模式下切换勾选） */
+  function handleSelectClient(uuid) {
+    if (state.selectMode) {
+      var candidate = findClient(uuid)
+      if (!candidate || isTodayBroadcast(candidate)) {
+        UI.toast('该客户今日已群发，不可再次选择', 'warning')
+        return
+      }
+      var i = state.selectedUuids.indexOf(uuid)
+      if (i >= 0) state.selectedUuids.splice(i, 1)
+      else state.selectedUuids.push(uuid)
+      renderClientList()
+      renderBroadcastToolbar()
+      renderBroadcastModal()
+      return
+    }
+    if (uuid === state.currentUuid) return
+    state.currentUuid = uuid
+    state.taskDrawerOpen = false
+    state.activeEvent = null
+    state.activeSceneDesc = null
+    renderClientList()
+    renderRightPanel()
+    // 切换客户时右侧回到顶部（RightPanel useEffect）
+    $('rightScroll').scrollTo({ top: 0, behavior: 'smooth' })
+    loadClientData(findClient(uuid))
+  }
+
+  /** 下拉选择分类：宽口径命中客户全选 + 加载预置话术（handleSelectCategory） */
+  function handleSelectCategory(cat) {
+    state.broadcastFilters = { totalMin: '', totalMax: '', secMin: '', secMax: '', status: 'unsent' }
+    state.broadcastCategory = cat
+    var uuids = broadcastCandidates().map(function (c) { return c.uuid })
+    state.selectMode = true
+    state.selectedUuids = uuids.slice()
+    state.dropdownOpen = false
+    state.broadcastScript = getBroadcastScript(state.pageData.defaultScripts, cat)
+    state.broadcastScriptEdited = state.broadcastScript
+    renderPanelHead()
+    renderClientList()
+  }
+
+  /** 取消选择（handleCancelSelect：退出选择模式 + 清空话术） */
+  function handleCancelSelect() {
+    state.selectMode = false
+    state.selectedUuids = []
+    state.broadcastCategory = null
+    state.broadcastScript = ''
+    state.broadcastScriptEdited = ''
+    state.broadcastExpanded = false
+    state.broadcastFilters = { totalMin: '', totalMax: '', secMin: '', secMax: '', status: 'unsent' }
+    renderPanelHead()
+    renderClientList()
+  }
+
+  // ── 电话外呼（对应 handleCall + CallProvider dev 定时器模拟：dialing 1.5s → ringing 1.5s → connected 8s → ended） ──
+
+  function startCallTick() {
+    if (!state.call || state.call.tickTimer) return
+    state.call.tickTimer = setInterval(function () {
+      if (!state.call) return
+      state.call.duration += 1
+      var timerEl = document.querySelector('.call-timer')
+      if (timerEl) timerEl.textContent = F.fmtSecs(state.call.duration)
+    }, 1000)
+  }
+
+  function finishCall() {
+    if (!state.call) return
+    clearTimeout(state.call.phaseTimer)
+    clearInterval(state.call.tickTimer)
+    state.call.phase = 'ended'
+    renderCallBar()
+    renderPortraitCard()
+  }
+
+  function handleMakeCall() {
+    var c = currentClient()
+    if (!c || state.call) return
+    // contacts type=1 优先，兑底画像 phoneNo；无号码直接返回（源码静默行为）
+    var contacts = state.contactsMap[c.clientId]
+    var defaultContact = contacts && contacts.list
+      ? contacts.list.find(function (x) { return x.type === '1' })
+      : null
+    var phone = (defaultContact && defaultContact.phone) || c.basicInfo.phoneFull || ''
+    if (!phone) return
+    var plus0On = !!state.plus0Map[c.uuid]
+    state.call = { phase: 'dialing', calledNumber: F.maskPhone(phone), clientName: c.basicInfo.name, duration: 0 }
+    renderCallBar()
+    renderPortraitCard()
+    api.makeCall({ agentTel: '8001', customerTel: phone, callingTel: plus0On ? '0' + phone : phone, applicationName: 'AI+客户服务清单' })
+      .then(function () {
+        state.call.phaseTimer = setTimeout(function () {
+          if (!state.call) return
+          state.call.phase = 'ringing'
+          startCallTick()
+          renderCallBar()
+          state.call.phaseTimer = setTimeout(function () {
+            if (!state.call) return
+            state.call.phase = 'connected'
+            renderCallBar()
+            state.call.phaseTimer = setTimeout(finishCall, 8000)
+          }, 1500)
+        }, 1500)
+      })
+      .catch(function (err) {
+        clearTimeout(state.call.phaseTimer)
+        state.call = null
+        renderCallBar()
+        renderPortraitCard()
+        UI.toast(err && err.message ? err.message : '外呼失败，请稍后重试', 'error')
+      })
+  }
+
+  function handleHangup() {
+    if (!state.call) return
+    api.hangUp().then(finishCall)
+  }
+
+  // ── 话术保存（handleSaveScript：snapshot-update 持久化成功后更新本地缓存） ──
+
+  function handleSaveScript(signalId, script) {
+    var c = currentClient()
+    if (!c) return
+    var security = c.securities.find(function (s) { return s.signalId === signalId })
+    if (!security) return
+    api.saveSnapshot({
+      taskId: state.taskId,
+      customers: [{ uuid: c.uuid, securityList: [{ securityCode: security.securityCode, sceneScript: script }] }],
+    }).then(function () {
+      security.sceneScript = script
+      scriptSavedMap[signalId] = true
+      renderRightPanel()
+      setTimeout(function () {
+        delete scriptSavedMap[signalId]
+        renderRightPanel()
+      }, 2000)
+    }).catch(function () {
+      UI.toast('保存失败，请重试', 'error')
+    })
+  }
+
+  // ── 一键复制（SignalCardHeader.handleCopy：话术 + 板块诊断/个股·ETF诊断链接） ──
+
+  function handleCopyScript(signalId) {
+    var security = findSecurity(signalId)
+    if (!security) return
+    var c = currentClient()
+    var diag = (security.diagnosisUrls || [])[0]
+    var underlyingLabel = security.securityType === 'stock' ? '个股诊断' : 'ETF诊断'
+    var lines = [security.sceneScript || '']
+    if (diag && diag.sector) {
+      lines.push('板块诊断：' + buildDiagUrl(diag.sector, security.sceneCode, EMPLOYEE_ID, c ? c.clientId : ''))
+    }
+    if (diag && diag.underlying) {
+      lines.push(underlyingLabel + '：' + buildDiagUrl(diag.underlying, security.sceneCode, EMPLOYEE_ID, c ? c.clientId : ''))
+    }
+    // 源码经批量短链服务转短链（失败回退长链），demo 无短链服务直接用长链
+    UI.copyToClipboard(lines.join('\n')).then(function (okFlag) {
+      if (!okFlag) return
+      scriptCopiedMap[signalId] = true
+      renderRightPanel()
+      setTimeout(function () {
+        delete scriptCopiedMap[signalId]
+        renderRightPanel()
+      }, 2000)
+    })
+  }
+
+  // ── 诊断入口（DiagnosisEntry.getDiagUrl：sector / underlying / auto） ──
+
+  function getDiagInfo(security, mode) {
+    var urls = security.diagnosisUrls || []
+    if (!urls.length) return null
+    var first = urls[0]
+    var underlyingLabel = security.securityType === 'stock' ? '个股诊断' : 'ETF诊断'
+    if (mode === 'sector') return first.sector ? { url: first.sector, label: '板块诊断' } : null
+    if (mode === 'underlying') return first.underlying ? { url: first.underlying, label: underlyingLabel } : null
+    if (first.underlying) return { url: first.underlying, label: underlyingLabel }
+    if (first.sector) return { url: first.sector, label: '板块诊断' }
+    return null
+  }
+
+  function handleDiagOpen(signalId, mode) {
+    var security = findSecurity(signalId)
+    if (!security) return
+    var info = getDiagInfo(security, mode)
+    if (!info) return
+    var c = currentClient()
+    var fullUrl = buildDiagUrl(info.url, security.sceneCode, EMPLOYEE_ID, c ? c.clientId : '')
+    window.open(fullUrl, '_blank')
+    UI.toast('已在浏览器中打开诊断页面：' + security.securityName)
+  }
+
+  function handleDiagCopy(signalId, mode) {
+    var security = findSecurity(signalId)
+    if (!security) return
+    var info = getDiagInfo(security, mode)
+    if (!info) return
+    var c = currentClient()
+    var fullUrl = buildDiagUrl(info.url, security.sceneCode, EMPLOYEE_ID, c ? c.clientId : '')
+    UI.copyToClipboard(info.label + '结果: ' + fullUrl).then(function (okFlag) {
+      if (!okFlag) return
+      UI.toast('诊断链接已复制', 'success')
+      var key = signalId + ':' + mode
+      diagCopiedMap[key] = true
+      renderRightPanel()
+      setTimeout(function () {
+        delete diagCopiedMap[key]
+        renderRightPanel()
+      }, 1400)
+    })
+  }
+
+  // ── 热门概念详情（KeyDataGrid：conceptList 前 3 + 详情弹窗） ──
+
+  function handleOpenConcepts(signalId, idx) {
+    var c = currentClient()
+    if (!c) return
+    var securities = mergedSecurities(c)
+    var security = securities.find(function (s) { return s.signalId === signalId })
+    if (!security) return
+    var item = (security.keyData || [])[idx]
+    state.conceptModal = item && item.conceptList ? item.conceptList : []
+    renderConceptModal()
+  }
+
+  // ── 完成服务（handleCompleteService：二次确认 → 服务日志 + 任务小结 + 快照落库 → 跳下一个未完成客户） ──
+
+  function handleCompleteService() {
+    var c = currentClient()
+    if (!c) {
+      UI.toast('请先选择客户', 'warning')
+      return
+    }
+    UI.confirmDialog({
+      title: '确认完成服务',
+      content: '完成服务后，该客户将标记为已服务并移至列表底部。确认继续吗？',
+      okText: '确认完成',
+      cancelText: '取消',
+      onOk: function () { doCompleteService(c) },
+    })
+  }
+
+  function doCompleteService(client) {
+    state.completeLoading = true
+    state.completeDoneTip = false
+    renderServiceFooter()
+
+    // 已勾选且未完结的任务（用于任务小结提交与埋点）
+    var checkedTasks = client.tasks.filter(function (t) { return t.checked && !t.done })
+    var now = new Date()
+    var serveTime = F.formatYMD(now) + ' ' + F.formatHM(now)
+    var serviceNote = state.serviceNote
+
+    // 服务日志（completeService 与 saveSnapshot 并行发起，与源码一致）
+    api.completeService({
+      custType: '1',
+      custName: client.basicInfo.name,
+      fundAccountOrSource: client.basicInfo.accountNo,
+      serviceDate: currentTimeStr(),
+      serviceType: 8,
+      content: serviceNote,
+      source: '12',
+    }).then(function () {
+      UI.toast('服务已完成✓', 'success')
+      // 存在勾选任务时提交待办任务小结（关联完结任务）
+      if (checkedTasks.length > 0) {
+        var contacts = state.contactsMap[client.clientId]
+        api.submitTaskSummary({
+          account_id: client.clientId,
+          account_type: 12,
+          callout_summary_comment: serviceNote,
+          serviceType: '1',
+          service_record: '1',
+          call_list: [],
+          multitask: checkedTasks.map(function (t) {
+            return { task_id: Number(t.taskId), template_id: t.templateId, user_type: '12', user_id: client.clientId }
+          }),
+          list: ((contacts && contacts.list) || [])
+            .filter(function (x) { return !!x.phone })
+            .map(function (x) { return { type: x.type, phone: x.phone === null ? '' : x.phone, this_contact: '' } }),
+        })
+      }
+    })
+
+    // 快照落库：serveStatus=1 → 成功后本地更新 + 500ms 跳下一个未完成客户
+    api.saveSnapshot({
+      taskId: state.taskId,
+      customers: [{ uuid: client.uuid, serveStatus: 1, serveTime: serveTime }],
+    }).then(function () {
+      client.completed = true
+      state.completeLoading = false
+      state.completeDoneTip = true
+      state.serviceNote = ''
+      renderTopBar()
+      renderClientList()
+      renderRightPanel()
+      setTimeout(function () {
+        state.completeDoneTip = false
+        renderServiceFooter()
+      }, 2500)
+      setTimeout(function () {
+        var next = state.clients.find(function (x) { return x.uuid !== client.uuid && !x.completed })
+        if (next) {
+          state.currentUuid = next.uuid
+          state.taskDrawerOpen = false
+          state.activeEvent = null
+          state.activeSceneDesc = null
+          renderClientList()
+          renderRightPanel()
+          $('rightScroll').scrollTo({ top: 0, behavior: 'smooth' })
+          loadClientData(next)
+        }
+      }, 500)
+    })
+  }
+
+  // ── 企微群发两步调用（useBroadcast：mass-check → mass-wx → 聚合 toast + 乐观快照） ──
+
+  function handleSendBroadcast() {
+    var recipients = broadcastRecipients()
+    if (!state.taskId || recipients.length === 0) {
+      UI.toast('发送条件不满足，请检查任务和登录状态', 'warning')
+      return
+    }
+    var broadcastType = state.broadcastCategory || 'loss'
+    state.sending = true
+    renderBroadcastModal()
+
+    api.massCheck({
+      taskId: state.taskId,
+      type: broadcastType,
+      receivers: recipients.map(function (c) { return { uuid: c.uuid, clientId: c.clientId } }),
+    })
+      .then(function (checkRes) {
+        var allRelations = checkRes.result.hasWxRelations || []
+        var wxRelations = allRelations.filter(function (relation) { return !relation.thatDaySendFlag })
+        var noWxList = checkRes.result.noWxRelations || []
+        var recipientByExternalId = {}
+        recipients.forEach(function (client) { recipientByExternalId['wm_' + client.uuid] = client })
+        var alreadySentUuids = allRelations.filter(function (relation) { return relation.thatDaySendFlag })
+          .map(function (relation) { return recipientByExternalId[relation.externalUserId] }).filter(Boolean)
+          .map(function (client) { return client.uuid })
+        return api.massWx({ externalUserIds: wxRelations.map(function (relation) { return relation.externalUserId }) }).then(function (sendRes) {
+          var fails = sendRes.result.failList || []
+          var failedIds = fails.map(function (item) { return item.externalUserId })
+          var sentUuids = (sendRes.result.sentExternalUserIds || []).filter(function (id) { return failedIds.indexOf(id) < 0 })
+            .map(function (id) { return recipientByExternalId[id] }).filter(Boolean).map(function (client) { return client.uuid })
+          return {
+            sentCount: sentUuids.length,
+            failedCount: fails.length,
+            noWxRelationCount: noWxList.length,
+            thatDaySentCount: alreadySentUuids.length,
+            sentUuids: sentUuids,
+            alreadySentUuids: alreadySentUuids,
+          }
+        })
+      })
+      .then(function (data) {
+        // 聚合 toast（useBroadcast onSuccess：部分失败/无企微 → warning；全部成功 → success）
+        var parts = [data.sentCount + '人成功']
+        if (data.failedCount > 0) parts.push(data.failedCount + '人失败')
+        if (data.noWxRelationCount > 0) parts.push(data.noWxRelationCount + '人无企微关系')
+        if (data.thatDaySentCount > 0) parts.push(data.thatDaySentCount + '人当日已发送')
+        if (data.failedCount > 0 || data.noWxRelationCount > 0) {
+          UI.toast('群发完成，' + parts.join('，'), 'warning')
+        } else {
+          UI.toast('群发成功，已发送给' + data.sentCount + '位客户', 'success')
+        }
+
+        state.sending = false
+        state.broadcastModalOpen = false
+        UI.closeModal($('broadcastModal'))
+
+        // V1.1：仅以逐客户实际成功名单更新群发锁定状态
+        var sentUuids = data.sentUuids.concat(data.alreadySentUuids)
+        var now = new Date()
+        var timeStr = F.formatHM(now)
+        var broadcastTime = F.formatYMD(now) + ' ' + timeStr
+        handleCancelSelect()
+
+        if (sentUuids.length > 0) {
+          api.saveSnapshot({
+            taskId: state.taskId,
+            customers: sentUuids.map(function (uuid) {
+              return { uuid: uuid, wxBroadcastStatus: 1, wxBroadcastTime: broadcastTime }
+            }),
+          }).then(function () {
+            sentUuids.forEach(function (uuid) {
+              var c = findClient(uuid)
+              if (!c) return
+              c.wxBroadcastStatus = true
+              c.wxBroadcastTime = broadcastTime
+              c.lastBroadcast = { date: timeStr, type: broadcastType }
+            })
+            renderClientList()
+            renderRightPanel()
+          })
+        }
+      })
+      .catch(function () {
+        state.sending = false
+        UI.toast('发送失败，请重试', 'error')
+        renderBroadcastModal()
+      })
+  }
+
+  // ==================== 事件委托（统一 data-action 分发） ====================
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-action]') : null
+    if (!btn) return
+    var action = btn.getAttribute('data-action')
+    var sid = null
+    var uuid = null
+    var c = null
+    var i = -1
+    switch (action) {
+      // ── 左栏 ──
+      case 'select-client':
+        uuid = btn.getAttribute('data-uuid')
+        if (uuid) handleSelectClient(uuid)
+        break
+      case 'set-filter':
+        state.filterTab = btn.getAttribute('data-tab')
+        renderPanelHead()
+        renderClientList()
+        break
+      case 'toggle-sort-order':
+        state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc'
+        renderPanelHead()
+        renderClientList()
+        break
+      case 'toggle-collapse':
+        state.collapsed = !state.collapsed
+        state.dropdownOpen = false
+        if (state.collapsed) $('clientPanel').classList.add('collapsed')
+        else $('clientPanel').classList.remove('collapsed')
+        renderPanelHead()
+        renderClientList()
+        renderCallBar()
+        break
+
+      // ── 群发工具条 / 弹窗 ──
+      case 'toggle-dropdown':
+        state.dropdownOpen = !state.dropdownOpen
+        renderBroadcastToolbar()
+        break
+      case 'select-category':
+        handleSelectCategory(btn.getAttribute('data-cat'))
+        break
+      case 'cancel-select':
+        handleCancelSelect()
+        break
+      case 'open-broadcast-modal':
+        if (state.selectedUuids.length === 0) return
+        state.broadcastScriptEdited = state.broadcastScript
+        state.broadcastModalOpen = true
+        renderBroadcastModal()
+        break
+      case 'close-broadcast-modal':
+        state.broadcastModalOpen = false
+        UI.closeModal($('broadcastModal'))
+        handleCancelSelect()
+        break
+      case 'toggle-bc-expand':
+        state.broadcastExpanded = !state.broadcastExpanded
+        renderBroadcastModal()
+        break
+      case 'reset-broadcast-filters':
+        state.broadcastFilters = { totalMin: '', totalMax: '', secMin: '', secMax: '', status: 'unsent' }
+        state.selectedUuids = broadcastCandidates().map(function (client) { return client.uuid })
+        renderBroadcastToolbar()
+        renderClientList()
+        break
+      case 'remove-recipient':
+        uuid = btn.getAttribute('data-uuid')
+        i = state.selectedUuids.indexOf(uuid)
+        if (i >= 0) state.selectedUuids.splice(i, 1)
+        renderClientList()
+        renderBroadcastToolbar()
+        renderBroadcastModal()
+        break
+      case 'send-broadcast':
+        handleSendBroadcast()
+        break
+
+      // ── 画像卡 / 通话 / 任务 ──
+      case 'toggle-plus0':
+        uuid = btn.getAttribute('data-uuid')
+        state.plus0Map[uuid] = !state.plus0Map[uuid]
+        renderPortraitCard()
+        break
+      case 'make-call':
+        handleMakeCall()
+        break
+      case 'hangup':
+        handleHangup()
+        break
+      case 'call-result-confirm':
+        state.call = null
+        renderCallBar()
+        renderPortraitCard()
+        break
+      case 'toggle-task-drawer':
+        state.taskDrawerOpen = !state.taskDrawerOpen
+        renderPortraitCard()
+        break
+      case 'toggle-task-check':
+        c = currentClient()
+        var tId = btn.getAttribute('data-task-id')
+        if (!c || !tId) break
+        c.tasks.forEach(function (t) {
+          if (t.taskId === tId && !t.done) t.checked = !t.checked
+        })
+        renderPortraitCard()
+        break
+      case 'open-customer-detail':
+        // 源码 handleJumpCustomerview：携 token 跳转客户视图系统（demo 模拟提示）
+        UI.toast('跳转客户视图系统（demo 模拟，不真实跳转）：clientId=' + btn.getAttribute('data-client-id'))
+        break
+
+      // ── 信号卡交互 ──
+      case 'toggle-event-pop':
+        sid = btn.getAttribute('data-sid')
+        var idx = parseInt(btn.getAttribute('data-idx'), 10)
+        state.activeEvent = (state.activeEvent && state.activeEvent.sid === sid && state.activeEvent.idx === idx)
+          ? null
+          : { sid: sid, idx: idx }
+        renderRightPanel()
+        break
+      case 'close-event-pop':
+        state.activeEvent = null
+        renderRightPanel()
+        break
+      case 'toggle-scene-desc':
+        sid = btn.getAttribute('data-sid')
+        state.activeSceneDesc = state.activeSceneDesc === sid ? null : sid
+        renderRightPanel()
+        break
+      case 'open-concepts':
+        handleOpenConcepts(btn.getAttribute('data-sid'), parseInt(btn.getAttribute('data-idx'), 10))
+        break
+      case 'close-concept-modal':
+        state.conceptModal = null
+        UI.closeModal($('conceptModal'))
+        break
+      case 'copy-script':
+        handleCopyScript(btn.getAttribute('data-sid'))
+        break
+      case 'diag-open':
+        handleDiagOpen(btn.getAttribute('data-sid'), btn.getAttribute('data-mode'))
+        break
+      case 'diag-copy':
+        handleDiagCopy(btn.getAttribute('data-sid'), btn.getAttribute('data-mode'))
+        break
+      case 'toggle-signal-card':
+        sid = btn.getAttribute('data-sid')
+        signalExpandedMap[sid] = !signalExpandedMap[sid]
+        renderRightPanel()
+        break
+      case 'toggle-all-signals':
+        c = currentClient()
+        if (!c) break
+        var allExpanded = c.securities.every(function (security) {
+          var value = signalExpandedMap[security.signalId]
+          return value == null ? c.securities.length < 3 : value
+        })
+        c.securities.forEach(function (security) { signalExpandedMap[security.signalId] = !allExpanded })
+        renderRightPanel()
+        break
+
+      // ── 服务参考手风琴 ──
+      case 'toggle-ref-overview':
+        refOverviewOpen = !refOverviewOpen
+        renderServiceRefSection()
+        break
+      case 'toggle-ref-products':
+        refProductsOpen = !refProductsOpen
+        renderServiceRefSection()
+        break
+
+      // ── 底栏 / 演示工具 ──
+      case 'complete-service':
+        handleCompleteService()
+        break
+      case 'reset-demo':
+        api.resetSnapshots()
+        location.reload()
+        break
+    }
+  })
+
+  /** 服务内容输入 & 群发话术实时输入（仅更新按钮态，不重渲染弹窗避免光标丢失） */
+  document.addEventListener('input', function (e) {
+    var el = e.target
+    if (!el) return
+    if (el.id === 'serviceNoteInput') {
+      state.serviceNote = el.value
+      return
+    }
+    if (el.id === 'bcScriptArea') {
+      state.broadcastScriptEdited = el.innerText
+      var ph = $('bcScriptPlaceholder')
+      if (ph) ph.style.display = el.innerText ? 'none' : ''
+      var recipients = broadcastRecipients()
+      var isMixed = checkMixedGroups(recipients).length > 1
+      var canSend = F.canSendBroadcast(state.broadcastScriptEdited) && recipients.length > 0 && !state.sending && !isMixed
+      var sendBtn = $('broadcastSendBtn')
+      if (sendBtn) {
+        sendBtn.className = 'bc-send-btn' + (canSend ? ' enabled' : '')
+        sendBtn.disabled = !canSend
+        sendBtn.textContent = state.sending ? '发送中...' : '发送（' + recipients.length + '人）'
+      }
+    }
+  })
+
+  document.addEventListener('change', function (e) {
+    var el = e.target
+    if (!el) return
+    if (el.getAttribute('data-role') === 'client-sort') {
+      state.sortKey = el.value
+      renderPanelHead()
+      renderClientList()
+      return
+    }
+    var filterKey = el.getAttribute('data-filter')
+    if (!filterKey) return
+    state.broadcastFilters[filterKey] = el.value
+    var minKey = filterKey.indexOf('total') === 0 ? 'totalMin' : filterKey.indexOf('sec') === 0 ? 'secMin' : null
+    var maxKey = filterKey.indexOf('total') === 0 ? 'totalMax' : filterKey.indexOf('sec') === 0 ? 'secMax' : null
+    if (minKey && maxKey && state.broadcastFilters[minKey] !== '' && state.broadcastFilters[maxKey] !== '' && Number(state.broadcastFilters[minKey]) > Number(state.broadcastFilters[maxKey])) {
+      UI.toast('区间下限不能高于上限，请修正后再筛选', 'warning')
+      return
+    }
+    var candidateIds = broadcastCandidates().filter(function (client) { return !isTodayBroadcast(client) }).map(function (client) { return client.uuid })
+    state.selectedUuids = state.selectedUuids.filter(function (uuid) { return candidateIds.indexOf(uuid) >= 0 })
+    renderBroadcastToolbar()
+    renderClientList()
+  })
+
+  /** contentEditable 失焦：话术保存（对应 ScriptSection handleBlur）/ 群发话术同步（onScriptChange） */
+  document.addEventListener('focusout', function (e) {
+    var el = e.target
+    if (!el || !el.getAttribute) return
+    if (el.getAttribute('data-role') === 'script-edit') {
+      var sid = el.getAttribute('data-sid')
+      var security = findSecurity(sid)
+      var text = el.innerText
+      if (security && text !== (security.sceneScript || '')) handleSaveScript(sid, text)
+      return
+    }
+    if (el.id === 'bcScriptArea') {
+      if (el.innerText !== state.broadcastScript) state.broadcastScript = el.innerText
+    }
+  })
+
+  // ==================== 页面初始化（对应 usePageData 加载分支） ====================
+
+  /** 错误 / 权限 / 空态视图（对应 isError → Result error / !data → Result info） */
+  function showStateView(opts) {
+    $('skeletonView').style.display = 'none'
+    $('mainView').style.display = 'none'
+    $('stateView').style.display = 'flex'
+    if (opts.nodata) {
+      $('stateIcon').classList.add('has-nodata')
+      $('stateIcon').innerHTML = nodataIconHtml()
+    } else {
+      $('stateIcon').classList.remove('has-nodata')
+      $('stateIcon').textContent = opts.icon || ''
+    }
+    $('stateTitle').textContent = opts.title
+    $('stateDesc').textContent = opts.desc || ''
+    $('stateCode').style.display = opts.code ? 'inline-block' : 'none'
+    $('stateCode').textContent = opts.code || ''
+    $('stateRetryBtn').style.display = opts.retry ? '' : 'none'
+  }
+
+  /** Demo 状态说明条（边界注入说明，非原系统功能） */
+  var STATE_BANNERS = {
+    normal: '正常演示数据（taskId=' + api.taskId + '）。完成服务/话术保存/群发会写入本地快照（localStorage），刷新后仍生效，可点右侧按钮重置。',
+    slow: '慢速加载演示（3s 延迟）：展示骨架屏加载态。对应 PRD F01 页面加载与全屏状态管理。',
+    'no-wx': '企微群发校验全部客户无企微关系：群发结果「0人成功，N人无企微关系」。对应 PRD 附录 D D3-04。',
+    'broadcast-done': '全部客户今日已群发（09:30）：下拉分类计数不变，弹窗内接收人黄标「⚠︎今日已发」。对应 PRD 附录 D D3-03。',
+    'call-fail': '点击画像卡「电话」按钮 → 外呼接口报错。对应 PRD 附录 D D5-03。',
+    error: '主接口 HTTP 500：加载失败 + 重试按钮。对应 PRD 附录 D D2-01/D2-02。',
+    '403': '业务码 1003：无权限视图 + 重试按钮。对应 PRD 附录 D D1-03。',
+    empty: '客户列表为空：「暂无客户数据」。对应 PRD 附录 D D2-03。',
+  }
+
+  function initPage() {
+    api.getPageData()
+      .then(function (res) {
+        state.pageData = res.result
+        state.clients = transformPageData(res.result)
+        // 空数据（源码：Result info「暂无客户数据」，无重试按钮）
+        if (state.clients.length === 0) {
+          showStateView({ nodata: true, title: '暂无客户数据', retry: false })
+          return
+        }
+        $('skeletonView').style.display = 'none'
+        $('mainView').style.display = 'flex'
+        // 数据加载后自动选中第一个客户（useEffect）
+        state.currentUuid = state.clients[0].uuid
+        renderAll()
+        loadClientData(currentClient())
+      })
+      .catch(function (err) {
+        if (err && err.code === 1003) {
+          showStateView({
+            icon: '🔒',
+            title: '无权限访问',
+            desc: err.message,
+            code: '业务码 1003：无权限操作该客户数据',
+            retry: true,
+          })
+        } else {
+          showStateView({
+            icon: '⚠️',
+            title: '页面加载失败',
+            desc: (err && err.message) || '请稍后重试',
+            retry: true,
+          })
+        }
+      })
+  }
+
+  $('stateRetryBtn').addEventListener('click', function () {
+    location.reload()
+  })
+  initPage()
+})()
+</script>
+</body>
+</html>

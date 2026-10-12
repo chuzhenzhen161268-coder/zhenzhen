@@ -1,0 +1,102 @@
+/**
+ * design-tokens.css — 设计令牌
+ * 提取自原项目 src/features/ai-service-list 组件内联样式与 src/styles/index.css 主题令牌
+ * （Tailwind arbitrary values → CSS 变量）
+ */
+
+:root {
+  /* ===== 品牌色（提取自组件硬编码值） ===== */
+  --color-primary: #2b73ff;          /* 主蓝：激活Tab/选中卡片/主按钮/电话按钮/链接 */
+  --color-primary-hover: #1f5fe0;
+  --color-primary-light: #eaf1ff;    /* 浅蓝：场景标题标签底/边框按钮底色 */
+  --color-primary-border: #b8d0ff;   /* 浅蓝边框：群发入口按钮边框 */
+
+  /* ===== 语义色 ===== */
+  --color-profit: #f93838;           /* 盈利红（正收益、已盈利信号、positive事件） */
+  --color-loss: #12b76a;             /* 亏损绿（负收益、未止损信号、negative事件） */
+  --color-warning-bg: #fff8e1;       /* 警示底（跨分类警示条/今日已发标记） */
+  --color-warning-border: #ffe08a;
+  --color-warning-text: #b45309;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-danger-text: #dc2626;      /* 话术风险警示/逾期红字 */
+
+  /* ===== 中性色 ===== */
+  --color-text-primary: #101828;     /* 主文字 */
+  --color-text-secondary: #667085;   /* 次要文字（代码/描述） */
+  --color-text-tertiary: #8d96a3;    /* 辅助文字 */
+  --color-text-disabled: #c0c6d0;
+  --color-border: #e4e7ec;
+  --color-border-light: #f0f2f5;
+  --color-bg-page: #f5f7fa;          /* 页面底色 */
+  --color-bg-block: #f5f6f9;         /* 数据块底色/非激活Tab底 */
+  --color-bg-card: #ffffff;
+  --color-bg-hover: #f8faff;
+  --color-mask: rgba(16, 24, 40, 0.5);
+
+  /* ===== 服务参考区（原项目 src/styles/index.css --service-* 令牌） ===== */
+  --service-gradient: linear-gradient(90deg, #f3f5ff 0%, #fff9ff 50%, #f6fbff 100%); /* ai-service-gradient：整体服务手风琴/产品卡渐变背景 */
+
+  /* ===== 字体 ===== */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --font-family-num: 'DIN Alternate', 'Bahnschrift', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; /* 原项目 font-gj 数字字体降级 */
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;              /* 姓名/统计数字 */
+  --font-size-xl: 20px;              /* 标的名称/数据网格值 */
+  --font-size-xxl: 24px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ===== 布局尺寸（与源码一致） ===== */
+  --size-topbar-height: 61px;        /* TopBar 固定高度 */
+  --size-panel-width: 300px;         /* 客户列表面板宽度 */
+  --size-panel-width-md: 240px;      /* ≤980px 断点 */
+  --size-panel-collapsed: 72px;      /* 折叠态宽度 */
+  --size-footer-height: 60px;        /* 服务底栏高度 */
+  --size-callbar-height: 36px;       /* 通话状态条高度 */
+  --size-avatar-sm: 42px;            /* 画像卡头像 */
+  --size-avatar-xs: 48px;            /* 折叠卡片头像块 */
+  --size-btn-call: 32px;             /* 电话按钮 */
+  --size-tab-height: 32px;           /* 筛选Tab药丸高度 */
+  --size-scrollbar-thumb: 4px;       /* 自定义滚动指示器宽度 */
+  --size-modal-broadcast: 640px;     /* 群发弹窗宽度 */
+  --size-modal-concepts: 560px;      /* 热门概念弹窗宽度 */
+  --size-popover-event: 280px;       /* 事件 Popover 宽度 */
+
+  /* ===== 圆角 ===== */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-pill: 999px;
+
+  /* ===== 间距（8px 栅格） ===== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* ===== 阴影 ===== */
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-card-hover: 0 4px 12px rgba(16, 24, 40, 0.1);
+  --shadow-modal: 0 8px 32px rgba(16, 24, 40, 0.16);
+
+  /* ===== 动效 ===== */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+
+  /* ===== 响应式断点（与源码一致） ===== */
+  --breakpoint-md: 980px;            /* 列表 240px / 数据网格 3列 */
+  --breakpoint-sm: 760px;            /* 数据网格 2列 */
+}

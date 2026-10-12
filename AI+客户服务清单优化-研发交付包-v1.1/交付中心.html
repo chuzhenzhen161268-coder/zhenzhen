@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI+客户服务清单 · V1.1 研发交付包</title>
+<style>
+  :root { --blue:#2b73ff; --ink:#172033; --muted:#64748b; --line:#e5eaf2; --bg:#f5f7fb; --warn:#b45309; --warn-bg:#fff8e8; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+  .hero { background:linear-gradient(135deg,#173d88,#2b73ff); color:#fff; padding:48px max(6vw,28px) 42px; }
+  .hero-inner,.wrap { max-width:1160px; margin:0 auto; } h1 { margin:0 0 8px; font-size:30px; } .sub { opacity:.86; }
+  .meta { display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }.chip { padding:3px 10px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25); border-radius:99px; font-size:13px; }
+  .wrap { padding:30px max(6vw,28px) 60px; }.notice { border:1px solid #f2cf80; border-radius:10px; background:var(--warn-bg); padding:15px 18px; color:#7c4a03; }.notice b { color:var(--warn); }
+  h2 { margin:34px 0 14px; font-size:20px; }.grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }.card { display:flex; flex-direction:column; gap:12px; min-height:184px; padding:20px; border:1px solid var(--line); border-radius:12px; background:#fff; }.card h3 { margin:0; font-size:17px; }.card p { margin:0; color:var(--muted); font-size:14px; }.actions { display:flex; gap:8px; margin-top:auto; flex-wrap:wrap; }.btn { display:inline-block; padding:7px 11px; border:1px solid #cbd7ea; border-radius:7px; text-decoration:none; color:#285cb8; font-size:13px; }.btn.primary { background:var(--blue); border-color:var(--blue); color:#fff; }.source { color:#7b8798; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; word-break:break-all; }
+  .steps { margin:0; padding-left:22px; }.steps li { margin:8px 0; }.footer { margin-top:40px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  @media (max-width:800px){.grid{grid-template-columns:1fr}.hero{padding-top:32px}.wrap{padding-top:22px}}
+</style>
+</head>
+<body>
+  <header class="hero"><div class="hero-inner">
+    <h1>AI+客户服务清单 · V1.1 研发交付包</h1>
+    <div class="sub">研发评审与开发交接的统一入口</div>
+    <div class="meta"><span class="chip">PC Web</span><span class="chip">版本 v1.1</span><span class="chip">作者：褚珍珍</span><span class="chip">状态：可交付</span></div>
+  </div></header>
+  <main class="wrap">
+    <div class="notice"><b>上线前依赖：</b>群发服务须能按“AI+选好股服务清单”场景返回逐客户实际发送成功名单；若无法提供，不启用成功即场景内锁定。</div>
+
+    <h2>推荐阅读顺序</h2>
+    <ol class="steps"><li>先阅读研发交付 PRD，确认规则、异常和验收口径。</li><li>再打开可点击原型，核对页面位置和交互。</li><li>需要追溯范围与基线时，查阅 V1.1 需求规格和 V1.0 基线 PRD。</li></ol>
+
+    <h2>需求定义</h2>
+    <section class="grid">
+      <article class="card"><h3>V1.1 需求规格</h3><p>范围、产品决策、依赖与验收基线。用于需求评审与变更追溯。</p><div class="source">docs/specs/2026-09-22-ai-service-list-v1.1-spec.md</div><div class="actions"><a class="btn primary" href="文档/需求规格-v1.1.html">阅读版</a><a class="btn" href="docs/specs/2026-09-22-ai-service-list-v1.1-spec.md">原始 Markdown</a></div></article>
+      <article class="card"><h3>V1.0 上线基线</h3><p>从既有代码逆向还原的基线材料。用于确认本期未修改部分。</p><div class="source">docs/prd-基线-AI+客户服务清单-V1.0.md</div><div class="actions"><a class="btn primary" href="文档/V1.0基线PRD.html">阅读版</a><a class="btn" href="docs/prd-基线-AI+客户服务清单-V1.0.md">原始 Markdown</a></div></article>
+    </section>
+
+    <h2>原型评审</h2>
+    <section class="grid">
+      <article class="card"><h3>可点击原型</h3><p>包含排序、企微群发筛选与场景内防重、客户级实时指标、标的收展与话术展示。</p><div class="source">pages/ai-service-list.html</div><div class="actions"><a class="btn primary" href="pages/ai-service-list.html">打开原型</a></div></article>
+    </section>
+
+    <h2>研发交付</h2>
+    <section class="grid">
+      <article class="card"><h3>V1.1 研发交付 PRD</h3><p>研发实施主文件：原子规则、字段校验、异常场景、状态枚举与验收标准。</p><div class="source">dev-prd/AI+客户服务清单-PRD-v1.1.md</div><div class="actions"><a class="btn primary" href="文档/研发交付PRD-v1.1.html">阅读版</a><a class="btn" href="dev-prd/AI+客户服务清单-PRD-v1.1.md">原始 Markdown</a></div></article>
+    </section>
+    <div class="footer">本交付包可整体移动后离线打开。原型演示数据仅保存在浏览器本地，不连接生产系统。</div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V1.0 基线 PRD</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:15px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.bar{position:sticky;top:0;background:#fff;border-bottom:1px solid #e4e9f2;padding:14px 6%;display:flex;justify-content:space-between;align-items:center;z-index:1}.bar a{color:#2b73ff;text-decoration:none}.wrap{max-width:1120px;margin:0 auto;padding:30px 6% 60px;background:#fff;min-height:100vh}h1{font-size:28px;margin:0 0 24px}h2{font-size:22px;margin:36px 0 16px;padding-bottom:8px;border-bottom:1px solid #e8edf5}h3{font-size:18px;margin:28px 0 12px}h4{font-size:16px;margin:22px 0 8px}p{margin:10px 0}table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:14px}th,td{border:1px solid #e2e8f0;padding:9px 11px;text-align:left;vertical-align:top}th{background:#f6f8fc;font-weight:600}ul,ol{padding-left:24px}li{margin:5px 0}code{background:#f1f4f8;padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:.9em}pre{background:#172033;color:#eff6ff;padding:16px;border-radius:8px;overflow:auto}pre code{background:none;padding:0}blockquote{margin:14px 0;padding:10px 14px;border-left:3px solid #2b73ff;background:#f6f9ff;color:#596579}hr{border:0;border-top:1px solid #e8edf5;margin:24px 0}</style><body><nav class="bar"><a href="../交付中心.html">← 返回交付中心</a><a href="../docs/prd-基线-AI+客户服务清单-V1.0.md">查看原始 Markdown</a></nav><main class="wrap"><h1>产品需求文档：AI+客户服务清单（逆向还原） V1.0</h1>
+<table><tr><th>&lt;br /&gt;</th><th>&lt;br /&gt;</th></tr><tr><td><strong>版本</strong></td><td>V1.0（存量系统逆向还原基线）</td></tr><tr><td><strong>日期</strong></td><td>2026-09-18</td></tr><tr><td><strong>作者</strong></td><td>产品逆向分析（基于源码 <code>src/features/ai-service-list</code>）</td></tr><tr><td><strong>状态</strong></td><td>已定稿（逆向基线，可供开发/测试评审）</td></tr><tr><td><strong>任务类型</strong></td><td>产品功能开发 / 交互逻辑（逆向需求还原）</td></tr></table>
+<p>***</p>
+<h2>文档说明</h2>
+<p>本文档为 <strong>存量系统逆向产品分析文档</strong>，非前瞻性需求文档。全部功能描述均由代码仓库 <code>ismp-frontend-pc-customer-info</code> 中 <code>src/features/ai-service-list</code> 模块的<strong>现有源码逆向还原</strong>，包括前端页面代码、接口请求代码（<code>api.ts</code> / <code>apiTypes.ts</code>）、数据转换逻辑（<code>transform.ts</code>）、状态管理（<code>store.ts</code>）、Mock 数据（<code>mock.ts</code> / <code>mock/index.ts</code>）与横切服务（<code>src/services/call</code> 电话外呼、<code>src/services/request.ts</code> 请求层、<code>src/hooks/useShortLinks.ts</code> 短链服务）。</p>
+<p>文档约定：</p>
+<ul><li>每个功能点携带唯一编号 <strong>REQ-xxx</strong>，与 <code>demo/</code> 页面及原代码文件的映射关系见 <code>traceability.md</code>；</li><li>标注 ⏳ 的项目为待补充内容（代码信息不足，需补充后端/数据库源码确认）；</li><li>标注 <strong>【未启用】</strong> 的能力表示代码存在但无任何运行时调用路径（灰度/预留能力）；</li><li>标注 <strong>【信息不足，需要补充源码确认】</strong> 的内容表示前端仓库无法考证，禁止凭空补全；</li><li>本仓库为纯前端仓库，<strong>后端接口逻辑与数据库表结构不在本仓库内</strong>，相关章节基于接口出入参与错误码反推，均标注 ⏳。</li></ul>
+<p>后续版本节点：</p>
+<ul><li>v1.1+：补充后端源码 / 数据库 DDL 后的细化版本</li><li>v2.0：多方评审后的定稿版本（交付开发用）</li></ul>
+<p>***</p>
+<h2>一、核心术语速查表</h2>
+<table><tr><th>缩写 / 术语</th><th>英文全称 / 代码标识</th><th>中文含义</th><th>说明</th></tr><tr><td>AI+投顾</td><td>—</td><td>AI+投资顾问服务</td><td>国金证券面向客户的产品服务体系，下辖 AI选好股、AI股票解套、AI投ETF 等产品。本页面服务的客户均为 AI+投顾签约/触达客群</td></tr><tr><td>服务清单</td><td>Service List</td><td>每日客户服务作业清单</td><td>后端按 <code>taskId</code> 生成的当日客户服务任务集合，每条含客户画像、信号、话术</td></tr><tr><td>任务码</td><td><code>taskId</code></td><td>服务清单任务唯一标识</td><td>页面 URL 入参 <code>?taskId=xxx</code>，由上游系统（外呼任务系统）生成并跳转带入</td></tr><tr><td>信号闭环类型</td><td><code>signalType</code></td><td>客户持仓信号分类</td><td>枚举：<code>loss_unstopped</code>（亏损未止损）/ <code>loss_stopped</code>（亏损已止损）/ <code>profit_done</code>（盈利已了结）/ <code>unsigned</code>（未签约AI+）/ <code>hold</code>（持有）/ <code>recommend</code>（推荐）。前四类参与页面核心分类逻辑</td></tr><tr><td>场景编码</td><td><code>sceneCode</code></td><td>AI 细分服务场景编码</td><td>枚举 21 个：G1-01~G1-10（亏损未止损族）、G2-01~G2-04（亏损已止损族）、G3-01~G3-06（盈利了结族）、G4-01~G4-03（未签约族），决定信号卡的标题/说明/关键字段布局</td></tr><tr><td>跟投/跟单</td><td>Follow</td><td>客户跟随 AI 信号买入标的</td><td>信号卡展示的持仓标的为客户跟随 AI 信号形成的持仓</td></tr><tr><td>止损/止盈</td><td>Stop Loss / Take Profit</td><td>风控平仓价格</td><td>关键数据字段：<code>stopLossPrice</code>、<code>takeProfitPrice</code>、<code>estimatedStopLossPct</code>（预估止损幅度）</td></tr><tr><td>企微群发</td><td>WeChat Work Mass Send</td><td>企业微信群发助手</td><td>通过 ISMP 公共网关两步接口（客户过滤→消息发送）向客户企微发送话术</td></tr><tr><td>+0 外显</td><td>Plus-0 Dialing</td><td>拨号前自动加 0</td><td>页面开关。开启后外呼时在被叫号码前拼 <code>0</code>（<code>isChecked=true</code>），按客户独立记忆</td></tr><tr><td>快照</td><td>Snapshot</td><td>服务状态持久化</td><td><code>POST /wb/support/ai-result/update</code>，将 <code>serveStatus</code>（服务状态）、<code>wxBroadcastStatus</code>（群发状态）、话术修改等写回后端</td></tr><tr><td>恒生呼叫中心</td><td>HS Call Center</td><td>外呼电话服务提供方</td><td><code>src/services/call</code> 模块对接的第三方外呼系统（<code>virtual/makeCall</code> 拨打 + SSE 推送通话状态）</td></tr><tr><td>风险等级</td><td>Risk Level <code>C1~C5</code></td><td>客户风险承受能力等级</td><td>C1 最低 ~ C5 最高，另有&quot;专业投资者&quot;。话术适用性校验依据：<code>SCRIPT_MIN_RISK = 'C3'</code></td></tr><tr><td>服务状态</td><td><code>serveStatus</code></td><td>客户当日服务完成标记</td><td><code>0</code>=待服务，<code>1</code>=已完成。已完成客户卡片置灰置底，右侧面板隐藏服务操作</td></tr><tr><td>群发状态</td><td><code>wxBroadcastStatus</code></td><td>客户当日群发标记</td><td><code>0</code>=未发送，<code>1</code>=已发送；配合 <code>wxBroadcastTime</code> 判定&quot;今日已发&quot;</td></tr><tr><td>个股/ETF/板块诊断</td><td>Diagnosis</td><td>诊断工具链接</td><td>信号携带的 <code>diagnosisUrls</code>（<code>sector</code> 板块 / <code>underlying</code> 个股或 ETF），跳转诊断页或复制短链</td></tr><tr><td>埋点</td><td>Analytics</td><td>用户行为数据采集</td><td><code>@gjzq/sdk</code> 的 <code>trackEvent</code>，<code>page_name='ai_service_list'</code></td></tr><tr><td>空态</td><td>Empty State</td><td>数据为空展示</td><td>代码存在 <code>EmptyState</code> 组件（三种空态），<strong>当前未被任何页面引用【未启用】</strong></td></tr></table>
+<p>***</p>
+<h2>二、任务元信息</h2>
+<table><tr><th>项</th><th>值</th></tr><tr><td>项目名称</td><td>AI+客户服务清单（ai-service-list）页面逆向产品分析</td></tr><tr><td>需求文档版本</td><td>V1.0（存量功能逆向基线）</td></tr><tr><td>任务类型</td><td>逆向产品分析（前端源码 → 需求还原），覆盖产品功能开发 / 交互逻辑</td></tr><tr><td>交付输出格式</td><td>Markdown / Mermaid / HTML Demo（原生 HTML+CSS+JS）</td></tr><tr><td>输出粒度</td><td>原子级细节还原</td></tr><tr><td>适用终端</td><td>PC Web（现代浏览器，无移动端适配）</td></tr><tr><td>设计基准分辨率</td><td>≥1280px 宽（代码含 980px / 760px 两档响应式降级断点）</td></tr><tr><td>预期交付物数量</td><td>PRD 1 份 + HTML Demo 1 套（导航页 + 主工作台页 + 状态页 + mock 数据 + 模拟接口层）+ 三方映射表 1 份</td></tr></table>
+<p>***</p>
+<h2>三、业务背景与核心目标</h2>
+<h3>3.1 业务背景</h3>
+<ul><li><strong>当前业务现状</strong>：国金证券客户经理/投顾需要对 AI+投顾签约客户进行每日服务触达。服务依赖三类信息：客户持仓盈亏信号（亏损未止损/亏损已止损/盈利了结/未签约）、AI 生成的个性化服务话术、待处理任务（如必做任务、紧急任务）。历史上上述信息分散在多个系统，客户经理需人工筛选客户、查询行情、组织话术、逐个外呼或群发，再手工登记服务日志。</li><li><strong>待解决核心痛点</strong>（由已实现功能反推）：</li></ul>
+<p>  1. 客户优先级不清晰——哪些客户今天必须先服务缺乏排序依据；</p>
+<p>  2. 话术组织成本高——需针对每类盈亏场景手工撰写合规话术；</p>
+<p>  3. 触达效率低——逐个外呼、逐个发企微，无法按分类批量触达；</p>
+<p>  4. 服务过程无沉淀——服务是否完成、话术是否发送缺乏系统记录。</p>
+<ul><li><strong>本次需求发起原因</strong>：本页面为已上线存量功能。本文档因<strong>逆向还原现有系统真实能力</strong>而产出，作为后续开发、测试评审与需求迭代的基线。</li></ul>
+<h3>3.2 可量化核心目标</h3>
+<blockquote>⏳ 原始立项 KPI 未在前端代码中体现，以下为代码中<strong>可观测的度量行为</strong>，原始量化目标【信息不足，需要补充源码确认（PRD立项文档）】。</blockquote>
+<table><tr><th>类别</th><th>指标（代码可观测）</th></tr><tr><td>业务目标</td><td>顶栏实时统计&quot;待服务 N / 已完成 N&quot;（<code>TopBar</code>）；完成服务后自动跳转下一个待服务客户，驱动当日清单清零</td></tr><tr><td>产品/体验目标</td><td>页面首屏骨架屏加载（<code>isLoading</code>）；任务数据 staleTime 30s 自动刷新；行情 staleTime 10s 自动刷新</td></tr><tr><td>技术/设计/性能目标</td><td>请求层自动去重（<code>pendingMap</code>）；React Query 缓存失效后精准跳转；短链模块级缓存避免重复换取</td></tr><tr><td>合规目标</td><td>话术风险等级校验（低于 C3 弹红色警示）；企微群发前客户过滤（当日已发自动排除）；群发跨分类禁止</td></tr><tr><td>风险容忍度</td><td>快照保存失败仅 toast&quot;保存失败，请重试&quot;不阻断主流程；短链生成失败回退原长链</td></tr></table>
+<h3>3.3 项目目标陈述</h3>
+<blockquote>我们为【客户经理/投顾】做【AI+客户服务清单 PC 工作台】，解决【当日服务客户筛选排序难、话术组织成本高、触达与记录割裂】的痛点，预期【通过 21 类场景识别 + 个性化话术 + 电话外呼 + 企微群发 + 服务快照形成&quot;识别-触达-记录&quot;闭环】，本页面已上线运行（本文档为逆向基线）。</blockquote>
+<h3>3.4 非目标（防过度设计）</h3>
+<ul><li>本次不实现功能：本文档不设计任何代码中不存在的新功能；</li><li>本次不拓展范围：不含 KYC 标签维护（属 <code>kyc-tag</code> 模块）、投顾场景清单（属 <code>ai-advisor-service-list</code> 模块）、投后看板（属 <code>post-service</code> 模块）；</li><li>本次不修改内容：不改动现有交互与接口契约；</li><li>其他禁止项：后端接口内部逻辑、数据库表结构不在本仓库范围，<strong>禁止推测补全</strong>，统一标注 ⏳。</li></ul>
+<p>***</p>
+<h2>四、目标用户与使用场景</h2>
+<h3>4.1 涉及角色矩阵</h3>
+<table><tr><th>角色</th><th>在功能中的定位</th><th>主要交互</th></tr><tr><td>客户经理 / 投顾（员工）</td><td>主使用者</td><td>浏览清单、筛选客户、编辑话术、外呼、群发、勾选任务、完成服务、跳转客户详情/诊断页</td></tr><tr><td>客户（投资者）</td><td>被服务者（间接）</td><td>接收电话外呼、接收企微群发话术；不直接操作本页面</td></tr><tr><td>上游任务系统</td><td>任务发起方（外部系统）</td><td>生成 <code>taskId</code> 并以 URL 参数跳转进入本页面 ⏳（生成机制在后端，需补充源码确认）</td></tr><tr><td>AI 清单生成服务（后端）</td><td>数据供给方</td><td>按任务维度生成客户清单、信号、话术 ⏳（生成逻辑需补充源码确认）</td></tr></table>
+<p>###</p>
+<h3>4.2 核心使用场景</h3>
+<table><tr><th>场景 ID</th><th>优先级</th><th>使用时机</th><th>完整操作路径</th><th>用户预期结果</th></tr><tr><td>S01</td><td>P0</td><td>每日工作开始</td><td>从上游系统携带 <code>taskId</code> 跳转进入 <code>/ai-service-list?taskId=xxx</code> → 页面加载骨架屏 → 展示客户清单 → 顶栏查看&quot;待服务/已完成&quot;统计与生成时间</td><td>一屏获取当日服务客户全景，系统自动选中第一位客户</td></tr><tr><td>S02</td><td>P0</td><td>单客户深度服务</td><td>点击客户卡片 → 右侧查看画像/资产/信号卡 → 查看并按需编辑个性化话术（失焦保存）→ 点击电话按钮外呼（可选 +0）→ 通话结束确认 → 点击&quot;完成服务&quot;→ 二次确认 → 提交服务日志（+任务小结+快照）→ 自动跳转下一个待服务客户</td><td>单客户服务闭环：看数据→改话术→触达→记录</td></tr><tr><td>S03</td><td>P0</td><td>分类批量触达</td><td>点击&quot;企微群发通用话术&quot;下拉 → 选择分类（亏损未止损/亏损已止损/盈利已了结/未签约）→ 进入选择模式勾选客户 → 下一步 → 弹窗内编辑话术/移除接收人 → 发送 → 两步接口（过滤+发送）→ 聚合结果提示</td><td>一键向同特征客群批量发送对应话术，当日已发客户自动排除</td></tr><tr><td>S04</td><td>P1</td><td>待办任务处理</td><td>点击画像卡底部&quot;待处理任务 N 条&quot;→ 抽屉展开任务列表 → 查看任务标签（紧急/必做）与截止日期（逾期红字）→ 勾选已完成任务 → 完成&quot;完成服务&quot;时随服务日志一并提交</td><td>任务完结随服务动作一次提交，无需重复操作</td></tr><tr><td>S05</td><td>P1</td><td>跨系统信息查询</td><td>点击画像卡&quot;↗客户详情&quot;（新开客户视图系统）或诊断入口&quot;板块诊断结果/个股诊断结果&quot;（新开诊断页）/ 复制诊断短链</td><td>在新标签页获取客户全貌或标的诊断结果</td></tr></table>
+<h3>4.3 反场景（不应被使用）</h3>
+<ul><li>本页面不用于证券交易下单（页面内无任何交易能力）；</li><li>不用于历史服务记录回溯——清单仅展示当日 <code>taskId</code> 维度数据，无历史查询入口；</li><li>不用于 KYC 标签维护（该能力在 <code>/kyc-tag</code> 模块）；</li><li>不用于向&quot;亏损未止损&quot;以外的混合特征客户一次性群发（跨分类群发被系统显式禁止并提示&quot;请分开群发&quot;）；</li><li>已完成（<code>serveStatus=1</code>）客户不可重复完成服务、不显示服务底栏（按钮区域整体隐藏）。</li></ul>
+<h3>4.4 客群分层与差异化</h3>
+<table><tr><th>客群（信号分类）</th><th>入口</th><th>功能差异</th><th>数据展示差异</th><th>服务模式</th></tr><tr><td>亏损未止损（<code>loss_unstopped</code>）</td><td>列表Tab&quot;亏损&quot;</td><td>群发分类①；排序优先级最高</td><td>绿色信号标签；G1-01~G1-10 场景（含止损价/预估止损幅度等风控字段）</td><td>优先电话触达</td></tr><tr><td>亏损已止损（<code>loss_stopped</code>）</td><td>列表Tab&quot;亏损&quot;</td><td>群发分类②</td><td>绿色信号标签；G2-01~G2-04 场景（含卖出价/了结盈亏等复盘字段）</td><td>电话/群发</td></tr><tr><td>盈利已了结（<code>profit_done</code>）</td><td>列表Tab&quot;盈利&quot;</td><td>群发分类③</td><td>红色信号标签；G3-01~G3-06 场景（含了结盈亏率/总收益率等战绩字段）</td><td>群发为主</td></tr><tr><td>未签约（<code>unsigned</code>）</td><td>列表Tab&quot;未签约&quot;</td><td>群发分类④；<strong>专属</strong>展示&quot;AI+投顾服务介绍&quot;参考模块（<code>ServiceRefSection</code>）</td><td>G4-01~G4-03 场景；展示 AI+投顾产品介绍（AI选好股/AI股票解套/AI投ETF）</td><td>转化推介</td></tr><tr><td>高资产客户（高客 N 星）</td><td>无独立入口</td><td>无功能差异</td><td>画像展示客户等级（如&quot;高客五星&quot;）</td><td>同上，等级仅展示</td></tr><tr><td>已完成客户</td><td>列表底部</td><td>卡片置灰（透明度 0.45）+ 绿色✓；服务底栏隐藏</td><td>服务时间展示</td><td>不可再操作</td></tr></table>
+<p>***</p>
+<h2>五、功能模块</h2>
+<h3>5.1 整体结构框架</h3>
+<pre><code>AI+客户服务清单页面（/ai-service-list?taskId=xxx）
+├── M01 页面初始化与数据加载
+│   ├── 任务参数解析（URL taskId）
+│   ├── 清单数据加载（page-data）+ 自动选中首个客户
+│   ├── 全屏状态（骨架屏 / 错误重试 / 空数据）
+│   └── 任务数据懒加载（选中客户时按需拉取）
+├── M02 顶栏（TopBar）
+│   ├── 任务名称与业务线标识
+│   ├── 待服务/已完成统计
+│   ├── 清单生成时间
+│   └── 当前用户头像
+├── M03 客户列表（ClientListPanel + ClientCard）
+│   ├── 分类筛选Tab（全部/亏损/盈利/未签约）
+│   ├── 排序（已完成置底 &gt; 亏损 &gt; 盈利 &gt; 未签约 &gt; 紧急度）
+│   ├── 客户卡片（信号聚合标签/完成态/任务红点/今日已群发）
+│   ├── 面板折叠（300px ↔ 72px）
+│   └── 自定义滚动指示器
+├── M04 客户画像（RightPanel + PortraitCard）
+│   ├── 基本信息（姓名/账号/性别/等级/风险等级）
+│   ├── 资产指标（总资产/证券市值/本次服务计数）
+│   ├── 联系方式（电话脱敏 + +0外显开关）
+│   ├── 客户详情跳转（跨系统）
+│   └── 待处理任务入口（抽屉）
+├── M05 电话外呼（services/call + CallStatusBar）
+│   ├── 联系电话获取（selectContactsList）
+│   ├── 外呼发起（恒生 makeCall / 开发环境模拟）
+│   ├── 通话状态条（拨出/振铃/通话中+计时/挂断）
+│   └── 通话结果弹窗
+├── M06 待处理任务（TaskDrawer + TaskRow）
+│   ├── 任务列表（紧急/必做标签、截止日、逾期标识）
+│   └── 任务勾选（随服务完成提交）
+├── M07 信号与关联标的（SignalSection + SignalCard + KeyDataGrid + EventsSection）
+│   ├── 信号卡头部（标的/类型/场景标签 + 一键复制）
+│   ├── 场景化关键数据网格（21 场景字段映射）
+│   ├── 热门概念（前3 + 弹窗全量）
+│   └── 关联异动/热点事件（Popover）
+├── M08 个性化话术（ScriptSection）
+│   ├── 话术展示/展开收起
+│   ├── contentEditable 编辑 + 失焦保存
+│   └── 风险等级适用性校验（C3 基准）
+├── M09 企微群发（BroadcastToolbar + BroadcastDropdown + BroadcastModal + 选择模式）
+│   ├── 分类群发入口（四分类 + 人数统计）
+│   ├── 跨分类选择模式（勾选/取消/下一步）
+│   ├── 群发弹窗（接收人管理/话术编辑/混合警示）
+│   └── 两步发送（客户过滤 + 消息发送）+ 乐观更新
+├── M10 服务完成与快照（ServiceFooter + useCompleteService + useSaveSnapshot）
+│   ├── 服务内容备注（选填）
+│   ├── 完成服务（二次确认 + 三接口级联）
+│   └── 数据快照持久化（状态/话术/群发标记）
+├── M11 服务介绍参考（ServiceRefSection，未签约客户专属）【P1】
+└── M12 埋点（analytics.ts，16 个埋点函数）【P1】</code></pre>
+<h3>5.2 一级功能模块列表</h3>
+<table><tr><th>模块 ID</th><th>模块名称</th><th>一句话描述</th><th>优先级</th><th>类型</th></tr><tr><td>M01</td><td>页面初始化与数据加载</td><td>解析 taskId、拉取清单、管理全屏加载/错误/空态</td><td>P0</td><td>存量已实现</td></tr><tr><td>M02</td><td>顶栏</td><td>任务标识、服务统计、生成时间、用户信息</td><td>P0</td><td>存量已实现</td></tr><tr><td>M03</td><td>客户列表</td><td>四分类筛选、智能排序、折叠、卡片聚合信息</td><td>P0</td><td>存量已实现</td></tr><tr><td>M04</td><td>客户画像</td><td>基本信息与资产指标展示、联系方式、任务入口</td><td>P0</td><td>存量已实现</td></tr><tr><td>M05</td><td>电话外呼</td><td>对接恒生呼叫中心的一键外呼与通话状态管理</td><td>P0</td><td>存量已实现</td></tr><tr><td>M06</td><td>待处理任务</td><td>任务列表展示与勾选，随服务完成提交</td><td>P0</td><td>存量已实现</td></tr><tr><td>M07</td><td>信号与关联标的</td><td>场景化信号卡、关键数据、概念、异动热点</td><td>P0</td><td>存量已实现</td></tr><tr><td>M08</td><td>个性化话术</td><td>话术展示/编辑/保存与风险校验</td><td>P0</td><td>存量已实现</td></tr><tr><td>M09</td><td>企微群发</td><td>四分类批量话术群发（两步接口）</td><td>P0</td><td>存量已实现</td></tr><tr><td>M10</td><td>服务完成与快照</td><td>完成服务三接口级联与状态持久化</td><td>P0</td><td>存量已实现</td></tr><tr><td>M11</td><td>服务介绍参考</td><td>未签约客户的 AI+投顾产品介绍参考</td><td>P1</td><td>存量已实现</td></tr><tr><td>M12</td><td>埋点</td><td>16 个用户行为埋点</td><td>P1</td><td>存量已实现</td></tr></table>
+<h3>5.3 模块依赖关系</h3>
+<ol><li><strong>M01 是全部模块的前置</strong>：page-data 加载成功后才渲染 M02~M11；加载失败进入全屏错误态，其余模块不渲染。</li><li><strong>M04 依赖 M01</strong>（画像来自 page-data）与外呼联系人接口（横切服务）；M05 依赖 M04（号码来自画像兜底 + contacts 接口优先）。</li><li><strong>M06 依赖 M01</strong>：任务数据按客户懒加载（<code>useClientTasks</code>，staleTime 30s），选中客户后写入 page-data 缓存（<code>setQueryData</code>）。</li><li><strong>M07 依赖 M01</strong>（securityList）与行情接口（横切：<code>useMarketData</code>，staleTime 10s 自动刷新，按 <code>securityCode+sceneCode</code> 拉取 fieldsMap）。</li><li><strong>M08 依赖 M07</strong>：话术来自 <code>ApiSecurity.sceneScript</code>，保存走 M10 的快照接口。</li><li><strong>M09 依赖 M01</strong>：群发分类按客户 <code>securities</code> 信号计算；分类话术来自 <code>defaultScripts</code>（按 <code>BroadcastCategory</code> 取用）。</li><li><strong>M10 依赖 M04/M06/M08/M09</strong>：完成服务时聚合勾选任务（M06）、服务内容备注、触发任务小结接口与快照接口；M09 群发成功后同样调用快照接口。</li><li><strong>M12 横切所有模块</strong>：页面浏览、客户选择、筛选、群发、任务勾选、完成服务、通话、诊断、复制、话术保存等动作均有埋点。</li></ol>
+<h3>5.4 验收标准</h3>
+<ol><li>访问 <code>/ai-service-list?taskId=xxx</code> 可完整加载页面；无 <code>taskId</code> 时页面数据加载失败进入错误态（代码未对缺失 taskId 做前置校验，依赖接口报错 ⏳）。</li><li>四个筛选 Tab 切换后列表内容与计数正确；已完成客户始终位于列表底部且置灰。</li><li>完成服务后：该客户置灰置底、顶栏统计数字变化、页面自动跳转至下一个未完成客户（若存在）。</li><li>群发流程中&quot;当日已发&quot;客户被自动排除；跨分类选择时发送按钮禁用并显示警示。</li><li>话术编辑后失焦自动保存（内容有变化才触发），刷新后从缓存恢复。</li><li>通话全过程状态条正确流转：拨出 → 振铃 → 通话中（计时）→ 结束弹窗 → 重置。</li></ol>
+<p>***</p>
+<h2>六、原子级功能详细需求（核心执行区）</h2>
+<blockquote>编号规则：功能编号 F01~F32，对应唯一需求编号 REQ-001~REQ-032。每条功能注明实现状态（已实现 / 未启用）。</blockquote>
+<h3>6.1 功能 F01：页面加载与全屏状态管理（REQ-001）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：以 <code>taskId</code> 为维度加载当日服务清单，并在数据未就绪/加载失败/无数据时提供明确的全屏反馈。</li><li><strong>功能描述</strong>：Given 用户从上游系统跳转至 <code>/ai-service-list?taskId=xxx</code>，When 页面挂载并调用 <code>GET /api/service/list?taskId=xxx</code>，Then ① 加载中显示骨架屏；② 失败显示 Result 错误组件与&quot;重试&quot;按钮（点击执行 <code>window.location.reload()</code> 整页刷新）；③ 成功但 <code>customers</code> 为空显示&quot;暂无客户数据&quot;。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：保证任务数据加载的确定性反馈，避免白屏。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：<code>taskId</code> 仅从 URL 查询参数读取（<code>useSearchParams</code>），页面内无输入 taskId 的入口；</p>
+<p>  - 规则 2：React Query 缓存键为 <code>['ai-service-list','page-data',taskId]</code>，<code>staleTime: Infinity</code>（会话内不重复拉取，仅快照/完成服务后定向失效）；</p>
+<p>  - 规则 3：加载成功且无选中客户时，自动选中排序后第一位客户（<code>setCurrentUuid(sorted[0].uuid)</code>）；</p>
+<p>  - 规则 4：任务数据懒加载——首次选中某客户时调用待处理任务接口，结果通过 <code>queryClient.setQueryData</code> 写回 page-data 缓存（避免重复请求）。</p>
+<ul><li><strong>依赖</strong>：<code>usePageData</code>、<code>useClientTasks</code>、ISMP 客户信息后端。</li><li><strong>交互描述</strong>：骨架屏为页面结构占位动画；错误态含图标、错误说明与重试按钮；空态为居中文案&quot;暂无客户数据&quot;。</li><li><strong>Figma url</strong>：⏳ 无（存量逆向）。</li><li><strong>异常处理</strong>：</li></ul>
+<p>  - 网络错误/HTTP 4xx 5xx：请求层统一 toast 提示（400/401/403/404/500/502/504 各有文案，401 清 token 跳 SSO），页面进入错误态；</p>
+<p>  - 业务码非 0：toast <code>message</code> 字段；客户列表异常码 2001（MongoDB 异常）等见附录 D。</p>
+<h3>6.2 功能 F02：顶栏信息与统计（REQ-002）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：固定展示任务标识、服务进度统计与清单生成时间。</li><li><strong>功能描述</strong>：Given 页面数据加载完成，When 用户查看页面顶部（61px 固定顶栏），Then 看到左侧 logo + 分隔线 + 业务线名称标题，右侧&quot;待服务 N / 已完成 N&quot;统计（18px 数字）、&quot;生成时间：M月D日 周X&quot;与用户头像。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：服务进度一屏可见，驱动当日清单清零。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：统计基于全部客户（不受筛选 Tab 影响）：<code>pending = serveStatus=0 数量</code>，<code>done = serveStatus=1 数量</code>；</p>
+<p>  - 规则 2：生成时间取 <code>createTime</code>（UTC 时间）+8 小时转换为北京时间，格式化为&quot;M月D日 周X&quot;（如&quot;9月18日 周五&quot;）；</p>
+<p>  - 规则 3：头像取登录用户信息，静态资源 <code>Frame23.png</code>。</p>
+<ul><li><strong>依赖</strong>：page-data（<code>businessLine</code>、<code>createTime</code>、<code>customers[].serveStatus</code>）、用户信息 hook。</li><li><strong>交互描述</strong>：顶栏无交互（纯展示），头像仅展示不点击。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：<code>createTime</code> 缺失时不渲染生成时间区域（条件渲染）；<code>businessLine</code> 为空时仅展示默认标题。</li></ul>
+<h3>6.3 功能 F03：客户列表分类筛选（REQ-003）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：按服务策略快速聚焦同特征客群。</li><li><strong>功能描述</strong>：Given 客户列表加载完成，When 用户点击&quot;全部 / 亏损 / 盈利 / 未签约&quot;任一 Tab，Then 列表立即切换为对应客户子集（不含已完成客户）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：与群发四分类对齐，服务于分类触达策略。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：Tab 与信号映射——&quot;亏损&quot;=<code>loss_unstopped</code> 或 <code>loss_stopped</code>；&quot;盈利&quot;=<code>profit_done</code>；&quot;未签约&quot;=<code>unsigned</code>；&quot;全部&quot;=全部；</p>
+<p>  - 规则 2：<strong>筛选恒排除已完成客户</strong>（<code>serveStatus=1</code>），即&quot;全部&quot;Tab 也不展示已完成客户；</p>
+<p>  - 规则 3：激活 Tab 样式为蓝底（#2b73ff）白字药丸（32px 高），非激活灰底；</p>
+<p>  - 规则 4：当前选中客户被筛除时，自动切换选中列表第一位客户（若无则清空选中）。</p>
+<ul><li><strong>依赖</strong>：Zustand <code>filterTab</code> 状态。</li><li><strong>交互描述</strong>：点击 Tab 即时切换（无请求）；某分类无客户时列表区显示&quot;📋 暂无该分类客户&quot;文案。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：空分类展示空态文案（注意：通用 <code>EmptyState</code> 组件存在但<strong>未启用</strong>，实际空态为内联文案）。</li></ul>
+<h3>6.4 功能 F04：客户列表排序（REQ-004）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：让最需要服务的客户排在最前。</li><li><strong>功能描述</strong>：Given 客户列表（含筛选），When 系统渲染列表，Then 按以下优先级排序：① 已完成客户置底；② 信号优先级：亏损（<code>loss_unstopped</code>/<code>loss_stopped</code>）&gt; 盈利（<code>profit_done</code>）&gt; 未签约（<code>unsigned</code>）&gt; 其他；③ 紧急度降序 = 待处理任务数 × 5 + 信号数。</li><li><strong>主要使用者</strong>：客户经理/投顾（无感知，系统自动）。</li><li><strong>核心价值</strong>：亏损客户（风险最高）始终优先展示。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：信号优先级仅取客户 securities 中出现的最高优先级信号类型判定；</p>
+<p>  - 规则 2：紧急度权重——1 条待处理任务 = 5 个信号；</p>
+<p>  - 规则 3：排序在客户端（<code>filterAndSortClients</code>）执行，不依赖后端顺序。</p>
+<ul><li><strong>依赖</strong>：<code>utils/clientSort.ts</code>、任务数据（懒加载后紧急度变化会重排）。</li><li><strong>交互描述</strong>：无显式交互，自动生效。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：无任务数据时紧急度仅按信号数计算（任务数按 0 处理）。</li></ul>
+<h3>6.5 功能 F05：客户卡片信息聚合（REQ-005）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：单卡片呈现客户核心服务要素。</li><li><strong>功能描述</strong>：Given 客户列表渲染，When 用户查看单个客户卡片，Then 看到：头像、姓名、聚合信号标签（&quot;N 亏损未止损&quot;等，按信号类型聚合计数，未止损绿/已止损灰/已盈利红/未签约灰）、已完成态（透明度 0.45 + 绿色✓ + 服务时间）、待处理任务红点（5px，选择模式或已完成时不显示）、今日已群发标记（&quot;✓ {时间} {类型}话术已群发&quot;或&quot;✓今日已群发&quot;）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：不点开客户即可判断服务优先级与触达历史。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：信号标签按 SignalType 聚合计数，展示顺序按固定枚举顺序；</p>
+<p>  - 规则 2：红点出现条件 = 存在未完成任务 且 非选择模式 且 未完成；</p>
+<p>  - 规则 3：群发标记判定 <code>isBroadcastToday(wxBroadcastTime)</code>——时间为&quot;MM-DD&quot;或&quot;YYYY-MM-DD...&quot;且等于今日即视为今日已发；</p>
+<p>  - 规则 4：选中卡片蓝框高亮；hover 浮起效果。</p>
+<ul><li><strong>依赖</strong>：page-data、任务数据、<code>utils/format.ts</code>。</li><li><strong>交互描述</strong>：点击卡片切换当前客户（同步埋点 <code>client_select</code>）。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：姓名/头像缺失时按空值兜底渲染；群发时间为空不显示标记。</li></ul>
+<h3>6.6 功能 F06：客户列表面板折叠（REQ-006）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：为右侧内容区释放宽度。</li><li><strong>功能描述</strong>：Given 列表面板展开（300px；≤980px 时 240px），When 用户点击面板标题右侧折叠按钮&quot;‹&quot;，Then 面板收窄至 72px，卡片变为 48×48 头像块；再次点击恢复。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：小屏/长内容场景的布局弹性。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：折叠状态下卡片仅显示头像与完成态标识，不显示文本信息；</p>
+<p>  - 规则 2：<strong>选择模式中触发折叠会同时退出选择模式并清空已选</strong>；</p>
+<p>  - 规则 3：折叠状态持久于 Zustand（会话级，不落 localStorage）。</p>
+<ul><li><strong>依赖</strong>：Zustand <code>collapsed</code>、<code>selectMode</code>。</li><li><strong>交互描述</strong>：折叠按钮位于&quot;客户列表&quot;标题（18px 粗体）右侧。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：无。</li></ul>
+<h3>6.7 功能 F07：列表自定义滚动指示器（REQ-007）【P1 已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：替代原生滚动条的自定义滚动反馈。</li><li><strong>功能描述</strong>：Given 客户列表内容溢出，When 用户滚动列表，Then 右侧显示 4px 宽半透明滚动指示器（位置/高度按滚动比例计算），停止滚动 500ms 后渐隐；内容不足一屏时不显示。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：视觉一致性。</li><li><strong>关键规则</strong>：指示器高度 = 容器高 × 可视高 / 内容高；window resize 时重算。</li><li><strong>依赖</strong>：<code>hooks/useSideScroll.ts</code>。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：<code>scrollHeight &lt;= clientHeight</code> 时隐藏。</li></ul>
+<h3>6.8 功能 F08：客户画像卡（REQ-008）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：展示客户静态画像与核心资产指标。</li><li><strong>功能描述</strong>：Given 已选中某客户，When 用户查看右侧面板顶部画像卡，Then 看到：42px 蓝底白字首字头像 + 姓名（18px）+ 资金账号 + &quot;↗客户详情&quot;链接 + 性别/客户等级（空显示&quot;无&quot;）/风险等级（C 级标签）三行信息 + 右侧三列指标（总资产（元）、证券市值（元），20px 数字字体）+ 本次服务信号计数（按信号类型聚合，未止损/已止损绿色、已盈利红色、未签约灰色，无信号显示蓝色&quot;—&quot;）+ 电话区 + 待处理任务行。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：通话前 3 秒建立客户认知。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：资产格式化 <code>formatAssetToWan</code>——≥10000 时转为&quot;万&quot;单位保留 2 位小数（如 1528640.50 → &quot;152.86 万&quot;）；</p>
+<p>  - 规则 2：风险等级解析 <code>parseRiskLevel</code>——后端形如&quot;C4 中高风险&quot;拆分为编码与名称；</p>
+<p>  - 规则 3：卡片高度——有任务 150px / 无任务 120px；任务抽屉展开时底部圆角变 0。</p>
+<ul><li><strong>依赖</strong>：page-data <code>customerPortraits</code>。</li><li><strong>交互描述</strong>：&quot;↗客户详情&quot;点击后先换取一次性 token 再新开窗口（见 F09）。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：<code>phoneNo</code> 为 null 时电话号码由联系人接口兜底（见 F11）；等级为空显示&quot;无&quot;；资产为空显示&quot;--&quot;。</li></ul>
+<h3>6.9 功能 F09：客户详情跨系统跳转（REQ-009）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：从清单直达客户全量视图。</li><li><strong>功能描述</strong>：Given 画像卡展示中，When 用户点击&quot;↗客户详情&quot;，Then 系统以当前 <code>ycas_token</code> 调用 <code>POST /ycas/getThirdPartyInstantToken/v2</code> 换取一次性 token，成功后 <code>window.open</code> 打开客户视图系统（携带 token 与 <code>from_page=ismp-frontend-pc-customer-info</code>），并触发埋点 <code>client_detail_open</code>。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：免二次登录的单点跳转。</li><li><strong>关键规则</strong>：token 换取失败时不跳转（请求层统一错误提示）。</li><li><strong>依赖</strong>：<code>src/utils/jump.ts</code>、ISMP 公共后端。</li><li><strong>交互描述</strong>：新标签页打开。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：换 token 失败 toast 错误；浏览器弹窗拦截场景 ⏳ 未在代码中特殊处理。</li></ul>
+<h3>6.10 功能 F10：+0 外显开关（REQ-010）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：满足特定线路外呼需加拨 0 的要求。</li><li><strong>功能描述</strong>：Given 选中客户的电话区，When 用户点击 15px 方框开关（title=&quot;拨打时自动在号码前加0&quot;），Then 该客户的外呼号码前缀标记切换（开→联系人 <code>isChecked=true</code>，号码前拼&quot;0&quot;），状态按客户独立记忆。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：合规外显线路控制。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：<code>plus0Map</code> 以客户 uuid 为 key 存储，互不影响；</p>
+<p>  - 规则 2：切换时若有通话进行中不生效于当前通话（构造联系人时读取当前值）。</p>
+<ul><li><strong>依赖</strong>：Zustand <code>plus0Map</code>。</li><li><strong>交互描述</strong>：方形复选开关，点击即切换。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：无。</li></ul>
+<h3>6.11 功能 F11：联系电话获取与脱敏展示（REQ-011）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：展示可外呼号码（脱敏）。</li><li><strong>功能描述</strong>：Given 选中客户，When 画像卡渲染，Then 优先调用 <code>POST /api/yjbadmin/work/calloutTask/selectContactsList</code>（入参 <code>account_id=资金账号</code>、<code>account_type='12'</code>）取 <code>type=1</code>（联系电话）的号码，接口无数据或失败时回退 page-data 画像的 <code>phoneNo</code>；展示为脱敏格式（16px 粗体）：&quot;前 3 位 + **** + 后 4 位&quot;（号码不足 7 位时原样展示——<code>maskPhone</code> 仅处理 ≥7 位号码）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：多来源号码容错 + 隐私保护。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：外呼实际使用号码与展示号码同源（contacts 优先，兜底画像）；</p>
+<p>  - 规则 2：联系人接口返回多条时取 <code>type=1</code> 第一条；返回结构含 <code>last_contact</code>（上次接通状态）字段，当前代码未消费 ⏳。</p>
+<ul><li><strong>依赖</strong>：外呼网关 selectContactsList。</li><li><strong>交互描述</strong>：号码旁为 32px 蓝底电话图标按钮（见 F12）。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：两来源均无号码时电话按钮禁用（灰色）；Mock 中&quot;武静&quot;客户 <code>phoneNo=null</code> 为该边界用例（由 contacts 接口兜底）。</li></ul>
+<h3>6.12 功能 F12：电话外呼发起（REQ-012）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：一键外呼客户。</li><li><strong>功能描述</strong>：Given 已获取客户号码（F11）且无通话进行中，When 用户点击电话按钮，Then ① 开发环境：前端定时器模拟状态机（拨出 1.5s → 振铃 1.5s → 通话中 8s → 结束）；② 生产环境：调用恒生外呼接口 <code>POST /api/yjbadmin/work/virtual/makeCall</code>（主叫=员工分机号，来自 <code>query/telNo</code> 初始化；被叫=客户号码，<code>isChecked=true</code> 时前缀加 0，<code>applicationName='PC'</code>），显示&quot;正在拨打电话&quot;loading，同时 Web Worker 建立 SSE 连接（<code>/sse/queryResult?uniqueId=xxx</code>）接收通话状态推送；埋点 <code>call_start</code>（含 <code>plus0_used</code>）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：PC 端免拨号触达。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：同一时间仅一路通话（通话中电话按钮禁用）；</p>
+<p>  - 规则 2：分机号在 <code>CallProvider</code> 挂载时初始化（<code>POST /api/yjbadmin/work/query/telNo</code>，Mock 返回 <code>extTelNo: 8001</code>），写入全局 <code>agentTelStore</code>；</p>
+<p>  - 规则 3：切换客户时通话状态重置（store <code>setCurrentUuid</code> 副作用）；</p>
+<p>  - 规则 4：SSE 断线支持 <code>Last-Event-ID</code> 续传重连。</p>
+<ul><li><strong>依赖</strong>：<code>src/services/call/CallProvider.tsx</code>、恒生呼叫中心、员工分机号接口。</li><li><strong>交互描述</strong>：点击后立即进入&quot;拨出&quot;状态（CallStatusBar 出现）。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：主叫号码不存在/被叫号码不存在/呼叫失败——分别 toast 对应错误文案；SSE 超时由后端 <code>EndReason=timeout</code> 结束 ⏳（超时时长后端控制，需补充源码确认）。</li><li><strong>补充</strong>：模块内另有一条呼叫接口 <code>POST /client/call</code>（<code>callClient</code>，走 WORKBUDDY_AI_SERVICE_LIST 前缀，入参含 <code>uuid/advisorId/plus0/signalId?</code>）<strong>未被任何运行时代码调用【未启用】</strong>（详见 6.32 与附录 C）。</li></ul>
+<h3>6.13 功能 F13：通话状态条（REQ-013）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：全页面固定反馈通话进度。</li><li><strong>功能描述</strong>：Given 通话已发起，When 状态流转，Then 顶栏下方出现 36px 固定蓝色状态条（左偏移随列表折叠状态联动：折叠 72px/展开 300px）：拨出=&quot;正在拨出 {号码}…&quot;；振铃=&quot;振铃中&quot;；通话中=&quot;通话中&quot;+ MM:SS 计时 + 红色&quot;挂断&quot;按钮（调用 <code>POST /api/yjbadmin/work/virtual/call/hangUp</code>）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：通话可控（可挂断）与时长感知。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：状态映射——<code>ringDuration&gt;0</code>→振铃；<code>callDuration&gt;0</code>→通话中；<code>finished</code>→结束（<code>dialResult=1</code> 接通/<code>0</code> 未接通区分文案）；</p>
+<p>  - 规则 2：计时格式 <code>fmtSecs</code>（MM:SS）。</p>
+<ul><li><strong>依赖</strong>：<code>components/CallStatusBar.tsx</code>、恒生 SSE。</li><li><strong>交互描述</strong>：挂断按钮点击即结束通话。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：空闲（idle）不显示状态条。</li></ul>
+<h3>6.14 功能 F14：通话结果弹窗（REQ-014）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：通话结束确认与时长告知。</li><li><strong>功能描述</strong>：Given 通话转为结束态，When 状态条隐藏，Then 弹出结果弹窗：&quot;通话已结束 客户：{姓名}，通话时长：{duration}。&quot;+ 确认按钮；点击确认或遮罩关闭弹窗并重置通话状态；埋点 <code>call_ended</code>（ismp_show，含 <code>call_phase</code>/<code>duration</code>）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：通话留痕感知。</li><li><strong>关键规则</strong>：未接通时文案区分（<code>ended_no_answer</code>）。</li><li><strong>依赖</strong>：<code>CallProvider</code> 上下文。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：无。</li></ul>
+<h3>6.15 功能 F15：待处理任务抽屉（REQ-015）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：展示客户待办任务明细。</li><li><strong>功能描述</strong>：Given 选中客户存在待处理任务（画像卡底部行&quot;待处理任务&quot;+ 红底计数徽标&quot;N 条&quot;+ 展开/收起），When 用户点击展开，Then 任务抽屉（<code>TaskDrawer</code>）展示任务列表：每行 = 22px 复选框 | 任务内容 | 标签（&quot;紧急&quot;/&quot;必做&quot;红标签，其他灰）+ 截止日期（逾期红字&quot;逾期 MM-DD&quot;，未逾期灰字&quot;MM-DD&quot;）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：必做/紧急任务不遗漏。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：任务数据 <code>useClientTasks</code>（staleTime 30s，pageSize 50）懒加载，仅选中客户时请求；</p>
+<p>  - 规则 2：已完成（<code>done</code>）任务勾选框禁用、名称删除线灰字；</p>
+<p>  - 规则 3：任务截止时间格式&quot;YYYY.MM.DD&quot;（展示时 <code>.</code> 转 <code>-</code>）；逾期判定 = 截止日期早于今日；</p>
+<p>  - 规则 4：切换客户自动收起抽屉。</p>
+<ul><li><strong>依赖</strong>：外呼网关 taskList 接口、page-data 缓存回写。</li><li><strong>交互描述</strong>：勾选行为见 F16。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：任务接口失败 toast；任务数 0 时画像卡无任务行（高度 120px）；Mock&quot;陈建国/孙丽华&quot;为 0 任务边界用例。</li></ul>
+<h3>6.16 功能 F16：任务勾选与完结提交（REQ-016）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：任务完结随服务动作一次提交。</li><li><strong>功能描述</strong>：Given 任务抽屉展开，When 用户勾选任务（埋点 <code>task_check</code>，含 <code>task_urgency</code>/<code>task_category</code>），Then 勾选状态暂存本地；When 用户点击&quot;完成服务&quot;（F25）确认后，Then 系统在服务日志提交成功后调用 <code>POST /api/yjbadmin/work/calloutTask/saveTaskSummary</code>（<code>account_type=12</code>、<code>serviceType='1'</code>、<code>service_record='1'</code>、<code>user_type='12'</code>，<code>multitask</code> 携带勾选任务的 <code>task_id</code>/<code>template_id</code>/<code>user_id</code>）完成任务完结。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：一次操作完成&quot;服务+任务&quot;双记录。</li><li><strong>关键规则</strong>：无勾选任务则跳过小结接口（勾选数 0 时不调用）。</li><li><strong>依赖</strong>：外呼网关 saveTaskSummary、F25 完成服务流程。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：小结接口失败 toast 错误（不回滚已提交的服务日志——级联顺序决定 ⏳ 补偿策略需后端确认）。</li></ul>
+<h3>6.17 功能 F17：信号卡头部与一键复制（REQ-017）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：标识标的与场景，提供整合话术复制。</li><li><strong>功能描述</strong>：Given 客户存在关联标的（securities 非空），When 用户查看信号卡头部，Then 看到：3×34px 颜色指示条（亏损绿/盈利红/默认蓝）+ 标的名称（20px 粗体）+ 代码（16px 灰）+ 标的类型标签（securityType=<code>stock</code>→&quot;个股&quot;，否则&quot;ETF&quot;）+ 信号类型标签 + 场景标题标签（蓝）+ 场景描述标签（点击弹 Popover 显示场景 tooltip，空格转换行）+ 右侧&quot;一键复制&quot;按钮。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：单按钮打包&quot;话术+诊断链接&quot;。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：一键复制内容 = 场景话术（<code>sceneScript</code>）+ 板块诊断链接 + 个股/ETF 诊断链接（<code>buildDiagUrl</code> 拼接 <code>scenesId/employeeId/clientId</code>），多行拼接；</p>
+<p>  - 规则 2：链接先经 <code>useShortLinks</code> 批量转短链（<code>POST /short/link/exchange/batch</code>，默认有效期 30 天，模块级缓存），<strong>短链失败回退原长链不报错</strong>；</p>
+<p>  - 规则 3：复制成功按钮文案变&quot;✓已复制&quot;持续 2s；埋点 <code>script_copy</code>；</p>
+<p>  - 规则 4：复制用 <code>copyToClipboard</code>（Clipboard API 优先，execCommand 降级）。</p>
+<ul><li><strong>依赖</strong>：诊断 URL 构造、短链服务、剪贴板工具。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：剪贴板权限拒绝走降级方案；诊断链接为空则该行不拼接。</li></ul>
+<h3>6.18 功能 F18：场景化关键数据网格（REQ-018）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：按 21 类场景展示差异化关键字段。</li><li><strong>功能描述</strong>：Given 信号卡渲染，When 行情接口返回该标的 <code>fieldsMap</code>（<code>POST /api/realTime/data</code>，10s 自动刷新），Then 按 <code>SCENE_FIELD_LAYOUT[sceneCode]</code> 配置渲染 5 列网格（≤980px 3 列 / ≤760px 2 列）灰底圆角数据块：label + 值（20px 数字字体）+ 可选 description（问号图标 Tooltip）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：不同盈亏场景突出不同决策字段（如 G1 族突出止损价、G3 族突出收益率战绩、G4 族突出 AI 信号内容）。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：21 个场景字段布局硬编码于 <code>utils/realTimeData.ts</code>（字段清单详见附录 B.3）；</p>
+<p>  - 规则 2：值格式化——percent：×100 保留 2 位小数 + %；price：两位小数 + 元；amount：千分位 + 元；count：N 个；direction：1 买入/2 卖出/0 不变；</p>
+<p>  - 规则 3：盈亏着色 <code>getTone</code>——正值红（#f93838）、负值绿（#12b76a）；</p>
+<p>  - 规则 4：字段配置可带 <code>tone</code> 覆盖默认着色；<code>multiline</code> 类型超 2 行截断 + Tooltip 完整内容；</p>
+<p>  - 规则 5：热门概念字段（<code>popularConcepts</code>，JSON 字符串）解析后按 rank 升序展示前 3 个（rank 蓝底徽标 + 名称）+ &quot;详情&quot;按钮。</p>
+<ul><li><strong>依赖</strong>：行情接口（ISMP 客户信息后端）、场景布局配置。</li><li><strong>交互描述</strong>：见功能描述；&quot;详情&quot;见 F19。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：行情接口失败 toast（错误码 2004）；fieldsMap 缺字段显示&quot;--&quot;；极端数值按千分位完整展示（无上限截断）。</li></ul>
+<h3>6.19 功能 F19：热门概念弹窗（REQ-019）【P1 已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：查看标的全量热门概念。</li><li><strong>功能描述</strong>：Given 关键数据网格展示热门概念前 3 个，When 用户点击&quot;详情&quot;，Then 弹出 560px 弹窗&quot;当前热门概念（共 N 个）&quot;，3 列网格展示全部概念（rank 蓝徽标 + 名称，超长截断）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：热点全量视角。</li><li><strong>关键规则</strong>：概念按 rank 升序。</li><li><strong>依赖</strong>：<code>components/PopularConceptsModal.tsx</code>。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：概念 JSON 解析失败按空处理。</li></ul>
+<h3>6.20 功能 F20：关联异动 / 热点事件（REQ-020）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：展示标的关联市场事件辅助话术解释。</li><li><strong>功能描述</strong>：Given 信号卡存在 events（或 underlying 诊断），When 渲染&quot;关联异动 / 热点&quot;区，Then 展示事件药丸列表：前缀&quot;热点：&quot;/&quot;异动：&quot;；label 超 10 字截断加&quot;...&quot;；情绪着色 positive 红 / negative 绿 / 其他灰；点击药丸弹 280px Popover 展示完整 label + content；区块右侧为&quot;板块诊断结果&quot;入口（DiagnosisEntry mode=sector）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：话术佐证材料。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：无事件但存在 underlying 诊断时仍渲染区块（事件区显示&quot;暂无异动/热点&quot;）；</p>
+<p>  - 规则 2：事件与诊断均无则整块不渲染。</p>
+<ul><li><strong>依赖</strong>：page-data <code>events</code>、诊断 URL。</li><li><strong>交互描述</strong>：Popover 悬浮/点击展示。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：事件 content 为空时 Popover 仅显示 label。</li></ul>
+<h3>6.21 功能 F21：个性化话术编辑与保存（REQ-021）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：提供可在服务现场微调的话术载体。</li><li><strong>功能描述</strong>：Given 信号卡话术区展示 <code>sceneScript</code>，When 用户点击文本进入编辑（contentEditable），编辑后失焦，Then 若内容发生变化即调用快照接口保存（<code>securityList[].sceneScript</code>），成功后更新 page-data 缓存并显示&quot;✓已保存&quot;2s（埋点 <code>script_save</code>）；默认收起态（max-height 56px + 底部渐变遮罩），点击&quot;展开完整话术 ▾&quot;展开（max-height 800px），再点&quot;收起 ▴&quot;。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：话术二次加工能力（AI 生成非最终答案）。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：<strong>失焦触发、内容比对</strong>——未变化不请求；</p>
+<p>  - 规则 2：保存静默（仅失败 toast&quot;保存失败，请重试&quot;）。</p>
+<ul><li><strong>依赖</strong>：快照接口（ISMP 客户信息后端）。</li><li><strong>交互描述</strong>：见功能描述；话术区右侧为&quot;个股/ETF诊断结果&quot;入口。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：保存失败 toast，不回滚编辑内容（本地已改）。</li></ul>
+<h3>6.22 功能 F22：话术风险等级校验（REQ-022）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：防止话术超出客户风险承受能力。</li><li><strong>功能描述</strong>：Given 话术区渲染，When 计算话术最低适用风险等级，Then ① 客户风险等级满足时显示灰字提示&quot;话术适用于 {minRiskCode} 及以上风险等级客户&quot;；② 不满足时显示红色警示条&quot;客户风险等级（{riskCode}）低于话术适用等级（{minRiskCode}），请谨慎使用&quot;，话术区边框变红。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：适当性合规防线。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：话术最低风险等级计算 <code>getScriptMinRisk</code>——标的代码前缀为 <code>300/301/688/920/87/88/83</code>（创业板/科创板/北交所）时为 <strong>C4</strong>，否则 <strong>C3</strong>；</p>
+<p>  - 规则 2：比较基准 <code>RISK_RANK</code>：C1&lt;C2&lt;C3&lt;C4&lt;C5&lt;专业投资者；<code>isRiskLevelSatisfied</code> 判定客户等级 ≥ 话术要求等级。</p>
+<ul><li><strong>依赖</strong>：<code>utils/format.ts</code>、客户风险等级、标的代码。</li><li><strong>交互描述</strong>：警示为展示型（不阻断编辑/复制/群发）。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：客户风险等级为空时 ⏳（<code>parseRiskLevel</code> 空值返回 undefined，按不满足展示，需源码复核；Mock 全量客户均有等级）。</li></ul>
+<h3>6.23 功能 F23：诊断入口（板块 / 个股 / ETF）（REQ-023）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：跳转诊断工具或复制诊断链接。</li><li><strong>功能描述</strong>：Given 信号存在诊断 URL（<code>diagnosisUrls.sector</code> / <code>diagnosisUrls.underlying</code>），When 用户点击&quot;板块诊断结果&quot;（异动区右侧）或&quot;个股/ETF诊断结果&quot;（话术区右侧），Then 展示入口按钮 + &quot;复制&quot;按钮：① 点击主按钮 <code>window.open</code> 新开诊断页并 toast&quot;已在浏览器中打开诊断页面：{securityName}&quot;（埋点 <code>sector_diag_open</code>/<code>target_diag_open</code>，区分 target_type）；② 点击复制按钮将&quot;{label}结果： {shortUrl}&quot;写入剪贴板（短链化，失败回退长链），toast&quot;诊断链接已复制&quot;，按钮变&quot;✓ 已复制&quot;1.4s（埋点 <code>diag_link_copy</code>）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：服务证据链工具直达。</li><li><strong>关键规则</strong>：诊断 URL 由后端下发（前端不构造；仅&quot;一键复制&quot;场景由 <code>buildDiagUrl</code> 拼接 <code>scenesId/employeeId/clientId</code> 参数 ⏳ 具体域名与参数语义需后端文档确认）。</li><li><strong>依赖</strong>：诊断 URL、短链服务。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：诊断 URL 为空时入口不渲染。</li></ul>
+<h3>6.24 功能 F24：服务介绍参考（未签约客户专属）（REQ-024）【P1 已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：为未签约客户的转化推介提供口径参考。</li><li><strong>功能描述</strong>：Given 客户 securities 中存在 <code>signalType='unsigned'</code>，When 渲染右侧面板，Then 在信号卡后展示&quot;服务介绍&quot;参考模块（<code>ServiceRefSection</code>）：AI+投顾整体服务介绍（8 段固定文案）+ 费用提示（万 9 佣金）+ 三大产品介绍（AI选好股 / AI股票解套 / AI投ETF，各含提示语与可复制长文案）。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：标准化推介物料。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：文案为<strong>前端静态硬编码</strong>（<code>SERVICE_REF_DATA</code>），不来自接口；</p>
+<p>  - 规则 2：仅未签约客户渲染（其他客户不显示）。</p>
+<ul><li><strong>依赖</strong>：静态配置。</li><li><strong>交互描述</strong>：长文案支持复制。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：无。</li></ul>
+<h3>6.25 功能 F25：完成服务（三接口级联）（REQ-025）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：结束单客户当日服务并留痕。</li><li><strong>功能描述</strong>：Given 选中客户未完成（<code>serveStatus=0</code>），When 用户在底部服务栏（60px 固定）&quot;服务内容&quot;输入框填写备注（选填，placeholder&quot;记录本次服务内容… 选填&quot;）并点击&quot;完成服务&quot;，Then 弹出二次确认（&quot;完成服务后，该客户将标记为已服务并移至列表底部。确认继续吗？&quot;）；确认后依次执行：</li></ul>
+<p>  1. <code>POST /serviceLog/pc/add</code> 服务日志（<code>custType='1'</code>、<code>custName=客户姓名</code>、<code>fundAccountOrSource=资金账号</code>、<code>serviceDate=当前时间 YYYY-MM-DD HH:mm:ss</code>、<code>serviceType=8</code>、<code>content=服务内容备注</code>、<code>source='12'</code>）；</p>
+<p>  2. 若勾选了任务 → <code>POST /api/yjbadmin/work/calloutTask/saveTaskSummary</code> 任务完结；</p>
+<p>  3. <code>POST /wb/support/ai-result/update?taskId=</code> 快照保存（<code>serveStatus=1</code> + <code>serveTime</code>）。</p>
+<p>  全部成功后：toast&quot;服务已完成✓&quot;、显示&quot;✓已完成&quot;2.5s、500ms 后失效 page-data 缓存并自动跳转至下一个未完成客户；埋点 <code>complete_service</code>（含 <code>checked_task_count</code>/<code>has_content</code>）。</p>
+<ul><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：单按钮完成全部记录动作。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：按钮 loading 态文案&quot;提交中...&quot;，防重复提交；</p>
+<p>  - 规则 2：任务小结仅在&quot;服务日志成功且有勾选任务&quot;时调用（级联短路）；</p>
+<p>  - 规则 3：已完成客户（<code>serveStatus=1</code>）整个底栏隐藏；</p>
+<p>  - 规则 4：服务日期取客户端当前时间。</p>
+<ul><li><strong>依赖</strong>：渠道网关（服务日志）、外呼网关（任务小结）、客户信息后端（快照）。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：任一步失败 toast 对应错误（错误码 3001 重复提交等见附录 D）；失败不跳转、不置灰客户；快照失败不回滚服务日志（幂等性由 taskId+uuid 维度保证 ⏳ 需后端确认）。</li></ul>
+<h3>6.26 功能 F26：群发入口与分类选择（REQ-026）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：按信号分类批量触达。</li><li><strong>功能描述</strong>：Given 客户列表非空且非选择模式，When 用户点击工具栏&quot;企微群发通用话术&quot;按钮（白底浅蓝边框 + 下箭头），Then 展示 260px 下拉：四分类行——亏损未止损（绿点）/ 亏损已止损（灰点）/ 盈利已了结（红点）/ 未签约（灰点），每行右侧&quot;N 人&quot;（宽口径计数：一客户可属多分类）；某分类总数 0 时禁用（opacity 0.4）；可发送数（排除今日已发）为 0 时显示 warning&quot;该分类客户今日均已发送，无需重复群发&quot;；存在排除时显示 info&quot;已自动排除今日已发送的 N 位客户&quot;；埋点 <code>broadcast_entry</code>/<code>broadcast_category</code>。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：触达策略的入口收敛。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：分类归属（宽口径 <code>getClientGroups</code>）——按客户 securities 信号判断，一客户可同时属于多分类；</p>
+<p>  - 规则 2：已完成客户不参与群发（分类统计同样排除）。</p>
+<ul><li><strong>依赖</strong>：<code>utils/broadcast.ts</code>、<code>defaultScripts</code>。</li><li><strong>交互描述</strong>：点击分类行进入该分类选择模式（F27）。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：见功能描述。</li></ul>
+<h3>6.27 功能 F27：跨分类选择模式（REQ-027）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：群发前精确圈选接收人。</li><li><strong>功能描述</strong>：Given 用户从下拉选择某分类，When 进入选择模式，Then 列表卡片出现复选框（该分类客户默认全选），工具栏变为&quot;已选 N 人&quot;+ &quot;取消&quot; + &quot;下一步&quot;（0 人禁用）；用户可跨分类勾选/取消任意未完成客户（已完成客户不可选）；点击&quot;下一步&quot;打开群发弹窗（F28），点击&quot;取消&quot;退出并清空选择。</li><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：接收人可控。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：选择模式下任务红点隐藏；</p>
+<p>  - 规则 2：折叠面板会退出选择模式并清空选择；</p>
+<p>  - 规则 3：分类预填话术按所选分类加载（<code>getBroadcastScript</code>），跨分类混合时弹窗内另行处理（F28）。</p>
+<ul><li><strong>依赖</strong>：Zustand <code>selectMode</code>/<code>selectedUuids</code>/<code>broadcastCategory</code>。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：无。</li></ul>
+<h3>6.28 功能 F28：群发弹窗（接收人管理与话术编辑）（REQ-028）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：发送前的最后编辑与确认。</li><li><strong>功能描述</strong>：Given 用户点击&quot;下一步&quot;，When 打开 640px 群发弹窗，Then 展示：</li></ul>
+<p>  - <strong>接收客户（N 人）</strong>标签列表：今日已发客户黄色&quot;⚠︎今日已发&quot;标记，可点 × 移除；超 10 人折叠显示&quot;展开（共 N 人）▾&quot;；</p>
+<p>  - <strong>跨分类警示</strong>：所选客户横跨多分类（窄口径 <code>getClientPrimaryGroup</code> 互斥判定，<code>loss_unstopped</code> 优先）时显示黄色警示条&quot;当前所选客户特征不统一，建议分开群发&quot;，话术区显示&quot;客户特征不统一，请分开群发后查看对应话术&quot;，<strong>发送按钮禁用</strong>；</p>
+<p>  - <strong>群发话术</strong>：按主分类预填 <code>defaultScripts</code>（标注&quot;通用话术 · WorkBuddy 预置&quot;），contentEditable 可编辑，空话术 placeholder&quot;暂无预置话术，请手动输入群发内容&quot;；</p>
+<p>  - <strong>底部</strong>：提示&quot;将通过企微一键群发发送，并同步记录服务动作&quot;+ 发送按钮&quot;发送（N 人）&quot;。</p>
+<ul><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：防误发（混合拦截/已发标记/手动编辑）。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：可发送条件 = 话术非空 &amp;&amp; 接收人 &gt; 0 &amp;&amp; 非发送中 &amp;&amp; 非混合分类；</p>
+<p>  - 规则 2：接收人清零弹窗自动关闭；</p>
+<p>  - 规则 3：移除&quot;今日已发&quot;客户仅本地移除，不更新后端状态。</p>
+<ul><li><strong>依赖</strong>：Zustand 群发状态、<code>utils/broadcast.ts</code>。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：见功能描述。</li></ul>
+<h3>6.29 功能 F29：群发发送两步调用与乐观更新（REQ-029）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：企微侧安全批量发送。</li><li><strong>功能描述</strong>：Given 弹窗内点击&quot;发送（N 人）&quot;，Then 依次执行：</li></ul>
+<p>  1. <strong>步骤一 客户过滤</strong> <code>POST /workBuddy/mass/externalUserId/check</code>（<code>type:'clientId'</code>，<code>users=客户ID数组</code>，≤1 万人）：返回企微关系用户（<code>WxRelationUser</code>，含 <code>thatDaySendFlag</code> 当日已发标记）与无企微关系名单；</p>
+<p>  2. <strong>步骤二 消息发送</strong> <code>POST /workBuddy/mass/wx</code>（<code>externalUsersList</code> 企微用户、<code>noWxRelationList</code> 无关系名单、<code>text.content</code> 话术）：返回 <code>msgId</code> 与 <code>failList</code>。</p>
+<p>  发送后聚合提示（<code>useBroadcast</code>）：分别 toast&quot;N 人成功&quot;/&quot;N 人失败&quot;/&quot;N 人无企微关系&quot;/&quot;N 人当日已发送&quot;（有失败为 warning，全成功为 success）；埋点 <code>broadcast_send</code>（<code>recipient_count</code>/<code>category_type</code>）。</p>
+<ul><li><strong>主要使用者</strong>：客户经理/投顾。</li><li><strong>核心价值</strong>：分层结果反馈。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：<strong>乐观更新</strong>——失败数为 0 时，本地将全部接收客户 <code>wxBroadcastStatus=1</code> + 当前时间为 <code>wxBroadcastTime</code>（列表卡片立即显示&quot;今日已群发&quot;）；</p>
+<p>  - 规则 2：乐观更新后调用快照接口持久化（<code>wxBroadcastStatus</code>/<code>wxBroadcastTime</code>）；</p>
+<p>  - 规则 3：发送按钮 sending 态防重复。</p>
+<ul><li><strong>依赖</strong>：ISMP 公共网关两接口、快照接口。</li><li><strong>交互描述</strong>：见功能描述。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：步骤一失败（错误码 2006）toast；部分失败进入聚合提示；有失败客户<strong>不</strong>乐观标记（仅失败清单为空时标记 ⏳ 逐客户成功名单未在返回结构中体现，按失败清单推断，需后端确认）。</li></ul>
+<h3>6.30 功能 F30：数据快照持久化（REQ-030）【已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：将页面操作产生的状态变化写回后端。</li><li><strong>功能描述</strong>：Given 话术编辑保存（F21）/ 群发成功（F29）/ 完成服务（F25）触发，When 调用 <code>POST /wb/support/ai-result/update?taskId=</code>，Then 按客户维度提交变更字段：<code>serveStatus</code>/<code>serveTime</code>/<code>wxBroadcastStatus</code>/<code>wxBroadcastTime</code>/<code>securityList[].sceneScript</code>（仅提交有变化的 security）。</li><li><strong>主要使用者</strong>：系统（自动）。</li><li><strong>核心价值</strong>：状态可回溯（刷新后不丢失）。</li><li><strong>关键规则</strong>：</li></ul>
+<p>  - 规则 1：静默保存（业务主流程 toast 之外仅失败提示）；</p>
+<p>  - 规则 2：<code>taskId</code> 在 URL query，body 为 customers 数组。</p>
+<ul><li><strong>依赖</strong>：ISMP 客户信息后端。</li><li><strong>交互描述</strong>：无显式交互。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：失败 toast&quot;保存失败，请重试&quot;；成功后更新 React Query 缓存。</li></ul>
+<h3>6.31 功能 F31：用户行为埋点（REQ-031）【P1 已实现】</h3>
+<h4>业务描述</h4>
+<ul><li><strong>功能目的</strong>：采集服务过程行为数据。</li><li><strong>功能描述</strong>：Given 用户在页面操作，When 触发埋点事件（共 16 项，明细见第九章埋点表），Then 通过 <code>@gjzq/sdk</code> 的 <code>trackEvent</code> 上报（统一携带 <code>page_name='ai_service_list'</code>）。</li><li><strong>主要使用者</strong>：产品/数据分析（间接受益）。</li><li><strong>核心价值</strong>：服务过程量化。</li><li><strong>关键规则</strong>：埋点不阻塞业务（异常静默）。</li><li><strong>依赖</strong>：<code>@gjzq/sdk</code>（鉴权成功后 <code>initFinder</code> 初始化）。</li><li><strong>交互描述</strong>：无感。</li><li><strong>Figma url</strong>：⏳ 无。</li><li><strong>异常处理</strong>：上报失败静默忽略。</li></ul>
+<h3>6.32 未启用能力（REQ-032）【代码存在但未启用】</h3>
+<p>以下能力代码存在但无任何运行时调用路径（经全库引用检索验证），为预留/灰度能力，<strong>不计入现有功能</strong>：</p>
+<table><tr><th>能力</th><th>代码位置</th><th>说明</th></tr><tr><td>前端模拟电话 Hook <code>usePhoneCall</code></td><td><code>hooks/usePhoneCall.ts</code></td><td>完整状态机（dialing→ringing 1.5s→connected 1.5s→ended 8s）与失败提示，无组件引用</td></tr><tr><td>电话呼叫接口 <code>callClient</code></td><td><code>api.ts</code> 接口 5（<code>POST /client/call</code>，WORKBUDDY_AI_SERVICE_LIST 前缀）</td><td>仅被未启用的 <code>usePhoneCall</code> 引用</td></tr><tr><td>通话状态推送类型 <code>CallStatusPush</code></td><td><code>apiTypes.ts</code></td><td>类型已导出，无消费方</td></tr><tr><td>通用空态组件 <code>EmptyState</code></td><td><code>components/EmptyState.tsx</code></td><td>三种空态（empty-filter / all-completed / no-signals）配置完整，无引用</td></tr><tr><td>网格列数计算 <code>getGridCols</code></td><td><code>utils/sceneConfig.ts</code></td><td>已导出，无调用（列数由 CSS 断点实现）</td></tr><tr><td>场景摘要 <code>buildSceneSummary</code></td><td><code>utils/sceneConfig.ts</code></td><td>已导出，无调用</td></tr><tr><td>弹窗关闭判定 <code>shouldCloseBroadcastModal</code></td><td><code>utils/format.ts</code></td><td>已导出，无调用（关闭逻辑内联于组件）</td></tr><tr><td>任务逾期独立函数 <code>isTaskOverdue</code></td><td><code>utils/format.ts</code></td><td>已导出，无调用（TaskRow 内联了逾期判定）</td></tr></table>
+<p>***</p>
+<h2>七、关键流程与状态</h2>
+<h3>7.1 流程一：页面初始化与数据加载</h3>
+<pre><code>flowchart TD
+    A[用户从上游系统跳转&lt;br&gt;携带 taskId] --&gt; B[解析 URL 参数 taskId]
+    B --&gt; C[调用 GET /api/service/list]
+    C --&gt; D{加载结果}
+    D --&gt;|加载中| E[骨架屏]
+    D --&gt;|失败| F[Result 错误组件&lt;br&gt;重试按钮 → 整页刷新]
+    D --&gt;|成功但无客户| G[&quot;暂无客户数据&quot;空态]
+    D --&gt;|成功| H[客户端排序&lt;br&gt;已完成置底→亏损→盈利→未签约→紧急度]
+    H --&gt; I[自动选中第一位客户]
+    I --&gt; J[懒加载该客户待处理任务&lt;br&gt;回写 page-data 缓存]
+    J --&gt; K[渲染完整工作台]</code></pre>
+<p><strong>步骤说明</strong>：</p>
+<table><tr><th>步骤</th><th>角色</th><th>系统动作</th><th>预期耗时</th><th>失败处理</th></tr><tr><td>1</td><td>上游系统</td><td>生成 taskId 并跳转</td><td>-</td><td>⏳ 无 taskId 时接口报错进错误态</td></tr><tr><td>2</td><td>前端</td><td>解析参数、发起请求</td><td>&lt;1s</td><td>请求层去重取消重复请求</td></tr><tr><td>3</td><td>前端</td><td>排序与默认选中</td><td>立即</td><td>-</td></tr><tr><td>4</td><td>前端</td><td>任务接口懒加载</td><td>~200ms</td><td>失败 toast，卡片无任务行</td></tr><tr><td>5</td><td>前端</td><td>行情数据拉取（10s 轮询）</td><td>~200ms</td><td>失败 toast（2004）</td></tr></table>
+<h3>7.2 流程二：完成服务（三接口级联）</h3>
+<pre><code>flowchart TD
+    A[点击完成服务] --&gt; B[Modal 二次确认]
+    B --&gt;|取消| Z1[关闭确认框]
+    B --&gt;|确认| C[POST /serviceLog/pc/add&lt;br&gt;服务日志]
+    C --&gt;|失败| E1[toast 错误·终止]
+    C --&gt;|成功| D{勾选了任务?}
+    D --&gt;|是| E[POST saveTaskSummary&lt;br&gt;任务完结]
+    D --&gt;|否| F
+    E --&gt;|失败| E2[toast 错误·终止]
+    E --&gt;|成功| F[POST 快照保存&lt;br&gt;serveStatus=1]
+    F --&gt;|失败| E3[toast 保存失败·终止]
+    F --&gt;|成功| G[toast 服务已完成✓&lt;br&gt;✓已完成 2.5s]
+    G --&gt; H[500ms 后失效缓存]
+    H --&gt; I{存在下一未完成客户?}
+    I --&gt;|是| J[自动跳转选中]
+    I --&gt;|否| K[保持当前选中]</code></pre>
+<p><strong>步骤说明</strong>：</p>
+<table><tr><th>步骤</th><th>角色</th><th>系统动作</th><th>预期耗时</th><th>失败处理</th></tr><tr><td>1</td><td>用户</td><td>填写选填备注、点击按钮</td><td>-</td><td>通话进行中仍可提交（代码未拦截 ⏳）</td></tr><tr><td>2</td><td>前端</td><td>级联调用三接口</td><td>1~3s</td><td>级联短路，任一失败终止后续</td></tr><tr><td>3</td><td>前端</td><td>乐观置灰+跳转</td><td>500ms</td><td>失败不置灰不跳转</td></tr></table>
+<h3>7.3 流程三：企微群发（两步调用）</h3>
+<pre><code>flowchart TD
+    A[点击企微群发通用话术] --&gt; B[下拉展示四分类+人数]
+    B --&gt; C[点击分类进入选择模式&lt;br&gt;该分类默认全选]
+    C --&gt; D[调整勾选·可跨分类]
+    D --&gt; E[点击下一步打开弹窗]
+    E --&gt; F{跨分类混合?}
+    F --&gt;|是| G[警示条+发送禁用&lt;br&gt;需取消勾选至单一分类]
+    F --&gt;|否| H[编辑话术/移除接收人]
+    H --&gt; I[点击发送 N 人]
+    I --&gt; J[步骤一 POST check&lt;br&gt;企微关系过滤]
+    J --&gt;|失败| K1[toast 群发失败]
+    J --&gt;|成功| L[步骤二 POST mass/wx&lt;br&gt;消息发送]
+    L --&gt; M{failList 是否为空}
+    M --&gt;|是| N[乐观标记全部接收人&lt;br&gt;今日已群发+快照持久化]
+    M --&gt;|否| O[聚合 toast&lt;br&gt;成功/失败/无关系/当日已发]</code></pre>
+<h3>7.4 状态流转：电话外呼状态机</h3>
+<pre><code>stateDiagram-v2
+    [*] --&gt; idle: 初始
+    idle --&gt; dialing: 点击电话按钮
+    dialing --&gt; ringing: 恒生接通/SSE 推送
+    ringing --&gt; connected: 客户接起
+    connected --&gt; ended: 任一方挂断
+    ended --&gt; idle: 结果弹窗确认
+    dialing --&gt; ended: 未接通/失败
+    ringing --&gt; ended: 未接听挂断
+    idle --&gt; idle: 切换客户重置</code></pre>
+<p><strong>状态与 UI 映射</strong>：</p>
+<table><tr><th>状态</th><th>UI 表现</th><th>退出条件</th></tr><tr><td>idle</td><td>无状态条</td><td>点击电话按钮</td></tr><tr><td>dialing</td><td>蓝色状态条&quot;正在拨出 {号码}…&quot;</td><td>SSE 进展 / 定时器 1.5s</td></tr><tr><td>ringing</td><td>&quot;振铃中&quot;</td><td>接起 / 定时器 1.5s</td></tr><tr><td>connected</td><td>&quot;通话中&quot;+ MM:SS 计时 + 挂断按钮</td><td>挂断 / 定时器 8s</td></tr><tr><td>ended</td><td>结果弹窗（接通/未接通文案）</td><td>确认/遮罩点击</td></tr></table>
+<h3>7.5 状态流转：客户服务状态（serveStatus）</h3>
+<pre><code>stateDiagram-v2
+    [*] --&gt; 待服务: serveStatus=0
+    待服务 --&gt; 已服务: 完成服务三接口全部成功&lt;br/&gt;快照写入 serveStatus=1
+    已服务 --&gt; [*]</code></pre>
+<blockquote>说明：已完成状态在当日任务内为终态（无逆向接口）；&quot;待服务&quot;期间客户可经历话术保存、群发标记（wxBroadcastStatus 0→1）等子状态，均可独立持久化。</blockquote>
+<p>***</p>
+<h2>八、非功能需求约束</h2>
+<table><tr><th>类别</th><th>约束（源自代码实现）</th></tr><tr><td>性能-缓存</td><td>页面数据 staleTime=Infinity；任务数据 staleTime=30s；行情 staleTime=10s 自动刷新；短链模块级 Map 缓存（重复链接不重复请求）</td></tr><tr><td>性能-请求</td><td>Axios 请求去重（method+url+params+data 哈希 key，重复请求自动取消）；页面数据任务回写缓存避免重复拉取</td></tr><tr><td>性能-渲染</td><td>列表/面板组件级 memo；Zustand Selector Hooks 按需订阅，避免全局重渲染</td></tr><tr><td>兼容性</td><td>现代浏览器（Chrome/Edge 内核）；无 IE 适配代码；≥760px 响应式降级（980px/760px 两档断点）</td></tr><tr><td>安全-鉴权</td><td>所有请求自动注入 ycas_token 请求头（skipAuth 除外）；401/10001 清 token 跳 SSO；跨系统跳转用一次性 token（不复用长效 token）</td></tr><tr><td>安全-隐私</td><td>电话号码页面内脱敏展示（前3+****+后4）；外呼经恒生中转不直显全号</td></tr><tr><td>可用性</td><td>HTTP 400/401/403/404/500/502/504 与业务码非 0 统一 toast；快照保存失败不阻断主流程；短链失败回退长链</td></tr><tr><td>数据合规</td><td>话术风险等级校验（C3/C4 基准）；群发当日已发自动排除；跨分类群发禁止</td></tr><tr><td>可维护性</td><td>Feature-Domain 模块自包含；TypeScript strict；统一 ApiResponse 结构</td></tr></table>
+<p>***</p>
+<h2>九、埋点</h2>
+<blockquote>格式说明：埋点共 16 项，为保持可读性将模板横向表转置为纵向（字段与模板一致）。事件类型分 ismp_view（曝光）/ ismp_click（点击）/ ismp_show（展示）。统一参数：<code>page_name='ai_service_list'</code>。</blockquote>
+<table><tr><th>#</th><th>触发时机</th><th>事件中文名</th><th>event_name</th><th>module_name</th><th>element_name / 位置</th><th>携带参数</th><th>备注</th></tr><tr><td>1</td><td>页面加载完成</td><td>页面浏览</td><td>ismp_view</td><td>页面</td><td>-</td><td>-</td><td>路由页触发</td></tr><tr><td>2</td><td>点击客户卡片</td><td>客户选择</td><td>client_select</td><td>client_list</td><td>客户卡片</td><td>client_id</td><td>-</td></tr><tr><td>3</td><td>切换筛选 Tab</td><td>分类筛选</td><td>filter_type</td><td>列表筛选</td><td>Tab</td><td>filter_type（all/loss/profit/unsigned）</td><td>-</td></tr><tr><td>4</td><td>点击群发入口按钮</td><td>群发入口</td><td>broadcast_entry</td><td>broadcast</td><td>企微群发通用话术按钮</td><td>-</td><td>-</td></tr><tr><td>5</td><td>点击群发分类</td><td>分类选择</td><td>broadcast_category</td><td>broadcast</td><td>分类下拉项</td><td>category_type、matched_count</td><td>-</td></tr><tr><td>6</td><td>点击发送</td><td>群发发送</td><td>broadcast_send</td><td>broadcast</td><td>发送按钮</td><td>recipient_count、category_type</td><td>-</td></tr><tr><td>7</td><td>勾选任务</td><td>任务勾选</td><td>task_check</td><td>task_drawer</td><td>任务复选框</td><td>task_urgency、task_category</td><td>-</td></tr><tr><td>8</td><td>完成服务确认后</td><td>完成服务</td><td>complete_service</td><td>service_footer</td><td>完成服务按钮</td><td>checked_task_count、has_content</td><td>-</td></tr><tr><td>9</td><td>点击电话按钮</td><td>外呼发起</td><td>call_start</td><td>call</td><td>电话按钮</td><td>plus0_used</td><td>-</td></tr><tr><td>10</td><td>通话结束</td><td>通话结束展示</td><td>call_ended</td><td>call</td><td>结果弹窗</td><td>call_phase、duration</td><td>ismp_show 类型</td></tr><tr><td>11</td><td>打开板块诊断页</td><td>板块诊断跳转</td><td>sector_diag_open</td><td>diagnosis</td><td>板块诊断结果入口</td><td>-</td><td>-</td></tr><tr><td>12</td><td>打开个股/ETF诊断页</td><td>标的诊断跳转</td><td>target_diag_open</td><td>diagnosis</td><td>个股/ETF诊断结果入口</td><td>target_type</td><td>-</td></tr><tr><td>13</td><td>复制诊断链接</td><td>诊断链接复制</td><td>diag_link_copy</td><td>diagnosis</td><td>复制按钮</td><td>-</td><td>-</td></tr><tr><td>14</td><td>一键复制话术</td><td>话术复制</td><td>script_copy</td><td>signal_card</td><td>一键复制按钮</td><td>-</td><td>-</td></tr><tr><td>15</td><td>话术保存成功</td><td>话术保存</td><td>script_save</td><td>script_section</td><td>-</td><td>-</td><td>-</td></tr><tr><td>16</td><td>点击客户详情</td><td>客户详情跳转</td><td>client_detail_open</td><td>portrait</td><td>↗客户详情</td><td>client_id</td><td>-</td></tr></table>
+<blockquote>⏳ 对应老埋点 event_id、产品代码 product_code、from_page/page_to 等字段代码中未显式携带（由 SDK 统一注入或未配置），需与埋点平台对齐。</blockquote>
+<p>***</p>
+<h2>十、待补充清单</h2>
+<p>汇总所有 ⏳ 项，<strong>这些必须在交付开发前解决</strong>：</p>
+<table><tr><th>项目</th><th>需要对齐方</th><th>截止时间</th><th>责任人</th></tr><tr><td>后端服务清单生成逻辑（page-data 上游：客户筛选、信号计算、话术生成规则）</td><td>后端/AI 服务</td><td>评审前</td><td>⏳</td></tr><tr><td>数据库表结构与字段释义（客户清单、任务、服务日志、快照存储）</td><td>后端/DBA</td><td>评审前</td><td>⏳</td></tr><tr><td>8 个模块接口 + 5 个横切接口的后端内部业务逻辑与幂等策略</td><td>后端</td><td>评审前</td><td>⏳</td></tr><tr><td>SSE 通话状态推送的超时时长与重连策略参数</td><td>恒生/外呼平台</td><td>评审前</td><td>⏳</td></tr><tr><td>群发部分失败时逐客户成功名单（当前按 failList 差集推断）</td><td>公共网关后端</td><td>评审前</td><td>⏳</td></tr><tr><td>诊断 URL 参数语义（scenesId/employeeId/clientId）与域名规则</td><td>诊断平台</td><td>评审前</td><td>⏳</td></tr><tr><td>taskId 生成机制与上游跳转链路</td><td>外呼任务系统</td><td>评审前</td><td>⏳</td></tr><tr><td>原始立项 KPI 与量化目标</td><td>产品</td><td>评审前</td><td>⏳</td></tr><tr><td>Figma 设计稿（存量无）</td><td>设计</td><td>评审前</td><td>⏳</td></tr><tr><td>未启用能力（usePhoneCall/callClient/EmptyState 等）的启用计划</td><td>产品/后端</td><td>迭代规划</td><td>⏳</td></tr></table>
+<p>***</p>
+<h2>十一、修订记录</h2>
+<table><tr><th>版本</th><th>日期</th><th>修改内容</th><th>作者</th></tr><tr><td>V1.0</td><td>2026-09-18</td><td>初稿（基于前端源码逆向还原全部已实现/未启用/缺失能力）</td><td>产品逆向分析</td></tr></table>
+<p>***</p>
+<h2>附录 A：接口清单（逆向自 api.ts / apiTypes.ts / services）</h2>
+<blockquote>通用响应结构：<code>{ code: number, message: string, result: T }</code>，<code>code=0</code> 成功。所有请求自动携带请求头 <code>ycas_token</code>。</blockquote>
+<blockquote>完整请求 URL = <code>config.js.apiBaseUrl</code>（<code>/yjbapi/</code>）+ 服务前缀 + 接口路径。</blockquote>
+<h3>A.0 服务前缀映射</h3>
+<table><tr><th>服务常量</th><th>前缀</th><th>用途</th></tr><tr><td>ISMP_CUSTOMERINFO_BACKEND</td><td><code>/yjbapi/ismpgw/ismp-customerinfo-backend</code></td><td>客户信息后端（清单/行情/快照）</td></tr><tr><td>ISMP_CALLOUT_BACKEND</td><td><code>/yjbapi/ismpgw/ims-middleware-callout</code></td><td>中间件外呼网关（任务/联系人/外呼/小结）</td></tr><tr><td>IMS_CHANNELVISIT_BACKEND</td><td><code>/yjbapi/ismpgw/ismp-channel-backend</code></td><td>渠道网关（服务日志）</td></tr><tr><td>ISMP_COMMONGW_BACKEND</td><td><code>/yjbapi/ismpgw/ismp-common-backend</code></td><td>公共网关（企微群发两步）</td></tr><tr><td>WORKBUDDY_AI_SERVICE_LIST</td><td><code>/yjbapi/workbuddy-backend/ai-service-list</code></td><td>AI+服务清单后端【仅未启用接口 5 使用】</td></tr><tr><td>ISMP_COMMON_BACKEND</td><td><code>/yjbapi/ismp-common-backend</code></td><td>公共后端（短链/一次性 token）</td></tr></table>
+<h3>A.1 接口 1：获取服务清单初始数据</h3>
+<ul><li><strong>方法/路径</strong>：<code>GET /api/service/list?taskId=xxx</code>（ISMP_CUSTOMERINFO_BACKEND）</li><li><strong>用途</strong>：页面主数据源——任务维度客户清单、画像、信号、话术、群发话术模板。</li><li><strong>请求入参</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>taskId</td><td>string</td><td>是</td><td>URL query；任务码，来自上游系统跳转</td></tr></table>
+<ul><li><strong>响应出参（result，PageDataResp）</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>id / userId / processId / taskId / uuid / status</td><td>string</td><td>任务/流程维度字段</td></tr><tr><td>sceneId / sceneName / templateType</td><td>string</td><td>话术流程场景标识</td></tr><tr><td>finalScript / reviewRounds / regenerationsUsed</td><td>string / number</td><td>话术终稿与生成轮次</td></tr><tr><td>terminateReason / reasonCode / detail</td><td>string</td><td>终止原因与详情</td></tr><tr><td>createTime</td><td>string</td><td>清单生成时间（UTC，前端 +8h 转北京时间展示）</td></tr><tr><td>businessLine</td><td>string</td><td>业务线名称（顶栏标题）</td></tr><tr><td>defaultScripts</td><td>DefaultScript[] \</td><td>null</td><td>四分类群发通用话术（<code>signalType</code> + <code>content</code>）</td></tr><tr><td>customers</td><td>ApiCustomer[] \</td><td>null</td><td>客户清单（见 B.1）</td></tr><tr><td>customerPortraits</td><td>CustomerPortrait[] \</td><td>null</td><td>客户画像独立数组（见 B.1）</td></tr></table>
+<ul><li><strong>前端业务逻辑</strong>：页面挂载即调；staleTime=Infinity；成功后客户端排序并自动选中首位客户；话术保存/快照/完成服务后定向失效。</li></ul>
+<h3>A.2 接口 2：查询待处理任务</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /api/pending/task/query/taskList</code>（ISMP_CALLOUT_BACKEND）</li><li><strong>用途</strong>：查询客户待处理任务（抽屉展示 + 勾选完结）。</li><li><strong>请求入参</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr><tr><td>clientIdOrUserNo</td><td>string</td><td>否</td><td>客户号（页面传 clientId）</td></tr><tr><td>uuid</td><td>string</td><td>否</td><td>客户 uuid</td></tr><tr><td>pageStart / pageSize</td><td>number</td><td>否</td><td>分页（页面固定 pageSize=50）</td></tr></table>
+<ul><li><strong>响应出参（result）</strong>：<code>{ total: number, list: IsmpTask[] }</code>；IsmpTask 字段见 B.2。</li><li><strong>前端业务逻辑</strong>：选中客户时懒加载（staleTime 30s）；结果写回 page-data 缓存；total 用于卡片红点与画像任务行计数。</li></ul>
+<h3>A.3 接口 3：查询标的实时行情（场景化字段）</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /api/realTime/data</code>（ISMP_CUSTOMERINFO_BACKEND）</li><li><strong>用途</strong>：按&quot;标的+场景&quot;拉取关键数据键值对，驱动关键数据网格。</li><li><strong>请求入参</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>taskId</td><td>string</td><td>任务码</td></tr><tr><td>clientId</td><td>string</td><td>客户号</td></tr><tr><td>securityScenes</td><td><code>{securityCode, sceneCode}[]</code></td><td>标的+场景对（来自 securityList）</td></tr></table>
+<ul><li><strong>响应出参（result）</strong>：<code>MarketDataItem[]</code>，元素 = <code>{ sceneCode, securityCode, fieldsMap: Record&lt;string, unknown&gt; }</code>，fieldsMap 字段集合随 sceneCode 不同（21 套布局，见 B.3）。</li><li><strong>前端业务逻辑</strong>：staleTime 10s 自动刷新；前端按 SCENE_FIELD_LAYOUT 映射渲染与格式化。</li></ul>
+<h3>A.4 接口 4：服务完成提交（新增服务日志）</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /serviceLog/pc/add</code>（IMS_CHANNELVISIT_BACKEND）</li><li><strong>用途</strong>：完成服务时写入渠道服务日志（完成服务级联第一步）。</li><li><strong>请求入参（CompleteReq）</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>custType</td><td>string</td><td>固定 &quot;1&quot;（正式客户）</td></tr><tr><td>custName</td><td>string</td><td>客户姓名（customerPortraits）</td></tr><tr><td>fundAccountOrSource</td><td>string</td><td>资金账号（accountNo）</td></tr><tr><td>serviceDate</td><td>string</td><td>提交时间 &quot;YYYY-MM-DD HH:mm:ss&quot;</td></tr><tr><td>serviceType</td><td>number</td><td>默认 8</td></tr><tr><td>content</td><td>string</td><td>服务内容备注（选填）</td></tr><tr><td>source</td><td>string</td><td>固定 &quot;12&quot;（服务报告）</td></tr></table>
+<ul><li><strong>响应出参</strong>：<code>result: null</code>（code=0 即成功）。</li><li><strong>前端业务逻辑</strong>：完成服务三接口级联第一步；成功后（如有勾选任务）继续任务小结。</li></ul>
+<h3>A.5 接口 5：电话呼叫【未启用】</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /client/call</code>（WORKBUDDY_AI_SERVICE_LIST）</li><li><strong>状态</strong>：<strong>未启用</strong>——仅被未启用的 <code>usePhoneCall</code> hook 引用，无运行时调用路径。实际外呼走横切接口 A.11。</li><li><strong>请求入参（CallReq）</strong>：<code>{ uuid, advisorId, plus0: boolean, signalId? }</code></li><li><strong>响应出参（CallResp）</strong>：<code>{ callRecordId, callPhase, calledNumber, startTime }</code>；配套定义 <code>CallStatusPush</code>（WebSocket/SSE 推送）与 <code>CallRecord</code>（完整记录含 <code>recordUrl</code> 录音地址）。</li><li><strong>前端业务逻辑</strong>：无（预留）。设计意图 ⏳：按信号维度外呼并记录（signalId、录音回溯），需后端确认启用计划。</li></ul>
+<h3>A.6 接口 6a：企微群发—步骤一（客户过滤）</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /workBuddy/mass/externalUserId/check</code>（ISMP_COMMONGW_BACKEND）</li><li><strong>用途</strong>：按客户号批量校验企微好友关系与当日已发标记。</li><li><strong>请求入参（MassCheckReq）</strong>：<code>{ type: 'clientId', users: string[]（≤10000） }</code></li><li><strong>响应出参（MassCheckResp）</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>hasWxRelations</td><td>WxRelationUser[] \</td><td>null</td><td>有企微关系客户（<code>externalUserId</code>/<code>user</code>/<code>adAccount</code>/<code>thatDaySendFlag</code>）</td></tr><tr><td>noWxRelations</td><td>WxRelationUser[] \</td><td>null</td><td>无企微关系客户</td></tr></table>
+<ul><li><strong>前端业务逻辑</strong>：群发弹窗点击发送后第一步；返回结果直接进入步骤二。</li></ul>
+<h3>A.7 接口 6b：企微群发—步骤二（消息发送）</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /workBuddy/mass/wx</code>（ISMP_COMMONGW_BACKEND）</li><li><strong>请求入参（MassWxReq）</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>externalUsersList</td><td>ExternalUser[]</td><td>步骤一 hasWxRelations（<code>adAccount</code>/<code>externalUserId</code>/<code>fundAccount?</code>）</td></tr><tr><td>noWxRelationList</td><td>ExternalUser[]</td><td>步骤一 noWxRelations（后端记录触达失败）</td></tr><tr><td>text.content</td><td>string</td><td>群发话术文本</td></tr><tr><td>attachmentUrlList / attachments</td><td>数组</td><td>本页面默认空/不传（仅文本）</td></tr></table>
+<ul><li><strong>响应出参（MassWxResp）</strong>：<code>{ msgId: string, failList: string[] | null }</code></li><li><strong>前端业务逻辑</strong>：两步完成后前端聚合（BroadcastResp）：<code>sentCount = hasWxRelations.length - failList.length</code>，<code>failedCount = failList.length</code>，<code>noWxRelationCount</code>，<code>thatDaySentCount</code>（hasWxRelations 中 thatDaySendFlag=true 数）→ 分层 toast；<code>failedCount=0</code> 时乐观标记接收人今日已群发并调快照持久化。</li></ul>
+<h3>A.8 接口 7：更新数据快照</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /wb/support/ai-result/update?taskId=xxx</code>（ISMP_CUSTOMERINFO_BACKEND，taskId 在 query）</li><li><strong>用途</strong>：话术保存/群发标记/完成服务状态持久化。</li><li><strong>请求入参（SnapshotSaveReq）</strong>：<code>{ taskId, customers: SnapshotCustomerUpdate[] }</code>，元素：<code>{ uuid, serveStatus?, serveTime?, wxBroadcastStatus?, wxBroadcastTime?, securityList?: [{ securityCode, sceneScript? }] }</code>（仅传变化字段）。</li><li><strong>响应出参（SnapshotSaveResp）</strong>：<code>{ taskId, updatedFields: string[], savedAt }</code></li><li><strong>前端业务逻辑</strong>：三处触发（F21/F25/F29）；静默保存，失败 toast&quot;保存失败，请重试&quot;。</li></ul>
+<h3>A.9 接口 8：待处理任务提交（服务小结）</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /api/yjbadmin/work/calloutTask/saveTaskSummary</code>（ISMP_CALLOUT_BACKEND）</li><li><strong>用途</strong>：完成服务时提交服务小结并完结勾选任务（级联第二步，仅勾选任务 &gt;0 时调用）。</li><li><strong>请求入参（TaskSummaryReq）</strong>：</li></ul>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>account_id</td><td>string</td><td>客户号（clientId）</td></tr><tr><td>account_type</td><td>number</td><td>固定 12</td></tr><tr><td>callout_summary_comment</td><td>string</td><td>服务内容备注</td></tr><tr><td>serviceType / service_record</td><td>string</td><td>固定 &quot;1&quot;</td></tr><tr><td>multitask</td><td>TaskSummaryItem[]</td><td>勾选任务（<code>task_id</code>/<code>template_id</code>/<code>user_type=&quot;12&quot;</code>/<code>user_id</code>）</td></tr><tr><td>list</td><td>TaskSummaryContact[]</td><td>客户联系电话（selectContactsList 的 list：<code>type</code>/<code>phone</code>/<code>this_contact=&quot;&quot;</code>）</td></tr><tr><td>call_list</td><td>string[]</td><td>固定空数组</td></tr></table>
+<ul><li><strong>响应出参</strong>：<code>result</code> 为空对象（code=0 即成功）。</li></ul>
+<h3>A.10 横切接口：客户联系电话查询</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /api/yjbadmin/work/calloutTask/selectContactsList</code>（ISMP_CALLOUT_BACKEND）</li><li><strong>用途</strong>：获取客户可外呼联系电话（展示与外呼号码优先来源，任务小结 list 字段来源）。</li><li><strong>请求入参</strong>：<code>{ account_id: 资金账号, account_type: '12' }</code></li><li><strong>响应出参</strong>：<code>{ client_name, client_gender, list: IContactInfoItem[] }</code>；元素：<code>{ clientId, custName, isBlack, isNative, last_contact, this_contact?, phoneFlag?, isChecked, phone, sort, type, type_name }</code>（type=1 联系电话 / type=3 交易留存电话）。</li><li><strong>前端业务逻辑</strong>：选中客户时查询；取 <code>type=1</code> 首条为展示与外呼号码；失败/无数据回退画像 <code>phoneNo</code>。</li></ul>
+<h3>A.11 横切接口：恒生外呼三件套</h3>
+<table><tr><th>接口</th><th>方法/路径</th><th>入参</th><th>出参</th></tr><tr><td>员工分机号查询</td><td><code>POST /api/yjbadmin/work/query/telNo</code></td><td>无 body</td><td><code>{ adAccount, userName, extTelNo, callNo, crmTeamId, isHsRole }</code>（isHsRole=false 不应发起外呼）</td></tr><tr><td>发起外呼</td><td><code>POST /api/yjbadmin/work/virtual/makeCall</code></td><td><code>{ clientId?, agentTel, customerTel, callingTel, applicationName }</code></td><td><code>{ uniqueId }</code></td></tr><tr><td>挂断</td><td><code>POST /api/yjbadmin/work/virtual/call/hangUp</code></td><td><code>{ unique_id }</code></td><td>-</td></tr></table>
+<ul><li><strong>前端业务逻辑</strong>：CallProvider 挂载时 queryTelNo 初始化分机号；拨打时构造 IContactInfoItem（isChecked=plus0 时号码前加 0）；外呼后 Web Worker 通过 SSE <code>/sse/queryResult?uniqueId=xxx</code> 接收状态（1 接通 / 2、9 挂断），断线 <code>Last-Event-ID</code> 续传；开发环境用定时器模拟（1.5s/1.5s/8s）。</li></ul>
+<h3>A.12 横切接口：批量短链生成</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /short/link/exchange/batch</code>（ISMP_COMMON_BACKEND）</li><li><strong>用途</strong>：诊断链接/一键复制内容中的长链转短链。</li><li><strong>请求入参</strong>：<code>{ urls: string[], aliveMinutes?: number（默认 30 天） }</code></li><li><strong>响应出参</strong>：<code>Record&lt;longUrl, shortUrl&gt;</code></li><li><strong>前端业务逻辑</strong>：模块级 Map 缓存；失败回退原长链不报错。</li></ul>
+<h3>A.13 横切接口：一次性 Token 换取（跨系统跳转）</h3>
+<ul><li><strong>方法/路径</strong>：<code>POST /ycas/getThirdPartyInstantToken/v2</code>（ISMP_COMMON_BACKEND）</li><li><strong>请求入参</strong>：<code>{ ycasToken: 长期token, type: 'pc' }</code></li><li><strong>响应出参</strong>：<code>{ thirdPartyInstantToken: string }</code></li><li><strong>前端业务逻辑</strong>：点击&quot;↗客户详情&quot;时换取，拼入客户视图 URL（<code>client_id</code> + <code>imToCustomerInstantToken</code> + <code>from_page</code>）新开窗口。</li></ul>
+<h3>A.14 通用错误码表（ApiErrorCode 枚举）</h3>
+<table><tr><th>code</th><th>含义</th></tr><tr><td>0</td><td>成功</td></tr><tr><td>1001</td><td>参数校验失败</td></tr><tr><td>1002</td><td>Token 无效或过期</td></tr><tr><td>1003</td><td>无权限操作该客户数据</td></tr><tr><td>1004</td><td>客户不存在</td></tr><tr><td>2001</td><td>客户列表加载失败（MongoDB 连接异常）</td></tr><tr><td>2003</td><td>任务数据加载失败（ISMP 服务异常）</td></tr><tr><td>2004</td><td>行情数据获取失败</td></tr><tr><td>2005</td><td>电话外呼失败（恒生呼叫中心异常）</td></tr><tr><td>2006</td><td>企微群发失败</td></tr><tr><td>2007</td><td>ISMP 任务同步失败</td></tr><tr><td>3001</td><td>服务完成状态不可撤销（重复提交）</td></tr></table>
+<p>***</p>
+<h2>附录 B：数据结构与字段释义（逆向自 apiTypes.ts / types.ts / transform.ts）</h2>
+<h3>B.1 客户维度（ApiCustomer）</h3>
+<table><tr><th>字段</th><th>类型</th><th>说明</th></tr><tr><td>uuid</td><td>string</td><td>客户在任务内唯一标识（页面选中/快照/群发接收人均以此关联）</td></tr><tr><td>clientId</td><td>string</td><td>客户号（任务接口/群发过滤/外呼/任务小结的关联键）</td></tr><tr><td>serveStatus</td><td>0 \</td><td>1 \</td><td>null</td><td>服务状态：0 待服务 / 1 已服务</td></tr><tr><td>serveTime</td><td>string \</td><td>null</td><td>服务完成时间（ISO 8601）；卡片已完成态展示</td></tr><tr><td>wxBroadcastStatus</td><td>0 \</td><td>1</td><td>企微群发状态</td></tr><tr><td>wxBroadcastTime</td><td>string \</td><td>null</td><td>最近群发时间（&quot;MM-DD&quot; 或 &quot;YYYY-MM-DD...&quot;格式，今日已发判定依据）</td></tr><tr><td>securityList</td><td>ApiSecurity[] \</td><td>null</td><td>关联标的（信号）列表</td></tr></table>
+<h3>B.2 客户画像（CustomerPortrait）</h3>
+<table><tr><th>字段</th><th>类型</th><th>页面展示</th></tr><tr><td>uuid / clientId</td><td>string</td><td>与 ApiCustomer 关联</td></tr><tr><td>customerName</td><td>string</td><td>姓名（18px；头像取首字）</td></tr><tr><td>customerGender</td><td>string</td><td>性别行</td></tr><tr><td>customerLevel</td><td>string</td><td>客户等级（空显示&quot;无&quot;，如&quot;高客四星&quot;）</td></tr><tr><td>customerRiskLevel</td><td>string</td><td>风险等级（&quot;C4 中高风险&quot;格式，拆分展示；话术校验基准）</td></tr><tr><td>customerStyle</td><td>string \</td><td>null</td><td>客户风格（当前页面未渲染 ⏳ 预留字段）</td></tr><tr><td>accountNo</td><td>string</td><td>资金账号（服务日志 fundAccountOrSource 来源）</td></tr><tr><td>phoneNo</td><td>string \</td><td>null</td><td>画像电话（展示/外呼兑底来源；可为 null）</td></tr><tr><td>totalAsset</td><td>string</td><td>总资产（元，≥1万转&quot;万&quot;单位 2 位小数）</td></tr><tr><td>holdingAsset</td><td>string</td><td>证券市值（元，同上）</td></tr></table>
+<h3>B.3 标的/信号维度（ApiSecurity）</h3>
+<table><tr><th>字段</th><th>类型</th><th>页面展示</th></tr><tr><td>securityType</td><td>'ETF' \</td><td>'stock'</td><td>类型标签：stock→&quot;个股&quot;，否则&quot;ETF&quot;</td></tr><tr><td>securityCode</td><td>string</td><td>代码（风险等级前缀判定：300/301/688/920/87/88/83→C4）</td></tr><tr><td>securityName</td><td>string</td><td>标的名称（20px 粗体）</td></tr><tr><td>signalType</td><td>string</td><td>信号类型（枚举见术语表；决定颜色/分类/排序）</td></tr><tr><td>signalSubtype</td><td>string[] \</td><td>null</td><td>信号子类型（当前页面未渲染 ⏳ 预留字段）</td></tr><tr><td>scenario</td><td>string</td><td>场景描述标签（信号卡头部）</td></tr><tr><td>events</td><td>ApiEvent[] \</td><td>null</td><td>关联异动/热点事件</td></tr><tr><td>sceneCode</td><td>string</td><td>场景编码（G1-01~G4-03，决定关键数据布局）</td></tr><tr><td>sceneScript</td><td>string</td><td>个性化话术（可编辑/保存/复制）</td></tr><tr><td>diagnosisUrls</td><td>{ sector, underlying }[] \</td><td>null</td><td>诊断链接（板块/个股 ETF）</td></tr><tr><td>keyData</td><td>ApiKeyDataItem[] \</td><td>null</td><td>兼容字段（V1 文档未声明；当前页面关键数据实际来自行情接口 fieldsMap）</td></tr><tr><td>serviceRef</td><td>ApiServiceRefItem[] \</td><td>null</td><td>兼容字段（服务介绍实际为前端静态 SERVICE_REF_DATA）</td></tr></table>
+<p>ApiEvent：<code>{ label（事件标题，&gt;10字截断）, content（Popover 详情）, type（positive红/negative绿/其他灰；兼容 up/dn/-）, event_type?（hotspot热点/anomaly异动，决定前缀文案） }</code></p>
+<h3>B.4 待处理任务（IsmpTask）</h3>
+<table><tr><th>字段</th><th>类型</th><th>页面展示</th></tr><tr><td>taskId / templateId</td><td>number</td><td>任务/模板 ID（任务小结 multitask 提交字段）</td></tr><tr><td>taskName</td><td>string</td><td>任务名称（已完成时删除线灰字）</td></tr><tr><td>startTime / endTime</td><td>string</td><td>起止时间（YYYY.MM.DD，展示时 . 转 -；endTime 早于今日为逾期）</td></tr><tr><td>mustDo / mustDoDesc</td><td>number / string</td><td>必做标记（1→红色&quot;必做&quot;标签）</td></tr><tr><td>priority / priorityDesc</td><td>number / string</td><td>优先级（描述匹配：紧急→urgent红标签 / 较高→high / 一般→normal / 低→low；fallback 按 code 9→urgent、3→normal）</td></tr><tr><td>appointment / appointmentDesc</td><td>number / string</td><td>预约标记</td></tr><tr><td>taskDesc</td><td>string \</td><td>null</td><td>任务描述</td></tr></table>
+<blockquote>任务分类 TaskCategory（service/marketing）仅用于埋点参数 ⏳ 字段实际来自任务系统，页面未单独渲染分类标签。</blockquote>
+<h3>B.5 行情 fieldsMap 字段元数据（FIELD_CONFIG）</h3>
+<table><tr><th>字段 key</th><th>默认 label</th><th>格式化</th><th>着色</th><th>说明</th></tr><tr><td>closeWinRate</td><td>近一月闭环信号胜率</td><td>percent</td><td>-</td><td>0.68→&quot;68%&quot;</td></tr><tr><td>closedProfitSignalCount</td><td>近一月闭环盈利信号数</td><td>count</td><td>-</td><td>17→&quot;17个&quot;</td></tr><tr><td>totalProductReturnRate</td><td>近一月平均闭环收益率</td><td>percent</td><td>✓</td><td></td></tr><tr><td>signalDirection</td><td>信号方向</td><td>direction</td><td>-</td><td>1买入/2卖出/0不变</td></tr><tr><td>followAmount</td><td>跟单金额</td><td>text</td><td>-</td><td></td></tr><tr><td>followType / followTime</td><td>跟单类型/时间</td><td>text</td><td>-</td><td></td></tr><tr><td>thsConceptCode / thsConceptName</td><td>概念代码/名称</td><td>text</td><td>-</td><td>同花顺口径</td></tr><tr><td>popularConcepts</td><td>当前热门概念</td><td>conceptList</td><td>-</td><td>JSON 数组，rank 升序取前 3+弹窗全量</td></tr><tr><td>signalTime</td><td>信号卖出提示时间</td><td>text</td><td>-</td><td>G1-07</td></tr><tr><td>sellPrice</td><td>信号卖出提示价格</td><td>price</td><td>-</td><td>两位小数+元</td></tr><tr><td>profitRate</td><td>信号盈亏率</td><td>percent</td><td>✓</td><td>各场景 label 可能覆盖</td></tr><tr><td>totalProfitRate / totalProfit</td><td>累计跟单盈亏率/持仓盈亏额</td><td>percent/amount</td><td>✓</td><td></td></tr><tr><td>closeProfitRate / closeProfit</td><td>客户实际卖出收益率/清仓盈亏额</td><td>percent/amount</td><td>✓</td><td>G1-08</td></tr><tr><td>closeAvgPrice / entrustPrice</td><td>清仓均价/委托价格</td><td>price</td><td>-</td><td></td></tr><tr><td>floatingProfit</td><td>持仓盈亏额</td><td>amount</td><td>✓</td><td></td></tr><tr><td>buyPrice</td><td>信号买入提示价格</td><td>price</td><td>-</td><td></td></tr><tr><td>stopLossPrice</td><td>信号止损价</td><td>price</td><td>-</td><td></td></tr><tr><td>Last</td><td>最新价</td><td>price</td><td>-</td><td>G1-08/09 场景 label 为&quot;当前标的最新价&quot;</td></tr><tr><td>estimatedStopLossPct</td><td>理论止损比例</td><td>percent</td><td>✓</td><td>按客户实际跟买价计算</td></tr><tr><td>negativeAnnouncement</td><td>负面公告</td><td>text（多行截断）</td><td>-</td><td>G2-02</td></tr><tr><td>signalContent</td><td>推荐理由</td><td>text（多行截断）</td><td>-</td><td>G2-02/G4</td></tr><tr><td>takeProfitPrice / costPrice</td><td>信号止盈价/跟随成本价</td><td>price</td><td>-</td><td>G3</td></tr><tr><td>openDate / saleDate</td><td>最大收益开/卖出日期</td><td>text</td><td>-</td><td>G4</td></tr><tr><td>serviceDescAI / serviceDescAIPlus</td><td>AI投顾/AI+投顾服务介绍</td><td>text（多行截断）</td><td>-</td><td>字段已定义；页面服务介绍实际为静态文案 ⏳</td></tr></table>
+<h3>B.6 21 场景布局总表（SCENE_FIELD_LAYOUT）</h3>
+<table><tr><th>场景</th><th>标题</th><th>细分描述</th><th>字段集</th></tr><tr><td>G1-01</td><td>客户跟随亏损且信号未止损</td><td>板块下跌异动 + 仓位不重（&lt;10%）</td><td>基线 A</td></tr><tr><td>G1-02</td><td>客户跟随亏损且信号未止损</td><td>板块下跌异动 + 仓位较重（≥10%）</td><td>基线 A</td></tr><tr><td>G1-03</td><td>客户跟随亏损且信号未止损</td><td>无板块异动→行情原因 + 仓位不重</td><td>基线 A</td></tr><tr><td>G1-04</td><td>客户跟随亏损且信号未止损</td><td>无板块异动→行情原因 + 仓位较重</td><td>基线 A</td></tr><tr><td>G1-05</td><td>客户跟随亏损且信号未止损</td><td>无板块异动→不在热点概念 + 仓位不重</td><td>概念 B</td></tr><tr><td>G1-06</td><td>客户跟随亏损且信号未止损</td><td>无板块异动→不在热点概念 + 仓位较重</td><td>概念 B</td></tr><tr><td>G1-07</td><td>客户跟随亏损且信号盈利闭环</td><td>无板块异动：没有跟卖（信号盈利闭环，客户未跟卖）</td><td>G1-07 集 C</td></tr><tr><td>G1-08</td><td>客户跟随亏损且信号未止损</td><td>无板块异动：卖早了（客户亏损清仓，信号未闭环）</td><td>G1-08 集 D</td></tr><tr><td>G1-09</td><td>客户跟随亏损且信号未止损</td><td>无板块异动：正常调整 + 仓位不重（浮亏&lt;7%）</td><td>G1-09 集 E</td></tr><tr><td>G1-10</td><td>客户跟随亏损且信号未止损</td><td>无板块异动：正常调整 + 仓位较重（浮亏&lt;7%）</td><td>G1-09 集 E</td></tr><tr><td>G2-01</td><td>客户跟投亏损且信号已止损</td><td>板块出现异动</td><td>基线 A</td></tr><tr><td>G2-02</td><td>客户跟投亏损且信号已止损</td><td>板块无异动：推荐逻辑变动（负面公告）</td><td>G2-02 集 F</td></tr><tr><td>G2-03</td><td>客户跟投亏损且信号已止损</td><td>板块无异动：行情原因</td><td>基线 A</td></tr><tr><td>G2-04</td><td>客户跟投亏损且信号已止损</td><td>板块无异动：不在热点概念</td><td>G2-04 集 G</td></tr><tr><td>G3-01</td><td>客户跟投盈利且信号盈利了结</td><td>板块触发向上异动 + 仓位较重（≥10%）</td><td>G3 集 H</td></tr><tr><td>G3-02</td><td>客户跟投盈利且信号盈利了结</td><td>板块触发向上异动 + 仓位不重且属风口板块</td><td>G3 集 H</td></tr><tr><td>G3-03</td><td>客户跟投盈利且信号盈利了结</td><td>板块触发向上异动 + 仓位不重且非风口板块</td><td>G3 集 H</td></tr><tr><td>G3-04</td><td>客户跟投盈利且信号盈利了结</td><td>板块未触发向上异动 → 仓位较重</td><td>G3 集 H</td></tr><tr><td>G3-05</td><td>客户跟投盈利且信号盈利了结</td><td>板块未触发向上异动 → 仓位不重且风口板块</td><td>G3 集 H</td></tr><tr><td>G3-06</td><td>客户跟投盈利且信号盈利了结</td><td>板块未触发向上异动 → 仓位不重且非风口板块</td><td>G3 集 H</td></tr><tr><td>G4-01</td><td>客户未签约AI+，持仓出现AI信号</td><td>持仓标的属于风口概念</td><td>G4 集 I</td></tr><tr><td>G4-02</td><td>客户未签约AI+，持仓出现AI信号</td><td>持仓标的属于热点事件涉及板块</td><td>G4 集 I</td></tr><tr><td>G4-03</td><td>客户未签约AI+，持仓出现AI信号</td><td>未命中风口概念或热点事件</td><td>G4 集 I</td></tr></table>
+<p><strong>字段集说明</strong>（完整字段序列见 realTimeData.ts）：</p>
+<ul><li><strong>基线 A</strong>：信号方向/跟单金额/跟单类型/跟单时间/信号买入提示价格/信号卖出提示价格/信号盈亏率/标的所属概念代码/标的所属概念/近一月信号胜率/近一月信号数量/近一月信号累积收益率（12 项）；</li><li><strong>概念 B</strong>：基线 A 中概念名称后插入&quot;当前热门概念（同花顺前 20）&quot;（13 项）；</li><li><strong>G1-07 集 C</strong>：基线 A 将信号盈亏率位置后追加&quot;信号卖出提示时间&quot;与&quot;持仓盈亏额（实时）&quot;；</li><li><strong>G1-08 集 D</strong>：追加减仓/止损相关字段：客户清仓均价/客户实际卖出收益率/当前标的最新价/信号当前收益率/信号止损价/理论止损比例（按客户实际跟买价计算）；</li><li><strong>G1-09 集 E</strong>：追加累计跟单成本价/累积跟单盈亏率/当前标的最新价/信号止损价；</li><li><strong>G2-02 集 F</strong>：首位置追加&quot;标的相关负面公告&quot;与&quot;AI选好股推荐理由&quot;（多行截断）；</li><li><strong>G2-04 集 G</strong>：首位置追加&quot;当前热门概念&quot;；</li><li><strong>G3 集 H</strong>：基线 A 的卖出价格后插入&quot;信号止盈价&quot;；</li><li><strong>G4 集 I</strong>（近一年口径）：持仓命中信号买入/卖出提示价格/AI选好股推荐理由/该标的近一年闭环信号胜率/该标的近一年信号次数/近一年最大收益率信号开仓日期/卖出日期/收益率/标的所属概念代码/概念名称（10 项）。</li></ul>
+<blockquote>场景 tooltip（信号卡头部 Popover 展开内容）为上述场景规则的完整口径描述，含数据统计窗口（跟单数据取近 20 自然日截止 T-1 日；G4 为上周盈利信号命中持仓截止周五收盘）。未知 sceneCode 兜底：按 FIELD_CONFIG 默认顺序输出所有已知字段。</blockquote>
+<h3>B.7 数据库表与字段释义【信息不足，需要补充源码确认】</h3>
+<p>本仓库为纯前端仓库，<strong>不含后端源码与数据库 DDL</strong>，以下仅为基于接口契约与错误码的可考证推测，<strong>禁止作为开发依据</strong>：</p>
+<table><tr><th>推测存储域</th><th>依据</th></tr><tr><td>客户清单存储（疑为 MongoDB）</td><td>错误码 2001 描述&quot;客户列表加载失败（MongoDB 连接异常）&quot;；PageDataResp 含流程字段（processId/reviewRounds/regenerationsUsed 等），疑为 AI 话术生成流程引擎的文档型存储</td></tr><tr><td>任务数据存储（ISMP 任务系统）</td><td>错误码 2003&quot;任务数据加载失败（ISMP 服务异常）&quot;；IsmpTask 为标准任务表字段（taskId/templateId/mustDo/priority/appointment）</td></tr><tr><td>服务日志存储（渠道服务日志）</td><td>接口 4 落 ISMP 渠道网关服务日志（custType/serviceType/source 枚举体系）</td></tr><tr><td>快照存储（AI 结果表）</td><td>接口 7 响应 updatedFields/savedAt，疑为按 taskId+uuid 维度的 AI 结果快照表</td></tr><tr><td>企微发送记录</td><td>thatDaySendFlag 当日已发标记，疑为公共网关侧按 adAccount+externalUserId 维度的发送流水</td></tr></table>
+<blockquote>完整表结构、索引、字段类型与生命周期（快照保留天数/任务过期策略等）需后端/DBA 补充源码确认。</blockquote>
+<p>***</p>
+<h2>附录 C：能力分类清单（已实现 / 未启用 / 缺失）</h2>
+<h3>C.1 已实现能力（运行时可达，REQ-001~REQ-031）</h3>
+<table><tr><th>能力域</th><th>明细</th></tr><tr><td>页面框架</td><td>URL taskId 解析、骨架屏/错误重试/空数据三态、自动选中首位客户、任务数据懒加载回写缓存</td></tr><tr><td>顶栏</td><td>业务线标题、待服务/已完成统计、生成时间（UTC+8h 转北京时间）、用户头像</td></tr><tr><td>客户列表</td><td>四分类筛选 Tab、排序（完成置底→亏损→盈利→未签约→紧急度=任务×5+信号数）、卡片信号聚合标签、任务红点、今日已群发标记、完成态置灰、面板折叠（300px↔72px）、自定义滚动指示器</td></tr><tr><td>客户画像</td><td>首字头像、姓名/账号/性别/等级/风险等级、总资产/证券市值（万单位格式化）、本次服务信号计数、客户详情跳转（一次性 token）</td></tr><tr><td>电话外呼</td><td>联系人接口优先+画像兑底、号码脱敏、+0 外显按客户记忆、恒生 makeCall/hangUp、SSE 状态推送（Web Worker）、开发环境模拟状态机、通话状态条+计时、通话结果弹窗、分机号初始化（isHsRole 判断）</td></tr><tr><td>待处理任务</td><td>任务抽屉、紧急/必做标签、逾期红字、勾选、随完成服务提交任务小结、切换客户收起</td></tr><tr><td>信号展示</td><td>信号卡头部（颜色指示条/标的/类型/场景标签/Popover）、21 场景关键数据网格（格式化/着色/Tooltip）、热门概念前 3+全量弹窗、多行截断、关联异动/热点事件 Popover</td></tr><tr><td>话术</td><td>展示/展开收起、contentEditable 编辑、失焦保存（变化比对）、✓已保存反馈、风险等级校验（C3/C4 前缀规则+红色警示）、一键复制（话术+诊断链接短链化）</td></tr><tr><td>诊断入口</td><td>板块/个股/ETF诊断跳转（新窗口+toast）、诊断链接复制（短链+✓已复制）</td></tr><tr><td>服务介绍</td><td>未签约客户专属 AI+投顾介绍（静态文案、三大产品）</td></tr><tr><td>企微群发</td><td>四分类入口+人数统计（宽口径）、当日已发排除+提示、跨分类选择模式（全选/取消/下一步）、群发弹窗（接收人管理/今日已发标记/移除/折叠、话术编辑、混合警示禁发）、两步调用、聚合结果 toast、乐观更新+快照持久化</td></tr><tr><td>完成服务</td><td>服务内容备注、二次确认、三接口级联、loading 防重、✓已完成反馈、缓存失效+自动跳转下一客户</td></tr><tr><td>横切能力</td><td>请求去重、统一错误处理、401 跳 SSO、批量短链（缓存+失败回退）、剪贴板降级、16 项埋点</td></tr></table>
+<h3>C.2 代码存在但未启用能力（REQ-032）</h3>
+<table><tr><th>能力</th><th>位置</th><th>推测定位 ⏳</th></tr><tr><td><code>usePhoneCall</code> 前端模拟通话 Hook</td><td>hooks/usePhoneCall.ts</td><td>早期开发/演示用模拟实现，被 services/call 真实实现替代</td></tr><tr><td><code>callClient</code> 接口（POST /client/call）</td><td>api.ts 接口 5</td><td>按信号维度外呼+录音回溯（CallResp/CallRecord 含 recordUrl），待后端就绪后启用</td></tr><tr><td><code>CallStatusPush</code> 类型</td><td>apiTypes.ts</td><td>配套 callClient 的 WebSocket/SSE 推送契约</td></tr><tr><td><code>EmptyState</code> 通用空态组件</td><td>components/EmptyState.tsx</td><td>三种空态设计稿实现，当前页面用内联文案</td></tr><tr><td><code>getGridCols</code> / <code>buildSceneSummary</code></td><td>utils/sceneConfig.ts</td><td>早期网格列数/信号摘要方案，被 CSS 断点与卡片标签替代</td></tr><tr><td><code>shouldCloseBroadcastModal</code></td><td>utils/format.ts</td><td>弹窗关闭判定抽离函数，逻辑已内联</td></tr><tr><td><code>isTaskOverdue</code></td><td>utils/format.ts</td><td>逾期判定抽离函数，TaskRow 内联实现</td></tr><tr><td><code>signalSubtype</code> / <code>customerStyle</code> / <code>keyData</code> / <code>serviceRef</code> 字段</td><td>apiTypes.ts</td><td>接口预留字段，页面未渲染</td></tr><tr><td><code>serviceDescAI</code> / <code>serviceDescAIPlus</code> 行情字段</td><td>realTimeData.ts</td><td>字段映射已定义，服务介绍当前用静态文案</td></tr><tr><td>群发附件（attachmentUrlList / attachments）</td><td>apiTypes.ts MassWxReq</td><td>接口支持，页面固定不传（仅文本群发）</td></tr><tr><td><code>last_contact</code> 联系人字段</td><td>call.types.ts</td><td>上次接通状态，页面未消费</td></tr></table>
+<h3>C.3 缺失未实现能力（前端可考证范围内）</h3>
+<table><tr><th>缺失项</th><th>佐证</th></tr><tr><td>任务列表分页 UI</td><td>请求固定 pageSize=50，无分页控件；任务超 50 条时超出部分不可见</td></tr><tr><td>通话记录查询/录音播放</td><td><code>CallRecord.recordUrl</code> 类型存在，但无查询接口调用与播放 UI</td></tr><tr><td>服务状态回退/撤销</td><td>无逆向接口（错误码 3001 明确&quot;不可撤销&quot;），完成即终态</td></tr><tr><td>历史清单查询</td><td>页面仅当日 taskId 维度，无历史入口</td></tr><tr><td>前端细粒度权限控制</td><td>无按钮/菜单级权限码；页面级依赖鉴权与后端 1003 错误码（&quot;无权限操作该客户数据&quot;）；外呼能力仅 isHsRole 判断</td></tr><tr><td>页面内 taskId 输入/切换</td><td>仅从 URL 读取；缺失时报错进全屏错误态，无引导</td></tr><tr><td>通话中拦截完成服务</td><td>通话进行中仍可提交完成服务（未验证是否有意为之 ⏳）</td></tr><tr><td>话术字数限制</td><td>contentEditable 无长度校验（后端是否限制未知 ⏳）</td></tr><tr><td>移动端适配</td><td>无；仅 980px/760px 两档降级</td></tr><tr><td>数据库表结构 / 后端接口内部逻辑</td><td>后端仓库不在本仓库，见 B.7【信息不足，需要补充源码确认】</td></tr></table>
+<p>***</p>
+<h2>附录 D：异常边界场景汇总（测试用例索引）</h2>
+<h3>D.1 鉴权与权限</h3>
+<table><tr><th>#</th><th>场景</th><th>触发条件</th><th>系统行为</th></tr><tr><td>D1-01</td><td>未登录/token 失效</td><td>ycas_token 缺失或无效（1002/401）</td><td>清除 token，跳转 SSO 登录页</td></tr><tr><td>D1-02</td><td>无页面权限</td><td>HTTP 403</td><td>toast&quot;没有权限访问&quot;</td></tr><tr><td>D1-03</td><td>无客户数据权限</td><td>业务码 1003</td><td>toast 后端 message（&quot;无权限操作该客户数据&quot;）</td></tr><tr><td>D1-04</td><td>无外呼角色</td><td>queryTelNo 返回 isHsRole=false</td><td>不应发起外呼（代码注释约束；前端未见强拦截 ⏳）</td></tr></table>
+<h3>D.2 数据加载异常</h3>
+<table><tr><th>#</th><th>场景</th><th>触发条件</th><th>系统行为</th></tr><tr><td>D2-01</td><td>页面数据网络失败</td><td>断网/5xx/超时</td><td>全屏 Result 错误组件+重试（整页刷新）</td></tr><tr><td>D2-02</td><td>客户列表存储异常</td><td>业务码 2001</td><td>toast MongoDB 异常文案，页面错误态</td></tr><tr><td>D2-03</td><td>清单为空</td><td>customers 为空数组/null</td><td>全屏&quot;暂无客户数据&quot;</td></tr><tr><td>D2-04</td><td>某分类为空</td><td>筛选 Tab 无匹配客户</td><td>列表区&quot;📋 暂无该分类客户&quot;；选中客户被切走时自动切换/清空</td></tr><tr><td>D2-05</td><td>任务接口失败</td><td>业务码 2003/网络错误</td><td>toast；卡片无任务行（高度 120px）</td></tr><tr><td>D2-06</td><td>行情接口失败</td><td>业务码 2004/网络错误</td><td>toast；关键数据网格不渲染（fieldsMap 空）</td></tr><tr><td>D2-07</td><td>taskId 缺失</td><td>URL 无参数</td><td>接口报错→全屏错误态（无前置引导 ⏳）</td></tr><tr><td>D2-08</td><td>联系人接口失败/无数据</td><td>selectContactsList 报错/空</td><td>回退画像 phoneNo；两者均空→电话按钮禁用</td></tr></table>
+<h3>D.3 业务规则边界</h3>
+<table><tr><th>#</th><th>场景</th><th>触发条件</th><th>系统行为</th></tr><tr><td>D3-01</td><td>话术风险不匹配</td><td>客户风险 &lt; 话术最低适用等级（C3/C4）</td><td>红色警示条+话术区红边框（不阻断操作）</td></tr><tr><td>D3-02</td><td>群发跨分类</td><td>所选客户含多分类（窄口径）</td><td>黄色警示+发送禁用+话术区占位文案</td></tr><tr><td>D3-03</td><td>分类全部今日已发</td><td>可发送数=0</td><td>下拉 warning&quot;该分类客户今日均已发送，无需重复群发&quot;</td></tr><tr><td>D3-04</td><td>群发部分失败</td><td>failList 非空</td><td>聚合 toast（成功/失败/无关系/当日已发），不乐观标记</td></tr><tr><td>D3-05</td><td>群发接收人清零</td><td>弹窗内逐个移除至 0</td><td>弹窗自动关闭</td></tr><tr><td>D3-06</td><td>完成服务重复提交</td><td>二次点击/3001</td><td>loading 防重；后端 3001 toast&quot;不可撤销（重复提交）&quot;</td></tr><tr><td>D3-07</td><td>已完成客户</td><td>serveStatus=1</td><td>卡片置灰置底；服务底栏隐藏；不可再操作</td></tr><tr><td>D3-08</td><td>任务逾期</td><td>endTime 早于今日</td><td>任务行红字&quot;逾期 MM-DD&quot;（可勾选）</td></tr><tr><td>D3-09</td><td>通话中切换客户</td><td>通话中点其他卡片</td><td>通话状态重置（store 副作用）</td></tr><tr><td>D3-10</td><td>话术未修改即失焦</td><td>内容无变化</td><td>不触发保存请求</td></tr><tr><td>D3-11</td><td>保存失败</td><td>快照接口报错</td><td>toast&quot;保存失败，请重试&quot;；本地内容保留</td></tr></table>
+<h3>D.4 展示边界</h3>
+<table><tr><th>#</th><th>场景</th><th>触发条件</th><th>系统行为</th></tr><tr><td>D4-01</td><td>超长事件标题</td><td>events[].label &gt; 10 字</td><td>药丸截断&quot;...&quot;；Popover 展示完整</td></tr><tr><td>D4-02</td><td>超长概念名称</td><td>概念名超出容器</td><td>truncate；弹窗内同样截断</td></tr><tr><td>D4-03</td><td>超长多行文本</td><td>negativeAnnouncement/signalContent &gt; 2 行</td><td>2 行截断+Tooltip 完整内容</td></tr><tr><td>D4-04</td><td>极端资产数值</td><td>totalAsset ≥ 10000</td><td>转&quot;万&quot;单位保留 2 位（如 152.86 万）</td></tr><tr><td>D4-05</td><td>极端盈亏数值</td><td>金额千分位完整展示</td><td>135,000元 / -135,000元；无上限截断</td></tr><tr><td>D4-06</td><td>极端百分比</td><td>percent ×100 保留 2 位</td><td>0.68666→68.67%</td></tr><tr><td>D4-07</td><td>客户等级为空</td><td>customerLevel 空串</td><td>显示&quot;无&quot;</td></tr><tr><td>D4-08</td><td>无信号客户</td><td>securities 空</td><td>信号区不渲染（SignalSection 返回 null）；本次服务显示蓝&quot;—&quot;</td></tr><tr><td>D4-09</td><td>无事件有诊断</td><td>events 空但 underlying 诊断存在</td><td>异动区渲染&quot;暂无异动/热点&quot;+诊断入口</td></tr><tr><td>D4-10</td><td>无事件无诊断</td><td>两者均空</td><td>异动区整体不渲染</td></tr><tr><td>D4-11</td><td>诊断链接为空</td><td>diagnosisUrls 空</td><td>诊断入口不渲染；一键复制不拼该行</td></tr><tr><td>D4-12</td><td>短链服务失败</td><td>短链接口报错</td><td>回退原长链，不报错不阻断</td></tr><tr><td>D4-13</td><td>剪贴板权限拒绝</td><td>Clipboard API 不可用</td><td>execCommand 降级</td></tr><tr><td>D4-14</td><td>生成时间缺失</td><td>createTime 空</td><td>顶栏不渲染生成时间区域</td></tr><tr><td>D4-15</td><td>群发接收人 &gt; 10</td><td>弹窗内接收人超 10 个</td><td>折叠&quot;展开（共 N 人）▾&quot;</td></tr><tr><td>D4-16</td><td>未知 sceneCode</td><td>后端返回未定义场景</td><td>兑底按 FIELD_CONFIG 默认顺序输出</td></tr><tr><td>D4-17</td><td>概念 JSON 非法</td><td>popularConcepts 解析失败</td><td>按空处理</td></tr></table>
+<h3>D.5 通话异常</h3>
+<table><tr><th>#</th><th>场景</th><th>触发条件</th><th>系统行为</th></tr><tr><td>D5-01</td><td>主叫分机不存在</td><td>恒生返回错误</td><td>toast&quot;主叫号码不存在&quot;</td></tr><tr><td>D5-02</td><td>被叫号码不存在</td><td>恒生返回错误</td><td>toast&quot;被叫号码不存在&quot;</td></tr><tr><td>D5-03</td><td>呼叫失败</td><td>恒生/网络异常（2005）</td><td>toast&quot;呼叫失败，请重试&quot;</td></tr><tr><td>D5-04</td><td>客户未接听</td><td>dialResult=0</td><td>结果弹窗未接通文案（ended_no_answer）</td></tr><tr><td>D5-05</td><td>SSE 断线</td><td>网络波动</td><td>Last-Event-ID 续传重连</td></tr><tr><td>D5-06</td><td>通话中挂断</td><td>点击挂断按钮</td><td>调 hangUp 接口，转结束态</td></tr></table>
+<p>***</p>
+<blockquote>本文档到此结束。配套交付物：<code>demo/</code>（HTML 交互原型）、<code>README.md</code>（使用说明）、<code>traceability.md</code>（需求编号↔页面↔源码三方映射）。</blockquote></main></body></html>

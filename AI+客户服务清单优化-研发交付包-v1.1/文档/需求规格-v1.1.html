@@ -1,0 +1,44 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>需求规格 v1.1</title><style>body{margin:0;background:#f5f7fb;color:#172033;font:15px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.bar{position:sticky;top:0;background:#fff;border-bottom:1px solid #e4e9f2;padding:14px 6%;display:flex;justify-content:space-between;align-items:center;z-index:1}.bar a{color:#2b73ff;text-decoration:none}.wrap{max-width:1120px;margin:0 auto;padding:30px 6% 60px;background:#fff;min-height:100vh}h1{font-size:28px;margin:0 0 24px}h2{font-size:22px;margin:36px 0 16px;padding-bottom:8px;border-bottom:1px solid #e8edf5}h3{font-size:18px;margin:28px 0 12px}h4{font-size:16px;margin:22px 0 8px}p{margin:10px 0}table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:14px}th,td{border:1px solid #e2e8f0;padding:9px 11px;text-align:left;vertical-align:top}th{background:#f6f8fc;font-weight:600}ul,ol{padding-left:24px}li{margin:5px 0}code{background:#f1f4f8;padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:.9em}pre{background:#172033;color:#eff6ff;padding:16px;border-radius:8px;overflow:auto}pre code{background:none;padding:0}blockquote{margin:14px 0;padding:10px 14px;border-left:3px solid #2b73ff;background:#f6f9ff;color:#596579}hr{border:0;border-top:1px solid #e8edf5;margin:24px 0}</style><body><nav class="bar"><a href="../交付中心.html">← 返回交付中心</a><a href="../docs/specs/2026-09-22-ai-service-list-v1.1-spec.md">查看原始 Markdown</a></nav><main class="wrap"><h1>AI+客户服务清单 V1.1 交互效率优化 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：AI+客户服务清单  </p>
+<p><strong>模式</strong>：迭代（iterate）  </p>
+<p><strong>平台类型</strong>：PC Web  </p>
+<p><strong>日期</strong>：2026-09-22  </p>
+<p><strong>迭代版本号</strong>：v1.1  </p>
+<p><strong>流程设计要求</strong>：单版；本期改变群发前的选人路径，需在后续主 PRD 中更新该路径与异常分支。</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：执行日常 AI+投顾服务触达的客户经理与投顾。</p>
+<p><strong>要解决的问题</strong>：现有客户服务清单在群发后未形成足够强的已发送提示和可执行拦截，容易造成同一客户当日收到重复话术；客户量或单客户关联标的较多时，客户经理难以快速圈定目标客群和定位适合沟通的标的；G1、G2、G3 的客户级近一月信号指标混在单标的卡片中重复展示，容易被误读为单票表现。</p>
+<p>V1.1 通过 AI+选好股服务清单场景内防重发、全场景批量筛选、可控排序、客户级指标归位和标的分层收展，提升触达安全性与服务准备效率。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用。本期是在已上线工作台上做局部交互与信息架构优化，不新增独立功能域，未开展外部调研。</p>
+<p><strong>AI 能力边界</strong>：本期不改变 AI 信号或话术的生成、判断和推荐逻辑。页面只展示后端提供的客户级近一月信号指标和既有标的信号；指标缺失时显示缺失态，不得以其他标的或历史值推断补齐。群发仅使用既有预置或人工编辑话术，不新增自动生成能力。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>客户经理在服务清单中选择信号分类，按资产、证券市值和当日群发状态筛选目标客户；系统默认排除并显著标记当日已群发客户，客户经理仅能勾选未群发客户进入群发确认并发送。单客户服务时，客户经理在客户级近一月信号指标下快速展开目标标的，查看信号并完成既有服务闭环。</p>
+<h3>2.2 关键分支</h3>
+<ul><li><strong>群发场景内锁定</strong>：仅在 AI+选好股服务清单场景中，客户当日任一 G1–G4 群发分类发送成功后，系统将其标记为“今日已群发”；该客户在该场景其余分类和筛选结果中均不可被勾选或再次发送。其他服务场景的群发成功不参与排除。</li><li><strong>筛选与选人</strong>：进入任一群发分类后，默认群发状态为“未群发”。客户经理可设置总资产、证券市值区间和群发状态；筛选结果仅从当前群发分类的未完成客户中产生。若切换为“全部”或“已群发”，已群发客户仅可查看，不可勾选。</li><li><strong>筛选结果为空</strong>：无匹配客户时不进入群发确认，展示空结果及当前筛选条件；客户经理可清除筛选条件后恢复候选名单。</li><li><strong>分类可发送数为零</strong>：若该分类均为当日已群发或筛选后无未群发客户，入口与选择模式明确显示“无可发送客户”，不允许进入发送步骤。</li><li><strong>群发结果分化</strong>：以企微返回的当前服务清单场景逐客户实际发送结果为准。成功客户立即在该场景内锁定并记录发送状态；失败、无企微关系或该场景当日已发送的客户不得标为本次发送成功，可留在列表中供查看或后续处理。</li><li><strong>排序</strong>：客户列表始终先按已完成置底、再按既有信号分类优先级（亏损→盈利→未签约）分组；在同一分组内，客户经理可选择总资产或证券市值并切换升序/降序。仅“未签约”Tab 增加“信号收益率”排序项，取该客户全部未签约标的中最高的信号收益率；缺失所选值的客户位于该组末尾，并按既有紧急度规则排序。</li><li><strong>客户级指标归位</strong>：G1、G2、G3 客户仅在信号模块顶部展示一次“近一月信号胜率、近一月信号数量、近一月信号累计收益率”；任一标的卡片内不再重复这三项。G4 不展示该客户级近一月指标。</li><li><strong>标的收展</strong>：标的数为 1 时默认展开且不显示总控；标的数为 2 时显示总控且默认展开；标的数大于等于 3 时显示总控且默认收起。收起后保留每只标的的标题行，以便定位；任意数量下均可单独展开或收起某一标的。客户级指标始终保持展示。</li></ul>
+<h3>2.3 状态与异常</h3>
+<ul><li><strong>加载中</strong>：沿用既有加载状态；排序控件、筛选控件和收展操作在客户数据未就绪时不可用。</li><li><strong>指标缺失</strong>：客户级近一月指标任一项缺失时展示“--”，不使用单标的指标替代；不影响标的展开、群发或服务完成。</li><li><strong>排序值缺失</strong>：总资产、证券市值或信号收益率缺失时，客户留在对应信号分组的末尾，仍按既有紧急度排序。</li><li><strong>区间校验失败</strong>：资产或证券市值区间下限高于上限，提示修正且不应用该条件；空值代表不限制该端。</li><li><strong>状态刷新冲突</strong>：群发前、确认弹窗打开时和发送前均重新校验 AI+选好股服务清单场景内的当日群发状态；若客户已被该场景的其他操作或会话标记为已群发，移出本次接收人并提示，不发送给该客户。</li><li><strong>发送失败与重试</strong>：发送过程保持防重复提交；发送后只有实际成功客户进入当前服务清单场景内锁定。失败客户不自动重发，客户经理可在后续新的群发操作中再次选择；该场景当日已发送的返回结果则继续锁定。</li><li><strong>收展状态恢复</strong>：切换客户后按该客户标的数重新计算默认状态；同一客户本次浏览期间的手动展开/收起不因排序、筛选或行情刷新而被重置。</li></ul>
+<h3>2.4 跨页影响</h3>
+<ul><li><strong>入口页</strong>：无新增页面；从既有服务清单进入。</li><li><strong>结果页</strong>：无新增结果页；群发确认弹窗和发送结果提示沿用既有承载位置，补充防重复和实际结果反馈。</li><li><strong>受影响模块</strong>：客户列表、客户卡片、企微群发工具栏/分类下拉、选择模式、群发确认弹窗、信号模块与信号卡。</li><li><strong>数据依赖</strong>：需提供或确认客户级近一月三项指标的数据来源；需提供 AI+选好股服务清单场景内的逐客户成功、失败、无企微关系和当日已发送的准确结果，以支持逐客户状态更新。</li></ul>
+<h3>2.5 仍未决项</h3>
+<ul><li>无阻塞产品决策。</li><li>研发需在实施前确认：客户级近一月指标的返回位置与刷新口径，以及群发接口是否能按 AI+选好股服务清单场景返回逐客户成功名单；若不能，须补充可识别当前场景实际成功客户的返回口径后再上线场景内锁定。</li></ul>
+<hr>
+<h2>三、改/写的范围</h2>
+<h3>3.1 PRD 文件清单</h3>
+<table><tr><th>文件路径</th><th>操作类型</th><th>产出者</th><th>涉及章节</th><th>改动摘要</th></tr><tr><td><code>./docs/prd-基线-AI+客户服务清单-V1.0.md</code></td><td>不动</td><td>—</td><td>—</td><td>保留为 V1.0 已上线逆向基线，不回写。</td></tr><tr><td><code>./docs/prd/PRD.md</code></td><td>新建</td><td><code>lon-prd-craft</code></td><td>元信息、产品结构、服务流程、页面索引</td><td>基于 V1.1 Spec 形成当前版本的主 PRD，并引用 V1.0 基线。</td></tr><tr><td><code>./docs/prd/pages/01-AI+客户服务清单.md</code></td><td>新建</td><td><code>lon-page-design</code></td><td>客户列表、群发、信号模块、状态与异常</td><td>细化本期五项能力的页面级交互与状态。</td></tr></table>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table><tr><th>文件路径</th><th>操作类型</th><th>改动摘要</th></tr><tr><td><code>./prototypes/pages/ai-service-list.html</code></td><td>修改</td><td>以现有交互 HTML 为基线，补充群发防重与批量筛选、排序、客户级指标、标的收展；未点名模块保持原样。</td></tr><tr><td><code>./prototypes/mock-data/page-data.json</code></td><td>修改</td><td>增加演示所需的客户级近一月信号指标和可验证的群发状态数据，不改变既有客户、标的和话术事实。</td></tr><tr><td><code>./prototypes/mock-api.js</code></td><td>修改</td><td>让演示层能够按逐客户群发结果更新状态并复现冲突、失败和已发送分支。</td></tr></table>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4><code>./docs/prd/pages/01-AI+客户服务清单.md</code></h4>
+<ul><li>新增客户列表排序控件：在不改变已完成置底和信号分类优先级的前提下，支持总资产、证券市值的升序/降序排序；未签约 Tab 额外支持按客户最高“信号收益率”排序。</li><li>新增全场景群发批量筛选：在任一群发分类的选择模式中，支持按总资产区间、证券市值区间和当日群发状态筛选当前分类客户；默认定位未群发客户。</li><li>强化群发场景内防重复：客户在 AI+选好股服务清单中任一 G1–G4 分类实际发送成功后，在该场景的客户卡片、筛选结果、选择模式和确认弹窗统一标记今日已群发，并禁止在该场景其他分类再次选择或发送；其他服务场景不参与排除。</li><li>重构 G1、G2、G3 的信号信息层级：将近一月信号胜率、近一月信号数量、近一月信号累计收益率移至信号模块顶部，按客户仅展示一份；标的卡片不再重复展示。</li><li>新增标的整体与单项收展：按客户标的数量决定总控展示与默认展开状态；收起态保留标的标题行，客户级指标始终可见；单项展开/收起入口固定在每张标的标题行右侧，展开态不在内容底部另设收起入口。</li></ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul><li>不改 AI 信号生成、场景判定、行情计算、话术自动生成或投资推荐策略。</li><li>不改电话外呼、服务完成、待处理任务、客户详情跳转、诊断链接、服务介绍参考的业务规则。</li><li>个性化话术不再提供展开/收起交互，始终完整展示；编辑、保存、风险提示与诊断入口保持既有口径。</li><li>不新增历史群发记录查询、跨日发送频控、群发审批、定时群发或新的群发分类。</li><li>不将“信号收益率”扩展至非未签约客户；G1、G2、G3 的近一月客户级指标不作为客户排序项。</li><li>不新增页面或改变既有服务清单的入口方式。</li><li>不改 <code>./prototypes/index.html</code>、<code>./prototypes/demo/demo.html</code>、<code>./prototypes/shared/components.js</code> 和图标资产。</li></ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol><li><strong>群发防重</strong>：客户在 AI+选好股服务清单内当日任一 G1–G4 分类实际群发成功后，在该场景所有分类均显示今日已群发，不能被勾选或再次发送；筛选“已群发”时可查看该客户。其他服务场景成功记录不影响本场景候选资格。</li><li><strong>批量筛选</strong>：任一群发分类均可按总资产区间、证券市值区间和群发状态筛选；默认仅显示未群发候选人，区间非法或筛选为空时有明确反馈且不能发送。</li><li><strong>实际结果一致</strong>：发送部分成功时，仅成功客户被标记和锁定；失败、无企微关系客户未被误标为成功；接口已识别为当日已发送的客户被锁定。</li><li><strong>排序可控</strong>：总资产和证券市值支持升序/降序；排序不突破已完成置底与信号分类优先级。未签约 Tab 的信号收益率取客户未签约标的最高值参与升降序，缺失值在本组末尾。</li><li><strong>指标归属清晰</strong>：G1、G2、G3 客户的近一月信号胜率、数量、累计收益率在信号模块内仅展示一次；任何单标的卡片不再展示这三项；缺失值显示“--”。</li><li><strong>收展效率</strong>：1 个标的默认展开且无总控；2 个标的默认展开并有总控；3 个及以上标的默认收起并有总控。所有标的均可独立收展，收起时客户级指标可见且每只标的标题可定位。</li><li><strong>范围守界</strong>：第四节明确列出的功能、页面和资产不发生变化。</li></ol>
+<hr>
+<h2>六、风险与依赖</h2>
+<ul><li><strong>数据依赖</strong>：客户级近一月三项指标必须从客户维度提供，不能通过前端聚合单标的字段推导；需确认 G1、G2、G3 的适用客户及空值口径。</li><li><strong>群发一致性</strong>：AI+选好股服务清单场景内锁定以逐客户实际发送结果为准。若群发服务仅返回聚合计数，无法安全识别成功客户，需要接口补充当前场景逐客户结果后再启用成功即锁定。</li><li><strong>并发风险</strong>：多个会话或操作者可能同时群发同一客户，发送前必须复核当日状态；服务端仍需承担最终幂等与防重保障。</li><li><strong>数据规模</strong>：筛选、排序和收展在当前清单内完成；大规模清单下需保证筛选变更不会丢失已选择的仍符合条件的未群发客户，并在条件变化后移除不再符合条件的选择。</li></ul></main></body></html>

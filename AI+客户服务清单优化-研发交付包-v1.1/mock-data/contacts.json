@@ -1,0 +1,47 @@
+{
+  "_comment": "客户联系电话 — 对应 POST /ismpgw/ims-middleware-callout/callout/task/selectContactsList 响应 result（IContactInfoResult）。key 为 clientId。注意：武静画像 phoneNo=null，本接口返回 type='1' 联系电话 17386175368 作为兜底展示与外呼号码（对应源码 AiServiceListPage handleCall：contacts type=1 优先于画像 phoneNo）。last_contact 为上次通话接通状态。",
+  "8881905747": {
+    "client_name": "武静",
+    "client_gender": "女",
+    "list": [
+      { "phone": "17386175368", "last_contact": "接通", "type": "1", "type_name": "联系电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 1, "isChecked": false },
+      { "phone": "17386170000", "last_contact": null, "type": "3", "type_name": "交易留存电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 3, "isChecked": false }
+    ]
+  },
+  "8872134561": {
+    "client_name": "陈建国",
+    "client_gender": "男",
+    "list": [
+      { "phone": "13801234567", "last_contact": "接通", "type": "1", "type_name": "联系电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 1, "isChecked": false },
+      { "phone": "13801230000", "last_contact": null, "type": "3", "type_name": "交易留存电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 3, "isChecked": false }
+    ]
+  },
+  "8863027489": {
+    "client_name": "刘晓梅",
+    "client_gender": "女",
+    "list": [
+      { "phone": "13912345678", "last_contact": "未接通", "type": "1", "type_name": "联系电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 1, "isChecked": false }
+    ]
+  },
+  "8854918302": {
+    "client_name": "赵明远",
+    "client_gender": "男",
+    "list": [
+      { "phone": "13645678901", "last_contact": "接通", "type": "1", "type_name": "联系电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 1, "isChecked": false }
+    ]
+  },
+  "8845736218": {
+    "client_name": "孙丽华",
+    "client_gender": "女",
+    "list": [
+      { "phone": "15823456789", "last_contact": null, "type": "1", "type_name": "联系电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 1, "isChecked": false }
+    ]
+  },
+  "8837654921": {
+    "client_name": "林秀兰",
+    "client_gender": "女",
+    "list": [
+      { "phone": "13512348899", "last_contact": "接通", "type": "1", "type_name": "联系电话", "isNative": null, "custName": null, "clientId": null, "isBlack": null, "sort": 1, "isChecked": false }
+    ]
+  }
+}

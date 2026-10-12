@@ -1,0 +1,123 @@
+{
+  "_comment": "待办任务 — 对应 POST /ismpgw/ims-middleware-callout/callout/task/list 响应 result（ClientTasksResp）。key 为 clientId。endTime 格式 YYYY.MM.DD（ISMP V1 契约），前端 transformTask 转换为 YYYY-MM-DD 用于逾期判定。6 客户任务分布：武静 2 条（含紧急必做）、陈建国 0 条（空任务边界）、刘晓梅 3 条、赵明远 1 条非必做、孙丽华 0 条、林秀兰 1 条。注意：endTime 为 2026.07.x，相对 demo 运行日（2026-09-18）均逾期 → 任务行右侧显示红色「逾期 07-XX」。",
+  "8881905747": {
+    "total": 2,
+    "list": [
+      {
+        "taskId": 15865,
+        "templateId": 1149,
+        "taskName": "SOP-AI投ETF产品退订挽留",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.07",
+        "mustDo": 1,
+        "mustDoDesc": "必做",
+        "priority": 9,
+        "priorityDesc": "紧急",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "1.AI投ETF退订（目前AI+未上线退订，暂不推送）2.剔除近三月接通率=0的客户且近三月外呼次数≥3次"
+      },
+      {
+        "taskId": 15866,
+        "templateId": 1150,
+        "taskName": "风险测评过期",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.10",
+        "mustDo": 1,
+        "mustDoDesc": "必做",
+        "priority": 3,
+        "priorityDesc": "一般",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "客户风险测评已超过有效期，需提醒客户完成重新测评"
+      }
+    ]
+  },
+  "8872134561": { "total": 0, "list": [] },
+  "8863027489": {
+    "total": 3,
+    "list": [
+      {
+        "taskId": 15867,
+        "templateId": 1149,
+        "taskName": "SOP-AI投ETF产品退订挽留",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.06",
+        "mustDo": 1,
+        "mustDoDesc": "必做",
+        "priority": 9,
+        "priorityDesc": "紧急",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "1.AI投ETF退订（目前AI+未上线退订，暂不推送）2.剔除近三月接通率=0的客户且近三月外呼次数≥3次"
+      },
+      {
+        "taskId": 15868,
+        "templateId": 2099,
+        "taskName": "理财产品即将到期",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.08",
+        "mustDo": 1,
+        "mustDoDesc": "必做",
+        "priority": 9,
+        "priorityDesc": "紧急",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "客户持有的理财产品将于近期到期，需提前沟通续期或转购意向"
+      },
+      {
+        "taskId": 15869,
+        "templateId": 1150,
+        "taskName": "风险测评过期",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.15",
+        "mustDo": 1,
+        "mustDoDesc": "必做",
+        "priority": 3,
+        "priorityDesc": "一般",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "客户风险测评已超过有效期，需提醒客户完成重新测评"
+      }
+    ]
+  },
+  "8854918302": {
+    "total": 1,
+    "list": [
+      {
+        "taskId": 15870,
+        "templateId": 1150,
+        "taskName": "风险测评过期",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.12",
+        "mustDo": 0,
+        "mustDoDesc": "非必做",
+        "priority": 3,
+        "priorityDesc": "一般",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "客户风险测评已超过有效期，需提醒客户完成重新测评"
+      }
+    ]
+  },
+  "8845736218": { "total": 0, "list": [] },
+  "8837654921": {
+    "total": 1,
+    "list": [
+      {
+        "taskId": 15871,
+        "templateId": 1150,
+        "taskName": "风险测评过期",
+        "startTime": "2026.07.01",
+        "endTime": "2026.07.11",
+        "mustDo": 1,
+        "mustDoDesc": "必做",
+        "priority": 3,
+        "priorityDesc": "一般",
+        "appointment": 1,
+        "appointmentDesc": "是",
+        "taskDesc": "客户风险测评已超过有效期，需提醒客户完成重新测评"
+      }
+    ]
+  }
+}
