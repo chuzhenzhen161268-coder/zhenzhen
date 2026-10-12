@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>高净值客户资产升级服务清单｜原型评审画布</title>
+<!-- 前端库引本地 assets/vendor/：整个站点离线可评审，也不受外网可达性影响 -->
+<link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css" />
+<script src="assets/vendor/mermaid/dist/mermaid.min.js"></script>
+<link rel="stylesheet" href="assets/canvas.css" />
+
+</head>
+<body>
+<div class="app">
+  <main class="canvas-wrap">
+    <div class="canvas-scroll" id="canvasScroll">
+      <div class="canvas-sizer" id="canvasSizer">
+        <div class="canvas-stage" id="canvasStage">
+          <div class="shape-ghost" id="shapeGhost" hidden></div>
+          <svg class="arrow-layer" id="arrowLayer"></svg>
+          <div class="arrow-label-layer" id="arrowLabelLayer"></div>
+          <div class="pin-layer" id="pinLayer"></div>
+          <div class="selection-box" id="selectionBox" hidden></div>
+          <svg class="guide-layer" id="guideLayer"></svg>
+          <div class="shape-toolbar" id="shapeToolbar" hidden>
+            <button type="button" data-act="shape" id="stbShape" title="换形状">
+              <svg class="flow-mini" width="18" height="14" aria-hidden="true"><path class="flow-path" d=""></path></svg>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 左上角纵向堆叠：模式切换条（JS 按 demoEntry 注入）+ 相关文档区，两块共用一套定位 -->
+<div class="corner-stack" id="cornerStack">
+  <aside class="refs-panel" id="refsPanel" aria-label="相关文档" hidden>
+    <div class="refs-head">
+      <button type="button" class="refs-toggle" id="refsToggle" aria-expanded="true">
+        <i class="fa-regular fa-folder-open"></i>
+        <span class="refs-toggle-label">相关文档</span>
+        <span class="refs-count" id="refsCount">0</span>
+      </button>
+      <button type="button" class="icon-btn" id="refsRefresh" title="刷新文档清单">
+        <i class="fa-solid fa-rotate"></i>
+      </button>
+      <button type="button" class="icon-btn refs-caret" id="refsCaret" title="收起 / 展开">
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+    </div>
+    <div class="refs-list" id="refsList"></div>
+  </aside>
+</div>
+
+<!-- 关掉横幅后工具栏里的「静态副本」是常驻提示，模式判定本身不受影响 -->
+<div class="static-banner" id="staticBanner" hidden>
+  <i class="fa-solid fa-circle-info"></i>
+  <span>静态副本：这里的改动不会保存到文件。离开前用「导出」带走，交给维护者在本地画布导入。</span>
+  <button type="button" class="static-banner-close" id="staticBannerClose" aria-label="关闭">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div id="panOverlay"></div>
+
+<div class="toolbar" id="toolbar">
+  <button class="toolbar-btn" id="btnLock" title="锁定标注">
+    <i class="fa-solid fa-lock-open"></i>
+  </button>
+  <button class="toolbar-btn" id="btnTheme" title="切换亮 / 暗模式">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+  <span class="save-state" id="saveState" data-state="idle" title="标注与编排的落盘状态"></span>
+  <button class="toolbar-btn" id="btnExport">
+    <i class="fa-solid fa-download"></i><span>导出</span>
+    <span class="count-badge muted" id="exportBadge">0</span>
+  </button>
+  <button class="toolbar-btn" id="btnImport" data-lock-disable>
+    <i class="fa-solid fa-upload"></i><span>导入</span>
+  </button>
+  <input type="file" id="importFile" accept="application/json,.json" style="display:none;">
+  <button class="toolbar-btn" id="btnOrphan" style="display:none;" data-lock-disable>
+    <i class="fa-solid fa-link-slash"></i><span>孤儿</span>
+    <span class="count-badge" id="orphanBadge">0</span>
+  </button>
+</div>
+<!-- /toolbar -->
+
+<div class="dock" id="dock">
+  <div class="dock-group" role="group" aria-label="指针">
+    <button class="dock-btn active" id="toolSelect" data-tool="select" title="选择 (V)">
+      <i class="fa-solid fa-arrow-pointer"></i>
+    </button>
+    <button class="dock-btn" id="toolPan" data-tool="pan" title="平移 (H / 空格)">
+      <i class="fa-solid fa-hand"></i>
+    </button>
+  </div>
+  <div class="dock-sep"></div>
+  <div class="dock-group" role="group" aria-label="图形">
+    <button class="dock-btn" id="toolRect" data-tool="rect" data-tool-alt="geo" data-lock-disable title="图形 (R)">
+      <svg class="flow-mini" width="18" height="14" aria-hidden="true"><path class="flow-path" d=""></path></svg>
+    </button>
+    <button class="dock-btn" id="toolArrow" data-tool="arrow" data-lock-disable title="箭头 (A)">
+      <svg class="flow-mini" width="18" height="14" aria-hidden="true"><path class="flow-path" d=""></path></svg>
+    </button>
+    <button class="dock-btn" id="toolNote" data-tool="note" data-lock-disable title="便签 (N)">
+      <i class="fa-regular fa-note-sticky"></i>
+    </button>
+    <button class="dock-btn" id="toolText" data-tool="text" data-lock-disable title="文字 (T)">
+      <i class="fa-solid fa-font"></i>
+    </button>
+    <button class="dock-btn" id="toolFlow" data-tool="flow" data-lock-disable title="流程图 (F)">
+      <svg class="flow-mini" width="18" height="14" aria-hidden="true"><path class="flow-path" d=""></path></svg>
+    </button>
+  </div>
+  <div class="dock-sep"></div>
+  <div class="dock-group" role="group" aria-label="反馈">
+    <button class="dock-btn" id="btnMark" data-lock-disable title="注释">
+      <i class="fa-solid fa-comment-medical"></i>
+    </button>
+    <button class="dock-btn" id="btnPicker" data-lock-disable title="选元素">
+      <i class="fa-solid fa-crosshairs"></i>
+      <span class="count-badge muted" id="pickerCount">0</span>
+    </button>
+    <button class="dock-btn" id="btnView" title="添加 frame">
+      <i class="fa-solid fa-plus"></i>
+      <span class="count-badge muted" id="viewBadge">0</span>
+    </button>
+  </div>
+  <div class="dock-sep"></div>
+  <div class="dock-group" role="group" aria-label="历史">
+    <button class="dock-btn" id="btnUndo" data-lock-disable disabled title="撤销 (Cmd/Ctrl+Z)">
+      <i class="fa-solid fa-rotate-left"></i>
+    </button>
+    <button class="dock-btn" id="btnRedo" data-lock-disable disabled title="重做 (Cmd/Ctrl+Shift+Z)">
+      <i class="fa-solid fa-rotate-right"></i>
+    </button>
+  </div>
+  <div class="dock-sep"></div>
+  <div class="dock-group" role="group" aria-label="缩放">
+    <button class="dock-btn" id="btnZoomOut" title="缩小"><i class="fa-solid fa-minus"></i></button>
+    <span class="zoom-display" id="zoomDisplay" title="点击恢复 100%">100%</span>
+    <button class="dock-btn" id="btnZoomIn" title="放大"><i class="fa-solid fa-plus"></i></button>
+  </div>
+</div>
+<!-- /dock -->
+
+<div class="flow-panel" id="geoPanel" hidden></div>
+<div class="flow-panel" id="flowPanel" hidden></div>
+<div class="flow-panel" id="arrowPanel" hidden></div>
+<div class="flow-panel shape-picker" id="shapePicker" hidden>
+  <input type="search" class="shape-picker-search" id="shapePickerSearch" placeholder="搜索形状" autocomplete="off">
+  <div class="shape-picker-grid" id="shapePickerGrid"></div>
+</div>
+
+<div class="mode-hint" id="modeHint"></div>
+
+<aside class="view-panel" id="viewPanel" aria-label="添加 frame 到画布">
+  <div class="view-panel-head">
+    <div class="view-panel-title">添加 frame</div>
+    <span class="view-panel-sub" id="viewPanelSub">画布上 0 个</span>
+    <button class="icon-btn" id="viewClose"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="view-panel-body" id="viewBody"></div>
+</aside>
+
+<aside class="orphan-drawer" id="orphanDrawer">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-title">孤儿标注</div>
+      <div class="drawer-sub">原绑定的 frame 已消失，选一个新位置重新挂载</div>
+    </div>
+    <button class="icon-btn" id="orphanClose"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="drawer-body" id="orphanBody"></div>
+</aside>
+
+<!-- 导入弹窗：拖入或选择 canvas-state.json，报告核对无误后整体覆盖画布 -->
+<div class="import-mask" id="importModal" hidden>
+  <div class="import-modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+    <div class="import-modal-head">
+      <div class="import-modal-title" id="importModalTitle">导入画布状态</div>
+      <button class="icon-btn" id="importClose" aria-label="关闭"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="import-modal-body">
+      <button type="button" class="import-drop" id="importDrop">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <span class="import-drop-main">把 canvas-state.json 拖到这里</span>
+        <span class="import-drop-sub">或点击选择文件</span>
+      </button>
+      <div class="import-report" id="importReport" hidden></div>
+    </div>
+    <div class="import-modal-foot">
+      <button class="btn" id="importReset" hidden>重选</button>
+      <button class="btn" id="importCancel">取消</button>
+      <button class="btn primary" id="importConfirm" disabled>导入</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRD 分屏：吸边按钮 + 右侧抽屉 + 文档选择器，纯查阅 + 下载 -->
+<button class="prd-launcher" id="prdLauncher" title="展开需求文档分屏">
+  <i class="fa-solid fa-file-lines"></i>
+  <span class="prd-launcher-label">需求文档</span>
+</button>
+
+<aside class="prd-drawer" id="prdDrawer" aria-label="需求文档">
+  <div class="prd-resizer" id="prdResizer" title="拖拽调整分屏宽度"></div>
+  <div class="drawer-head prd-drawer-head">
+    <div class="prd-drawer-title-wrap">
+      <button class="prd-picker-btn" id="prdPickerBtn" title="切换文档">
+        <span class="prd-picker-name" id="prdPickerName">加载中…</span>
+        <span class="prd-picker-version" id="prdPickerVersion"></span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="prd-drawer-sub" id="prdDrawerSub">需求文档</div>
+    </div>
+    <div class="prd-drawer-actions">
+      <button class="icon-btn" id="prdTocToggle" title="切换目录"><i class="fa-solid fa-list-ul"></i></button>
+      <button class="icon-btn" id="prdRefresh" title="刷新文档清单"><i class="fa-solid fa-rotate"></i></button>
+      <button class="icon-btn" id="prdDownload" title="下载当前 PRD"><i class="fa-solid fa-download"></i></button>
+      <button class="icon-btn" id="prdClose" title="收起"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+  <div class="prd-picker-panel" id="prdPickerPanel" hidden></div>
+  <div class="drawer-body prd-drawer-body" id="prdDrawerBody">
+    <div class="prd-empty" id="prdEmpty" hidden>
+      <i class="fa-solid fa-folder-open"></i>
+      <div class="prd-empty-title">还没有研发交付 PRD</div>
+      <div class="prd-empty-sub">用 <code>/lon-req-clarify</code> 跑一轮需求澄清，新文档会自动出现在这里</div>
+    </div>
+    <article class="prd-content" id="prdContent"></article>
+    <nav class="prd-toc" id="prdToc" aria-label="文档目录"></nav>
+  </div>
+</aside>
+<script src="assets/canvas.js"></script>
+</body>
+</html>

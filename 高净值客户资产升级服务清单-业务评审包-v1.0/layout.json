@@ -1,0 +1,28 @@
+{
+  "version": "2",
+  "updatedAt": "2026-10-09T10:18:55.068Z",
+  "frames": [
+    {
+      "id": "fi-ab7628",
+      "pageId": "01-高净值客户资产升级服务清单",
+      "frameKey": "normal",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "fi-46241b",
+      "pageId": "01-高净值客户资产升级服务清单",
+      "frameKey": "broadcast-modal",
+      "x": 1328,
+      "y": 0
+    },
+    {
+      "id": "fi-d41b8b",
+      "pageId": "01-高净值客户资产升级服务清单",
+      "frameKey": "complete-modal",
+      "x": 2656,
+      "y": 0
+    }
+  ],
+  "shapes": []
+}

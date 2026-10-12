@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>业务评审检查清单</title><style>
+:root{--blue:#2b73ff;--blue-soft:#eaf1ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--green:#168f5c;--orange:#d96d00}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;line-height:1.75}
+.top{position:sticky;top:0;z-index:10;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.brand{font-weight:700}.brand small{margin-left:10px;color:var(--muted);font-weight:400}.top a{color:var(--blue);text-decoration:none}.shell{max-width:1080px;margin:0 auto;padding:32px 32px 72px}.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 54px;box-shadow:0 10px 30px rgba(16,24,40,.04)}
+h1{margin:0 0 24px;font-size:30px;line-height:1.3}h2{margin:36px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:21px}h3{margin:26px 0 10px;font-size:17px}p{margin:10px 0;color:#344054}
+a{color:var(--blue)}blockquote{margin:0 0 26px;padding:14px 18px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:var(--blue-soft);color:#344054}blockquote p{margin:0}
+table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0 24px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}th,td{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f7f9fc;font-weight:650}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}
+ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;background:#f0f2f5}pre{overflow:auto;padding:16px;border-radius:10px;background:#111827;color:#f8fafc}.mermaid{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;overflow:auto}
+.task-list-item{list-style:none;margin-left:-24px}.task-list-item input{margin-right:9px;accent-color:var(--blue)}.footer{margin-top:24px;text-align:center;color:#98a2b3;font-size:12px}
+@media(max-width:720px){.top{padding:0 16px}.brand small{display:none}.shell{padding:16px}.paper{padding:26px 20px}table{display:block;overflow:auto}h1{font-size:24px}}
+</style>
+<script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script></head>
+<body><header class="top"><div class="brand">高净值客户资产升级服务清单<small>业务评审版 v1.0</small></div><nav><a href="../交付中心.html">返回评审中心</a>　<a href="../业务评审检查清单.md" download>下载原文</a></nav></header>
+<main class="shell"><article class="paper"><h1>高净值客户资产升级服务清单｜业务评审检查清单</h1>
+<blockquote>
+<p>使用方式：建议业务负责人在会议中逐项确认。所有 P0 项通过且唯一待确认口径完成拍板后，进入技术评审。</p>
+</blockquote>
+<h2>一、业务目标与范围</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认新增独立「高净值客户资产升级服务清单」，与现有 AI+服务清单并列。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认页面和交互以 AI+服务清单为母版，仅替换资产等级筛选、画像、话术和圈客逻辑。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认本期不修改消息盒子入口、不新增跨场景防重及历史清单查询。</li>
+</ul>
+<h2>二、圈客与生成规则</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认自动任务每日 15:30 执行，覆盖三个资产档位且不设人数上限。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认 WorkBuddy 自由圈客只执行员工明确提出的条件和排除规则。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认 WorkBuddy 快捷生成默认圈选三个档位，并排除近90天本场景已成功联系客户。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认 WorkBuddy 超过100人时等待确认1分钟，可全部生成或按排序生成前100人。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认1分钟未回复时按默认排序生成前100人。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：拍板自动任务90天排除使用“已成功联系”还是“已推送”。</li>
+</ul>
+<h2>三、客户列表与信息</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认左侧资产等级筛选为全部、1000万以上、500–1000万、300–500万。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认客户列表展示姓名、资金账号、风险等级、近20日日均净资产。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认已完成服务客户置灰并移动到列表底部，仍可查看详情。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认客户基础信息与 ISMP 待处理任务完全复用 AI+服务清单。</li>
+</ul>
+<h2>四、客户画像</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认展示近20日日均净资产及私募合格投资者认证状态。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认持仓按资产大类汇总，并支持展开查看标的、市值与仓位、收益额、持有天数。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认近6个月股票、ETF、场外基金交易次数分开展示。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认近1月、近3月、近6月账户盈亏分开展示。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认画像缺失字段只展示“--”，不由大模型补齐。</li>
+</ul>
+<h2>五、话术与服务操作</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认初始话术必须合规审核通过后才可使用。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认人工编辑后显示“人工已编辑”，无需再次审核。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认企微一键群发及防重规则完全沿用 AI+服务清单。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认电话以员工点击“完成服务”为成功服务口径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认企微群发以发送成功为成功联系口径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认企微单聊以员工手工标记已触达或已完成服务为成功联系口径。</li>
+</ul>
+<h2>六、评审结果</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>业务流程和规则通过。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>页面内容与交互通过。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>自动任务90天排除口径已拍板并记录。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>无其他阻塞研发需求澄清的问题。</li>
+</ul>
+<p>评审结论：____________________</p>
+<p>需修改内容：____________________________________________________________</p>
+<p>业务负责人：____________________　确认日期：____________________</p>
+</article><div class="footer">本页由业务评审包静态生成，可离线打开。</div></main>
+<script>if(window.mermaid){mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:'default'});}</script></body></html>

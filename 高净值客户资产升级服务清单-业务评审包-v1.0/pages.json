@@ -1,0 +1,57 @@
+{
+  "version": "1",
+  "generatedAt": "2026-10-09T10:48:05.477Z",
+  "project": "zhe-s",
+  "initialPage": "01-高净值客户资产升级服务清单",
+  "demoEntry": "demo/demo.html",
+  "viewDefaults": {
+    "theme": "light",
+    "locked": false
+  },
+  "pages": [
+    {
+      "id": "01-高净值客户资产升级服务清单",
+      "name": "高净值客户资产升级服务清单",
+      "order": 1,
+      "sourceHtml": "pages/01-高净值客户资产升级服务清单.html",
+      "lastScannedAt": "2026-10-09T10:48:03.599Z",
+      "missing": false,
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "mainStates": [
+        {
+          "key": "normal",
+          "label": "正常态",
+          "tag": "高保真服务清单"
+        }
+      ],
+      "overlays": [
+        {
+          "key": "broadcast-modal",
+          "label": "企微一键群发",
+          "kind": "modal"
+        },
+        {
+          "key": "complete-modal",
+          "label": "完成服务确认",
+          "kind": "modal"
+        }
+      ],
+      "triggers": [
+        {
+          "stateKey": "normal",
+          "overlayKey": "broadcast-modal",
+          "action": "选择客户后点击下一步"
+        },
+        {
+          "stateKey": "normal",
+          "overlayKey": "complete-modal",
+          "action": "点击完成服务"
+        }
+      ],
+      "sourceFile": "pages/01-高净值客户资产升级服务清单.html"
+    }
+  ]
+}

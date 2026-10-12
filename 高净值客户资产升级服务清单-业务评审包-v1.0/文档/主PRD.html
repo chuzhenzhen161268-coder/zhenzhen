@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品需求文档</title><style>
+:root{--blue:#2b73ff;--blue-soft:#eaf1ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--green:#168f5c;--orange:#d96d00}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;line-height:1.75}
+.top{position:sticky;top:0;z-index:10;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.brand{font-weight:700}.brand small{margin-left:10px;color:var(--muted);font-weight:400}.top a{color:var(--blue);text-decoration:none}.shell{max-width:1080px;margin:0 auto;padding:32px 32px 72px}.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 54px;box-shadow:0 10px 30px rgba(16,24,40,.04)}
+h1{margin:0 0 24px;font-size:30px;line-height:1.3}h2{margin:36px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:21px}h3{margin:26px 0 10px;font-size:17px}p{margin:10px 0;color:#344054}
+a{color:var(--blue)}blockquote{margin:0 0 26px;padding:14px 18px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:var(--blue-soft);color:#344054}blockquote p{margin:0}
+table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0 24px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}th,td{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f7f9fc;font-weight:650}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}
+ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;background:#f0f2f5}pre{overflow:auto;padding:16px;border-radius:10px;background:#111827;color:#f8fafc}.mermaid{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;overflow:auto}
+.task-list-item{list-style:none;margin-left:-24px}.task-list-item input{margin-right:9px;accent-color:var(--blue)}.footer{margin-top:24px;text-align:center;color:#98a2b3;font-size:12px}
+@media(max-width:720px){.top{padding:0 16px}.brand small{display:none}.shell{padding:16px}.paper{padding:26px 20px}table{display:block;overflow:auto}h1{font-size:24px}}
+</style>
+<script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script></head>
+<body><header class="top"><div class="brand">高净值客户资产升级服务清单<small>业务评审版 v1.0</small></div><nav><a href="../交付中心.html">返回评审中心</a>　<a href="../docs/prd/PRD.md" download>下载原文</a></nav></header>
+<main class="shell"><article class="paper"><h1>产品需求文档：高净值客户资产升级服务清单</h1>
+<h2>1. 项目概览</h2>
+<p><strong>项目名称</strong>：高净值客户资产升级服务清单<br />
+<strong>平台类型</strong>：PC Web</p>
+<h3>背景与目标</h3>
+<p>客户因资金转入或账户盈利达到更高资产等级后，客户经理需要及时识别客户、理解账户与风险画像，并按对应等级完成升级服务。当前圈客、画像查看、话术准备和触达记录分散，难以形成持续、可追踪的服务闭环。</p>
+<p>本期新建独立的高净值客户资产升级服务清单场景，统一承接每日自动任务和 WorkBuddy 主动查询。系统完成圈客、画像、合规初审话术和服务结果回流，帮助员工开展分层经营。</p>
+<h3>目标用户原型</h3>
+<ul>
+<li><strong>用户特征</strong>：负责自己名下客户经营的客户经理或投顾，日常使用内部服务清单、电话和企微工具。</li>
+<li><strong>底层动机</strong>：以较少的准备成本识别真正需要升级服务的客户，并据此完成有针对性的服务。</li>
+<li><strong>典型场景</strong>：员工收到自动生成的服务清单，或在 WorkBuddy 主动查询目标客群后，查看画像和话术并开展服务。</li>
+</ul>
+<h3>核心价值主张</h3>
+<p>为客户经理 / 投顾解决高净值客户升级经营中圈客、服务准备和结果追踪分散的问题，提供可直接执行的服务清单与场景化服务闭环。</p>
+<h3>成功判定标准</h3>
+<ul>
+<li><strong>用户侧</strong>：员工可从自动任务或 WorkBuddy 生成并打开可服务客户清单，初审通过的客户可直接进入触达。</li>
+<li><strong>业务侧</strong>：可按资产档位统计清单生成、完成服务、财富诊断 / 配置复盘预约及进入 1+N 专家团队的数据。</li>
+<li><strong>质量侧</strong>：未初审通过的话术不能用于触达；已联系客户能按场景准确参与近 90 天排除。</li>
+</ul>
+<h2>2. 产品发现结论</h2>
+<h3>价值层级分析</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>表面需求</th>
+  <th>底层动机</th>
+  <th>隐含假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>精准识别</td>
+  <td>按资产升级条件自动或主动圈客</td>
+  <td>将有限服务资源投入更需要经营的客户</td>
+  <td>资产、历史推送与服务结果数据能准确识别和回流</td>
+</tr>
+<tr>
+  <td>服务准备</td>
+  <td>批量提供客户画像与合规初审话术</td>
+  <td>降低服务前的信息整理与话术准备成本</td>
+  <td>画像完整度足以支撑个性化服务建议</td>
+</tr>
+<tr>
+  <td>服务闭环</td>
+  <td>记录触达与服务结果，并参与后续排除</td>
+  <td>避免重复经营并衡量经营效果</td>
+  <td>电话、企微等工具能够携带场景标识回流结果</td>
+</tr>
+</tbody>
+</table>
+<h3>风险评估</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>价值风险</th>
+  <th>可用性风险</th>
+  <th>可行性风险</th>
+  <th>商业可行性风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>精准识别</td>
+  <td>中：自动任务的 90 天排除口径尚待业务统一</td>
+  <td>低：自动与主动入口均贴合当前工作方式</td>
+  <td>中：依赖圈客、历史记录数据准确性</td>
+  <td>低：服务对象与既有高客经营策略一致</td>
+</tr>
+<tr>
+  <td>服务准备</td>
+  <td>低：画像和话术直接服务于员工准备动作</td>
+  <td>中：生成失败或内容质量会影响采用</td>
+  <td>中：依赖画像、模型与合规服务协同</td>
+  <td>低：减少重复人工准备成本</td>
+</tr>
+<tr>
+  <td>服务闭环</td>
+  <td>中：员工是否完整标记单聊与电话服务结果需验证</td>
+  <td>中：不同渠道的完成状态定义不同</td>
+  <td>中：需要触达工具按场景回写</td>
+  <td>低：可直接支撑经营过程和结果统计</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 产品结构图</h2>
+<h3>核心功能清单</h3>
+<table>
+<thead>
+<tr>
+  <th>功能</th>
+  <th>优先级</th>
+  <th>一句话说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>双入口圈客</td>
+  <td>P0</td>
+  <td>支持自动任务、WorkBuddy 自由圈客与快捷生成。</td>
+</tr>
+<tr>
+  <td>大批量确认与超时兜底</td>
+  <td>P0</td>
+  <td>WorkBuddy 命中超过 100 人时，支持确认全量生成或超时按默认排序生成前 100 人。</td>
+</tr>
+<tr>
+  <td>批量画像与话术生成</td>
+  <td>P0</td>
+  <td>对入选客户批量获取画像、生成话术并完成统一合规初审。</td>
+</tr>
+<tr>
+  <td>高净值客户服务清单</td>
+  <td>P0</td>
+  <td>按资产档位与资产规模展示可服务客户、状态和优先级。</td>
+</tr>
+<tr>
+  <td>客户画像与话术准备</td>
+  <td>P0</td>
+  <td>查看画像、使用或编辑话术、识别失败并重试。</td>
+</tr>
+<tr>
+  <td>触达与服务结果回流</td>
+  <td>P0</td>
+  <td>回流电话完成服务、企微群发成功和企微单聊人工标记结果。</td>
+</tr>
+<tr>
+  <td>场景经营数据输出</td>
+  <td>P1</td>
+  <td>向 ABI 输出场景 ID 与服务结果。</td>
+</tr>
+</tbody>
+</table>
+<h3>页面组织方式</h3>
+<p>采用无新增全局导航的列表-详情结构。员工从既有消息盒子或 WorkBuddy 进入对应的本次服务清单，在同一页面完成客户选择、画像查看、话术准备和触达。</p>
+<pre><code class="language-text">既有入口（消息盒子 / WorkBuddy）
+└── 高净值客户资产升级服务清单
+    ├── 客户列表与筛选结果
+    └── 客户详情
+        ├── 客户画像
+        ├── AI 初审话术 / 人工编辑话术
+        └── 电话、企微单聊、企微群发及服务状态
+</code></pre>
+<h3>本期不做</h3>
+<table>
+<thead>
+<tr>
+  <th>本期不做</th>
+  <th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>修改 AI+选好股服务清单</td>
+  <td>两个场景并列，本期不影响既有规则或数据。</td>
+</tr>
+<tr>
+  <td>修改消息盒子入口</td>
+  <td>复用现有自动任务入口即可满足触达需求。</td>
+</tr>
+<tr>
+  <td>员工编辑话术后二次合规审核</td>
+  <td>本期仅接入初审结果，避免新增审批链路。</td>
+</tr>
+<tr>
+  <td>新增电话、企微单聊、企微群发之外的触达渠道</td>
+  <td>先覆盖既有工具；其他渠道需具备明确服务完成回流后再评估。</td>
+</tr>
+<tr>
+  <td>历史清单查询、跨场景防重和统一频控</td>
+  <td>不影响当前场景的最小服务闭环。</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 业务流程图</h2>
+<p><strong>核心业务流程</strong></p>
+<div class="mermaid">flowchart TD
+    Start([开始]) --&gt; Entry{触发入口}
+
+    Entry --&gt;|自动任务 每日15:30| Auto[按三个资产档位圈客&lt;br/&gt;暂按90天已推送排除]
+    Entry --&gt;|WorkBuddy 自由圈客| Free[解析员工指定的资产、画像、排序与排除条件]
+    Entry --&gt;|WorkBuddy 快捷生成| Quick[按三个资产档位圈客&lt;br/&gt;默认排除90天内本场景已联系客户]
+
+    Free --&gt; Parsed{条件可解析且受支持？}
+    Parsed --&gt;|否| Clarify[说明未识别条件&lt;br/&gt;请求员工修改或确认] --&gt; Free
+    Parsed --&gt;|是| Match[生成命中客户集合]
+
+    Auto --&gt; Match
+    Quick --&gt; Match
+    Match --&gt; Empty{是否有客户？}
+
+    Empty --&gt;|否| EmptyResult[展示空结果与本次条件] --&gt; End([结束])
+    Empty --&gt;|是，自动任务| Batch[批量查询客户画像]
+    Empty --&gt;|是，WorkBuddy| Limit{命中是否超过100人？}
+
+    Limit --&gt;|否| Batch
+    Limit --&gt;|是| Confirm[展示人数与当前排序&lt;br/&gt;等待员工确认，最长1分钟]
+    Confirm --&gt;|确认全部生成| Batch
+    Confirm --&gt;|指定排序并生成前100人| Top100[按指定排序取前100人] --&gt; Batch
+    Confirm --&gt;|1分钟未确认| Default100[按默认排序取前100人&lt;br/&gt;反馈默认执行] --&gt; Batch
+
+    Batch --&gt; Generate[批量生成分档个性化话术]
+    Generate --&gt; Review[统一合规初审]
+    Review --&gt; Ready{客户是否生成并初审通过？}
+
+    Ready --&gt;|是| List[生成独立服务清单&lt;br/&gt;展示列表、画像、可用话术与状态]
+    Ready --&gt;|部分否| Partial[标记失败客户并支持重试] --&gt; List
+    Ready --&gt;|全部否| Failed[展示生成失败状态并支持重试] --&gt; End
+
+    List --&gt; Employee[员工查看画像与话术&lt;br/&gt;可编辑话术，无需二审]
+    Employee --&gt; Contact{选择触达方式}
+    Contact --&gt;|电话| Phone[员工完成服务]
+    Contact --&gt;|企微群发| Group[平台返回发送成功]
+    Contact --&gt;|企微单聊| Chat[员工标记已触达或已完成服务]
+    Contact --&gt;|暂不触达| Keep[保留当前清单与服务状态] --&gt; End
+
+    Phone --&gt; Writeback[携带场景 ID 回流服务结果]
+    Group --&gt; Writeback
+    Chat --&gt; Writeback
+    Writeback --&gt; Done[更新本场景触达/服务状态&lt;br/&gt;纳入90天已联系判断] --&gt; End
+</div>
+<p><strong>流程关键口径</strong>：自动任务每日 15:30 生成全量符合条件客户且不设人数上限。WorkBuddy 超过 100 人时，员工可确认全量生成或指定前 100 人；等待 1 分钟未确认时，系统按默认排序生成前 100 人。自动任务的近 90 天排除暂按“已推送”执行，是否统一为“已成功联系”留待业务评审决定。</p>
+<h2>5. 页面索引</h2>
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>页面名</th>
+  <th>一句话用途</th>
+  <th>状态/浮层备注</th>
+  <th>设计状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>01</td>
+  <td><a href="页面PRD.html">高净值客户资产升级服务清单</a></td>
+  <td>展示本次生成客户、画像、话术和服务动作</td>
+  <td>正常态、无客户、任务加载/空/失败、话术可用/人工编辑、已完成服务</td>
+  <td>✅ 已确认</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>变更记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>变更说明</th>
+  <th>影响范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-09</td>
+  <td>初始版本</td>
+  <td>全部</td>
+</tr>
+</tbody>
+</table>
+</article><div class="footer">本页由业务评审包静态生成，可离线打开。</div></main>
+<script>if(window.mermaid){mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:'default'});}</script></body></html>
