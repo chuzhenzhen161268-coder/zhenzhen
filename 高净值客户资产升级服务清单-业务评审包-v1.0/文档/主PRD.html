@@ -20,7 +20,7 @@ ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;b
 <strong>平台类型</strong>：PC Web</p>
 <h3>背景与目标</h3>
 <p>客户因资金转入或账户盈利达到更高资产等级后，客户经理需要及时识别客户、理解账户与风险画像，并按对应等级完成升级服务。当前圈客、画像查看、话术准备和触达记录分散，难以形成持续、可追踪的服务闭环。</p>
-<p>本期新建独立的高净值客户资产升级服务清单场景，统一承接每日自动任务和 WorkBuddy 主动查询。系统完成圈客、画像、合规初审话术和服务结果回流，帮助员工开展分层经营。</p>
+<p>本期新建独立的高净值客户资产升级服务清单场景，统一承接每日自动任务和 WorkBuddy 主动查询。系统完成圈客、画像、分层沟通思路、沟通素材、合规初审话术和服务结果回流，帮助员工开展分层经营。本次沟通能力属于未上线前的 1.0 需求完善，不单独升版本。</p>
 <h3>目标用户原型</h3>
 <ul>
 <li><strong>用户特征</strong>：负责自己名下客户经营的客户经理或投顾，日常使用内部服务清单、电话和企微工具。</li>
@@ -136,7 +136,17 @@ ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;b
 <tr>
   <td>客户画像与话术准备</td>
   <td>P0</td>
-  <td>查看画像、使用或编辑话术、识别失败并重试。</td>
+  <td>查看画像、分层沟通思路、沟通素材，使用或编辑话术、识别失败并重试。</td>
+</tr>
+<tr>
+  <td>沟通素材与发送组合</td>
+  <td>P0</td>
+  <td>按资产跃迁路径匹配信件、权益清单和配置一页通，默认全选并允许取消；单聊和群发时同步当前勾选素材。</td>
+</tr>
+<tr>
+  <td>企微群发双模式</td>
+  <td>P0</td>
+  <td>支持千人一面分组群发与千人千面个性化群发；股票/理财不作为拆分条件。</td>
 </tr>
 <tr>
   <td>触达与服务结果回流</td>
@@ -157,6 +167,7 @@ ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;b
     ├── 客户列表与筛选结果
     └── 客户详情
         ├── 客户画像
+        ├── 沟通素材 / 投顾沟通思路
         ├── AI 初审话术 / 人工编辑话术
         └── 电话、企微单聊、企微群发及服务状态
 </code></pre>
@@ -226,18 +237,25 @@ ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;b
     Ready --&gt;|部分否| Partial[标记失败客户并支持重试] --&gt; List
     Ready --&gt;|全部否| Failed[展示生成失败状态并支持重试] --&gt; End
 
-    List --&gt; Employee[员工查看画像与话术&lt;br/&gt;可编辑话术，无需二审]
+    List --&gt; Employee[员工查看画像、沟通思路、素材与话术&lt;br/&gt;素材默认全选，可编辑话术，无需二审]
     Employee --&gt; Contact{选择触达方式}
     Contact --&gt;|电话| Phone[员工完成服务]
-    Contact --&gt;|企微群发| Group[平台返回发送成功]
+    Contact --&gt;|企微群发| BroadcastMode{选择群发模式}
+    BroadcastMode --&gt;|千人一面| OneToMany[按资产档位、资产跃迁路径、当前素材组合拆组&lt;br/&gt;同组共享话术和素材，逐组确认发送]
+    BroadcastMode --&gt;|千人千面| ManyToMany[逐客户展示个性化话术和素材&lt;br/&gt;可单独编辑或取消素材，一次确认后逐客户发送]
     Contact --&gt;|企微单聊| Chat[员工标记已触达或已完成服务]
     Contact --&gt;|暂不触达| Keep[保留当前清单与服务状态] --&gt; End
 
     Phone --&gt; Writeback[携带场景 ID 回流服务结果]
-    Group --&gt; Writeback
+    OneToMany --&gt; GroupWriteback[回传各组发送结果]
+    ManyToMany --&gt; PersonalWriteback[回传逐客户发送结果]
+    GroupWriteback --&gt; Writeback
+    PersonalWriteback --&gt; Writeback
     Chat --&gt; Writeback
     Writeback --&gt; Done[更新本场景触达/服务状态&lt;br/&gt;纳入90天已联系判断] --&gt; End
 </div>
+<p><strong>沟通素材规则</strong>：素材由资产跃迁前后档位决定。300 万以内→300–500 万展示 300 万信件和股票/理财权益清单；300–500 万→500–1000 万展示 500 万信件和 500 万资产配置一页通；直接跨档时覆盖中间权益；500–1000 万→1000 万以上展示 1000 万信件和 1000 万资产配置一页通；300 万以内直接到 1000 万以上时覆盖 300 万权益。素材进入清单时默认全部勾选，投顾可以取消单份；配置一页通进入清单时从资产配置平台实时获取，当前清单会话内沿用同一版本，获取失败时该素材不可发送但不影响其他服务动作。沟通思路仅供投顾参考，不进入对客发送内容。</p>
+<p><strong>企微群发模式规则</strong>：默认进入“千人一面”，系统按客户资产档位、资产跃迁路径和当前勾选素材组合自动拆组；股票/理财客户不作为拆分条件，同组客户共享同一份对客话术和素材组合，员工逐组确认发送，完成一组后可继续下一组。切换为“千人千面”后，每位客户独立展示其个性化对客话术和当前素材选择，员工可以单独编辑话术、取消素材或移除客户，确认后系统逐客户发送并回写成功/失败结果。沟通思路始终只供投顾参考，不进入任何群发内容；沿用 AI+服务清单既有防重发规则。</p>
 <p><strong>流程关键口径</strong>：自动任务每日 15:30 生成全量符合条件客户且不设人数上限。WorkBuddy 超过 100 人时，员工可确认全量生成或指定前 100 人；等待 1 分钟未确认时，系统按默认排序生成前 100 人。自动任务的近 90 天排除暂按“已推送”执行，是否统一为“已成功联系”留待业务评审决定。</p>
 <h2>5. 页面索引</h2>
 <table>
@@ -275,8 +293,14 @@ ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;b
 <tr>
   <td>v1.0</td>
   <td>2026-10-09</td>
-  <td>初始版本</td>
+  <td>初始版本，新增高净值客户资产升级服务清单页面</td>
   <td>全部</td>
+</tr>
+<tr>
+  <td>1.0-需求完善</td>
+  <td>2026-10-14</td>
+  <td>未上线前补充沟通素材、分层沟通思路、动态配置材料和群发组合发送</td>
+  <td>页面信息、触达组合、平台依赖</td>
 </tr>
 </tbody>
 </table>
