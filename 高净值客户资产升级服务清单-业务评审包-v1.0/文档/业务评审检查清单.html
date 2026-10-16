@@ -16,58 +16,61 @@ ul,ol{padding-left:24px}li{margin:5px 0}code{padding:2px 5px;border-radius:4px;b
 <body><header class="top"><div class="brand">高净值客户资产升级服务清单<small>业务评审版 v1.0</small></div><nav><a href="../交付中心.html">返回评审中心</a>　<a href="../业务评审检查清单.md" download>下载原文</a></nav></header>
 <main class="shell"><article class="paper"><h1>高净值客户资产升级服务清单｜业务评审检查清单</h1>
 <blockquote>
-<p>使用方式：建议业务负责人在会议中逐项确认。所有 P0 项通过且唯一待确认口径完成拍板后，进入技术评审。</p>
+<p>评审状态：本清单所列业务规则、页面内容与交互均已确认，可进入研发需求澄清与技术评审。</p>
 </blockquote>
 <h2>一、业务目标与范围</h2>
 <ul>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认新增独立「高净值客户资产升级服务清单」，与现有 AI+服务清单并列。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认页面和交互以 AI+服务清单为母版，仅替换资产等级筛选、画像、话术和圈客逻辑。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认本期不修改消息盒子入口、不新增跨场景防重及历史清单查询。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认新增独立「高净值客户资产升级服务清单」，与现有 AI+服务清单并列。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认页面和交互以 AI+服务清单为母版，仅替换资产等级筛选、画像、话术和圈客逻辑。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认本期不修改消息盒子入口、不新增跨场景防重及历史清单查询。</li>
 </ul>
 <h2>二、圈客与生成规则</h2>
 <ul>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认自动任务每日 15:30 执行，覆盖三个资产档位且不设人数上限。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认 WorkBuddy 自由圈客只执行员工明确提出的条件和排除规则。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认 WorkBuddy 快捷生成默认圈选三个档位，并排除近90天本场景已成功联系客户。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认 WorkBuddy 超过100人时等待确认1分钟，可全部生成或按排序生成前100人。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认1分钟未回复时按默认排序生成前100人。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：拍板自动任务90天排除使用“已成功联系”还是“已推送”。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认自动任务每日 15:30 执行，覆盖三个资产档位且不设人数上限。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认 WorkBuddy 自由圈客只执行员工明确提出的条件和排除规则。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认 GWork 快捷生成默认圈选三个档位，按近20日日均净资产较昨日升级识别客户；不剔除近90天本场景已联系客户，近期未联系客户优先展示。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认 WorkBuddy 命中多少客户就生成多少客户，不设置人数上限，不需要确认、排序选择或超时兜底。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：已拍板：自动任务与 GWork 快捷生成均不增加近90天剔除；企微群发、电话联系记录仅用于近期未联系客户优先排序。</li>
 </ul>
 <h2>三、客户列表与信息</h2>
 <ul>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认左侧资产等级筛选为全部、1000万以上、500–1000万、300–500万。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认客户列表展示姓名、资金账号、风险等级、近20日日均净资产。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认已完成服务客户置灰并移动到列表底部，仍可查看详情。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认客户基础信息与 ISMP 待处理任务完全复用 AI+服务清单。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认左侧资产等级筛选为全部、1000万以上、500–1000万、300–500万。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认客户列表展示姓名、资金账号、风险等级、近20日日均净资产。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认已完成服务客户置灰并移动到列表底部，仍可查看详情。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认客户基础信息与 ISMP 待处理任务完全复用 AI+服务清单。</li>
 </ul>
 <h2>四、客户画像</h2>
 <ul>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认展示近20日日均净资产及私募合格投资者认证状态。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认持仓按资产大类汇总，并支持展开查看标的、市值与仓位、收益额、持有天数。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认近6个月股票、ETF、场外基金交易次数分开展示。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认近1月、近3月、近6月账户盈亏分开展示。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认画像缺失字段只展示“--”，不由大模型补齐。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认展示近20日日均净资产，以及私募合格投资者认证资格、认证状态、认证有效期。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认持仓按资产大类汇总，并支持展开查看标的、市值与仓位、收益额、持有天数。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认近6个月股票、ETF、场外基金交易次数分开展示，数据源与 AI+助手一致。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认近1月、近3月、近6月账户盈亏分开展示，数据源与 AI+助手一致。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认 300–500 万直接跃迁至 1000 万以上时，额外展示 300 万理财权益清单和 300 万股票权益清单。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认画像缺失字段只展示“--”，不由大模型补齐。</li>
 </ul>
 <h2>五、话术与服务操作</h2>
 <ul>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认初始话术必须合规审核通过后才可使用。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认人工编辑后显示“人工已编辑”，无需再次审核。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认企微一键群发及防重规则完全沿用 AI+服务清单。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认群发默认进入“千人一面”，按资产档位、资产跃迁路径和当前素材组合拆组；股票/理财不作为拆分条件。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认可切换“千人千面”，逐客户编辑话术、取消素材或移除客户，并逐客户回写发送结果。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认电话以员工点击“完成服务”为成功服务口径。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认企微群发以发送成功为成功联系口径。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>P0：确认企微单聊以员工手工标记已触达或已完成服务为成功联系口径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认初始话术必须合规审核通过后才可使用。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认人工编辑后显示“人工已编辑”，无需再次审核。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认服务话术文本区直接可编辑，失焦自动保存，不单独展示“编辑话术”按钮。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认企微一键群发及防重规则完全沿用 AI+服务清单。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认当前服务场景群发成功后回写“已群发”标记和时间，后续不可再次选择或发送；该防重不影响客户再次资产升级进入新清单。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认群发默认进入“千人一面”，按资产档位、资产跃迁路径和当前素材组合拆组；股票/理财不作为拆分条件。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认可切换“千人千面”，逐客户编辑话术、取消素材或移除客户，并逐客户回写发送结果。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认电话以员工点击“完成服务”为成功服务口径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认企微群发以发送成功为成功联系口径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认企微单聊以员工手工标记已触达或已完成服务为成功联系口径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>P0：确认沟通思路默认展开第一步、其余步骤按标题收起，支持一键展开/全部收起和单步展开，展开内容完整保留。</li>
 </ul>
 <h2>六、评审结果</h2>
 <ul>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>业务流程和规则通过。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>页面内容与交互通过。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>自动任务90天排除口径已拍板并记录。</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>无其他阻塞研发需求澄清的问题。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>业务流程和规则通过。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>页面内容与交互通过。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>自动任务与 GWork 快捷生成的近90天口径已拍板并记录：不剔除，近期未联系优先排序。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>无其他阻塞研发需求澄清的问题。</li>
 </ul>
-<p>评审结论：____________________</p>
+<p>评审结论：通过</p>
 <p>需修改内容：____________________________________________________________</p>
-<p>业务负责人：____________________　确认日期：____________________</p>
+<p>业务负责人：已确认　确认日期：2026-10-16</p>
 </article><div class="footer">本页由业务评审包静态生成，可离线打开。</div></main>
 <script>if(window.mermaid){mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:'default'});}</script></body></html>
