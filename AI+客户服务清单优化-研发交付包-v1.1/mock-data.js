@@ -34,6 +34,10 @@
       "serveTime": null,
       "wxBroadcastStatus": 0,
       "wxBroadcastTime": null,
+      "todayContacted": false,
+      "recentContacted": true,
+      "todayNew": true,
+      "aiAdvisorProducts": [],
       "monthlySignalMetrics": { "winRate": "68.2%", "count": "15 个", "returnRate": "+4.8%" },
       "securityList": [
         {
@@ -181,6 +185,10 @@
       "serveTime": null,
       "wxBroadcastStatus": 0,
       "wxBroadcastTime": null,
+      "todayContacted": true,
+      "recentContacted": true,
+      "todayNew": false,
+      "aiAdvisorProducts": ["AI+选好股"],
       "monthlySignalMetrics": { "winRate": "74.0%", "count": "12 个", "returnRate": "+6.5%" },
       "securityList": [
         {
@@ -300,6 +308,10 @@
       "serveTime": null,
       "wxBroadcastStatus": 0,
       "wxBroadcastTime": null,
+      "todayContacted": false,
+      "recentContacted": false,
+      "todayNew": false,
+      "aiAdvisorProducts": ["AI+选好股", "AI投ETF"],
       "monthlySignalMetrics": { "winRate": "65.8%", "count": "19 个", "returnRate": "+3.2%" },
       "securityList": [
         {
@@ -466,6 +478,10 @@
       "serveTime": null,
       "wxBroadcastStatus": 0,
       "wxBroadcastTime": null,
+      "todayContacted": false,
+      "recentContacted": true,
+      "todayNew": false,
+      "aiAdvisorProducts": [],
       "securityList": [
         {
           "securityType": "ETF",
@@ -592,6 +608,10 @@
       "serveTime": "2026-09-18T10:23:00+08:00",
       "wxBroadcastStatus": 0,
       "wxBroadcastTime": null,
+      "todayContacted": true,
+      "recentContacted": true,
+      "todayNew": false,
+      "aiAdvisorProducts": ["AI股票解套"],
       "monthlySignalMetrics": { "winRate": "71.6%", "count": "16 个", "returnRate": "+7.1%" },
       "securityList": [
         {
@@ -678,6 +698,10 @@
       "serveTime": null,
       "wxBroadcastStatus": 0,
       "wxBroadcastTime": null,
+      "todayContacted": false,
+      "recentContacted": false,
+      "todayNew": true,
+      "aiAdvisorProducts": ["AI+选好股", "AI股票解套", "AI投ETF"],
       "securityList": [
         {
           "securityType": "ETF",

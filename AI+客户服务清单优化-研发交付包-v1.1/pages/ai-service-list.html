@@ -36,10 +36,27 @@
   .concept-more .arr, .script-expand-btn .arr { font-size: 10px; }
 
   /* V1.1：仅覆盖客户列表、群发选择与信号模块，沿用原页面 token 与组件语义 */
-  .client-sort-row { display:flex; align-items:center; gap:6px; padding:0 var(--space-5); margin:-4px 0 var(--space-4); }
+  .client-tools-row { display:flex; align-items:center; gap:8px; padding:0 var(--space-5); margin:0 0 var(--space-4); }
+  .client-tools-row .client-sort-row { order:1; flex:1; min-width:0; padding:0; margin:0; }
+  .client-tools-row .client-filter-panel { order:2; flex:1; min-width:0; position:relative; }
   .client-sort-select, .bc-filter-input, .bc-filter-select { height:28px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); background:#fff; color:var(--color-text-primary); font:inherit; font-size:12px; padding:0 7px; }
   .client-sort-select { flex:1; min-width:0; }
   .sort-order-btn { width:28px; height:28px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); color:var(--color-primary); font-size:14px; }
+  .client-filter-panel { padding:0; margin:0; }
+  .client-search-panel { padding:0 var(--space-5); margin:0 0 8px; }
+  .client-search { width:100%; height:30px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); background:#fff; color:var(--color-text-primary); font:inherit; font-size:12px; padding:0 8px; }
+  .client-filter-toggle-row { display:flex; align-items:center; gap:8px; margin-top:0; }
+  .client-filter-toggle { width:100%; height:28px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); background:#fff; color:var(--color-text-secondary); font:inherit; font-size:12px; text-align:left; padding:0 8px; }
+  .client-filter-toggle .filter-icon { color:var(--color-primary); margin-right:4px; }
+  .client-filter-count { color:var(--color-primary); font-size:11px; white-space:nowrap; }
+  .client-filter-body { position:absolute; top:35px; right:0; z-index:20; width:260px; padding:10px; border:1px solid #d0d9e2; border-radius:var(--radius-lg); background:#fff; box-shadow:0 8px 22px rgba(31,47,70,.14); }
+  .client-filter-row { display:grid; grid-template-columns:112px minmax(0,1fr); align-items:center; gap:6px; margin-top:6px; color:var(--color-text-secondary); font-size:11px; }
+  .client-filter-select { min-width:0; width:100%; height:28px; border:1px solid #d0d9e2; border-radius:var(--radius-sm); background:#fff; color:var(--color-text-primary); font:inherit; font-size:12px; padding:0 6px; }
+  .client-filter-note { margin-top:7px; color:var(--color-text-tertiary); font-size:10px; line-height:15px; }
+  .client-status-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
+  .client-status-tag { display:inline-flex; align-items:center; min-height:18px; padding:1px 5px; border-radius:3px; background:#eef5ff; color:#3767a7; font-size:10px; line-height:14px; }
+  .client-status-tag.contacted { background:#edf7f1; color:#288353; }
+  .client-status-tag.new-client { background:#fff5e8; color:#a86b19; }
   .bc-filter-panel { padding:10px; margin-top:8px; border:1px solid rgba(46,113,251,.2); border-radius:var(--radius-lg); background:var(--color-bg-page); }
   .bc-filter-title { display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:var(--font-weight-bold); }
   .bc-filter-reset { color:var(--color-primary); font-size:12px; }
@@ -283,6 +300,9 @@
     clients: [],         // transformPageData 转换后的前端 Client[]
     currentUuid: null,   // 当前选中客户
     filterTab: 'all',    // 筛选 Tab
+    searchQuery: '',
+    clientFilters: { todayContacted: 'no', recentContacted: 'all', todayNew: 'all' },
+    clientFilterOpen: false,
     sortKey: 'urgency',  // V1.1：客户列表排序字段
     sortOrder: 'desc',   // V1.1：升序 / 降序
     collapsed: false,    // 左栏折叠
@@ -406,6 +426,10 @@
       basicInfo: basicInfo,
       wxBroadcastStatus: c.wxBroadcastStatus === 1,
       wxBroadcastTime: c.wxBroadcastTime,
+      todayContacted: !!c.todayContacted,
+      recentContacted: !!c.recentContacted,
+      todayNew: !!c.todayNew,
+      aiAdvisorProducts: c.aiAdvisorProducts || [],
       securities: (c.securityList || []).map(function (s) { return transformSecurity(s, c.uuid) }),
       completed: c.serveStatus === 1,
       tasks: [],
@@ -532,7 +556,56 @@
   }
 
   function filterAndSortClients(clients, tab) {
-    return sortClients(filterClients(clients, tab))
+    return sortClients(filterClientState(filterClients(clients, tab)))
+  }
+
+  function matchesClientSearch(client) {
+    var query = state.searchQuery.trim().toLowerCase()
+    if (!query) return true
+    var name = String(client.basicInfo.name || '').toLowerCase()
+    var account = String(client.basicInfo.accountNo || '').toLowerCase()
+    return name.indexOf(query) >= 0 || account === query || account.indexOf(query) === 0
+  }
+
+  function matchesClientFlags(client) {
+    var filters = state.clientFilters
+    var todayContacted = !!(client.todayContacted || isTodayBroadcast(client))
+    var recentContacted = !!(client.recentContacted || todayContacted)
+    if (filters.todayContacted === 'no' && todayContacted) return false
+    if (filters.todayContacted === 'yes' && !todayContacted) return false
+    if (filters.recentContacted === 'no' && recentContacted) return false
+    if (filters.recentContacted === 'yes' && !recentContacted) return false
+    if (filters.todayNew === 'yes' && !client.todayNew) return false
+    if (filters.todayNew === 'no' && client.todayNew) return false
+    return true
+  }
+
+  function filterClientState(clients) {
+    return clients.filter(function (client) {
+      return matchesClientSearch(client) && matchesClientFlags(client)
+    })
+  }
+
+  function clientStatusFilterHtml() {
+    var f = state.clientFilters
+    var activeCount = (f.todayContacted !== 'all' ? 1 : 0) + (f.recentContacted !== 'all' ? 1 : 0) + (f.todayNew !== 'all' ? 1 : 0)
+    var body = '<div class="client-filter-body">' +
+      '<label class="client-filter-row"><span>今日是否已联系</span><select class="client-filter-select" data-client-filter="todayContacted">' +
+      '<option value="all"' + (f.todayContacted === 'all' ? ' selected' : '') + '>全部</option><option value="no"' + (f.todayContacted === 'no' ? ' selected' : '') + '>未联系</option><option value="yes"' + (f.todayContacted === 'yes' ? ' selected' : '') + '>已联系</option></select></label>' +
+      '<label class="client-filter-row"><span>近 7 个交易日已联系</span><select class="client-filter-select" data-client-filter="recentContacted">' +
+      '<option value="all"' + (f.recentContacted === 'all' ? ' selected' : '') + '>全部</option><option value="no"' + (f.recentContacted === 'no' ? ' selected' : '') + '>未联系</option><option value="yes"' + (f.recentContacted === 'yes' ? ' selected' : '') + '>已联系</option></select></label>' +
+      '<label class="client-filter-row"><span>今日新增客户</span><select class="client-filter-select" data-client-filter="todayNew">' +
+      '<option value="all"' + (f.todayNew === 'all' ? ' selected' : '') + '>全部</option><option value="yes"' + (f.todayNew === 'yes' ? ' selected' : '') + '>今日新增</option><option value="no"' + (f.todayNew === 'no' ? ' selected' : '') + '>非今日新增</option></select></label>' +
+      '<div class="client-filter-note">今日已联系：电话服务/企微单聊点击完成服务，或本场景企微群发成功。<br>近 7 个交易日：含今日，按交易日历统计以上联系动作。<br>今日新增：与上一交易日最近一次有效跑批清单对比。</div>' +
+      '</div>'
+    return '<div class="client-filter-panel">' +
+      '<div class="client-filter-toggle-row"><button class="client-filter-toggle" data-action="toggle-client-filter"><span class="filter-icon">⌕</span>筛选</button>' +
+      (activeCount ? '<span class="client-filter-count">' + activeCount + ' 个条件</span>' : '') + '</div>' +
+      (state.clientFilterOpen ? body : '') + '</div>'
+  }
+
+  function clientSearchHtml() {
+    return '<div class="client-search-panel"><input class="client-search" data-role="client-search" value="' + esc(state.searchQuery) + '" placeholder="搜索姓名或资金账号" aria-label="搜索姓名或资金账号"></div>'
   }
 
   function isTodayBroadcast(client) {
@@ -543,6 +616,7 @@
     var filters = state.broadcastFilters
     return state.clients.filter(function (client) {
       if (client.completed || getClientGroups(client).indexOf(state.broadcastCategory) < 0) return false
+      if (!matchesClientSearch(client) || !matchesClientFlags(client)) return false
       var total = assetValue(client.basicInfo.totalAsset)
       var sec = assetValue(client.basicInfo.secAsset)
       if (filters.totalMin !== '' && (total == null || total < Number(filters.totalMin) * 10000)) return false
@@ -676,10 +750,10 @@
       '  <span class="panel-head-title">客户列表</span>' +
       '  <button class="panel-collapse-btn" data-action="toggle-collapse" aria-label="收起客户列表">‹</button>' +
       '</div>'
-    tabsEl.innerHTML = '<div class="filter-tabs">' + FILTER_TABS.map(function (t) {
+    tabsEl.innerHTML = clientSearchHtml() + '<div class="filter-tabs">' + FILTER_TABS.map(function (t) {
       return '<button class="filter-tab' + (state.filterTab === t.key ? ' active' : '') +
         '" data-action="set-filter" data-tab="' + t.key + '">' + t.label + '</button>'
-    }).join('') + '</div>' + renderSortControl()
+    }).join('') + '</div>' + '<div class="client-tools-row">' + renderSortControl() + clientStatusFilterHtml() + '</div>'
     renderBroadcastToolbar()
   }
 
@@ -745,7 +819,7 @@
       '<input class="bc-filter-input" data-filter="totalMax" inputmode="decimal" value="' + esc(f.totalMax) + '" placeholder="总资产上限（万）">' +
       '<input class="bc-filter-input" data-filter="secMin" inputmode="decimal" value="' + esc(f.secMin) + '" placeholder="证券市值下限（万）">' +
       '<input class="bc-filter-input" data-filter="secMax" inputmode="decimal" value="' + esc(f.secMax) + '" placeholder="证券市值上限（万）">' +
-      '</div><select class="bc-filter-select" data-filter="status"><option value="unsent"' + (f.status === 'unsent' ? ' selected' : '') + '>未群发</option><option value="all"' + (f.status === 'all' ? ' selected' : '') + '>全部</option><option value="sent"' + (f.status === 'sent' ? ' selected' : '') + '>已群发</option></select>' +
+      '</div><select class="bc-filter-select" data-filter="status"><option value="unsent"' + (f.status === 'unsent' ? ' selected' : '') + '>当日群发状态：未群发</option><option value="all"' + (f.status === 'all' ? ' selected' : '') + '>当日群发状态：全部</option><option value="sent"' + (f.status === 'sent' ? ' selected' : '') + '>当日群发状态：已群发</option></select>' +
       '<div class="bc-filter-note">匹配 ' + matched.length + ' 人，可发送 ' + available + ' 人</div></div>'
   }
 
@@ -780,6 +854,10 @@
         : '今日已群发'
       broadcastMark = '<div class="broadcast-mark">✓ ' + esc(markText) + '</div>'
     }
+    var statusTags = []
+    if (c.todayNew) statusTags.push('<span class="client-status-tag new-client">今日新增</span>')
+    if (c.todayContacted || broadcastToday) statusTags.push('<span class="client-status-tag contacted">今日已联系</span>')
+    if (c.recentContacted || c.todayContacted || broadcastToday) statusTags.push('<span class="client-status-tag">近7个交易日已联系</span>')
 
     var cls = 'client-card' +
       (state.selectMode ? ' select-mode' : '') +
@@ -809,6 +887,7 @@
       '  </div>' +
       '  <div class="client-sub">' + esc(c.basicInfo.level) + ' · ' + esc(c.basicInfo.riskCode) + esc(c.basicInfo.riskLabel) + '</div>' +
       (pills ? '<div class="signal-pills">' + pills + '</div>' : '') +
+      (statusTags.length ? '<div class="client-status-tags">' + statusTags.join('') + '</div>' : '') +
       broadcastMark +
       (state.selectMode && broadcastToday ? '<div class="broadcast-lock-note">今日已群发，不可选择</div>' : '') +
       '</div>' +
@@ -820,7 +899,7 @@
     var el = $('clientList')
     var list = state.selectMode ? sortClients(broadcastCandidates()) : filterAndSortClients(state.clients, state.filterTab)
     if (list.length === 0) {
-      el.innerHTML = '<div class="list-empty"><div class="icon">' + nodataIconHtml() + '</div><div class="text">暂无该分类客户</div></div>'
+      el.innerHTML = '<div class="list-empty"><div class="icon">' + nodataIconHtml() + '</div><div class="text">' + (state.searchQuery.trim() ? '未找到匹配客户' : '暂无该分类客户') + '</div></div>'
       return
     }
     el.innerHTML = list.map(clientCardHtml).join('')
@@ -1630,10 +1709,24 @@
     var first = urls[0]
     var underlyingLabel = security.securityType === 'stock' ? '个股诊断' : 'ETF诊断'
     if (mode === 'sector') return first.sector ? { url: first.sector, label: '板块诊断' } : null
-    if (mode === 'underlying') return first.underlying ? { url: first.underlying, label: underlyingLabel } : null
+    if (mode === 'underlying') {
+      if (security.securityType === 'stock') return { url: stockDiagnosisUrl(currentClient(), security), label: underlyingLabel }
+      return first.underlying ? { url: first.underlying, label: underlyingLabel } : null
+    }
     if (first.underlying) return { url: first.underlying, label: underlyingLabel }
     if (first.sector) return { url: first.sector, label: '板块诊断' }
     return null
+  }
+
+  function stockDiagnosisUrl(client, security) {
+    var isG123 = /^G[123]/.test(security.scenario || security.sceneCode || '')
+    var products = client ? client.aiAdvisorProducts || [] : []
+    var aiAdvisorSigned = products.some(function (product) {
+      return ['AI+选好股', 'AI股票解套', 'AI投ETF'].indexOf(product) >= 0
+    })
+    if (isG123) return 'https://www.workbuddy.link/p/wUrgDBZJt65bzE2CYzmp2H?ext2=copy_link'
+    if (aiAdvisorSigned) return 'https://www.workbuddy.link/p/atwNdFL6JplpGx6HZmwI4h?ext2=copy_link'
+    return 'https://www.workbuddy.link/p/pYMp53U4ysUEl8Cvf0Fh8x?ext2=copy_link'
   }
 
   function handleDiagOpen(signalId, mode) {
@@ -1745,6 +1838,8 @@
       customers: [{ uuid: client.uuid, serveStatus: 1, serveTime: serveTime }],
     }).then(function () {
       client.completed = true
+      client.todayContacted = true
+      client.recentContacted = true
       state.completeLoading = false
       state.completeDoneTip = true
       state.serviceNote = ''
@@ -1847,6 +1942,8 @@
               if (!c) return
               c.wxBroadcastStatus = true
               c.wxBroadcastTime = broadcastTime
+              c.todayContacted = true
+              c.recentContacted = true
               c.lastBroadcast = { date: timeStr, type: broadcastType }
             })
             renderClientList()
@@ -1881,6 +1978,10 @@
         state.filterTab = btn.getAttribute('data-tab')
         renderPanelHead()
         renderClientList()
+        break
+      case 'toggle-client-filter':
+        state.clientFilterOpen = !state.clientFilterOpen
+        renderPanelHead()
         break
       case 'toggle-sort-order':
         state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc'
@@ -2080,6 +2181,17 @@
       renderClientList()
       return
     }
+    var clientFilterKey = el.getAttribute('data-client-filter')
+    if (clientFilterKey) {
+      state.clientFilters[clientFilterKey] = el.value
+      renderClientList()
+      if (state.selectMode) {
+        var eligibleIds = broadcastCandidates().filter(function (client) { return !isTodayBroadcast(client) }).map(function (client) { return client.uuid })
+        state.selectedUuids = state.selectedUuids.filter(function (uuid) { return eligibleIds.indexOf(uuid) >= 0 })
+        renderBroadcastToolbar()
+      }
+      return
+    }
     var filterKey = el.getAttribute('data-filter')
     if (!filterKey) return
     state.broadcastFilters[filterKey] = el.value
@@ -2093,6 +2205,18 @@
     state.selectedUuids = state.selectedUuids.filter(function (uuid) { return candidateIds.indexOf(uuid) >= 0 })
     renderBroadcastToolbar()
     renderClientList()
+  })
+
+  document.addEventListener('input', function (e) {
+    var el = e.target
+    if (!el || el.getAttribute('data-role') !== 'client-search') return
+    state.searchQuery = el.value
+    renderClientList()
+    if (state.selectMode) {
+      var eligibleIds = broadcastCandidates().filter(function (client) { return !isTodayBroadcast(client) }).map(function (client) { return client.uuid })
+      state.selectedUuids = state.selectedUuids.filter(function (uuid) { return eligibleIds.indexOf(uuid) >= 0 })
+      renderBroadcastToolbar()
+    }
   })
 
   /** contentEditable 失焦：话术保存（对应 ScriptSection handleBlur）/ 群发话术同步（onScriptChange） */
