@@ -1,0 +1,129 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>业务评审说明</title><style>
+:root{--blue:#2b73ff;--blue-soft:#eaf1ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--orange:#d96d00}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}.top{position:sticky;top:0;z-index:10;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.brand{font-weight:700}.brand small{margin-left:10px;color:var(--muted);font-weight:400}.top a{color:var(--blue);text-decoration:none}.shell{max-width:1080px;margin:0 auto;padding:32px}.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 54px;box-shadow:0 10px 30px rgba(16,24,40,.04)}h1{margin:0 0 24px;font-size:30px;line-height:1.3}h2{margin:36px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:21px}h3{margin:26px 0 10px;font-size:17px}p{margin:10px 0;color:#344054}a{color:var(--blue)}blockquote{margin:0 0 26px;padding:14px 18px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:var(--blue-soft);color:#344054}table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0 24px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}th,td{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f7f9fc;font-weight:650}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}ul,ol{padding-left:24px}li{margin:5px 0}pre{overflow:auto;padding:16px;border-radius:10px;background:#111827;color:#f8fafc}.mermaid{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;overflow:auto}.footer{margin-top:24px;text-align:center;color:#98a2b3;font-size:12px}@media(max-width:720px){.top{padding:0 16px}.shell{padding:16px}.paper{padding:26px 20px}table{display:block;overflow:auto}h1{font-size:24px}}
+</style><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script></head><body><header class="top"><div class="brand">高净值客户资产降级服务清单<small>v1.0</small></div><nav><a href="../交付中心.html">返回交付中心</a>　<a href="../业务评审说明.md" download>下载原文</a></nav></header><main class="shell"><article class="paper"><h1>高净值客户资产降级服务清单｜业务评审说明</h1>
+<blockquote>
+<p>评审版本：业务评审版 v1.0<br />
+评审目标：确认降级圈客、原因判断、画像内容、沟通思路、话术和触达闭环。</p>
+</blockquote>
+<h2>一、评审范围</h2>
+<p>本包为独立的资产降级场景，与资产升级服务清单并列。页面视觉、客户基础信息、ISMP 待处理任务、电话外呼、企微群发、服务记录和完成服务交互复用 AI+服务清单；本次只替换降级档位、客户画像、原因判断和服务话术。</p>
+<p>本场景不新增信件、权益清单、资产配置一页通等固定沟通素材。</p>
+<h2>二、业务方案</h2>
+<h3>2.1 圈客与排序</h3>
+<ul>
+<li>自动任务：每日识别近20日日均净资产较昨日发生下降的客户，覆盖三条降级路径。</li>
+<li>WorkBuddy 自由圈客：按员工明确指定条件执行。</li>
+<li>WorkBuddy 快捷生成：直接生成三个降级档位的全量客户。</li>
+<li>命中多少生成多少，不设置 100 人上限、不需要二次确认、不分阶段。</li>
+<li>不增加近 90 天剔除逻辑；近期未通过企微群发或电话完成服务的客户仅优先展示。</li>
+</ul>
+<h3>2.2 客户画像</h3>
+<p>右侧画像包括：</p>
+<ol>
+<li>近20日日均净资产、降级前后档位及昨日对比说明；</li>
+<li>账户盈亏与近 1 月、近 3 月、近 6 月净资金转出；</li>
+<li>亏损主导、资金转出主导、混合原因或原因不明判断及判断依据；</li>
+<li>行业持仓结构，支持展开标的、市值&amp;仓位、收益额、持有天数；</li>
+<li>最近有效沟通日期、渠道和近半年服务次数。</li>
+</ol>
+<p>左侧客户列表在资产等级筛选下方以“资产降级原因判断：全部”单行入口展示筛选；点击下拉展开全部、亏损主导、资金转出主导、混合原因、原因不明。默认选择全部，可与姓名/资金账号和资产等级筛选叠加；标题旁说明图标点击后以气泡展示 1.5 倍阈值、三周期多数归类、混合原因和原因不明的判断规则。</p>
+<p>账户盈亏、持仓结构和风险相关数据口径与 AI+助手保持一致。</p>
+<h3>2.3 沟通思路与服务话术</h3>
+<ul>
+<li>沟通思路按客户当前降级层级展示：1000万以上→500–1000万、500–1000万→300–500万、300–500万→300万以下。</li>
+<li>每个层级完整展示业务提供的【亏损场景】【资金转出场景】【主动资产配置引导】及对应客户应答示例；不做总结、改写、补充或删减，不因系统原因判断隐藏任何一类内容。</li>
+<li>大模型仅基于“降级路径 × 原因判断”选择亏损或资金转出示例作为生成参照，默认引用 1 个、最多引用 2 个有效画像切入点，生成摘要式对客话术。有效切入点必须与当前原因或服务动作直接相关、数据完整可信、能自然引出本次服务，并以“当前持仓结构”“账户情况”“资金安排”等中性表述对客；没有有效切入点时使用通用回访话术。主动资产配置引导只在客户表达意愿后使用。</li>
+<li>混合/原因不明时先生成中性回访话术，了解客户关注的方向；不向客户展示系统判断。</li>
+<li>话术初始状态为合规审核通过，可直接编辑，失焦保存，无需二次审核。</li>
+</ul>
+<h3>2.4 企微群发</h3>
+<ul>
+<li>默认千人一面：按降级路径和原因判断拆分，同组共享服务话术；股票/理财不作为拆分条件。</li>
+<li>千人千面：逐客户展示并允许编辑独立话术后发送。</li>
+<li>群发内容与右侧服务话术同源，不包含固定升级素材。</li>
+<li>当前场景群发成功后写入已群发标记和时间，后续同场景拦截重复发送。</li>
+</ul>
+<h2>三、待业务确认项</h2>
+<p>以下事项均不影响本轮页面走查；在确认前，原型按“当前暂定方案”展示。建议在评审会上逐项给出结论和业务负责人。</p>
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>待确认事项</th>
+  <th>当前暂定方案</th>
+  <th>请业务确认的结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td><strong>资产降级原因判断逻辑</strong></td>
+  <td>分别比较近 1 月、近 3 月、近 6 月的账户亏损金额与净资金转出金额；单周期一方达到另一方 <strong>1.5 倍</strong>即视为该周期主导；三个周期中至少两个周期同向，归为“亏损主导”或“资金转出主导”；无多数为“混合原因”，数据不足为“原因不明”。</td>
+  <td>① 比较周期是否正确；② 1.5 倍阈值是否合适；③ 多数归类和混合/原因不明分支是否保留；④ “亏损金额”和“净资金转出”的具体取数、正负值和零值处理口径。</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><strong>沟通思路展示</strong></td>
+  <td>按三条降级路径展示业务提供的完整原文；每条均含【亏损场景】【资金转出场景】【主动资产配置引导】及对应应答示例。不按系统判断删减；默认展开【亏损场景】，其余可单独或全部展开。</td>
+  <td>三条路径及各场景原文是否为可上线版本；默认展开、完整展示和“仅供投顾参考、不对客发送”的方式是否确认。</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><strong>服务话术生成方案</strong></td>
+  <td>以“降级路径 × 原因判断”选择对应场景原文为参照，默认引用 1 个、最多引用 2 个有效画像切入点，生成摘要式对客话术；有效切入点须与当前原因/服务动作直接相关、数据完整可信且可用中性表述对客；没有有效切入点时使用通用回访话术。</td>
+  <td>生成参照、有效画像切入点定义及各原因场景优先字段、摘要长度与禁用表达是否符合预期；混合/原因不明的中性回访话术是否可用；人工编辑失焦保存且不再审核是否接受。</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><strong>近半年服务次数的数据口径</strong></td>
+  <td>页面展示最近有效沟通日期、渠道和近半年有效服务次数；不由模型推断。</td>
+  <td>统计窗口是否为滚动 6 个月；哪些事件计入一次“有效服务”（电话“完成服务”、企微单聊发送成功、企微群发发送成功、人工服务记录等）；同日多次、失败/撤回记录是否计入；数据来源及回写时点。</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><strong>跨档降级的路径归属</strong></td>
+  <td><strong>已确认</strong>：一次跨越两个及以上档位的客户纳入清单；沟通思路、服务话术和群发分组均按降级后的当前资产层级对应路径服务。</td>
+  <td>已确认。</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><strong>近期未联系的排序口径</strong></td>
+  <td><strong>已确认</strong>：按近 90 天“未联系优先 → 降级路径 → 当前资产”排序；点击“完成服务”和企微“发送客户成功”均视为已联系，不因近 90 天联系过而剔除。</td>
+  <td>已确认。</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><strong>数据缺失与企微群发边界</strong></td>
+  <td><strong>已确认</strong>：关键盈亏/资金数据缺失时允许使用通用回访话术；千人一面可合并相同降级路径、相同原因判断客户；企微以“发送客户成功”回执作为防重依据。</td>
+  <td>已确认。</td>
+</tr>
+</tbody>
+</table>
+<h2>四、建议的评审决策顺序</h2>
+<ol>
+<li>先确认事项 1 的原因判断规则；</li>
+<li>再确认事项 2、3 的沟通思路和话术生成边界；</li>
+<li>最后确认事项 4–7 的服务统计、跨档、排序、数据缺失和群发口径。</li>
+</ol>
+<h2>五、评审路径</h2>
+<ol>
+<li>打开交付中心；</li>
+<li>先阅读“业务评审说明”中的待业务确认项；</li>
+<li>进入“可点击高保真原型”，依次检查客户搜索、资产档位筛选、画像、沟通思路、服务话术、企微群发和完成服务；</li>
+<li>对照业务评审检查清单记录每项结论。</li>
+</ol>
+<h2>六、结论模板</h2>
+<ul>
+<li>评审结论：通过 / 有条件通过 / 不通过</li>
+<li>资产降级原因判断逻辑：</li>
+<li>沟通思路展示：</li>
+<li>服务话术生成方案：</li>
+<li>近半年服务次数数据口径：</li>
+<li>跨档降级路径归属：</li>
+<li>近期未联系排序口径：</li>
+<li>数据缺失与企微群发边界：</li>
+<li>需修改内容：</li>
+<li>业务负责人：</li>
+<li>确认日期：</li>
+</ul>
+</article><div class="footer">本页可离线打开。</div></main><script>if(window.mermaid)mermaid.initialize({startOnLoad:true,securityLevel:'loose'});</script></body></html>

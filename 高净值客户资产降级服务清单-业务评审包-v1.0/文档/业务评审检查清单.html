@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>业务评审检查清单</title><style>
+:root{--blue:#2b73ff;--blue-soft:#eaf1ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--orange:#d96d00}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}.top{position:sticky;top:0;z-index:10;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.brand{font-weight:700}.brand small{margin-left:10px;color:var(--muted);font-weight:400}.top a{color:var(--blue);text-decoration:none}.shell{max-width:1080px;margin:0 auto;padding:32px}.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 54px;box-shadow:0 10px 30px rgba(16,24,40,.04)}h1{margin:0 0 24px;font-size:30px;line-height:1.3}h2{margin:36px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:21px}h3{margin:26px 0 10px;font-size:17px}p{margin:10px 0;color:#344054}a{color:var(--blue)}blockquote{margin:0 0 26px;padding:14px 18px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:var(--blue-soft);color:#344054}table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0 24px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}th,td{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f7f9fc;font-weight:650}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}ul,ol{padding-left:24px}li{margin:5px 0}pre{overflow:auto;padding:16px;border-radius:10px;background:#111827;color:#f8fafc}.mermaid{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;overflow:auto}.footer{margin-top:24px;text-align:center;color:#98a2b3;font-size:12px}@media(max-width:720px){.top{padding:0 16px}.shell{padding:16px}.paper{padding:26px 20px}table{display:block;overflow:auto}h1{font-size:24px}}
+</style><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script></head><body><header class="top"><div class="brand">高净值客户资产降级服务清单<small>v1.0</small></div><nav><a href="../交付中心.html">返回交付中心</a>　<a href="../业务评审检查清单.md" download>下载原文</a></nav></header><main class="shell"><article class="paper"><h1>高净值客户资产降级服务清单｜业务评审检查清单</h1>
+<h2>一、场景与圈客</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>与资产升级清单并列，页面标题为“高净值客户资产降级服务清单”。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>降级路径覆盖 1000 万以上→500–1000 万、500–1000 万→300–500 万、300–500 万→300 万以下。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>资产筛选不展示 1000 万以上，包含 300 万以下。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>自动任务和 WorkBuddy 快捷生成不设人数上限，命中多少生成多少。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>不增加近 90 天剔除逻辑，近期未联系仅用于排序。</li>
+</ul>
+<h2>二、客户列表与基础信息</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>姓名/资金账号搜索位于资产筛选上方，支持清空并与资产筛选叠加。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>客户列表展示姓名、资金账号、风险等级、近20日日均净资产和降级路径。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>已完成客户置灰并移动到底部，仍可查看详情。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>客户基础信息和 ISMP 待处理任务完全复用 AI+服务清单。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>资产等级下方以“资产降级原因判断：全部”收起式入口展示筛选，点击下拉展开全部、亏损主导、资金转出主导、混合原因、原因不明；默认选择全部，并可与姓名/资金账号、资产等级叠加筛选。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>资产降级原因判断标题旁说明图标可弹出气泡，展示 1.5 倍阈值、三周期多数归类、混合原因和原因不明的判断规则。</li>
+</ul>
+<h2>三、客户画像</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>近20日日均净资产展示降级前后档位及昨日对比。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>分开展示近 1 月、近 3 月、近 6 月账户盈亏和净资金转出。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>展示原因判断、判断说明和业务规则提示。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>行业持仓可展开标的、市值&amp;仓位、收益额、持有天数。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>持仓和风险数据口径标注“与 AI+助手保持一致”。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>展示最近有效沟通日期、渠道和近半年服务次数。</li>
+</ul>
+<h2>四、沟通思路、话术与触达</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>沟通思路按当前客户降级层级展示，不按原因判断隐藏内容。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>每个层级完整展示业务提供的【亏损场景】【资金转出场景】【主动资产配置引导】及对应客户应答示例，不做总结、改写、补充或删减。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>默认展开【亏损场景】，其余收起，支持全部展开/收起和单项展开。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>服务话术为摘要式对客内容，遵守六项话术注意要点。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>服务话术按“降级路径 × 原因判断”基于对应业务示例生成；混合/原因不明不向客户展示系统判断。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>话术合规审核通过，可直接编辑，失焦保存，无单独编辑按钮。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>企微群发支持千人一面与千人千面，内容与服务话术同源。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>群发成功后写入防重标记，重复发送被拦截。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>完成服务保留服务内容记录并将客户置灰置底。</li>
+</ul>
+<h2>五、业务待确认项</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><strong>资产降级原因判断逻辑</strong>：比较周期、1.5 倍阈值、三周期多数归类、混合原因/原因不明分支，以及亏损和净资金转出的取数、正负/零值处理均已确认。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><strong>沟通思路展示</strong>：三条降级路径下的完整原文、默认展开【亏损场景】、仅供投顾参考且不对客发送均已确认。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><strong>服务话术生成方案</strong>：降级路径 × 原因判断的参照方式、有效画像切入点定义（默认 1 个、最多 2 个、相关/完整/可信/可自然引出服务动作）、各原因场景优先字段、中性回访分支、禁用表达和人工编辑后不二审均已确认。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><strong>近半年服务次数的数据口径</strong>：滚动窗口、有效服务事件、同日多次与失败/撤回记录处理、数据来源与回写时点均已确认。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><strong>跨档降级路径归属（已确认）</strong>：一次跨越两个及以上档位的客户纳入清单；沟通思路、话术和群发分组均按降级后的当前资产层级对应路径服务。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><strong>近期未联系排序口径（已确认）</strong>：按近 90 天“未联系优先 → 降级路径 → 当前资产”排序；点击完成服务、企微发送客户成功均视为已联系，不做 90 天剔除。</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><strong>数据缺失与企微群发边界（已确认）</strong>：关键盈亏/资金数据缺失时允许通用回访话术；千人一面可合并相同降级路径、相同原因判断客户；以企微发送客户成功回执作为防重依据。</li>
+</ul>
+<p>评审结论：____________________  业务负责人：____________________  日期：____________________</p>
+</article><div class="footer">本页可离线打开。</div></main><script>if(window.mermaid)mermaid.initialize({startOnLoad:true,securityLevel:'loose'});</script></body></html>

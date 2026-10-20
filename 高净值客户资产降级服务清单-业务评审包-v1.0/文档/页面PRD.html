@@ -1,0 +1,396 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>页面产品需求文档</title><style>
+:root{--blue:#2b73ff;--blue-soft:#eaf1ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--orange:#d96d00}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}.top{position:sticky;top:0;z-index:10;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.brand{font-weight:700}.brand small{margin-left:10px;color:var(--muted);font-weight:400}.top a{color:var(--blue);text-decoration:none}.shell{max-width:1080px;margin:0 auto;padding:32px}.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 54px;box-shadow:0 10px 30px rgba(16,24,40,.04)}h1{margin:0 0 24px;font-size:30px;line-height:1.3}h2{margin:36px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:21px}h3{margin:26px 0 10px;font-size:17px}p{margin:10px 0;color:#344054}a{color:var(--blue)}blockquote{margin:0 0 26px;padding:14px 18px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:var(--blue-soft);color:#344054}table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0 24px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}th,td{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f7f9fc;font-weight:650}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}ul,ol{padding-left:24px}li{margin:5px 0}pre{overflow:auto;padding:16px;border-radius:10px;background:#111827;color:#f8fafc}.mermaid{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;overflow:auto}.footer{margin-top:24px;text-align:center;color:#98a2b3;font-size:12px}@media(max-width:720px){.top{padding:0 16px}.shell{padding:16px}.paper{padding:26px 20px}table{display:block;overflow:auto}h1{font-size:24px}}
+</style><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script></head><body><header class="top"><div class="brand">高净值客户资产降级服务清单<small>v1.0</small></div><nav><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/prd/pages/02-高净值客户资产降级服务清单.md" download>下载原文</a></nav></header><main class="shell"><article class="paper"><h1>高净值客户资产降级服务清单 PRD</h1>
+<blockquote>
+<p><strong>元信息</strong></p>
+<ul>
+<li>创建时间：2026-10-20</li>
+<li>最后更新：2026-10-20</li>
+<li>关联主 PRD：<a href="主PRD.html">PRD.md</a></li>
+<li>设计状态：✅ 已确认</li>
+<li>版本：v1.0（未上线前不升版本）</li>
+</ul>
+</blockquote>
+<h2>1. 页面定位</h2>
+<h3>1.1 核心目标</h3>
+<p>为客户经理提供一张已生成完成的高净值客户资产降级服务清单。员工按当前降级后的资产档位筛选客户，在右侧查看 AI+服务清单同款客户基础信息，以及降级场景专属客户画像、原因判断、沟通思路和服务话术，完成回访、诊断、资金转出原因了解与服务记录。</p>
+<h3>1.2 入口来源</h3>
+<ul>
+<li>员工消息盒子中的每日 15:30 自动任务入口。</li>
+<li>WorkBuddy 自由圈客入口。</li>
+<li>WorkBuddy 直接生成“高净值客户资产降级服务清单”入口。</li>
+</ul>
+<h3>1.3 页面边界</h3>
+<ul>
+<li>复用 AI+服务清单的视觉、客户基础信息、ISMP 待处理任务、姓名/资金账号搜索、电话外呼、企微群发和完成服务交互。</li>
+<li>本页不展示信件、权益清单、资产配置一页通等升级场景沟通素材。</li>
+<li>企微群发内容只使用降级场景服务话术；没有固定客户服务素材时，不出现素材选择区。</li>
+</ul>
+<h2>2. 模块结构</h2>
+<table>
+<thead>
+<tr>
+  <th>模块ID</th>
+  <th>模块名称</th>
+  <th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>M1</td>
+  <td>清单头部</td>
+  <td>展示标题、来源、生成时间、客户数量。</td>
+</tr>
+<tr>
+  <td>M2</td>
+  <td>客户列表</td>
+  <td>展示当前资产档位筛选、姓名/资金账号搜索、降级路径和客户优先级；已完成服务客户置灰置底。</td>
+</tr>
+<tr>
+  <td>M3</td>
+  <td>企微群发工具条</td>
+  <td>复用 AI+服务清单的选择、防重和发送交互，支持千人一面/千人千面；发送内容为降级服务话术。</td>
+</tr>
+<tr>
+  <td>M4</td>
+  <td>客户基础信息</td>
+  <td>姓名、性别、风险等级、总资产、证券市值、手机号、电话外呼和客户详情。</td>
+</tr>
+<tr>
+  <td>M5</td>
+  <td>ISMP 待处理任务</td>
+  <td>当前客户待处理任务数量、任务名称及展开查看。</td>
+</tr>
+<tr>
+  <td>M6</td>
+  <td>降级客户画像</td>
+  <td>近20日日均净资产、账户盈亏、净资金转出、行业持仓结构与集中度、历史有效沟通记录。</td>
+</tr>
+<tr>
+  <td>M7</td>
+  <td>沟通思路</td>
+  <td>按客户降级层级展示业务提供的【亏损场景】【资金转出场景】【主动资产配置引导】完整示例原文；默认展开【亏损场景】。</td>
+</tr>
+<tr>
+  <td>M8</td>
+  <td>服务话术</td>
+  <td>展示合规审核状态、可编辑对客话术、人工编辑状态和一键复制。</td>
+</tr>
+<tr>
+  <td>M9</td>
+  <td>服务操作</td>
+  <td>服务内容记录、电话/企微触达和完成服务按钮。</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 元素详单</h2>
+<h3>模块 M1：清单头部</h3>
+<table>
+<thead>
+<tr>
+  <th>元素ID</th>
+  <th>元素名称</th>
+  <th>内容/交互</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>M1-E1</td>
+  <td>页面标题</td>
+  <td>高净值客户资产降级服务清单。</td>
+</tr>
+<tr>
+  <td>M1-E2</td>
+  <td>来源</td>
+  <td>自动任务 / WorkBuddy 自由圈客 / WorkBuddy 快捷生成。</td>
+</tr>
+<tr>
+  <td>M1-E3</td>
+  <td>生成时间</td>
+  <td>本次清单生成时间。</td>
+</tr>
+<tr>
+  <td>M1-E4</td>
+  <td>客户数量</td>
+  <td>本次清单命中客户数量。</td>
+</tr>
+</tbody>
+</table>
+<h3>模块 M2：客户列表与筛选</h3>
+<table>
+<thead>
+<tr>
+  <th>元素ID</th>
+  <th>元素名称</th>
+  <th>内容/交互</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>M2-E1</td>
+  <td>姓名/资金账号搜索</td>
+  <td>位于资产等级筛选上方；支持姓名或资金账号模糊实时匹配，可清空，并与资产档位叠加。</td>
+</tr>
+<tr>
+  <td>M2-E2</td>
+  <td>资产等级筛选</td>
+  <td>全部、500–1000万、300–500万、300万以下；不展示“1000万以上”筛选项。筛选依据为降级后的当前资产等级。默认选择“全部”。</td>
+</tr>
+<tr>
+  <td>M2-E2A</td>
+  <td>资产降级原因判断筛选</td>
+  <td>位于资产等级筛选下方，默认收起为“资产降级原因判断：全部”单行入口；点击下拉展开全部、亏损主导、资金转出主导、混合原因、原因不明。默认选择“全部”，与姓名/资金账号搜索和资产等级筛选叠加取交集；选中后收起并回显当前选项。</td>
+</tr>
+<tr>
+  <td>M2-E2B</td>
+  <td>资产降级原因判断说明</td>
+  <td>“资产降级原因判断”标题旁展示说明图标；点击后以气泡展示判断规则：比较近1月、近3月、近6月的账户亏损与净资金转出，单周期按 1.5 倍阈值判断主导因素，三个周期至少两个同向即归类对应主导原因，未形成多数为混合原因，数据不足为原因不明。点击气泡外区域收起。</td>
+</tr>
+<tr>
+  <td>M2-E3</td>
+  <td>客户列表项</td>
+  <td>姓名、资金账号、风险等级、当前资产等级、近20日日均净资产、降级路径和服务状态。</td>
+</tr>
+<tr>
+  <td>M2-E4</td>
+  <td>完成态</td>
+  <td>完成服务客户置灰并移动到列表底部，仍可点击查看详情。</td>
+</tr>
+<tr>
+  <td>M2-E5</td>
+  <td>排序</td>
+  <td>不增加近 90 天剔除；按当前场景近 90 天“未联系优先 → 降级路径 → 当前资产”排序。点击“完成服务”和企微“发送客户成功”均视为已联系。</td>
+</tr>
+</tbody>
+</table>
+<h3>模块 M3：企微群发</h3>
+<table>
+<thead>
+<tr>
+  <th>元素ID</th>
+  <th>元素名称</th>
+  <th>内容/交互</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>M3-E1</td>
+  <td>企微一键群发</td>
+  <td>放置在左侧客户列表上方，复用 AI+服务清单入口样式。</td>
+</tr>
+<tr>
+  <td>M3-E2</td>
+  <td>群发模式</td>
+  <td>支持千人一面、千人千面；股票/理财不作为拆分条件。</td>
+</tr>
+<tr>
+  <td>M3-E3</td>
+  <td>千人一面</td>
+  <td>可合并相同降级路径、相同资产降级原因判断的客户；同组使用同一降级场景话术。</td>
+</tr>
+<tr>
+  <td>M3-E4</td>
+  <td>千人千面</td>
+  <td>每位客户展示其降级路径、原因判断和个性化服务话术，可单独编辑后发送。</td>
+</tr>
+<tr>
+  <td>M3-E5</td>
+  <td>群发内容</td>
+  <td>发送内容与右侧“服务话术”一致，不展示或引用资产升级场景的信件、权益清单、配置一页通等素材。</td>
+</tr>
+<tr>
+  <td>M3-E6</td>
+  <td>防重</td>
+  <td>以企微“发送客户成功”回执写入当前场景群发成功标记和发送结果；后续重复发送拦截。</td>
+</tr>
+</tbody>
+</table>
+<h3>模块 M4：客户基础信息 / M5：待处理任务</h3>
+<p>完全复用 AI+服务清单的设计与交互：姓名、性别标签、风险等级标签、总资产、证券市值、手机号、电话外呼、客户详情、ISMP 待处理任务数量和任务名称。</p>
+<h3>模块 M6：降级客户画像</h3>
+<h4>M6-A 资产概览</h4>
+<ul>
+<li>近20日日均净资产。</li>
+<li>当前资产等级：由 <code>{降级前档位}</code> 降至 <code>{当前档位}</code>。</li>
+<li>跃迁判断：近20日日均净资产对比昨日数据。</li>
+<li>原因判断：亏损主导 / 资金转出主导 / 混合原因 / 原因不明。</li>
+<li>判断说明：展示近1月、近3月、近半年各周期的亏损金额与净资金转出金额对比结果。</li>
+</ul>
+<h4>M6-B 账户盈亏与净资金转出</h4>
+<p>独立展示三行周期数据，避免汇总为一句话：</p>
+<table>
+<thead>
+<tr>
+  <th>周期</th>
+  <th>账户盈亏</th>
+  <th>净资金转出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>近1个月</td>
+  <td>金额及正负状态</td>
+  <td>金额及正负状态</td>
+</tr>
+<tr>
+  <td>近3个月</td>
+  <td>金额及正负状态</td>
+  <td>金额及正负状态</td>
+</tr>
+<tr>
+  <td>近6个月</td>
+  <td>金额及正负状态</td>
+  <td>金额及正负状态</td>
+</tr>
+</tbody>
+</table>
+<p>账户盈亏数据沿用 AI+助手口径；净资金转出按照本场景资金数据口径展示。</p>
+<h4>M6-C 持仓结构与行业集中度</h4>
+<p>标题下方展示“数据口径与 AI+助手保持一致”。采用“行业汇总 + 可展开标的明细”的分层表格：</p>
+<ul>
+<li>行业汇总：行业名称、持仓、市值占比、收益额。</li>
+<li>行业明细：标的名称、市值&amp;仓位、收益额、持有天数。</li>
+<li>展示前三大行业占比合计及“是否超过60%”提示，用于支持板块集中度筛查。</li>
+</ul>
+<h4>M6-D 历史触达记录</h4>
+<ul>
+<li>最近有效沟通日期。</li>
+<li>最近有效沟通渠道。</li>
+<li>近半年有效服务次数。</li>
+<li>数据口径需明确“有效沟通服务”定义；页面只展示结果，不让模型自行推断（该口径仍待业务确认）。</li>
+</ul>
+<h3>模块 M7：沟通思路</h3>
+<ul>
+<li>按当前客户降级路径展示对应的一整套业务示例，固定包含【亏损场景】【资金转出场景】【主动资产配置引导】三部分；不因系统原因判断隐藏任一部分。</li>
+<li><code>1000万以上 → 500–1000万</code>：展示业务提供的千万级客户亏损、资金转出（含“转去别家 / 企业经营周转”应答）和大C方案 / 目标权重再平衡示例。</li>
+<li><code>500–1000万 → 300–500万</code>：展示业务提供的亏损、资金转出（含“转去银行 / 买房 / 还贷”“更好的产品”应答）和大C方案 / 资配建议书示例。</li>
+<li><code>300–500万 → 300万以下</code>：展示业务提供的亏损（含客户沉默 / 敷衍应答）、资金转出（含“转走了”“生活开支”应答）和轻量资产配置引导示例。</li>
+<li>示例内容逐段按业务提供的完整原文展示，不由大模型总结、改写、补充或删减；仅供投顾准备沟通，不进入企微群发或一键复制内容。</li>
+<li>默认仅展开【亏损场景】；支持“全部展开 / 全部收起”和单独展开或收起。</li>
+</ul>
+<h3>模块 M8：服务话术</h3>
+<ul>
+<li>按降级路径、原因判断和客户画像生成摘要式对客话术；对应降级层级下的【亏损场景】或【资金转出场景】完整业务示例是生成参照，主动资产配置引导仅在客户表达意愿后作为后续沟通参照。</li>
+<li>混合原因或原因不明时，不把系统判断告知客户；使用中性服务回访开场，先了解客户关注的是持仓波动、资金安排还是服务体验，再由员工进入对应业务示例。</li>
+<li>个性化话术默认引用 1 个、最多引用 2 个有效画像切入点。有效画像切入点须同时满足：与当前降级原因或服务动作直接相关；数据完整、可信且为本次清单有效期内的结果；能够自然引出回访、账户诊断、资金转出原因了解或服务引入；对客表达可转换为“当前持仓结构”“账户情况”“资金安排”等中性表述。</li>
+<li>优先选择规则：亏损主导优先选择账户盈亏变化、行业/产品集中度或风险承受与操作风格；资金转出主导优先选择净资金转出趋势、留存持仓结构或待处理的资金安排任务；混合原因优先选择账户盈亏与净资金转出中数据更完整的一个方向，再搭配持仓结构或服务记录；原因不明仅使用持仓结构、服务记录或待处理任务，不引用缺失的原因数据。</li>
+<li>有效画像切入点示例：账户盈亏变化 + 行业集中度，用于引出账户诊断；资金安排趋势 + 留存持仓结构，用于了解转出原因并做好服务衔接；风险承受与操作风格 + 持仓结构，用于引出风险匹配复盘。</li>
+<li>不得把多个字段逐项罗列成客户画像摘要，不得提及具体资产金额、资产降级、系统判断、内部模型或缺失数据；当没有满足条件的有效切入点时，使用不引用画像数据的通用回访话术。</li>
+</ul>
+<h4>M8-A 话术生成约束细则（研发实现依据）</h4>
+<table>
+<thead>
+<tr>
+  <th>规则项</th>
+  <th>实现要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>选取数量</td>
+  <td>默认选取 1 个有效画像切入点；仅在两个切入点均与本次服务动作直接相关且不会造成内容堆砌时，最多选取 2 个。禁止选取 3 个及以上。</td>
+</tr>
+<tr>
+  <td>有效判定</td>
+  <td>字段必须有值、数据源返回成功、处于本次清单有效期内；同时须与当前原因判断或拟执行服务动作相关，并可转换为不暴露具体金额和内部判断的中性对客表达。</td>
+</tr>
+<tr>
+  <td>原因与字段映射</td>
+  <td>亏损主导：账户盈亏、行业/产品集中度、风险承受与操作风格；资金转出主导：净资金转出趋势、留存持仓结构、资金安排待办；混合原因：优先数据更完整的一类原因字段，再辅以持仓结构或服务记录；原因不明：只可使用持仓结构、服务记录、待处理任务，禁止使用缺失的盈亏/资金字段。</td>
+</tr>
+<tr>
+  <td>无可用切入点</td>
+  <td>生成不引用画像数据的通用服务回访话术；不得因画像缺失而补写或猜测客户情况。</td>
+</tr>
+<tr>
+  <td>输出限制</td>
+  <td>禁止逐项罗列画像字段、具体资产金额、资产降级、系统判断、内部模型和缺失数据；输出应服务于本次回访、诊断、资金转出原因了解或服务引入。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>展示“合规审核通过”和“人工未编辑/人工已编辑”状态。</li>
+<li>话术文本直接可编辑，失焦保存，不新增独立编辑按钮，不触发二次合规审核。</li>
+<li>一键复制只复制对客话术，不复制内部沟通思路。</li>
+</ul>
+<h3>模块 M9：服务操作</h3>
+<ul>
+<li>服务内容记录输入框；点击“完成服务”即写入当前场景已联系记录。</li>
+<li>电话外呼、企微单聊、企微群发沿用 AI+服务清单交互。</li>
+<li>完成服务后记录场景 ID、客户 ID、降级路径、原因判断、触达渠道、服务内容和完成时间；客户置灰并移至列表底部。</li>
+</ul>
+<h2>4. 交互逻辑</h2>
+<ol>
+<li>进入清单即视为清单生成完成，不展示生成进度；一次跨越两个及以上档位的客户同样纳入清单，其沟通思路、服务话术和群发分组按降级后的当前资产层级对应路径服务。</li>
+<li>左侧资产筛选只展示当前降级后的资产档位：500–1000万、300–500万、300万以下；其下方以收起式单行入口展示资产降级原因判断筛选，点击下拉展开全部、亏损主导、资金转出主导、混合原因、原因不明。资产降级原因判断标题旁的说明图标点击后以气泡展示 1.5 倍阈值、三周期多数归类、混合原因和原因不明的判断逻辑；点击气泡外区域收起。两组筛选默认均选择“全部”，与姓名/资金账号搜索叠加取交集。</li>
+<li>选中客户后，右侧所有数据均切换为该客户的降级画像；不保留升级场景的交易次数、权益素材等模块。</li>
+<li>企微群发弹框与右侧服务话术保持同源：千人一面可合并相同降级路径、相同资产降级原因判断的客户，使用组级摘要话术且不得混入单个客户画像；千人千面使用各客户当前话术；无固定素材选择区。企微返回“发送客户成功”回执后才写入防重标记。</li>
+<li>原因判断默认采用已确认的 1.5 倍阈值和三个周期多数规则；无明显多数时进入混合原因分支。</li>
+</ol>
+<h2>5. 页面状态</h2>
+<table>
+<thead>
+<tr>
+  <th>状态</th>
+  <th>页面表现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>正常态</td>
+  <td>展示头部、客户列表、降级画像、沟通思路、服务话术和服务操作。</td>
+</tr>
+<tr>
+  <td>搜索无匹配</td>
+  <td>左侧显示未找到匹配客户，右侧保留当前客户详情。</td>
+</tr>
+<tr>
+  <td>无客户</td>
+  <td>左侧显示暂无客户数据，不生成空详情。</td>
+</tr>
+<tr>
+  <td>数据缺失</td>
+  <td>对应字段显示“--”或“数据不可用”，不由模型补齐；关键盈亏/资金数据缺失时允许使用通用回访话术触达。</td>
+</tr>
+<tr>
+  <td>原因不明</td>
+  <td>展示通用回访路径，不强行归类为亏损或资金转出。</td>
+</tr>
+<tr>
+  <td>话术生成失败</td>
+  <td>标记失败原因并支持重试，不允许直接触达。</td>
+</tr>
+<tr>
+  <td>服务完成</td>
+  <td>客户置灰并移到底部，保留详情和服务记录。</td>
+</tr>
+<tr>
+  <td>当前场景已群发</td>
+  <td>显示已群发标识，沿用既有防重拦截。</td>
+</tr>
+</tbody>
+</table>
+<h2>6. 线框与高保真基线</h2>
+<p>页面采用 AI+服务清单双栏列表-详情布局，不另起升级场景的素材模块。高保真原型路径：<code>../../../pages/02-高净值客户资产降级服务清单.html 版本记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-20</td>
+  <td>新增资产降级服务清单页面，按降级文档落地档位、画像、原因判断、话术和群发内容。</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-20</td>
+  <td>业务确认跨档降级纳入及按当前层级服务、近 90 天未联系排序、通用回访触达、千人一面合组和企微成功回执防重。</td>
+</tr>
+</tbody>
+</table>
+</article><div class="footer">本页可离线打开。</div></main><script>if(window.mermaid)mermaid.initialize({startOnLoad:true,securityLevel:'loose'});</script></body></html>

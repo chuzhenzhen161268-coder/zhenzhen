@@ -1,0 +1,2 @@
+window.__CANVAS_DATA__ = window.__CANVAS_DATA__ || {};
+window.__CANVAS_DATA__["layout"] = {"version":"2","updatedAt":"2026-10-20T15:30:00.000Z","frames":[{"id":"fi-down-normal","pageId":"02-高净值客户资产降级服务清单","frameKey":"normal","x":0,"y":0},{"id":"fi-down-broadcast","pageId":"02-高净值客户资产降级服务清单","frameKey":"broadcast-modal","x":1328,"y":0},{"id":"fi-down-complete","pageId":"02-高净值客户资产降级服务清单","frameKey":"complete-modal","x":2656,"y":0}],"shapes":[]};

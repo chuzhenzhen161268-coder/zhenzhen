@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<!-- 高保真基线：直接复用 AI+客户服务清单的设计令牌、布局样式和原始图标资产。 -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280, initial-scale=1.0">
+  <title>高净值客户资产降级服务清单</title>
+  <style>
+    :root{--color-primary:#2b73ff;--color-primary-hover:#1f5fe0;--color-primary-light:#eaf1ff;--color-primary-border:#b8d0ff;--color-profit:#f93838;--color-loss:#12b76a;--color-text-primary:#101828;--color-text-secondary:#667085;--color-text-tertiary:#8d96a3;--color-border:#e4e7ec;--color-border-light:#f0f2f5;--color-bg-page:#f5f7fa;--color-bg-block:#f5f6f9;--color-bg-card:#fff;--color-mask:rgba(16,24,40,.5);--font-family-base:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;--font-family-num:'DIN Alternate','Bahnschrift','Segoe UI',sans-serif;--size-topbar-height:61px;--size-panel-width:300px;--size-footer-height:60px;--radius-sm:4px;--radius-md:6px;--radius-lg:8px;--radius-xl:12px;--shadow-card-hover:0 4px 12px rgba(16,24,40,.1);--shadow-modal:0 8px 32px rgba(16,24,40,.16)}
+    *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:var(--font-family-base);font-size:14px;color:var(--color-text-primary);background:var(--color-bg-page);-webkit-font-smoothing:antialiased}button{font-family:inherit;border:0;background:none;cursor:pointer}button:disabled{cursor:not-allowed}input{font-family:inherit;outline:none}.app-shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}.app-body{display:flex;flex:1;min-height:0;padding-top:var(--size-topbar-height)}.topbar{position:fixed;inset:0 0 auto 0;z-index:20;height:var(--size-topbar-height);display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#fff;border-bottom:2px solid #f3f6f9}.topbar-left,.topbar-right,.topbar-stat{display:flex;align-items:center}.topbar-left{gap:10px}.topbar-right{gap:24px}.topbar-logo{display:block;width:115px;height:30px;object-fit:contain}.topbar-sep{width:1px;height:18px;background:#d9d9d9}.topbar-title,.topbar-stat span,.topbar-date{font-size:14px}.topbar-stat{align-items:flex-end;gap:4px}.topbar-stat b{font-family:var(--font-family-num);font-size:18px;line-height:20px}.topbar-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover}.client-panel{width:300px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;background:#fff;border-right:1px solid #f3f6f9;transition:width .2s}.client-panel.collapsed{width:72px}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 0;margin-bottom:16px}.panel-head-title{font-size:18px;font-weight:700}.panel-collapse-btn{padding:0 4px;font-size:20px;color:#7f889c}.filter-tabs{display:flex;align-items:center;gap:6px;padding:0 20px;margin-bottom:16px}.filter-tab{height:32px;border-radius:6px;background:var(--color-bg-block);color:var(--color-text-primary);white-space:nowrap;transition:.15s}.filter-tab:hover{background:#eef1f6}.filter-tab.active{background:var(--color-primary);color:#fff;font-weight:700}.panel-broadcast-slot{padding:0 20px;margin-bottom:20px}.broadcast-bar{position:relative}.bb-main-btn{width:100%;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border:1px solid rgba(46,113,251,.2);border-radius:8px;background:#fff;color:var(--color-primary);font-size:14px;font-weight:700}.bb-main-btn .label{display:flex;align-items:center;gap:8px}.bc-icon{width:16px;height:16px}.bb-main-btn .chev{width:14px;height:14px}.client-list-scroll{flex:1;overflow-y:auto;padding:0 20px 16px}.client-card{display:flex;align-items:center;gap:9px;border:.5px solid #d0d9e2;border-radius:8px;padding:12px 16px;margin-bottom:12px;background:#fff;cursor:pointer;transition:.15s}.client-card:hover{background:rgba(245,247,250,.5)}.client-card.selected,.client-card.checked{border-color:var(--color-primary);background:var(--color-bg-page)}.client-card.completed{opacity:.45}.client-avatar{width:36px;height:36px;flex-shrink:0;border-radius:50%;background:linear-gradient(#b7c5e6,#8492b4);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}.client-avatar.selected{background:var(--color-primary)}.client-card-body{min-width:0;flex:1}.client-name-row{display:flex;align-items:center;gap:6px;overflow:hidden}.client-name{font-size:18px;font-weight:700;white-space:nowrap}.client-account{font-family:var(--font-family-num);font-size:16px;color:var(--color-text-tertiary)}.completed-check{color:#168f5c}.broadcast-mark{display:flex;align-items:center;gap:4px;margin-top:4px;font-size:12px;color:var(--color-text-tertiary)}.batch-checkbox{width:22px;height:22px;flex-shrink:0;border:1.5px solid #d0d9e2;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center}.batch-checkbox svg{display:none}.batch-checkbox.checked{border-color:var(--color-primary);background:var(--color-primary)}.batch-checkbox.checked svg{display:block}.bb-select-bar{height:40px;display:flex;align-items:center;justify-content:space-between}.bb-select-count{font-weight:700}.confirm-btns{display:flex;gap:8px}.bb-cancel-btn{height:32px;padding:0 12px;border-radius:6px;color:var(--color-text-tertiary);font-weight:600}.bb-next-btn{height:32px;padding:0 12px;border-radius:6px;background:var(--color-bg-page);color:var(--color-text-tertiary);font-weight:600}.bb-next-btn.enabled{background:var(--color-primary);color:#fff}.right-panel{display:flex;flex-direction:column;flex:1;min-width:0;overflow:hidden}.right-scroll{margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:16px;overflow-y:auto;padding:16px 16px 80px}.portrait-card{position:relative;flex-shrink:0;background:#fff;border-radius:12px;padding:16px 20px;overflow:hidden}.profile-top{display:flex;align-items:center;gap:12px}.profile-avatar{width:42px;height:42px;flex-shrink:0;border-radius:50%;background:var(--color-primary);color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center}.profile-info{min-width:0;flex:1}.profile-name-row,.profile-tags,.profile-metrics,.phone-wrap,.task-line,.task-toggle-btn{display:flex;align-items:center}.profile-name-row{gap:6px;flex-wrap:wrap}.profile-name{font-size:18px;font-weight:700}.profile-account{font-family:var(--font-family-num);font-size:18px;color:var(--color-text-tertiary)}.profile-detail-link{font-size:14px;font-weight:600;color:var(--color-primary);cursor:pointer}.profile-tags{gap:8px;margin-top:6px;flex-wrap:wrap}.profile-tag{display:inline-flex;align-items:center;justify-content:center;height:24px;min-width:36px;padding:0 8px;border:.5px solid rgba(163,170,182,.3);border-radius:4px;background:var(--color-bg-page);font-size:12px}.profile-metrics{margin-left:auto}.metric-item .metric-label{margin-bottom:4px;font-size:14px;color:var(--color-text-tertiary)}.metric-value{font-family:var(--font-family-num);font-size:20px;font-weight:500}.metric-sep{width:1px;height:26px;background:rgba(127,136,156,.3)}.phone-wrap{margin-left:10px}.phone-masked{font-family:var(--font-family-num);font-size:18px;font-weight:700}.call-btn{height:32px;padding:0 12px;display:flex;align-items:center;gap:4px;border-radius:6px;background:var(--color-primary);color:#fff;font-size:12px}.call-btn-icon{width:16px;height:16px}.task-line{height:44px;border-top:1px solid #f3f6f9;padding:0 20px;cursor:pointer}.task-line-title{font-size:18px}.task-count-badge{margin-left:8px;display:inline-flex;align-items:center;justify-content:center;height:24px;min-width:36px;padding:0 8px;gap:2px;border-radius:4px;background:var(--color-profit);font-family:var(--font-family-num);font-size:18px;color:#fff}.task-toggle-btn{margin-left:auto;gap:8px;color:var(--color-primary)}.task-arrow-icon{width:21px;height:21px}.task-drawer{background:#fff;border-radius:0 0 12px 12px;padding:16px 20px}.task-row{display:grid;grid-template-columns:22px 1fr auto;align-items:start;gap:10px;border-bottom:1px solid #f3f6f9;padding:11px 0}.task-check{width:18px;height:18px;border:1px solid #b8c0cc;border-radius:4px}.task-name{font-weight:700}.task-desc{margin-top:4px;font-size:13px;color:var(--color-text-tertiary)}.task-side{display:flex;align-items:center;gap:6px}.task-tag{height:18px;padding:0 4px;border:1px solid rgba(249,56,56,.3);border-radius:3px;background:rgba(249,56,56,.08);font-size:11px;color:var(--color-profit)}.task-due{font-size:12px;color:var(--color-text-tertiary)}.task-due.overdue{color:var(--color-profit);font-weight:600}.script-section{margin-top:16px;border-top:1px solid #f3f6f9;padding-top:16px}.script-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.script-head-left{display:flex;align-items:center;gap:8px}.script-title{font-size:18px;font-weight:700}.script-editable-wrap{position:relative;margin-top:12px}.script-editable{overflow:hidden;border:1px solid rgba(46,113,251,.2);border-radius:10px;background:var(--color-bg-page);padding:12px 16px;font-size:14px;line-height:26px;white-space:pre-wrap;cursor:text}.copy-btn{height:32px;padding:0 10px;display:flex;align-items:center;gap:4px;border-radius:6px;background:var(--color-primary);color:#fff;font-size:12px}.copy-btn-icon{width:16px;height:16px}.service-footer{position:fixed;right:16px;bottom:0;z-index:50;display:flex;align-items:center;gap:10px;height:60px;background:#fff;border-radius:10px 10px 0 0;padding:12px 20px;box-shadow:0 -4px 18px rgba(16,24,40,.06)}.service-footer-label{color:var(--color-text-tertiary)}.service-note-input{flex:1;min-width:0;height:34px;border:1px solid #d0d9e2;border-radius:6px;padding:0 10px;font-size:14px}.complete-btn{height:34px;padding:0 20px;border-radius:6px;background:var(--color-primary);color:#fff;font-size:14px;font-weight:600}.modal-mask{position:fixed;inset:0;z-index:1000;background:var(--color-mask);display:none;align-items:center;justify-content:center}.modal-mask.open{display:flex}.modal{width:640px;max-width:92vw;max-height:86vh;display:flex;flex-direction:column;border-radius:12px;background:#fff;box-shadow:var(--shadow-modal);overflow:hidden}.modal.w-560{width:560px}.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px}.modal-title{font-size:18px;font-weight:700}.modal-close{padding:4px;color:var(--color-text-tertiary)}.modal-body{flex:1;overflow-y:auto;padding:0 20px 16px}.modal-foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f3f6f9;padding:14px 20px}.modal-foot-hint{font-size:12px;color:var(--color-text-tertiary)}.bc-recipients{max-height:120px;display:flex;flex-wrap:wrap;gap:6px;overflow-y:auto;margin-bottom:16px}.bc-recipient-tag{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:4px;background:var(--color-bg-page);font-size:13px;font-weight:600}.bc-recipient-remove{display:inline-flex;color:var(--color-text-tertiary)}.bc-section-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.bc-section-label .name{font-size:13px;font-weight:700}.bc-preset-badge{border-radius:4px;background:rgba(43,115,255,.08);padding:2px 6px;font-size:11px;font-weight:600;color:var(--color-primary)}.bc-script-area{min-height:90px;border:1px solid #f3f6f9;border-radius:10px;background:var(--color-bg-page);padding:12px;font-size:13px;line-height:1.65}.bc-send-btn{height:34px;padding:0 20px;border-radius:8px;background:var(--color-primary);opacity:.45;color:#fff;font-size:13px;font-weight:700}.bc-send-btn.enabled{opacity:1}.confirm-cancel{height:34px;padding:0 16px;border:1px solid var(--color-border);border-radius:8px}.confirm-ok{height:34px;padding:0 16px;border-radius:8px;background:var(--color-primary);color:#fff}
+    [hidden]{display:none!important}.topbar-title{font-weight:500}.client-panel.collapsed .client-list-scroll{padding:0}.client-panel.collapsed .client-card{justify-content:center;border:0;border-radius:0;padding:8px 0;margin:0}.client-panel.collapsed .client-card-body,.client-panel.collapsed .completed-divider{display:none}.client-panel.collapsed .client-avatar{width:48px;height:48px;border-radius:8px}.list-meta{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:14px 20px;flex-shrink:0}.list-meta-title{font-size:18px;font-weight:700}.list-meta-items{display:flex;gap:28px;margin-top:6px;font-size:12px;color:var(--color-text-tertiary)}.list-meta-status{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:#f0faf4;color:#168f5c;font-size:12px;font-weight:600}.list-meta-status:before{content:"";width:6px;height:6px;border-radius:50%;background:#12b76a}.filter-tabs.asset-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.filter-tabs.asset-tabs .filter-tab{padding:0 7px;font-size:12px}.asset-level{margin-left:auto;display:inline-flex;align-items:center;height:20px;padding:0 6px;border-radius:4px;background:rgba(43,115,255,.08);color:var(--color-primary);font-size:10px;font-weight:600;white-space:nowrap}.client-card.completed .asset-level{color:var(--color-text-tertiary);background:var(--color-bg-page)}.client-sub-line{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:2px;font-family:var(--font-family-num);font-size:12px;line-height:18px;color:var(--color-text-tertiary)}.completed-divider{display:flex;align-items:center;gap:8px;margin:14px 0 10px;color:var(--color-text-tertiary);font-size:12px}.completed-divider:before,.completed-divider:after{content:"";height:1px;flex:1;background:var(--color-border-light)}.portrait-card{height:auto!important;min-height:150px}.profile-metrics{gap:14px}.metric-item .metric-value{font-size:18px}.phone-wrap{gap:8px}.task-line{position:relative;margin:14px -20px -16px}.task-drawer{margin:0}.profile-section{background:#fff;border-radius:12px;padding:20px}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.section-title-wrap{display:flex;align-items:center;gap:10px}.section-indicator{width:3px;height:28px;border-radius:2px;background:var(--color-primary)}.section-title{font-size:18px;font-weight:700}.section-sub{font-size:12px;color:var(--color-text-tertiary)}.status-tag{display:inline-flex;align-items:center;height:24px;padding:0 8px;border:.5px solid rgba(2,148,68,.3);border-radius:4px;background:rgba(2,148,68,.08);color:var(--color-loss);font-size:12px;font-weight:600}.profile-overview{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}.asset-hero{position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(135deg,#edf3ff 0%,#f8faff 60%,#fff 100%);padding:20px}.asset-hero:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-38px;top:-56px;background:rgba(43,115,255,.08)}.asset-hero-label{color:var(--color-text-tertiary);font-size:13px}.asset-hero-value{margin-top:8px;font-family:var(--font-family-num);font-size:30px;line-height:36px;font-weight:700;color:var(--color-primary)}.asset-hero-note{margin-top:8px;font-size:12px;color:var(--color-text-tertiary)}.cert-card{border-radius:10px;background:var(--color-bg-page);padding:18px}.cert-line{display:flex;align-items:center;justify-content:space-between}.cert-name{font-size:13px;color:var(--color-text-tertiary)}.cert-value{margin-top:12px;font-size:20px;font-weight:600}.cert-desc{margin-top:8px;font-size:12px;line-height:18px;color:var(--color-text-tertiary)}.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.cert-grid div{display:flex;flex-direction:column;gap:4px;padding:9px 10px;border-radius:7px;background:#fff}.cert-grid span{font-size:11px;color:var(--color-text-tertiary)}.cert-grid b{font-size:13px;font-weight:700}.holdings-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}.holdings-table th{height:38px;padding:0 12px;background:var(--color-bg-page);color:var(--color-text-tertiary);font-weight:500;text-align:right;border-bottom:1px solid var(--color-border-light)}.holdings-table th:first-child,.holdings-table td:first-child{text-align:left}.holdings-table th:first-child{border-radius:8px 0 0 0}.holdings-table th:last-child{border-radius:0 8px 0 0}.holdings-table td{height:44px;padding:0 12px;text-align:right;border-bottom:1px solid var(--color-border-light)}.holding-main td{font-weight:600}.holding-name{display:flex;align-items:center;gap:8px}.holding-dot{width:8px;height:8px;border-radius:50%;background:var(--color-primary)}.holding-dot.fixed{background:#8b5cf6}.holding-dot.cash{background:#12b76a}.holding-toggle{color:var(--color-primary);font-size:12px;font-weight:600}.holding-detail{display:none;background:#fbfcfe}tbody.open .holding-detail{display:table-row}.holding-detail td:first-child{padding-left:40px;color:var(--color-text-secondary)}.profit{color:var(--color-profit)}.loss{color:var(--color-loss)}.behavior-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.behavior-card{border:1px solid var(--color-border-light);border-radius:10px;padding:16px}.behavior-title{font-size:14px;font-weight:700}.behavior-sub{margin-top:3px;font-size:12px;color:var(--color-text-tertiary)}.trade-bars{display:flex;flex-direction:column;gap:13px;margin-top:16px}.trade-row{display:grid;grid-template-columns:64px 1fr 46px;align-items:center;gap:10px;font-size:12px}.bar-track{height:7px;border-radius:999px;background:#edf0f5;overflow:hidden}.bar-fill{height:100%;border-radius:999px;background:var(--color-primary)}.bar-fill.etf{background:#8b5cf6}.bar-fill.fund{background:#12b76a}.period-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.period-item{border-radius:8px;background:var(--color-bg-page);padding:12px;text-align:center}.period-label{font-size:12px;color:var(--color-text-tertiary)}.period-value{margin-top:7px;font-family:var(--font-family-num);font-size:16px;font-weight:600;color:var(--color-profit)}.script-card{background:#fff;border-radius:12px;padding:20px}.script-card .script-section{margin-top:0;border-top:0;padding-top:0}.script-statuses{display:flex;align-items:center;gap:6px}.compliance-tag{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;background:rgba(2,148,68,.08);color:var(--color-loss);font-size:12px;font-weight:600}.edit-tag{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;background:var(--color-bg-page);color:var(--color-text-tertiary);font-size:12px}.script-editable{max-height:none;min-height:112px}.script-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}.secondary-btn{height:32px;padding:0 12px;border:1px solid var(--color-border);border-radius:6px;font-size:12px;color:var(--color-text-primary)}.secondary-btn:hover{border-color:var(--color-primary);color:var(--color-primary)}.service-footer{left:316px}.broadcast-lock-note{margin-top:4px;color:#168f5c;font-size:12px}.toast{position:fixed;top:20px;left:50%;z-index:1500;transform:translateX(-50%);display:flex;align-items:center;gap:8px;border:1px solid #b7eb8f;border-radius:7px;background:#f6ffed;padding:10px 16px;color:#389e0d;font-size:13px;box-shadow:var(--shadow-card-hover)}.confirm-copy{font-size:13px;line-height:22px;color:var(--color-text-secondary)}
+    .materials-card,.mindset-card{background:#fff;border-radius:12px;padding:20px}.materials-card{border:1px solid #dce7ff;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%)}.materials-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.materials-title,.mindset-title{font-size:18px;font-weight:700}.materials-sub,.mindset-sub{font-size:12px;color:var(--color-text-tertiary)}.material-refresh{height:28px;padding:0 9px;border:1px solid var(--color-primary-border);border-radius:6px;color:var(--color-primary);font-size:12px;background:#fff}.material-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.material-item{position:relative;min-height:126px;display:flex;flex-direction:column;padding:14px;border:1px solid var(--color-border-light);border-radius:10px;background:#fff}.material-item.dynamic{border-color:#c7d7ff}.material-item.unavailable{opacity:.72;background:#fafbfc}.material-check{position:absolute;right:12px;top:12px;width:18px;height:18px;accent-color:var(--color-primary)}.material-kind{display:inline-flex;align-items:center;height:22px;width:max-content;padding:0 6px;border-radius:4px;background:var(--color-bg-page);color:var(--color-text-tertiary);font-size:11px}.material-kind.letter{background:#fff5e8;color:#b15b00}.material-kind.rights{background:#edf7f2;color:#168f5c}.material-kind.dynamic{background:#eaf1ff;color:var(--color-primary)}.material-name{margin-top:10px;padding-right:22px;font-size:14px;font-weight:700;line-height:20px}.material-version{margin-top:5px;color:var(--color-text-tertiary);font-size:11px}.material-actions{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:10px}.material-preview,.material-retry{color:var(--color-primary);font-size:12px;font-weight:600;text-decoration:none}.material-status{margin-top:auto;padding-top:10px;color:var(--color-profit);font-size:12px}.mindset-card{border:1px solid var(--color-border-light)}.mindset-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.mindset-badge{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;background:#fff5e8;color:#b15b00;font-size:12px;font-weight:600}.mindset-body{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.mindset-step{padding:12px;border-radius:8px;background:var(--color-bg-page)}.mindset-step-index{font-family:var(--font-family-num);font-size:12px;color:var(--color-primary);font-weight:700}.mindset-step-title{margin-top:5px;font-size:13px;font-weight:700}.mindset-step-copy{margin-top:5px;color:var(--color-text-secondary);font-size:12px;line-height:19px}.script-card{border:1px solid #dce7ff}.bc-materials{display:grid;gap:8px;margin-bottom:16px}.bc-material-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border:1px solid var(--color-border-light);border-radius:8px;background:#fff}.bc-material-row input{accent-color:var(--color-primary)}.bc-material-main{min-width:0;flex:1}.bc-material-name{font-size:13px;font-weight:600}.bc-material-meta{margin-top:2px;color:var(--color-text-tertiary);font-size:11px}.bc-material-remove{color:var(--color-text-tertiary);font-size:12px}.bc-material-remove:hover{color:var(--color-profit)}.bc-dynamic-note{margin-top:6px;color:var(--color-primary);font-size:11px}.service-footer{z-index:60}.material-empty{padding:15px;border-radius:8px;background:var(--color-bg-page);color:var(--color-text-tertiary);font-size:13px}@media(max-width:1000px){.material-grid,.mindset-body{grid-template-columns:1fr 1fr}}@media(max-width:700px){.material-grid,.mindset-body{grid-template-columns:1fr}}
+    .thought-sections{display:flex;flex-direction:column;gap:14px}.thought-section{border:1px solid var(--color-border-light);border-radius:10px;background:#fff;padding:14px 16px}.thought-section h4{font-size:14px;font-weight:700;color:var(--color-text-primary)}.thought-copy{margin-top:8px;white-space:pre-wrap;font-size:13px;line-height:23px;color:var(--color-text-secondary)}.thought-note{margin-top:10px;padding:9px 12px;border-radius:6px;background:#fffaf0;color:#8a5a00;font-size:12px;line-height:19px}.broadcast-mode-tabs{display:flex;gap:6px;padding:0 20px 14px}.broadcast-mode-tab{height:32px;padding:0 12px;border-radius:6px;background:var(--color-bg-block);color:var(--color-text-secondary);font-size:13px;font-weight:600}.broadcast-mode-tab.active{background:var(--color-primary);color:#fff}.bc-group-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:3px}.bc-group-tab{flex:0 0 auto;padding:8px 10px;border:1px solid var(--color-border-light);border-radius:8px;background:#fff;text-align:left;color:var(--color-text-secondary);font-size:12px}.bc-group-tab.active{border-color:var(--color-primary);background:var(--color-primary-light);color:var(--color-primary)}.bc-group-tab b{display:block;color:var(--color-text-primary);font-size:13px}.bc-group-summary{margin-bottom:14px;padding:12px;border-radius:8px;background:var(--color-bg-page);color:var(--color-text-secondary);font-size:12px;line-height:20px}.bc-group-summary strong{color:var(--color-text-primary)}.bc-group-script{min-height:110px;border:1px solid rgba(46,113,251,.2);border-radius:8px;background:#fff;padding:11px 12px;font-size:13px;line-height:22px;white-space:pre-wrap}.bc-personal-list{display:flex;flex-direction:column;gap:10px}.bc-personal-row{border:1px solid var(--color-border-light);border-radius:9px;background:#fff;padding:12px}.bc-personal-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.bc-personal-name{font-size:14px;font-weight:700}.bc-personal-meta{margin-top:3px;color:var(--color-text-tertiary);font-size:11px}.bc-personal-script{width:100%;min-height:95px;margin-top:10px;border:1px solid var(--color-border-light);border-radius:7px;background:var(--color-bg-page);padding:9px;font:inherit;font-size:12px;line-height:20px;resize:vertical}.bc-personal-materials{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.bc-personal-material{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:4px;background:var(--color-bg-page);font-size:11px;color:var(--color-text-secondary)}.bc-personal-material input{accent-color:var(--color-primary)}.bc-personal-hint{margin-top:5px;color:var(--color-text-tertiary);font-size:11px}
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-frame="normal">
+    <header class="topbar"><div class="topbar-left"><img class="topbar-logo" src="../assets/ai-service-icons/logo.png" alt="国金证券"><span class="topbar-sep"></span><span class="topbar-title">高净值客户资产降级服务清单</span></div><div class="topbar-right"><div class="topbar-stat"><b id="pendingStat">4</b><span>待服务</span></div><div class="topbar-stat"><b id="doneStat">1</b><span>已完成</span></div><span class="topbar-date">2026年10月20日</span><img class="topbar-avatar" src="../assets/ai-service-icons/Frame23.png" alt="用户头像"></div></header>
+    <div class="app-body">
+      <aside class="client-panel" id="clientPanel">
+        <div class="panel-head"><span class="panel-head-title">客户列表</span><button class="panel-collapse-btn" onclick="togglePanel()" aria-label="收起客户列表">‹</button></div>
+        <div class="client-search" id="clientSearch"><svg class="client-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="clientSearchInput" type="search" autocomplete="off" placeholder="搜索姓名或资金账号" aria-label="搜索客户姓名或资金账号" oninput="handleClientSearch(this.value)"><button class="client-search-clear" id="clientSearchClear" type="button" onclick="clearClientSearch()" aria-label="清空搜索">×</button></div>
+        <div class="filter-tabs asset-tabs" id="filterTabs"><button class="filter-tab active" data-filter="all">全部</button><button class="filter-tab" data-filter="down1000">500–1000万</button><button class="filter-tab" data-filter="down500">300–500万</button><button class="filter-tab" data-filter="down300">300万以下</button></div>
+        <div class="panel-broadcast-slot" id="broadcastToolbar"><div class="broadcast-bar"><button class="bb-main-btn" onclick="enterBroadcastMode()"><span class="label"><img class="bc-icon" src="../assets/ai-service-icons/fenxiang.png" alt="群发">企微群发通用话术</span><img class="chev" src="../assets/ai-service-icons/jiantou1.png" alt="进入选择"></button></div><div class="sort-hint">排序优先展示当前场景近期未通过企微群发或电话完成服务的客户</div></div>
+        <div class="client-list-scroll scroll-area" id="clientList"></div>
+      </aside>
+      <main class="right-panel"><div class="right-scroll scroll-area"><section class="list-meta"><div><div class="list-meta-title">高净值客户资产降级服务清单</div><div class="list-meta-items"><span>来源：自动任务</span><span>生成时间：2026-10-20 15:30</span><span>客户数量：5</span></div></div><span class="list-meta-status">已生成完成</span></section><div id="portraitArea"></div><div id="profileArea"></div><div id="mindsetArea"></div><div id="scriptArea"></div></div><div id="serviceFooterArea"></div></main>
+    </div>
+  </div>
+  <div class="modal-mask" id="broadcastModal" data-frame="broadcast-modal"><div class="modal"><div class="modal-head"><span class="modal-title">企微一键群发</span><button class="modal-close" onclick="closeBroadcastModal()" aria-label="关闭"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body" id="broadcastModalBody"></div><div class="modal-foot"><span class="modal-foot-hint">将通过企微一键群发发送，并同步记录服务动作</span><button class="bc-send-btn" id="broadcastSendBtn" onclick="sendBroadcast()"></button></div></div></div>
+  <div class="modal-mask" id="completeModal" data-frame="complete-modal"><div class="modal w-560"><div class="modal-head"><span class="modal-title">完成服务</span><button class="modal-close" onclick="closeCompleteModal()" aria-label="关闭"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><p class="confirm-copy">确认完成对当前客户的资产降级服务？完成后该客户将置灰并移至当前筛选列表底部，仍可查看客户画像与历史服务内容。</p></div><div class="modal-foot"><span></span><div class="confirm-btns"><button class="confirm-cancel" onclick="closeCompleteModal()">取消</button><button class="confirm-ok" onclick="completeService()">确认完成</button></div></div></div></div>
+  <script>
+    const materialCatalog={
+      letter300:{id:'letter300',kind:'letter',kindLabel:'信件',name:'致高客的一封信（300万）',version:'固定素材 · 已确认版本',href:'../assets/communication-materials/letters/致高客的一封信（300万）.pdf'},
+      letter500:{id:'letter500',kind:'letter',kindLabel:'信件',name:'致高客的一封信（500万）',version:'固定素材 · 已确认版本',href:'../assets/communication-materials/letters/致高客的一封信（500万）.pdf'},
+      letter1000:{id:'letter1000',kind:'letter',kindLabel:'信件',name:'致高客的一封信（1000万）',version:'固定素材 · 已确认版本',href:'../assets/communication-materials/letters/致高客的一封信（1000万）.pdf'},
+      rightsFinance:{id:'rightsFinance',kind:'rights',kindLabel:'权益清单',name:'高净值客户尊享权益清单（理财）',version:'固定素材 · 财富管理权益',href:'#'},
+      rightsStock:{id:'rightsStock',kind:'rights',kindLabel:'权益清单',name:'高净值客户尊享权益清单（股票）',version:'固定素材 · 股票投研权益',href:'#'},
+      onePage500:{id:'onePage500',kind:'dynamic',kindLabel:'配置一页通',name:'高客资产配置一页通（500万）',version:'资产配置平台 · 进入清单时实时获取',dynamic:true},
+      onePage1000:{id:'onePage1000',kind:'dynamic',kindLabel:'配置一页通',name:'高客资产配置一页通（1000万）',version:'资产配置平台 · 进入清单时实时获取',dynamic:true}
+    };
+    const communicationThoughts={
+      silver:[
+        {title:'第一步｜开场：身份仪式，先给价值',content:`xx总您好，我是您的专属投顾 XX，跟您同步个好消息——根据最新的账户核验，您的账户已正式符合【私募基金合格投资者】标准。这意味着您已经解锁我们「AI+尊享服务」的专属权益体系，几个对您最直接的变化`},
+        {title:'第二步｜服务体系介绍：三个看得见的变化',content:`第一，稀缺产品优先认购权。我们甄选的头部私募管理人优质产品，您现在享有稀缺额度的优先认购权，还有专属费率与条款优势，不用再和普通客户抢额度。
+
+第二，研究资源优先享。研究所核心研报解读、市场策略闭门会、行业专家交流、上市公司调研机会，都会优先向您开放，帮您把信息差变成决策优势。
+
+第三，全链路尊享陪伴。您会进入「1+N」专家团队服务体系，专属投顾联合资产配置、产品、研究多领域专家，定期给您做账户复盘、输出调仓建议，不是买完就结束。
+
+这些不一定您现在都要用上，但当您有配置需求的时候，我们这边的产品和服务都是能及时为您供给。`},
+        {title:'第三步｜KYC 三问：把决策权交还客户',content:`借这个节点，我想为您做一次财富诊断，把几件事理清楚：
+① 这笔资金您心里给它定的期限大概是多久？是长期不动，还是未来两三年有明确的大额支出安排（购房、子女教育、企业经营）？
+② 过去这段时间市场波动不小，您对当前持仓的风险感受怎么样？有没有哪类资产让您觉得拿得不太踏实？
+③ 如果接下来要做配置调整，您更偏向稳健优先，还是愿意拿出一部分仓位适度进取？`},
+        {title:'第四步｜认知铺垫：从“选产品”到“配资产”',content:`理财：另外提一句，很多客户到了这个体量，第一反应还是“再选一只好股票/好产品”。但 300 万以上其实可以换一个思路——从“选产品”切换到“配资产”：先定好固收、权益、另类各自的比例，再在每个篮子里挑产品。这样单只产品的波动对整体的影响就小很多。这个概念我后面会结合您的账户具体展开。
+
+股票：即便您不做配置、只做股票，这个层级能享受到的服务也有升级。我们会为您提供投研深度服务，包含上市公司调研、专家交流、策略会，您有优先席位，还会为您提供深度研报等；季度持仓体检，帮您进行集中度与风格体检、交易行为复盘等。这些跟您买不买产品没关系，是您在这个层级本来就该享有的。`}
+      ],
+      gold:[
+        {title:'第一步｜开场：恭喜 + 递档说明',content:`xx总，您好，我是您的专属投顾 XX，跟您同步一个好消息，您的账户正式达到【资产管理计划合格投资者】标准。在私募合格投资者权益的基础上，您的尊享权益又有实质性的升级。`},
+        {title:'第二步｜服务体系介绍',content:`（如若之前未介绍过300万服务内容需一并介绍）
+
+一是配置升级。之前更多是单产品方案，现在可以结合您可接受的波动水平，提供跨品类资产配置方案（权益/固收/另类/海外），告别单一持仓。
+
+二是稀缺资源优先级再上台阶。头部管理人的资管计划额度、闭门策略会、上市公司调研，您的顺位会明显提前。
+
+三是服务升级，您的资产持续帮您跟踪，并动态调优。`},
+        {title:'第三步｜KYC：配置复盘三问',content:`我想和您做一次正式的资产配置复盘，重点看三件事：
+① 您名下这几类资产现在的实际比例是多少，和您心里预期的比例差多少？
+② 今年有没有需要安排的大额支出或资金回笼节点？
+③ 单一持仓或单一行业的占比，有没有超过您能承受的波动上限？`},
+        {title:'第四步｜资配启蒙：目标权重与再平衡',content:`500 万以上，我们一般会建议客户建立“目标权重”的概念——比如权益 40%、固收 40%、另类 20%，定好之后，某类资产涨多了就减一点，跌多了就补一点，每季度做一次再平衡。这不是预测市场，是一种纪律。它的好处是把“什么时候买卖”这个最难回答的问题，变成一个机械动作，不用每次都纠结。
+
+我建议可以先给您做一个当前资产配置复盘，把您名下几类资产的配置比例、今年的再平衡安排过一遍。我们约个时间细聊？`}
+      ],
+      black:[
+        {title:'第一步｜开场：最高层级，投顾本人告知',content:`XX总，您好，我是您的专属投顾 XX。先恭喜您！您的账户已经达到我司“黑钻”等级，这是我们服务体系里最顶级的“尊享定制”门槛，我必须第一时间跟您同步这个好消息。`},
+        {title:'第二步｜服务体系介绍：三个质的变化',content:`（如若之前未介绍过300万、500万服务内容需一并介绍）
+
+达到这个级别，您的服务模式会发生一个质的改变：
+
+第一，方案定制。不再套用标准档位，由资产配置专家团一对一为您独立定制，从家庭资产负债表的角度整体设计；
+
+第二，专属通道。可单独定制策略产品，新产品与稀缺额度享有优先认购的绿色通道；
+
+第三，顶层服务。家族传承、家族信托、保险金信托、境内外税务规划咨询等综合金融解决方案全面开放。`},
+        {title:'第三步｜KYC：升维提问，问家庭不问账户',content:`这个层级我通常会和客户聊得深一点，不是只看账户：
+① 这笔财富在您心里是“自己的”还是“家庭的”？未来有没有传承、隔离或者子女分配上的考虑？
+② 家庭整体资产里，证券账户大概占多大比例？房产、保险、企业股权这些和这边是否形成互补，还是高度重叠？
+③ 企业经营、家庭开支、税务安排上，有没有需要我们在金融工具上配合的地方？`},
+        {title:'第四步｜资配方案铺垫沟通',content:`这周我想约您一次深度沟通，一方面跟您过一遍这套尊享服务，另一方面听听您对家庭财富这一块的想法，方便的话您定个时间？`}
+      ]
+    };
+    const clients=[
+      {id:'wang',name:'王志强',account:'102938',gender:'男',risk:'C4 中高风险',level:'黑钻客户',assetLevel:'1000万以上',levelKey:'black',fromLevel:'300-500万',transition:'300–500万 → 1000万以上',avg:'1,286.40 万',total:'1,502.80 万',market:'1,286.40 万',phone:'138****6612',cert:'已认证',certEligible:'符合',certExpiry:'2027-06-30',tasks:[{name:'完成季度持仓体检',due:'逾期 09-28',overdue:true,tag:'必做'},{name:'预约资产配置复盘',due:'截止 10-15'}],trade:[18,9,4],profits:['+18.60 万','+42.10 万','+66.80 万'],thoughtKey:'black',script:'王总您好，我是您的专属投顾张顾问。最近我们在做高净值客户的资产配置复盘，我想先和您同步几项与您当前持仓结构相关的研究和服务安排：我们可以由资产配置专家团从家庭资产负债表的角度，帮您梳理权益、固收和其他资产之间的协同关系，同时结合您目前的交易节奏和风险感受，看看哪些部分值得进一步复盘。这个沟通不要求您马上做任何调整，您可以先听听我们的分析，再决定是否需要安排一次深度沟通。',materials:['letter1000','rightsFinance','rightsStock','onePage1000'],done:false},
+      {id:'li',name:'李晓梅',account:'209381',gender:'女',risk:'C3 中风险',level:'钻石客户',assetLevel:'500-1000万',levelKey:'gold',fromLevel:'300-500万',transition:'300–500万 → 500–1000万',avg:'768.20 万',total:'892.50 万',market:'768.20 万',phone:'139****3086',cert:'已认证',certEligible:'符合',certExpiry:'2027-03-31',tasks:[{name:'完成年度资产配置复盘',due:'截止 10-18'}],trade:[8,15,7],profits:['+6.20 万','+19.80 万','+28.40 万'],thoughtKey:'gold',script:'李总您好，最近我们在做客户组合的配置复盘，想和您分享一个更适合当前阶段的思路：不再只看单个产品，而是结合您能接受的波动，把权益、固收、另类等不同资产放到一张组合里持续跟踪和动态调优。我们可以先一起看当前各类资产的实际比例、近期资金安排，以及单一持仓是否超过您能接受的波动范围，再决定是否需要安排下一步复盘。您也可以先保持现有安排，等方便时我们再细聊。',materials:['letter500','rightsFinance','rightsStock','onePage500'],done:false},
+      {id:'zhao',name:'赵明远',account:'382910',gender:'男',risk:'C3 中风险',level:'白金客户',assetLevel:'300-500万',levelKey:'silver',fromLevel:'300万以内',transition:'300万以内 → 300–500万',avg:'316.80 万',total:'362.40 万',market:'316.80 万',phone:'136****7791',cert:'未认证',certEligible:'符合',certExpiry:'--',tasks:[{name:'补充合格投资者认证材料',due:'截止 10-12',tag:'必做'},{name:'确认财富诊断沟通时间',due:'截止 10-14'}],trade:[22,6,2],profits:['-3.80 万','+2.10 万','+9.60 万'],thoughtKey:'silver',script:'赵总您好，最近我们在做客户账户的财富诊断和持仓复盘，结合您当前的持仓结构，我想先和您分享一下高净值客户可以使用的研究、产品和陪伴服务。若您后续有配置需求，我们可以进一步把资金期限、风险感受和配置偏好梳理清楚；如果暂时没有调整计划，也可以先保持现有安排，等方便时再沟通。涉及私募产品的服务，还需要以合格投资者认证和适当性匹配结果为前提。',materials:['letter300','rightsFinance','rightsStock'],done:false},
+      {id:'chen',name:'陈建国',account:'112233',gender:'男',risk:'C2 低风险',level:'白金客户',assetLevel:'300-500万',levelKey:'silver',fromLevel:'300万以内',transition:'300万以内 → 300–500万',avg:'428.60 万',total:'466.70 万',market:'428.60 万',phone:'137****1288',cert:'未认证',certEligible:'不符合',certExpiry:'--',tasks:[],trade:[4,8,12],profits:['+2.30 万','+8.70 万','+15.20 万'],thoughtKey:'silver',script:'陈总您好，最近我们在做账户持仓和服务权益的定期复盘，想和您分享几项与当前持仓结构相关的研究和陪伴服务。您可以先了解，再决定是否需要调整；如果暂时没有操作计划，我们也会按您的节奏持续提供定期复盘和服务支持。',materials:['letter300','rightsFinance','rightsStock'],done:true,doneAt:'10-09'}
+    ];
+    let currentId='wang',filterKey='all',clientSearchQuery='',selectMode=false,selectedIds=[],taskExpanded=false,broadcastSelectedMaterials=[],broadcastMode='one',broadcastGroupIndex=0,broadcastGroupMaterials={},broadcastGroupScripts={},dynamicState={onePage500:'ready',onePage1000:'ready'};
+    const currentClient=()=>clients.find(c=>c.id===currentId);
+    const recentContactAt={wang:'2026-09-28',li:null,zhao:'2026-08-20',chen:'2026-10-09'};
+    const recentContactChannel={wang:'电话',li:null,zhao:'企微群发',chen:'电话'};
+    const broadcastState={};
+    const isBroadcastBlocked=c=>!!broadcastState[c.id];
+    const sortHint='排序优先展示当前服务场景近期未通过企微群发或电话完成服务的客户';
+    const serviceToday=new Date('2026-10-09T23:59:59');
+    const contactedIn90Days=id=>{const d=recentContactAt[id];return d&&((serviceToday-new Date(d+'T00:00:00'))/86400000)<=90};
+    const visibleClients=()=>{const keyword=clientSearchQuery.trim().toLowerCase();return clients.filter(c=>(filterKey==='all'||c.levelKey===filterKey)&&(!keyword||c.name.toLowerCase().includes(keyword)||c.account.toLowerCase().includes(keyword))).sort((a,b)=>(Number(a.done)-Number(b.done))||((contactedIn90Days(a.id)?1:0)-(contactedIn90Days(b.id)?1:0))||({black:0,gold:1,silver:2}[a.levelKey]-({black:0,gold:1,silver:2}[b.levelKey]))||parseFloat(b.avg)-parseFloat(a.avg))};
+    function renderAll(){renderClients();renderPortrait();renderProfile();renderMaterials();renderMindset();renderScript();renderFooter();updateStats()}
+    function renderClients(){const list=document.getElementById('clientList'),items=visibleClients();let completedShown=false;list.innerHTML=items.length?items.map(c=>{const divider=c.done&&!completedShown?(completedShown=true,'<div class="completed-divider">已完成服务</div>'):'';const checked=selectedIds.includes(c.id);const blocked=isBroadcastBlocked(c);return divider+'<div class="client-card '+(c.id===currentId?'selected ':'')+(c.done?'completed ':'')+(blocked?'broadcast-blocked ':'')+(selectMode?'select-mode ':'')+(checked?'checked':'')+'" onclick="handleClientClick(\''+c.id+'\')">'+(selectMode&&!c.done&&!blocked?'<span class="batch-checkbox '+(checked?'checked':'')+'"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'<span class="client-avatar '+(c.id===currentId?'selected':'')+'">'+c.name.charAt(0)+'</span>')+'<div class="client-card-body"><div class="client-name-row"><span class="client-name">'+c.name+'</span><span class="client-account">'+c.account+'</span>'+(c.done?'<span class="completed-check">✓</span>':'')+'<span class="asset-level">'+c.assetLevel+'</span></div><div class="client-sub-line"><span>'+c.risk.split(' ')[0]+'</span><span>近20日均 '+c.avg+'</span></div>'+(blocked?'<div class="broadcast-mark">已群发 · '+(recentContactAt[c.id]||'本次')+'</div>':(c.done?'<div class="broadcast-mark">已完成 '+c.doneAt+'</div>':''))+'</div></div>'}).join(''):'<div class="client-search-empty">未找到匹配的客户</div>'}
+    function handleClientSearch(value){clientSearchQuery=value;document.getElementById('clientSearchClear').classList.toggle('visible',!!value);renderClients()}
+    function clearClientSearch(){const input=document.getElementById('clientSearchInput');input.value='';input.focus();handleClientSearch('')}
+    function handleClientClick(id){const c=clients.find(x=>x.id===id);if(selectMode){if(c.done){showToast('已完成服务客户不可选择');return}if(isBroadcastBlocked(c)){showToast('该客户当前服务场景已群发成功，不可重复发送');return}selectedIds=selectedIds.includes(id)?selectedIds.filter(x=>x!==id):selectedIds.concat(id);renderClients();renderBroadcastToolbar();return}currentId=id;taskExpanded=false;mindsetExpanded=false;mindsetDefaultStep=true;renderAll()}
+    function renderBroadcastToolbar(){const slot=document.getElementById('broadcastToolbar');if(!selectMode){slot.innerHTML='<div class="broadcast-bar"><button class="bb-main-btn" onclick="enterBroadcastMode()"><span class="label"><img class="bc-icon" src="../assets/ai-service-icons/fenxiang.png" alt="群发">企微群发通用话术</span><img class="chev" src="../assets/ai-service-icons/jiantou1.png" alt="进入选择"></button></div>';return}slot.innerHTML='<div class="bb-select-bar"><span class="bb-select-count">已选 '+selectedIds.length+' 人</span><span class="confirm-btns"><button class="bb-cancel-btn" onclick="cancelBroadcastMode()">取消</button><button class="bb-next-btn '+(selectedIds.length?'enabled':'')+'" '+(selectedIds.length?'':'disabled')+' onclick="openBroadcastModal()">下一步</button></span></div>'}
+    function enterBroadcastMode(){selectMode=true;selectedIds=visibleClients().filter(c=>!c.done&&!isBroadcastBlocked(c)).slice(0,3).map(c=>c.id);renderClients();renderBroadcastToolbar()}
+    function cancelBroadcastMode(){selectMode=false;selectedIds=[];renderClients();renderBroadcastToolbar()}
+    function renderPortrait(){const c=currentClient(),tasks=c.tasks;document.getElementById('portraitArea').innerHTML='<div class="portrait-card '+(tasks.length?'has-tasks ':'')+(taskExpanded?'drawer-open':'')+'"><div class="profile-top"><div class="profile-avatar">'+c.name.charAt(0)+'</div><div class="profile-info"><div class="profile-name-row"><span class="profile-name">'+c.name+'</span><span class="profile-account">'+c.account+'</span><a class="profile-detail-link" onclick="showToast(\'已打开客户详情\')">↗ 客户详情</a></div><div class="profile-tags"><span class="profile-tag">'+c.gender+'</span><span class="profile-tag">'+c.level+'</span><span class="profile-tag">'+c.risk+'</span></div></div><div class="profile-metrics"><div class="metric-item"><div class="metric-label">总资产（元）</div><div class="metric-value">'+c.total+'</div></div><div class="metric-sep"></div><div class="metric-item"><div class="metric-label">证券市值（元）</div><div class="metric-value">'+c.market+'</div></div><div class="phone-wrap"><span class="phone-masked">'+c.phone+'</span><button class="call-btn" onclick="showToast(\'正在发起电话外呼\')"><img class="call-btn-icon" src="../assets/ai-service-icons/dianhua.png" alt="电话">电话</button></div></div></div>'+(tasks.length?'<div class="task-line" onclick="toggleTasks()"><span class="task-line-title">待处理任务</span><span class="task-count-badge"><b>'+tasks.length+'</b> 条</span><button class="task-toggle-btn">'+(taskExpanded?'收起':'展开')+'<img class="task-arrow-icon" src="../assets/ai-service-icons/'+(taskExpanded?'jiantou2':'jiantou1')+'.png" alt="'+(taskExpanded?'收起':'展开')+'"></button></div>':'')+'</div>'+(taskExpanded?renderTaskDrawer(tasks):'')}
+    function renderTaskDrawer(tasks){return'<div class="task-drawer">'+tasks.map(t=>'<div class="task-row"><button class="task-check"></button><div class="task-content"><div class="task-name">'+t.name+'</div><div class="task-desc">来自 ISMP 的当前客户待处理任务</div></div><div class="task-side">'+(t.tag?'<span class="task-tag red">'+t.tag+'</span>':'')+'<span class="task-due '+(t.overdue?'overdue':'')+'">'+t.due+'</span></div></div>').join('')+'</div>'}
+    function toggleTasks(){taskExpanded=!taskExpanded;renderPortrait()}
+    function renderProfile(){const c=currentClient(),w=[Math.min(c.trade[0]*4,100),Math.min(c.trade[1]*5,100),Math.min(c.trade[2]*8,100)];const certStatus=c.cert==='已认证'?'已认证':'未认证';const certExpiry=c.certExpiry&&c.certExpiry!=='--'?c.certExpiry:'--';document.getElementById('profileArea').innerHTML='<section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">客户画像</div><div class="section-sub">资产升级服务画像 · 数据更新于 2026-10-09 15:20</div></div></div></div><div class="profile-overview"><div class="asset-hero"><div class="asset-hero-label">近20日日均净资产</div><div class="asset-hero-value">'+c.avg+'</div><div class="asset-hero-note">当前资产等级：'+c.assetLevel+' · 跃迁判断：近20日日均净资产对比昨日</div></div><div class="cert-card"><div class="cert-line"><span class="cert-name">私募合格投资者认证</span><span class="status-tag">'+certStatus+'</span></div><div class="cert-grid"><div><span>认证资格</span><b>'+((c.certEligible||'--'))+'</b></div><div><span>认证状态</span><b>'+certStatus+'</b></div><div><span>认证有效期</span><b>'+certExpiry+'</b></div></div><div class="cert-desc">资格判断、认证状态和有效期均取认证平台；认证资格沿用监管及公司核验规则。</div></div></div></section>'+renderHoldings()+'<section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">风险承受与操作风格</div><div class="section-sub">交易行为与账户盈亏分开展示 · 数据来源：AI+助手</div></div></div></div><div class="behavior-grid"><div class="behavior-card"><div class="behavior-title">近6个月交易次数</div><div class="behavior-sub">按交易品种统计 · AI+助手</div><div class="trade-bars"><div class="trade-row"><span>股票</span><div class="bar-track"><div class="bar-fill" style="width:'+w[0]+'%"></div></div><b>'+c.trade[0]+' 次</b></div><div class="trade-row"><span>ETF</span><div class="bar-track"><div class="bar-fill etf" style="width:'+w[1]+'%"></div></div><b>'+c.trade[1]+' 次</b></div><div class="trade-row"><span>场外基金</span><div class="bar-track"><div class="bar-fill fund" style="width:'+w[2]+'%"></div></div><b>'+c.trade[2]+' 次</b></div></div></div><div class="behavior-card"><div class="behavior-title">账户盈亏</div><div class="behavior-sub">近1月、近3月、近半年 · AI+助手</div><div class="period-list">'+['近1个月','近3个月','近6个月'].map((label,i)=>'<div class="period-item"><div class="period-label">'+label+'</div><div class="period-value '+(c.profits[i].startsWith('-')?'loss':'')+'">'+c.profits[i]+'</div></div>').join('')+'</div></div></div></section>'}
+    function renderHoldings(){return'<section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">现有持仓与产品结构</div><div class="section-sub">取自 AI+助手－客户持仓多维分析－资产大类</div></div></div><span class="section-sub">点击资产大类查看标的明细</span></div><table class="holdings-table"><thead><tr><th>资产大类 / 标的</th><th>持仓</th><th>占比</th><th>收益额</th><th></th></tr></thead><tbody id="equity"><tr class="holding-main"><td><span class="holding-name"><i class="holding-dot"></i>权益类</span></td><td>620.00 万</td><td>48.2%</td><td class="profit">+36.40 万</td><td><button class="holding-toggle" onclick="toggleHolding(\'equity\')">展开</button></td></tr><tr class="holding-detail"><td>贵州茅台</td><td>210 万 / 16.3%</td><td>—</td><td class="profit">+12.60 万</td><td>286 天</td></tr><tr class="holding-detail"><td>沪深300ETF</td><td>180 万 / 14.0%</td><td>—</td><td class="profit">+8.20 万</td><td>164 天</td></tr></tbody><tbody id="fixed"><tr class="holding-main"><td><span class="holding-name"><i class="holding-dot fixed"></i>固收类</span></td><td>420.00 万</td><td>32.7%</td><td class="profit">+17.20 万</td><td><button class="holding-toggle" onclick="toggleHolding(\'fixed\')">展开</button></td></tr><tr class="holding-detail"><td>中短债基金</td><td>420 万 / 32.7%</td><td>—</td><td class="profit">+17.20 万</td><td>392 天</td></tr></tbody><tbody><tr class="holding-main"><td><span class="holding-name"><i class="holding-dot cash"></i>现金及货币类</span></td><td>246.40 万</td><td>19.1%</td><td>+1.60 万</td><td></td></tr></tbody></table></section>'}
+    function toggleHolding(id){const body=document.getElementById(id);body.classList.toggle('open');body.querySelector('.holding-toggle').textContent=body.classList.contains('open')?'收起':'展开'}
+    function renderMaterials(){const c=currentClient(),area=document.getElementById('materialsArea');if(!area)return;area.innerHTML='<section class="materials-card"><div class="materials-head"><div><div class="materials-title">沟通素材</div><div class="materials-sub">按客户资产跃迁路径匹配 · 默认全部勾选，可取消单份素材</div></div><button class="material-refresh" onclick="refreshDynamicMaterials()">刷新配置材料</button></div><div class="material-grid">'+c.materials.map(materialId=>renderMaterial(materialCatalog[materialId])).join('')+'</div></section>'}
+    function renderMaterial(m){const c=currentClient(),dynamic=m.dynamic, state=dynamic?dynamicState[m.id]:'ready', unavailable=state==='failed',checked=isMaterialSelected(c,m.id);return'<article class="material-item '+(dynamic?'dynamic ':'')+(unavailable?'unavailable':'')+'"><input class="material-check" type="checkbox" '+(unavailable?'disabled ':'')+(checked&&!unavailable?'checked ':'')+'onchange="toggleMaterial(\''+m.id+'\',this.checked)" aria-label="选择'+m.name+'"/><span class="material-kind '+m.kind+'">'+m.kindLabel+'</span><div class="material-name">'+m.name+'</div><div class="material-version">'+(unavailable?'资产配置平台获取失败':m.version)+'</div>'+(unavailable?'<div class="material-status">暂不可用，可重试</div><div class="material-actions"><button class="material-retry" onclick="retryDynamicMaterial(\''+m.id+'\')">重试</button></div>':'<div class="material-actions"><a class="material-preview" href="'+(m.href||'#')+'" '+(m.href&&m.href!=='#'?'target="_blank"':'')+'>'+((m.href&&m.href!=='#')?'预览文件':'查看素材')+'</a>'+(dynamic?'<span class="bc-dynamic-note">已实时获取 · 本次清单内固定版本</span>':'')+'</div>')+'</article>'}
+    let mindsetExpanded=false,mindsetDefaultStep=true;
+    function renderMindset(){const c=currentClient(),sections=communicationThoughts[c.thoughtKey]||[];document.getElementById('mindsetArea').innerHTML='<section class="mindset-card"><div class="mindset-head"><div><div class="mindset-title">沟通思路（投顾参考）</div><div class="mindset-sub">按业务确认的完整沟通思路展示，仅供员工参考，不会发送给客户</div></div><div class="mindset-actions"><button class="mindset-toggle" onclick="toggleAllMindset()">'+(mindsetExpanded?'全部收起':'全部展开')+'</button></div></div><div class="thought-sections">'+sections.map((s,i)=>'<article class="thought-section '+(mindsetExpanded||(mindsetDefaultStep&&i===0)?'open':'')+'"><h4 onclick="toggleMindsetStep('+i+')">'+s.title+'</h4><div class="thought-copy">'+s.content+'</div></article>').join('')+'</div><div class="thought-note">话术规范：先给价值再谈资产；不主动提及具体金额；不教育、不说服；允许客户暂不操作；不承诺收益，遵循适当性和合格投资者认证要求。</div></section>'}
+    function toggleAllMindset(){mindsetDefaultStep=false;mindsetExpanded=!mindsetExpanded;renderMindset()}
+    function toggleMindsetStep(index){mindsetDefaultStep=false;const item=document.querySelectorAll('.thought-section')[index];if(item)item.classList.toggle('open')}
+    function toggleMaterial(id,checked){const c=currentClient();if(checked){if(!c.materialsSelected)c.materialsSelected={};c.materialsSelected[id]=true}else{if(!c.materialsSelected)c.materialsSelected={};c.materialsSelected[id]=false}renderMaterials()}
+    function isMaterialSelected(c,id){return !c.materialsSelected||c.materialsSelected[id]!==false}
+    function refreshDynamicMaterials(){Object.keys(dynamicState).forEach(id=>dynamicState[id]='ready');renderMaterials();showToast('资产配置平台材料已刷新')}
+    function retryDynamicMaterial(id){dynamicState[id]='ready';renderMaterials();showToast('配置材料获取成功')}
+    function renderScript(){const c=currentClient();document.getElementById('scriptArea').innerHTML='<section class="script-card"><div class="script-section"><div class="script-head"><div class="script-head-left"><span class="script-title">服务话术</span><div class="script-statuses"><span class="compliance-tag">合规审核通过</span><span class="edit-tag" id="editTag">人工未编辑</span><span class="bc-preset-badge">对客发送内容</span></div></div><button class="copy-btn" onclick="copyScript()"><img class="copy-btn-icon" src="../assets/ai-service-icons/fuzhi.png" alt="复制"><span id="copyText">一键复制</span></button></div><div class="script-subhint">基于完整沟通思路、客户画像和资产跃迁路径生成；不包含内部沟通思路。话术可直接编辑，失焦后自动保存。</div><div class="script-editable-wrap"><div class="script-editable expanded" id="scriptEditor" contenteditable="true" onblur="saveScript()">'+c.script+'</div></div></div></section>'}
+    function saveScript(){const c=currentClient(),editor=document.getElementById('scriptEditor');if(editor.innerText.trim()!==c.script){c.script=editor.innerText.trim();document.getElementById('editTag').textContent='人工已编辑';showToast('话术已保存')}}
+    function copyScript(){navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('scriptEditor').innerText);document.getElementById('copyText').textContent='已复制';showToast('话术已复制');setTimeout(()=>{const el=document.getElementById('copyText');if(el)el.textContent='一键复制'},1600)}
+    function renderFooter(){document.getElementById('serviceFooterArea').innerHTML=currentClient().done?'':'<div class="service-footer"><span class="service-footer-label">服务内容</span><input class="service-note-input" type="text" placeholder="记录本次服务内容…选填"><button class="complete-btn" onclick="openCompleteModal()">完成服务</button></div>'}
+    function updateStats(){document.getElementById('pendingStat').textContent=clients.filter(c=>!c.done).length;document.getElementById('doneStat').textContent=clients.filter(c=>c.done).length}
+    function openBroadcastModal(){if(!selectedIds.length)return;broadcastMode='one';broadcastGroupIndex=0;broadcastSelectedMaterials=[];broadcastGroupMaterials={};broadcastGroupScripts={};renderBroadcastModal();document.getElementById('broadcastModal').classList.add('open')}
+    function closeBroadcastModal(){document.getElementById('broadcastModal').classList.remove('open')}
+    function getSendMaterials(c){return c.materials.filter(id=>isMaterialSelected(c,id)&&dynamicState[id]!=='failed')}
+    function buildBroadcastGroups(){const map={};clients.filter(c=>selectedIds.includes(c.id)&&!isBroadcastBlocked(c)).forEach(c=>{const materials=getSendMaterials(c),key=[c.levelKey,c.transition,materials.join(',')].join('|');if(!map[key])map[key]={key,level:c.assetLevel,transition:c.transition,materialIds:materials,ids:[]};map[key].ids.push(c.id)});return Object.values(map)}
+    function switchBroadcastMode(mode){broadcastMode=mode;broadcastGroupIndex=0;renderBroadcastModal()}
+    function renderBroadcastModal(){const body=document.getElementById('broadcastModalBody'),groups=buildBroadcastGroups();body.innerHTML='<div class="broadcast-mode-tabs"><button class="broadcast-mode-tab '+(broadcastMode==='one'?'active':'')+'" onclick="switchBroadcastMode(\'one\')">千人一面</button><button class="broadcast-mode-tab '+(broadcastMode==='many'?'active':'')+'" onclick="switchBroadcastMode(\'many\')">千人千面</button></div>'+(broadcastMode==='one'?renderOneToMany(groups):renderManyToMany());const send=document.getElementById('broadcastSendBtn');const group=broadcastMode==='one'?groups[broadcastGroupIndex]:null;const canSend=broadcastMode==='one'?!!(group&&group.ids.length&&group.materialIds.length):selectedIds.some(id=>getSendMaterials(clients.find(c=>c.id===id)).length);send.className='bc-send-btn '+(canSend?'enabled':'');send.disabled=!canSend;if(broadcastMode==='one'){send.textContent=group&&group.materialIds.length?'发送本组（'+group.ids.length+'人）':'暂无可发送内容'}else send.textContent=canSend?'发送千人千面（'+selectedIds.length+'人）':'暂无可发送内容'}
+    function renderOneToMany(groups){if(!groups.length)return'<div class="material-empty">暂无可发送客户</div>';if(broadcastGroupIndex>=groups.length)broadcastGroupIndex=groups.length-1;const group=groups[broadcastGroupIndex],recipients=clients.filter(c=>group.ids.includes(c.id)),materials=group.materialIds;const script=broadcastGroupScripts[group.key]||recipients[0].script;broadcastGroupScripts[group.key]=script;return'<div class="bc-section-label"><span class="name">系统已拆分 '+groups.length+' 个群发组</span><span class="bc-preset-badge">股票/理财不拆分</span></div><div class="bc-group-tabs">'+groups.map((g,i)=>'<button class="bc-group-tab '+(i===broadcastGroupIndex?'active':'')+'" onclick="broadcastGroupIndex='+i+';renderBroadcastModal()"><b>第'+(i+1)+'组 · '+g.ids.length+'人</b><span>'+g.level+' · '+g.transition+'</span></button>').join('')+'</div><div class="bc-group-summary"><strong>本组客户：</strong>'+recipients.map(c=>c.name).join('、')+'<br><strong>发送素材：</strong>'+materials.map(id=>materialCatalog[id].name).join('、')+'</div><div class="bc-section-label"><span class="name">本组统一对客话术</span><span class="bc-preset-badge">按本组画像与沟通思路生成</span></div><div class="bc-group-script" contenteditable="true" onblur="saveBroadcastGroupScript(\''+group.key+'\',this.innerText)">'+script+'</div><div class="bc-section-label" style="margin-top:14px"><span class="name">本组素材</span><span class="bc-preset-badge">默认全部勾选</span></div><div class="bc-materials">'+materials.map(id=>{const m=materialCatalog[id];return'<label class="bc-material-row"><input type="checkbox" checked onchange="toggleGroupMaterial(\''+group.key+'\',\''+id+'\',this.checked)"><span class="bc-material-main"><span class="bc-material-name">'+m.name+'</span><span class="bc-material-meta">'+m.kindLabel+' · '+m.version+'</span></span><button class="bc-material-remove" type="button" onclick="toggleGroupMaterial(\''+group.key+'\',\''+id+'\',false)">移除</button></label>'}).join('')+'</div>'}
+    function renderManyToMany(){const recipients=clients.filter(c=>selectedIds.includes(c.id));return'<div class="bc-section-label"><span class="name">逐客户个性化发送（'+recipients.length+' 人）</span><span class="bc-preset-badge">每位客户独立话术与素材</span></div><div class="bc-personal-list">'+recipients.map(c=>{const materials=getSendMaterials(c);return'<article class="bc-personal-row"><div class="bc-personal-head"><span class="bc-personal-name">'+c.name+'</span><button class="bc-recipient-remove" type="button" onclick="removeRecipient(\''+c.id+'\')">移除</button></div><div class="bc-personal-meta">'+c.assetLevel+' · '+c.transition+' · '+(c.cert==='已认证'?'合格投资者已认证':'合格投资者待补充认证')+'</div><textarea class="bc-personal-script" onchange="savePersonalScript(\''+c.id+'\',this.value)">'+c.script+'</textarea><div class="bc-personal-materials">'+c.materials.map(id=>{const m=materialCatalog[id],available=dynamicState[id]!=='failed',checked=isMaterialSelected(c,id)&&available;return'<label class="bc-personal-material"><input type="checkbox" '+(checked?'checked ':'')+(available?'':'disabled ')+'onchange="togglePersonalMaterial(\''+c.id+'\',\''+id+'\',this.checked)">'+m.name+'</label>'}).join('')+'</div><div class="bc-personal-hint">内部沟通思路仅供投顾参考，不会发送给客户。</div></article>'}).join('')+'</div>'}
+    function saveBroadcastGroupScript(key,value){broadcastGroupScripts[key]=value;showToast('本组话术已保存')}
+    function toggleGroupMaterial(key,id,checked){const group=buildBroadcastGroups().find(g=>g.key===key);if(!group)return;group.ids.forEach(clientId=>{const c=clients.find(x=>x.id===clientId);if(!c.materialsSelected)c.materialsSelected={};c.materialsSelected[id]=checked});renderBroadcastModal()}
+    function savePersonalScript(id,value){const c=clients.find(x=>x.id===id);if(c&&c.script!==value){c.script=value;showToast(c.name+'的话术已保存')}}
+    function togglePersonalMaterial(id,materialId,checked){const c=clients.find(x=>x.id===id);if(!c.materialsSelected)c.materialsSelected={};c.materialsSelected[materialId]=checked;renderBroadcastModal()}
+    function removeRecipient(id){selectedIds=selectedIds.filter(x=>x!==id);if(!selectedIds.length){closeBroadcastModal();cancelBroadcastMode();return}renderBroadcastModal();renderClients();renderBroadcastToolbar()}
+    function markBroadcastSuccess(ids){const stamp='2026-10-09';ids.forEach(id=>{broadcastState[id]={sentAt:stamp,channel:'企微群发'};recentContactAt[id]=stamp;recentContactChannel[id]='企微群发'});}
+    function sendBroadcast(){if(broadcastMode==='one'){const groups=buildBroadcastGroups(),group=groups[broadcastGroupIndex];if(!group)return;markBroadcastSuccess(group.ids);selectedIds=selectedIds.filter(id=>!group.ids.includes(id));showToast('第'+(broadcastGroupIndex+1)+'组群发成功，已记录防重标记');if(selectedIds.length){broadcastGroupIndex=0;renderBroadcastModal();renderClients();renderBroadcastToolbar()}else{closeBroadcastModal();cancelBroadcastMode()}return}const eligible=selectedIds.filter(id=>!isBroadcastBlocked(clients.find(x=>x.id===id)));if(!eligible.length){showToast('所选客户均已群发成功，不可重复发送');return}markBroadcastSuccess(eligible);closeBroadcastModal();cancelBroadcastMode();showToast('千人千面群发成功，已记录'+eligible.length+'位客户的防重标记')}
+    function openCompleteModal(){document.getElementById('completeModal').classList.add('open')}
+    function closeCompleteModal(){document.getElementById('completeModal').classList.remove('open')}
+    function completeService(){const c=currentClient();c.done=true;c.doneAt='10-09';closeCompleteModal();renderAll();showToast('服务已完成，客户已移至列表底部')}
+    function togglePanel(){const panel=document.getElementById('clientPanel');panel.classList.toggle('collapsed');const collapsed=panel.classList.contains('collapsed');document.querySelector('.panel-collapse-btn').textContent=collapsed?'›':'‹';document.querySelector('.panel-head-title').style.display=collapsed?'none':'';document.getElementById('clientSearch').style.display=collapsed?'none':'';document.getElementById('filterTabs').style.display=collapsed?'none':'';document.getElementById('broadcastToolbar').style.display=collapsed?'none':'';document.querySelector('.service-footer')?.style.setProperty('left',collapsed?'88px':'316px');renderClients()}
+    function showToast(message){const old=document.querySelector('.toast');if(old)old.remove();const toast=document.createElement('div');toast.className='toast';toast.innerHTML='<span style="width:16px;height:16px;border-radius:50%;background:#52c41a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px">✓</span>'+message;document.body.appendChild(toast);setTimeout(()=>toast.remove(),2200)}
+    const baseRenderProfile=renderProfile;
+    renderProfile=function(){baseRenderProfile();const c=currentClient();const note=document.querySelector('.asset-hero-note');if(note)note.textContent='当前资产等级：由'+(c.fromLevel||'--')+'降至'+(c.assetLevel||'--')+'；跃迁判断：近20日日均净资产对比昨日数据';document.querySelectorAll('.section-title').forEach(title=>{const text=title.textContent.trim();if(text==='现有持仓与产品结构'||text==='风险承受与操作风格'){const sub=title.parentElement.querySelector('.section-sub');if(sub)sub.textContent='数据口径与 AI+助手保持一致'}})};
+    document.getElementById('filterTabs').addEventListener('click',event=>{const button=event.target.closest('.filter-tab');if(!button)return;filterKey=button.dataset.filter;document.querySelectorAll('.filter-tab').forEach(tab=>tab.classList.toggle('active',tab===button));renderClients()});renderAll();
+  </script>
+  
+<style>
+  .sort-hint{margin-top:8px;color:var(--color-text-tertiary);font-size:11px;line-height:16px}.client-card.broadcast-blocked{background:#fafafa;color:#98a2b3}.client-card.broadcast-blocked .asset-level{color:#98a2b3}
+</style>
+<style>
+  .thought-sections{gap:8px}.thought-section{padding:0;overflow:hidden}.thought-section h4{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 14px;cursor:pointer}.thought-section h4:after{content:'›';color:var(--color-primary);font-size:22px;font-weight:400;line-height:1;transform:translateY(-1px)}.thought-section.open h4:after{content:'⌄';font-size:20px;transform:translateY(-2px)}.thought-copy{display:none;margin-top:0;padding:0 14px 14px}.thought-section.open .thought-copy{display:block}.mindset-actions{display:flex;align-items:center;gap:8px}.mindset-toggle{height:28px;padding:0 9px;border:1px solid var(--color-primary-border);border-radius:6px;color:var(--color-primary);font-size:12px;background:#fff}
+</style>
+<style>
+  .client-search{position:relative;display:flex;align-items:center;height:34px;margin:0 20px 12px;border:1px solid var(--color-border);border-radius:6px;background:var(--color-bg-page);transition:border-color .15s,background .15s}.client-search:focus-within{border-color:var(--color-primary);background:#fff;box-shadow:0 0 0 2px rgba(43,115,255,.08)}.client-search-icon{position:absolute;left:10px;color:var(--color-text-tertiary);pointer-events:none}.client-search input{width:100%;height:100%;border:0;background:transparent;padding:0 32px;color:var(--color-text-primary);font-size:12px}.client-search input::placeholder{color:var(--color-text-tertiary)}.client-search-clear{position:absolute;right:7px;display:none;width:20px;height:20px;border-radius:50%;color:var(--color-text-tertiary);font-size:17px;line-height:18px}.client-search-clear:hover{background:#e4e7ec;color:var(--color-text-secondary)}.client-search-clear.visible{display:block}.client-search-empty{margin:32px 0;color:var(--color-text-tertiary);font-size:13px;text-align:center}
+</style>
+<style data-canvas-mode-bootstrap="19">
+html[data-canvas-mode="1"],
+html[data-canvas-mode="1"] body {
+  height: auto !important;
+  min-height: 100vh;
+  overflow: visible !important;
+}
+html[data-canvas-mode="1"] body { display: block !important; }
+/* mark / remount 模式的 iframe 内表现。注意：平铺态起父画布就给 iframe 设了 pointer-events:none，
+   光标与选区已由父文档接管，本段在当前实现下几乎不会生效；留着是兜底——万一 picker 异常退出
+   残留了 inline pointer-events:auto，crosshair 仍能提示「这里点了也是打钉，不是操作原型」。 */
+html[data-canvas-mode="1"][data-mark-active="1"],
+html[data-canvas-mode="1"][data-mark-active="1"] * {
+  cursor: crosshair !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+</style>
+<script data-canvas-mode-bootstrap="19">
+(function () {
+  var p = new URLSearchParams(location.search);
+  if (p.get('canvasMode') !== '1') return;
+  document.documentElement.setAttribute('data-canvas-mode', '1');
+
+  function readManifest() {
+    var s = document.querySelector('script[type="application/canvas-manifest"]');
+    if (!s) return null;
+    try { return JSON.parse(s.textContent.trim()); } catch (e) { return null; }
+  }
+
+  function getFrameKey() {
+    var h = (location.hash || '').replace(/^#/, '');
+    if (!h) return null;
+    var m = h.match(/^frame=(.+)$/);
+    return m ? decodeURIComponent(m[1]) : decodeURIComponent(h);
+  }
+
+  function activate(frameKey) {
+    if (!frameKey) return;
+    var manifest = readManifest();
+    var frames = (manifest && manifest.frames) || [];
+    var target = null;
+    for (var i = 0; i < frames.length; i++) {
+      if (frames[i].key === frameKey) { target = frames[i]; break; }
+    }
+    if (!target) return;
+    if (target.kind === 'state') {
+      var group = [];
+      for (var j = 0; j < frames.length; j++) {
+        if (frames[j].kind === 'state') group.push(frames[j].key);
+      }
+      if (typeof window.switchFrame === 'function') {
+        window.switchFrame(frameKey, group);
+      } else {
+        for (var k = 0; k < group.length; k++) {
+          var el = document.querySelector('[data-frame="' + group[k] + '"]');
+          if (el) el.hidden = (group[k] !== frameKey);
+        }
+      }
+    } else if (target.kind === 'overlay') {
+      var triggers = target.triggers || [];
+      if (triggers[0] && triggers[0].fromStateKey) activate(triggers[0].fromStateKey);
+      if (typeof window.toggleOverlay === 'function') {
+        window.toggleOverlay(frameKey, true);
+      } else {
+        var oel = document.querySelector('[data-frame="' + frameKey + '"]');
+        if (oel) oel.hidden = false;
+      }
+    }
+  }
+
+  function disableInteractions() {
+    // 与画布「选元素 picker」工具协调：picker 模式打开时让路，关闭时恢复拦截
+    window.__canvasPickerActive = false;
+    window.addEventListener('message', function (e) {
+      var d = e.data || {};
+      if (d.type === 'picker:setActive') {
+        // picker 选元素：放行点击命中子元素，bootstrap 这一层处理一致
+        window.__canvasPickerActive = !!d.active;
+        // 同步切换 data-picker-active：picker 模式下让外层 stage 的 .mark-active 失效，
+        // e.target 能命中具体子元素（button/div），而不是停在 html 顶层
+        if (d.active) {
+          document.documentElement.setAttribute('data-picker-active', '1');
+        } else {
+          document.documentElement.removeAttribute('data-picker-active');
+        }
+      } else if (d.type === 'mark:setActive') {
+        // mark / remount 模式：让 PATCH_CSS 的 cursor:crosshair + user-select:none 生效
+        if (d.active) {
+          document.documentElement.setAttribute('data-mark-active', '1');
+        } else {
+          document.documentElement.removeAttribute('data-mark-active');
+        }
+      }
+    });
+
+    function swallow(e) {
+      if (window.__canvasPickerActive) {
+        // picker 态要把 click 让给 bridge 上报选中元素，但 <a> 跳转 / form 提交必须仍然掐掉——
+        // 一旦真跳走，iframe 就脱离了 canvasMode（新 URL 没有 ?canvasMode=1），整帧变成活页面。
+        // 只 preventDefault、不掐传播：bridge 的 capture 监听要收得到这次 click。
+        if (e.type === 'click' || e.type === 'submit') e.preventDefault();
+        return;
+      }
+      // keydown 放行 cmd/ctrl + C / A：复制 + 全选是文字可选语义的硬前提
+      if (e.type === 'keydown') {
+        var meta = e.metaKey || e.ctrlKey;
+        var k = (e.key || '').toLowerCase();
+        if (meta && (k === 'c' || k === 'a')) return;
+      }
+      e.preventDefault();
+      // capture 阶段 stopImmediatePropagation 会终止 target phase 的行内 onclick
+      e.stopImmediatePropagation();
+    }
+    // wheel 不锁死，而是转发给父画布做平移/缩放：画布里 iframe 是静态快照、自身无需滚动，
+    // 鼠标悬在 iframe 上时把滚轮中继出去，否则那片区域就成了滚动死区（picker 态一并转发，不影响选元素）
+    function forwardWheel(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      try {
+        parent.postMessage({
+          type: 'canvas-wheel',
+          deltaX: e.deltaX, deltaY: e.deltaY, deltaMode: e.deltaMode,
+          ctrlKey: e.ctrlKey, metaKey: e.metaKey,
+          clientX: e.clientX, clientY: e.clientY
+        }, '*');
+      } catch (err) {}
+    }
+    // 全交互拦截：click/submit + pointerup/touchend 触屏兜底 + keydown 键盘兜底 + contextmenu 右键菜单兜底
+    ['click', 'submit', 'pointerup', 'touchend', 'keydown', 'contextmenu']
+      .forEach(function (ev) { document.addEventListener(ev, swallow, true); });
+    // touchmove 必须显式 passive:false：document 级浏览器默认 passive=true，preventDefault 会被静默忽略，
+    // 导致 iframe 内背景滚动锁不住（浮层下面的 state 仍可滑）
+    document.addEventListener('touchmove', swallow, { capture: true, passive: false });
+    // wheel 同样 passive:false，由 forwardWheel 接管：先拦 iframe 自身滚动，再中继给父画布
+    document.addEventListener('wheel', forwardWheel, { capture: true, passive: false });
+
+    // 静默后续启动的定时器/动画/跳转（已经发生的同步代码不可回收，是接受的取舍）
+    window.setInterval = function () { return 0; };
+    window.requestAnimationFrame = function () { return 0; };
+    try {
+      history.pushState = function () {};
+      history.replaceState = function () {};
+      if (window.location && typeof window.location.assign === 'function') {
+        window.location.assign = function () {};
+        window.location.replace = function () {};
+      }
+    } catch (e) {}
+  }
+
+  // 选元素 picker 的桥接：内置在 bootstrap 里，而不是由父画布注入。
+  // 父画布的 injectBridge 走 iframe.contentDocument 塞 <script>，但 file:// 下每个文件都是
+  // 独立 origin，contentDocument 恒为 null（Chromium 静默返回 null 而非抛错），脚本永远进不来。
+  // 评审画布的常态就是本地双击打开，所以 picker 必须自带一份；父画布那份保留作同源（http://）
+  // 兜底，两边靠 window.__pickerBridge 去重，谁先到谁生效。
+  function setupPicker() {
+    if (window.__pickerBridge) return;
+    window.__pickerBridge = true;
+    var HL_ID = '__picker_hl__';
+    var active = false;
+
+    function ensureHl() {
+      var hl = document.getElementById(HL_ID);
+      if (!hl) {
+        hl = document.createElement('div');
+        hl.id = HL_ID;
+        hl.style.cssText = 'position:fixed;pointer-events:none;z-index:2147483646;border:2px solid #F93838;'
+          + 'background:rgba(249,56,56,0.08);transition:all .08s;display:none;box-sizing:border-box;border-radius:2px;';
+        document.documentElement.appendChild(hl);
+      }
+      return hl;
+    }
+
+    function cssPath(el) {
+      if (!(el instanceof Element)) return '';
+      var parts = [];
+      while (el && el.nodeType === 1 && parts.length < 6) {
+        var seg = el.nodeName.toLowerCase();
+        if (el.id) { seg += '#' + el.id; parts.unshift(seg); break; }
+        if (el.className && typeof el.className === 'string') {
+          var cls = el.className.trim().split(/\s+/).filter(function (c) {
+            return c && c.indexOf('__picker') !== 0;
+          }).slice(0, 2).join('.');
+          if (cls) seg += '.' + cls;
+        }
+        var parent = el.parentNode;
+        if (parent && parent.nodeType === 1) {
+          var sib = Array.prototype.slice.call(parent.children).filter(function (x) {
+            return x.nodeName === el.nodeName;
+          });
+          if (sib.length > 1) seg += ':nth-of-type(' + (sib.indexOf(el) + 1) + ')';
+        }
+        parts.unshift(seg);
+        el = el.parentElement;
+      }
+      return parts.join(' > ');
+    }
+
+    function metaFor(el) {
+      var r = el.getBoundingClientRect();
+      var text = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      var html = el.outerHTML || '';
+      if (html.length > 240) html = html.slice(0, 240) + '...';
+      return {
+        frameKey: getFrameKey(),
+        tag: el.nodeName.toLowerCase(),
+        selector: cssPath(el),
+        text: text,
+        html: html,
+        rect: { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }
+      };
+    }
+
+    function setHl(el) {
+      var hl = ensureHl();
+      if (!el) { hl.style.display = 'none'; return; }
+      var r = el.getBoundingClientRect();
+      hl.style.display = 'block';
+      hl.style.left = r.left + 'px';
+      hl.style.top = r.top + 'px';
+      hl.style.width = r.width + 'px';
+      hl.style.height = r.height + 'px';
+    }
+
+    document.addEventListener('mouseover', function (e) {
+      if (!active) return;
+      var el = e.target;
+      if (!el || el.id === HL_ID) return;
+      setHl(el);
+    }, true);
+    document.addEventListener('click', function (e) {
+      if (!active) return;
+      var el = e.target;
+      if (!el || el.id === HL_ID) return;
+      e.preventDefault();
+      e.stopPropagation();
+      try { parent.postMessage({ type: 'picker:select', payload: metaFor(el) }, '*'); } catch (err) {}
+    }, true);
+    document.addEventListener('mouseleave', function () { if (active) setHl(null); }, true);
+
+    window.addEventListener('message', function (e) {
+      var d = e.data || {};
+      if (d.type === 'picker:setActive') {
+        active = !!d.active;
+        if (!active) setHl(null);
+      }
+    });
+
+    try { parent.postMessage({ type: 'picker:bridgeReady', frameKey: getFrameKey() }, '*'); } catch (e) {}
+  }
+
+  // 测量期间的自屏蔽标志：中和 min-height 会瞬时改动 body 尺寸，不挡住 ResizeObserver 就会自触发下一轮
+  var measuring = false;
+
+  // 内容自然高度：必须与 iframe 当前视口高度解耦。父画布把上报值回填成 iframe 高度，
+  // 而页面里任何「跟视口等高」的撑满约束（min-h-screen / min-height:100vh）都会让下一次
+  // scrollHeight 再高出同一个固定偏移，构成无限放大的正反馈（实测能涨到 17000px+）。
+  // 所以测量前把这类约束临时中和，只留内容真正撑出来的高度；下限由父画布按视口档位补。
+  function naturalHeight() {
+    var body = document.body;
+    if (!body) return document.documentElement.scrollHeight;
+    var vpH = window.innerHeight;
+    var touched = [];
+    function neutralize(el) {
+      var cs;
+      try { cs = getComputedStyle(el); } catch (e) { return; }
+      var mh = parseFloat(cs.minHeight);
+      // 只中和跟视口等高的那一类；min-height:400px 这种固定值是内容自己的诉求，不能动
+      if (!mh || Math.abs(mh - vpH) > 1) return;
+      touched.push([el, el.style.getPropertyValue('min-height'), el.style.getPropertyPriority('min-height')]);
+      el.style.setProperty('min-height', '0', 'important');
+    }
+    measuring = true;
+    try {
+      neutralize(document.documentElement);
+      neutralize(body);
+      var all = body.getElementsByTagName('*');
+      for (var i = 0; i < all.length; i++) neutralize(all[i]);
+      return Math.max(document.documentElement.scrollHeight, body.scrollHeight);
+    } finally {
+      for (var k = 0; k < touched.length; k++) {
+        var t = touched[k];
+        if (t[1]) t[0].style.setProperty('min-height', t[1], t[2]);
+        else t[0].style.removeProperty('min-height');
+      }
+      measuring = false;
+    }
+  }
+
+  function reportHeight() {
+    // 只报真实内容高度、不设下限：视口档位（APP 手机壳 812 / 中台宽屏 800）由父画布按
+    // pages.json 的 viewport clamp，同一份 bootstrap 才能同时服务两种原型
+    var h = naturalHeight();
+    try {
+      parent.postMessage({ type: 'canvas-frame-ready', frameKey: getFrameKey(), height: h }, '*');
+    } catch (e) {}
+  }
+
+  function boot() {
+    // 保存原 rAF 引用：必须在 disableInteractions 覆盖之前，供 ResizeObserver 节流用
+    var origRAF = window.requestAnimationFrame.bind(window);
+    activate(getFrameKey());
+    disableInteractions();
+    setupPicker();
+    var report = reportHeight;
+    report();
+    setTimeout(report, 250);
+    setTimeout(report, 1200);
+    window.addEventListener('load', report);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(report).catch(function(){});
+    }
+    // 持续监听 body 尺寸变化（图片/字体异步加载撑高后回报）
+    if (window.ResizeObserver) {
+      var pending = false;
+      var ro = new ResizeObserver(function () {
+        if (pending || measuring) return;
+        pending = true;
+        origRAF(function () { pending = false; report(); });
+      });
+      if (document.body) ro.observe(document.body);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  window.addEventListener('hashchange', function () {
+    activate(getFrameKey());
+    setTimeout(reportHeight, 100);
+  });
+})();
+</script>
+<script type="application/canvas-manifest" data-version="1.0">{"version":"1.0","page":{"name":"高净值客户资产降级服务清单","order":2,"viewport":"desktop"},"frames":[{"key":"normal","kind":"state","label":"正常态","tag":"高保真服务清单","selector":"[data-frame=\"normal\"]"},{"key":"broadcast-modal","kind":"overlay","overlayType":"modal","label":"企微一键群发","selector":"[data-frame=\"broadcast-modal\"]","triggers":[{"fromStateKey":"normal","action":"选择客户后点击下一步"}]},{"key":"complete-modal","kind":"overlay","overlayType":"modal","label":"完成服务确认","selector":"[data-frame=\"complete-modal\"]","triggers":[{"fromStateKey":"normal","action":"点击完成服务"}]}]}</script>
+<script>
+  /* 降级场景覆盖层：保留 AI+服务清单视觉与基础交互，仅替换本场景数据模型与业务内容。 */
+  (function () {
+    document.title = '高净值客户资产降级服务清单';
+    document.querySelector('.topbar-title').textContent = '高净值客户资产降级服务清单';
+    document.querySelector('.topbar-date').textContent = '2026年10月20日';
+    document.querySelector('.list-meta').innerHTML = '<div><div class="list-meta-title">高净值客户资产降级服务清单</div><div class="list-meta-items"><span>来源：自动任务</span><span>生成时间：2026-10-20 15:30</span><span>客户数量：5</span></div></div><span class="list-meta-status">已生成完成</span>';
+    document.getElementById('filterTabs').innerHTML = '<div class="filter-group"><div class="filter-group-label">资产等级</div><div class="filter-tabs asset-tabs"><button class="filter-tab active" data-filter="all">全部</button><button class="filter-tab" data-filter="down1000">500–1000万</button><button class="filter-tab" data-filter="down500">300–500万</button><button class="filter-tab" data-filter="down300">300万以下</button></div></div><div class="reason-filter-control" id="reasonFilterControl"><div class="reason-filter-label">资产降级原因判断 <button type="button" class="reason-help-btn" onclick="toggleReasonHelp(event)" aria-label="查看原因判断规则" aria-expanded="false">i</button></div><button type="button" class="reason-filter-trigger" onclick="toggleReasonFilterMenu(event)" aria-expanded="false"><span id="reasonFilterValue">全部</span><svg class="reason-filter-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="reason-filter-menu" id="reasonFilterMenu" hidden><button type="button" class="reason-filter-option active" data-reason-filter="all" onclick="selectReasonFilter(&quot;all&quot;,&quot;全部&quot;)">全部</button><button type="button" class="reason-filter-option" data-reason-filter="loss" onclick="selectReasonFilter(&quot;loss&quot;,&quot;亏损主导&quot;)">亏损主导</button><button type="button" class="reason-filter-option" data-reason-filter="outflow" onclick="selectReasonFilter(&quot;outflow&quot;,&quot;资金转出主导&quot;)">资金转出主导</button><button type="button" class="reason-filter-option" data-reason-filter="mixed" onclick="selectReasonFilter(&quot;mixed&quot;,&quot;混合原因&quot;)">混合原因</button><button type="button" class="reason-filter-option" data-reason-filter="unknown" onclick="selectReasonFilter(&quot;unknown&quot;,&quot;原因不明&quot;)">原因不明</button></div><div class="reason-help-bubble" id="reasonHelpBubble" role="tooltip" hidden><b>原因判断规则</b><ol><li>分别比较近1月、近3月、近6月的账户亏损金额与净资金转出金额。</li><li>单一周期中，一方达到另一方的 1.5 倍，即判定该周期由该因素主导。</li><li>三个周期中至少两个周期同向，归类为“亏损主导”或“资金转出主导”。</li><li>未形成明显多数时归为“混合原因”；数据不足时归为“原因不明”。</li></ol></div></div>';
+    document.querySelector('.confirm-copy').textContent = '确认完成对当前客户的资产降级服务？完成后该客户将置灰并移至当前筛选列表底部，仍可查看客户画像与历史服务内容。';
+
+    Object.keys(communicationThoughts).forEach(function (key) { delete communicationThoughts[key]; });
+    communicationThoughts.down1000 = [
+      {title:'【亏损场景】',content:'“X 总您好，我是国金证券您的专属投顾[名字]。近期我们对您账户做了一次例行检视，想就市场环境和您账户的持仓结构，跟您做一次专业层面的沟通。不占用您太多时间，主要是帮您把风险敞口和后续节奏理一理。您看方便通几分钟电话吗？”\n\n这次联系您是希望能够跟您一起把投资底层逻辑理清，哪些亏损是系统性贝塔、哪些是持仓结构问题、哪些反而带来逆向布局的机会。这通电话不是让您做任何决策，而是帮您把不确定性变成可选项。您只需要给10分钟，我帮您做详细账户分析，后续操作节奏完全由您定。'},
+      {title:'【资金转出场景】',content:'“X 总您好，我是您的专属投顾[名字]。我们注意到您账户近期有一笔资金安排，想确认下：是资金有其他用途，还是对目前的服务体验有想交流的？我们这边会配合您的资金节奏，做好后续衔接。”\n\n——客户：“转去别家了 / 那边收益更好”\n“理解，资金合理流动是正常的。我们不比较同业，但想确认一点：您转出后，剩余在我这边的持仓是否与那边的配置形成互补？我们最怕的是客户两边持仓高度重叠，一旦行业回调，反而缺乏保护。如果您允许，我帮您做一次跨账户的行业集中度分析（不涉及对方账户明细），确保两边加起来结构稳健。”\n\n——客户：“做生意周转用”\n“企业经营资金优先，完全支持。想和您确认：这笔资金是短期过桥还是中长期调用？如果是短期，我们帮您盯住回款后重新入场的时间窗口，避免踏空；如果是中长期，我们建议对剩余持仓做精简，降低您日常盯盘负担，同时保留一定弹性。等资金回来后，再按新配置方案补位。”'},
+      {title:'【主动资产配置引导】',content:'“X总，趁今天沟通，我想把我们最近给千万级客户做的配置框架向您汇报一下，不一定适用，但逻辑可以参考。\n（基于客户KYC情况匹配不同大C方案沟通）\n您不一定现在调整，但我建议至少每季度做一次‘目标权重再平衡’——当某类资产涨幅过大超过设定比例，就自动减仓，另一类跌过头就补仓。这不是预测市场，而是纪律性投资。我这边也会持续给您做好跟踪服务。”\n\n关键话术收尾（给客户掌控感）：\n“这完全是一个服务性提案，您只需要告诉我‘有兴趣’或‘暂不需要’。如果感兴趣，我下周把报告和调整方案发给您，您看完再决定下一步。不操作也是一种策略，我们尊重您的一切选择。”'}
+    ];
+    communicationThoughts.down500 = [
+      {title:'【亏损场景】',content:'“X 先生 / 女士您好，我是国金证券您的专属投顾[名字]。近期我们对您账户做了一次服务层面的检视，发现市值有较明显调整，想跟您同步下当前的市场策略观点，帮您看看当前仓位是否还匹配您的风险偏好。方便的话我简要跟您说几句？”\n\n当前市场持续分化，您现在重仓的板块能否抗住下一阶段？我建议至少做一次‘板块集中度筛查’——看看您前三大行业占比是否超过60%，如果超过，即便市场反弹，您也可能跑不赢指数。这个筛查5分钟做完，我帮您判断是否需要降集中度，决策权在您。'},
+      {title:'【资金转出场景】',content:'“X 先生 / 女士您好，我是国金证券您的专属投顾[名字]。关注到您近期有一笔资金安排，资产结构有所调整。想了解下是资金有其他安排，还是对目前服务有想交流的？我们希望做好后续服务承接。”\n\n——客户：“转去银行 / 买房 / 还贷了”\n“明白，资金有更好去处是好事。我这边主要做好服务衔接：您转出资金若有回笼周期，或想保留一个证券账户做流动性管理，随时联系我，帮您规划回来的节奏。”\n\n——客户：“那边有更好的产品”\n“理解您的选择，我们不做同业对比。我能做的就是：把您留在本账户的剩余资产管好，结构清晰、风险可控。后续我定期给您发策略观点，供您参考。”'},
+      {title:'【主动资产配置引导】',content:'“趁这次沟通，我想跟您更新一个我们近期重点推的配置思路。\n（基于客户KYC情况匹配不同大C方案沟通）\n我们可以根据您现在的持仓，对照这个框架，看看哪一类资产‘超配’或‘低配’了。不一定大调，但微调往往就能显著改善风险收益比。您有兴趣的话，我可以帮您详细做一个资配建议书，供您参考。”'}
+    ];
+    communicationThoughts.down300 = [
+      {title:'【亏损场景】',content:'“X 先生 / 女士您好，我是国金证券您的专属投顾[名字]。近期我们在做服务回访，看看您近期的账户状态和市场看法。您近期是否有投资或者其他方面需要提供服务的呢？”\n\n建议至少把账户里还持有的东西看一眼：有没有退市风险、或流动性极差的小票。帮您做个‘账户清扫’，哪怕暂时不做了，也别留隐患。\n\n——客户沉默 / 敷衍\n“好的，那我先不占用您时间。后续我们会定期推送总部策略日报，您闲暇时看看，保持对市场的感知。哪天您想重新参与，随时微信或电话找我，我帮您从头梳理。”'},
+      {title:'【资金转出场景】',content:'“X 先生 / 女士您好，我是您的专属投顾[名字]。按服务流程做个回访，关注到您近期有一笔资金安排，资产结构有所调整。想确认下是资金用途有变化，还是对服务有建议？”\n\n——客户：“转走了，不用了”\n“好的，明白。是因为对服务有不满还是因为什么原因呢？未来若有重新入市的计划，欢迎随时联系，我帮您从头梳理。”\n\n——客户：“用钱 / 生活开支”\n“理解，资金用于生活安排是第一位的。我这边帮您持续关注账户。日常有任何咨询欢迎随时沟通，后续有闲置资金想回来，随时找我。”'},
+      {title:'【主动资产配置引导】',content:'“趁这次回访，我想简单提一个配置小建议，不涉及操作——如果您后续有闲置资金回来，可以考虑尝试（私募产品或小C方案），长期收益会比我们个人投资者自己操作更优，也是一种‘省心策略’，不需要频繁调整，适合不想太操心的投资者。您先了解，未来需要时再细聊。”'}
+    ];
+
+    clients.splice(0, clients.length,
+      {id:'zhou',name:'周明远',account:'619283',gender:'男',risk:'C4 中高风险',level:'高净值客户',assetLevel:'500–1000万',levelKey:'down1000',fromLevel:'1000万以上',transition:'1000万以上 → 500–1000万',avg:'862.40 万',total:'938.60 万',market:'728.40 万',phone:'138****6671',tasks:[{name:'完成季度持仓体检',due:'截止 10-24',tag:'必做'},{name:'确认账户诊断沟通时间',due:'截止 10-27'}],losses:['-62.80 万','-85.40 万','-103.60 万'],outflows:['18.00 万','22.00 万','26.00 万'],reason:'loss',reasonLabel:'亏损主导',reasonNote:'近1月、近3月、近半年亏损金额均超过净资金转出金额的1.5倍',industries:[['电子', '285.60 万','39.2%','-32.80 万',[['中芯国际','132 万 / 18.1%','-18.40 万','164 天'],['海光信息','98 万 / 13.5%','-10.20 万','218 天']]],['医药生物','184.20 万','25.3%','-16.10 万',[['恒瑞医药','102 万 / 14.0%','-8.80 万','402 天']]],['非银金融','126.80 万','17.4%','-9.60 万',[['沪深300ETF','126.8 万 / 17.4%','-9.60 万','96 天']]]],concentration:'81.9%',history:{date:'2026-08-18',channel:'电话完成服务',count:'4 次'},thoughtKey:'loss',script:'周总您好，我是您的专属投顾张顾问。近期市场波动较大，我们结合当前策略观点做了一次账户例行回访，想和您一起看看现有持仓的行业集中度及其与您风险偏好的匹配情况。若您方便，我可以先为您做一次板块集中度筛查，把市场整体波动和持仓结构影响分别梳理清楚；这不要求您立即调整，您可以先了解分析结论，再决定下一步安排。',done:false},
+      {id:'huang',name:'黄晓琴',account:'209381',gender:'女',risk:'C3 中风险',level:'高净值客户',assetLevel:'500–1000万',levelKey:'down1000',fromLevel:'1000万以上',transition:'1000万以上 → 500–1000万',avg:'716.20 万',total:'780.50 万',market:'572.30 万',phone:'139****3086',tasks:[{name:'记录资金用途及回笼计划',due:'截止 10-23'}],losses:['-5.20 万','-8.70 万','-12.30 万'],outflows:['48.00 万','86.00 万','124.00 万'],reason:'outflow',reasonLabel:'资金转出主导',reasonNote:'近1月、近3月、近半年净资金转出金额均超过亏损金额的1.5倍',industries:[['银行', '164.40 万','28.7%','+3.20 万',[['招商银行','94 万 / 16.4%','+2.40 万','350 天']]],['食品饮料','132.20 万','23.1%','-4.80 万',[['五粮液','88 万 / 15.4%','-3.60 万','199 天']]],['固收产品','118.60 万','20.7%','+2.10 万',[['中短债基金','118.6 万 / 20.7%','+2.10 万','421 天']]]],concentration:'72.5%',history:{date:'2026-09-12',channel:'企微群发',count:'3 次'},thoughtKey:'outflow',script:'黄女士您好，我是您的专属投顾张顾问。近期我们在做客户服务回访，想确认您最近的资金安排是否有变化，以及我们这边还有哪些服务可以配合您的节奏。您若方便，想先了解这笔资金是有明确用途、阶段性安排，还是对现有服务有其他建议；我们会据此把服务记录完善，并协助把留存账户的持仓和后续资金安排衔接好。您可以按自己的节奏决定是否进一步沟通。',done:false},
+      {id:'lin',name:'林志诚',account:'382910',gender:'男',risk:'C3 中风险',level:'高净值客户',assetLevel:'300–500万',levelKey:'down500',fromLevel:'500–1000万',transition:'500–1000万 → 300–500万',avg:'426.80 万',total:'468.40 万',market:'352.70 万',phone:'136****7791',tasks:[{name:'预约板块集中度筛查',due:'截止 10-25',tag:'必做'}],losses:['-18.60 万','-28.40 万','-31.20 万'],outflows:['16.00 万','32.00 万','44.00 万'],reason:'mixed',reasonLabel:'混合原因',reasonNote:'三个周期未形成同一主导原因，需在回访中先确认实际资产变化原因',industries:[['计算机', '148.60 万','42.1%','-18.20 万',[['金山办公','86 万 / 24.4%','-10.60 万','139 天']]],['传媒', '76.20 万','21.6%','-9.40 万',[['分众传媒','76.2 万 / 21.6%','-9.40 万','288 天']]],['医药生物','51.80 万','14.7%','-4.30 万',[['迈瑞医疗','51.8 万 / 14.7%','-4.30 万','326 天']]]],concentration:'78.4%',history:{date:'2026-07-30',channel:'电话完成服务',count:'2 次'},thoughtKey:'mixed',script:'林先生您好，我是您的专属投顾张顾问。近期我们在做账户服务回访，想结合当前市场策略，了解一下您最近的账户安排和投资感受。我们看到账户变化可能同时受到市场波动和资金安排影响，方便时我想先听听您的实际情况；之后可按您的需要做持仓与行业集中度诊断，或把资金计划和服务偏好记录完善。您可以先了解，不需要现在做任何操作。',done:false},
+      {id:'sun',name:'孙慧敏',account:'517624',gender:'女',risk:'C2 低风险',level:'高净值客户',assetLevel:'300万以下',levelKey:'down300',fromLevel:'300–500万',transition:'300–500万 → 300万以下',avg:'268.60 万',total:'289.40 万',market:'186.20 万',phone:'137****1288',tasks:[],losses:['--','--','-3.60 万'],outflows:['--','--','--'],reason:'unknown',reasonLabel:'原因不明',reasonNote:'盈亏或净资金转出数据缺失，不对资产变化原因作模型推断',industries:[['通信', '78.20 万','42.0%','-2.80 万',[['中兴通讯','48 万 / 25.8%','-1.70 万','208 天']]],['小盘成长', '42.60 万','22.9%','-1.40 万',[['中证1000ETF','42.6 万 / 22.9%','-1.40 万','167 天']]],['货币基金','35.80 万','19.2%','+0.60 万',[['现金管理类','35.8 万 / 19.2%','+0.60 万','68 天']]]],concentration:'64.9%',history:{date:'2026-04-09',channel:'企微单聊',count:'1 次'},thoughtKey:'unknown',script:'孙女士您好，我是您的专属投顾张顾问。近期我们在做账户服务回访，想了解您最近对市场、持仓或资金安排是否有需要我们支持的地方。我们不会预设账户变化的原因，您若愿意，我们可以从当前持仓、资金计划或服务体验中选择一个方向先梳理。即使暂时没有操作计划，后续有需要时也欢迎随时联系我。',done:false},
+      {id:'gao',name:'高建华',account:'112233',gender:'男',risk:'C2 低风险',level:'高净值客户',assetLevel:'300万以下',levelKey:'down300',fromLevel:'300–500万',transition:'300–500万 → 300万以下',avg:'231.40 万',total:'244.60 万',market:'168.50 万',phone:'135****1288',tasks:[{name:'完成账户清扫回访',due:'已完成 10-18'}],losses:['-6.20 万','-8.10 万','-9.80 万'],outflows:['2.00 万','3.80 万','5.20 万'],reason:'loss',reasonLabel:'亏损主导',reasonNote:'近1月、近3月、近半年亏损金额均超过净资金转出金额的1.5倍',industries:[['房地产', '62.50 万','37.1%','-7.40 万',[['万科A','36 万 / 21.4%','-4.80 万','492 天']]],['公用事业','38.80 万','23.0%','+0.80 万',[['长江电力','38.8 万 / 23.0%','+0.80 万','577 天']]],['货币基金','29.70 万','17.6%','+0.20 万',[['现金管理类','29.7 万 / 17.6%','+0.20 万','92 天']]]],concentration:'60.1%',history:{date:'2026-10-18',channel:'电话完成服务',count:'5 次'},thoughtKey:'loss',script:'高先生您好，我是您的专属投顾张顾问。近期我们在做账户服务回访，想和您同步一下当前市场策略，也看看现有持仓是否还有需要排查的风险点。若您方便，我可以先帮您做一次账户清扫和行业集中度筛查，重点关注流动性较弱或风险暴露较高的标的；您可以先了解结论，是否调整完全由您决定。',done:true,doneAt:'10-18'}
+    );
+    currentId = 'zhou';
+    Object.keys(recentContactAt).forEach(function (key) { delete recentContactAt[key]; });
+    Object.assign(recentContactAt, {zhou:'2026-08-18',huang:'2026-09-12',lin:'2026-07-30',sun:'2026-04-09',gao:'2026-10-18'});
+
+    var style = document.createElement('style');
+    style.textContent = '#filterTabs{display:block;padding:0;margin-bottom:16px}.filter-group{margin-bottom:12px}.filter-group-label{padding:0 20px 7px;color:var(--color-text-tertiary);font-size:12px;line-height:16px}.filter-group .filter-tabs{margin-bottom:0;padding:0 20px}.reason-filter-control{position:relative;margin:0 20px}.reason-filter-label{display:flex;align-items:center;gap:5px;margin-bottom:7px;color:var(--color-text-tertiary);font-size:12px;line-height:16px}.reason-help-btn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1px solid #98a2b3;border-radius:50%;color:#667085;font-size:10px;font-weight:700;line-height:1}.reason-help-btn:hover{border-color:var(--color-primary);color:var(--color-primary)}.reason-filter-trigger{width:100%;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border:1px solid var(--color-border);border-radius:6px;background:#fff;color:var(--color-text-primary);font-size:12px;text-align:left}.reason-filter-trigger:hover,.reason-filter-trigger[aria-expanded="true"]{border-color:var(--color-primary);box-shadow:0 0 0 2px rgba(43,115,255,.08)}.reason-filter-chevron{color:var(--color-text-tertiary);transition:transform .15s}.reason-filter-trigger[aria-expanded="true"] .reason-filter-chevron{transform:rotate(180deg)}.reason-filter-menu{position:absolute;z-index:30;top:57px;left:0;right:0;padding:5px;border:1px solid var(--color-border);border-radius:8px;background:#fff;box-shadow:0 8px 20px rgba(16,24,40,.14)}.reason-filter-option{display:block;width:100%;height:30px;padding:0 9px;border-radius:5px;color:var(--color-text-secondary);font-size:12px;text-align:left}.reason-filter-option:hover{background:var(--color-bg-page);color:var(--color-text-primary)}.reason-filter-option.active{background:rgba(43,115,255,.08);color:var(--color-primary);font-weight:700}.reason-help-bubble{position:absolute;z-index:31;top:23px;left:0;width:276px;padding:12px 13px;border:1px solid #d8e5ff;border-radius:8px;background:#fff;box-shadow:0 8px 20px rgba(16,24,40,.14);color:var(--color-text-secondary);font-size:12px;line-height:18px}.reason-help-bubble:before{content:"";position:absolute;top:-5px;left:50px;width:8px;height:8px;border-top:1px solid #d8e5ff;border-left:1px solid #d8e5ff;background:#fff;transform:rotate(45deg)}.reason-help-bubble b{display:block;margin-bottom:5px;color:var(--color-text-primary);font-size:13px}.reason-help-bubble ol{margin:0;padding-left:18px}.reason-help-bubble li+li{margin-top:4px}.reason-card{border-radius:10px;background:#f8fafc;padding:16px 18px}.reason-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.reason-label{font-size:16px;font-weight:700}.reason-badge{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:4px;background:rgba(43,115,255,.08);color:var(--color-primary);font-size:12px;font-weight:700}.reason-note{margin-top:9px;font-size:12px;line-height:18px;color:var(--color-text-secondary)}.comparison-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}.comparison-table th,.comparison-table td{height:44px;padding:0 14px;border-bottom:1px solid var(--color-border-light);text-align:right}.comparison-table th:first-child,.comparison-table td:first-child{text-align:left}.comparison-table th{background:var(--color-bg-page);color:var(--color-text-tertiary);font-weight:500}.comparison-table th:first-child{border-radius:8px 0 0 0}.comparison-table th:last-child{border-radius:0 8px 0 0}.reason-rule{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--color-text-tertiary)}.industry-alert{display:inline-flex;align-items:center;height:26px;padding:0 9px;border-radius:5px;background:#fff2f0;color:#d92d20;font-size:12px;font-weight:600}.history-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.history-item{padding:13px 14px;border:1px solid var(--color-border-light);border-radius:9px;background:var(--color-bg-page)}.history-item span{display:block;font-size:12px;color:var(--color-text-tertiary)}.history-item b{display:block;margin-top:6px;font-size:14px}.downgrade-tag{color:#d92d20!important;background:#fff2f0!important}.script-subhint{margin-top:8px;font-size:12px;line-height:18px;color:var(--color-text-tertiary)}.bc-no-material{margin-top:12px;padding:9px 10px;border-radius:6px;background:var(--color-bg-page);font-size:12px;color:var(--color-text-secondary)}';
+    document.head.appendChild(style);
+
+    /* 保留基线筛选函数，降级覆盖层只在其结果上叠加原因筛选，避免改写 const visibleClients。 */
+    var baseVisibleClients = visibleClients;
+    renderClients = function () {
+      var list=document.getElementById('clientList'),items=baseVisibleClients().filter(function (client) {
+        return reasonFilterKey === 'all' || client.reason === reasonFilterKey;
+      }),completedShown=false;
+      list.innerHTML=items.length?items.map(function(c){var divider=c.done&&!completedShown?(completedShown=true,'<div class="completed-divider">已完成服务</div>'):'';var checked=selectedIds.includes(c.id),blocked=isBroadcastBlocked(c);return divider+'<div class="client-card '+(c.id===currentId?'selected ':'')+(c.done?'completed ':'')+(blocked?'broadcast-blocked ':'')+(selectMode?'select-mode ':'')+(checked?'checked':'')+'" onclick="handleClientClick(\''+c.id+'\')">'+(selectMode&&!c.done&&!blocked?'<span class="batch-checkbox '+(checked?'checked':'')+'"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'<span class="client-avatar '+(c.id===currentId?'selected':'')+'">'+c.name.charAt(0)+'</span>')+'<div class="client-card-body"><div class="client-name-row"><span class="client-name">'+c.name+'</span><span class="client-account">'+c.account+'</span>'+(c.done?'<span class="completed-check">✓</span>':'')+'<span class="asset-level downgrade-tag">'+c.assetLevel+'</span></div><div class="client-sub-line"><span>'+c.risk.split(' ')[0]+'</span><span>近20日均 '+c.avg+'</span></div><div class="broadcast-mark">'+c.transition+' · '+c.reasonLabel+'</div>'+(blocked?'<div class="broadcast-mark">已群发 · '+(recentContactAt[c.id]||'本次')+'</div>':(c.done?'<div class="broadcast-mark">已完成 '+c.doneAt+'</div>':''))+'</div></div>';}).join(''):'<div class="client-search-empty">未找到匹配的客户</div>';
+    };
+    var reasonFilterKey = 'all';
+    window.toggleReasonFilterMenu = function (event) {
+      event.stopPropagation();
+      var menu = document.getElementById('reasonFilterMenu');
+      var trigger = event.currentTarget;
+      var isOpen = !menu.hidden;
+      menu.hidden = isOpen;
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+      document.getElementById('reasonHelpBubble').hidden = true;
+      document.querySelector('.reason-help-btn').setAttribute('aria-expanded', 'false');
+    };
+    window.selectReasonFilter = function (key, label) {
+      reasonFilterKey = key;
+      document.getElementById('reasonFilterValue').textContent = label;
+      document.querySelectorAll('[data-reason-filter]').forEach(function (option) { option.classList.toggle('active', option.dataset.reasonFilter === key); });
+      document.getElementById('reasonFilterMenu').hidden = true;
+      document.querySelector('.reason-filter-trigger').setAttribute('aria-expanded', 'false');
+      renderClients();
+    };
+    window.toggleReasonHelp = function (event) {
+      event.stopPropagation();
+      var bubble = document.getElementById('reasonHelpBubble');
+      var button = event.currentTarget;
+      var isOpen = !bubble.hidden;
+      bubble.hidden = isOpen;
+      button.setAttribute('aria-expanded', String(!isOpen));
+      document.getElementById('reasonFilterMenu').hidden = true;
+      document.querySelector('.reason-filter-trigger').setAttribute('aria-expanded', 'false');
+    };
+    document.addEventListener('click', function (event) {
+      var control = document.getElementById('reasonFilterControl');
+      if (control && !control.contains(event.target)) {
+        document.getElementById('reasonFilterMenu').hidden = true;
+        document.getElementById('reasonHelpBubble').hidden = true;
+        document.querySelector('.reason-filter-trigger').setAttribute('aria-expanded', 'false');
+        document.querySelector('.reason-help-btn').setAttribute('aria-expanded', 'false');
+      }
+    });
+    renderProfile = function () {
+      var c=currentClient(), periods=['近1个月','近3个月','近6个月'];
+      document.getElementById('profileArea').innerHTML='<section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">客户画像</div><div class="section-sub">资产降级服务画像 · 数据更新于 2026-10-20 15:20</div></div></div></div><div class="profile-overview"><div class="asset-hero"><div class="asset-hero-label">近20日日均净资产</div><div class="asset-hero-value">'+c.avg+'</div><div class="asset-hero-note">当前资产等级：由'+c.fromLevel+'降至'+c.assetLevel+'；跃迁判断：近20日日均净资产对比昨日数据</div></div><div class="reason-card"><div class="reason-head"><span class="reason-label">资产变化原因判断</span><span class="reason-badge">'+c.reasonLabel+'</span></div><div class="reason-note">'+c.reasonNote+'</div></div></div></section><section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">账户盈亏与近期资金转出</div><div class="section-sub">账户盈亏数据口径与 AI+助手保持一致</div></div></div></div><table class="comparison-table"><thead><tr><th>统计周期</th><th>账户盈亏</th><th>净资金转出</th><th>周期判断</th></tr></thead><tbody>'+periods.map(function(label,i){var a=c.losses[i],b=c.outflows[i],judge=a==='--'||b==='--'?'数据不足':(c.reason==='loss'?'亏损主导':c.reason==='outflow'?'资金转出主导':'需结合回访确认');return '<tr><td>'+label+'</td><td class="'+(a.indexOf('-')===0?'loss':'profit')+'">'+a+'</td><td>'+b+'</td><td>'+judge+'</td></tr>';}).join('')+'</tbody></table><div class="reason-rule">判断口径：各周期按“亏损金额 / 净资金转出金额”1.5倍阈值比较，三个周期按多数结果归类</div></section>'+renderHoldings()+'<section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">历史触达记录</div><div class="section-sub">当前客户有效沟通服务记录</div></div></div></div><div class="history-grid"><div class="history-item"><span>最近有效沟通日期</span><b>'+c.history.date+'</b></div><div class="history-item"><span>最近有效沟通渠道</span><b>'+c.history.channel+'</b></div><div class="history-item"><span>近半年服务次数</span><b>'+c.history.count+'</b></div></div></section>';
+    };
+    renderHoldings = function () {
+      var c=currentClient();
+      return '<section class="profile-section"><div class="section-head"><div class="section-title-wrap"><span class="section-indicator"></span><div><div class="section-title">持仓结构与行业集中度</div><div class="section-sub">数据口径与 AI+助手保持一致</div></div></div><span class="industry-alert">前三大行业占比 '+c.concentration+' · 建议筛查</span></div><table class="holdings-table"><thead><tr><th>行业 / 标的</th><th>持仓</th><th>占比</th><th>收益额</th><th></th></tr></thead>'+c.industries.map(function(row,i){var id='industry-'+c.id+'-'+i;return '<tbody id="'+id+'"><tr class="holding-main"><td><span class="holding-name"><i class="holding-dot '+(i===1?'fixed':i===2?'cash':'')+'"></i>'+row[0]+'</span></td><td>'+row[1]+'</td><td>'+row[2]+'</td><td class="'+(row[3].indexOf('-')===0?'loss':'profit')+'">'+row[3]+'</td><td><button class="holding-toggle" onclick="toggleHolding(\''+id+'\')">展开</button></td></tr>'+row[4].map(function(s){return '<tr class="holding-detail"><td>'+s[0]+'</td><td>'+s[1]+'</td><td>—</td><td class="'+(s[2].indexOf('-')===0?'loss':'profit')+'">'+s[2]+'</td><td>'+s[3]+'</td></tr>';}).join('')+'</tbody>';}).join('')+'</table></section>';
+    };
+    renderMindset = function(){var c=currentClient(),sections=communicationThoughts[c.levelKey]||[];document.getElementById('mindsetArea').innerHTML='<section class="mindset-card"><div class="mindset-head"><div><div class="mindset-title">沟通思路（投顾参考）</div><div class="mindset-sub">适用层级：'+c.transition+' · 按业务提供的完整示例展示，不发送给客户</div></div><div class="mindset-actions"><button class="mindset-toggle" onclick="toggleAllMindset()">'+(mindsetExpanded?'全部收起':'全部展开')+'</button></div></div><div class="thought-sections">'+sections.map(function(s,i){return '<article class="thought-section '+(mindsetExpanded||(mindsetDefaultStep&&i===0)?'open':'')+'"><h4 onclick="toggleMindsetStep('+i+')">'+s.title+'</h4><div class="thought-copy">'+s.content+'</div></article>';}).join('')+'</div></section>';};
+    renderScript = function(){var c=currentClient();document.getElementById('scriptArea').innerHTML='<section class="script-card"><div class="script-section"><div class="script-head"><div class="script-head-left"><span class="script-title">服务话术</span><div class="script-statuses"><span class="compliance-tag">合规审核通过</span><span class="edit-tag" id="editTag">人工未编辑</span><span class="bc-preset-badge">对客发送内容</span></div></div><button class="copy-btn" onclick="copyScript()"><img class="copy-btn-icon" src="../assets/ai-service-icons/fuzhi.png" alt="复制"><span id="copyText">一键复制</span></button></div><div class="script-subhint">按'+c.transition+'、'+c.reasonLabel+'选择对应业务示例生成；主动资产配置引导仅在客户表达意愿后由员工继续使用。话术可直接编辑，失焦后自动保存。</div><div class="script-editable-wrap"><div class="script-editable expanded" id="scriptEditor" contenteditable="true" onblur="saveScript()">'+c.script+'</div></div></div></section>';};
+    var groupScriptFor = function(group){
+      var opening={
+        'down1000|loss':'您好，我是您的专属投顾。近期我们在做高净值客户账户例行检视，想和您同步一下当前市场环境及持仓结构的专业观察，也帮您把风险敞口和后续节奏理一理。若您方便，我可以用几分钟说明一下。',
+        'down1000|outflow':'您好，我是您的专属投顾。近期我们在做高净值客户服务回访，想确认您近期是否有资金安排，或对目前服务有想交流的地方。我们会配合您的节奏，做好后续服务衔接。',
+        'down500|loss':'您好，我是您的专属投顾。近期我们在做账户服务检视，想和您同步当前市场策略观点，也一起看看仓位是否仍与您的风险偏好匹配。若您方便，我简要和您沟通几分钟。',
+        'down500|outflow':'您好，我是您的专属投顾。近期我们在做服务回访，想了解您是否有新的资金安排，或对目前服务有想交流的地方。我们希望做好后续服务承接。',
+        'down300|loss':'您好，我是您的专属投顾。近期我们在做服务回访，想了解您近期对账户状态和市场看法是否有需要支持的地方。',
+        'down300|outflow':'您好，我是您的专属投顾。按服务流程做个回访，想确认您近期是否有新的资金用途，或对服务有任何建议。'
+      };
+      var key=group.levelKey+'|'+group.reasonKey;
+      return opening[key]||'您好，我是您的专属投顾。近期我们在做账户服务回访，想了解您近期对市场、持仓或资金安排是否有需要我们支持的地方。';
+    };
+    renderBroadcastToolbar = function(){var slot=document.getElementById('broadcastToolbar');if(!selectMode){slot.innerHTML='<div class="broadcast-bar"><button class="bb-main-btn" onclick="enterBroadcastMode()"><span class="label"><img class="bc-icon" src="../assets/ai-service-icons/fenxiang.png" alt="群发">企微群发服务话术</span><img class="chev" src="../assets/ai-service-icons/jiantou1.png" alt="进入选择"></button></div>';return}slot.innerHTML='<div class="bb-select-bar"><span class="bb-select-count">已选 '+selectedIds.length+' 人</span><span class="confirm-btns"><button class="bb-cancel-btn" onclick="cancelBroadcastMode()">取消</button><button class="bb-next-btn '+(selectedIds.length?'enabled':'')+'" '+(selectedIds.length?'':'disabled')+' onclick="openBroadcastModal()">下一步</button></span></div>';};
+    buildBroadcastGroups = function(){var map={};clients.filter(function(c){return selectedIds.includes(c.id)&&!isBroadcastBlocked(c);}).forEach(function(c){var key=[c.levelKey,c.transition,c.reason].join('|');if(!map[key])map[key]={key:key,levelKey:c.levelKey,reasonKey:c.reason,level:c.assetLevel,transition:c.transition,reason:c.reasonLabel,ids:[]};map[key].ids.push(c.id);});return Object.values(map);};
+    renderBroadcastModal = function(){var body=document.getElementById('broadcastModalBody'),groups=buildBroadcastGroups();body.innerHTML='<div class="broadcast-mode-tabs"><button class="broadcast-mode-tab '+(broadcastMode==='one'?'active':'')+'" onclick="switchBroadcastMode(\'one\')">千人一面</button><button class="broadcast-mode-tab '+(broadcastMode==='many'?'active':'')+'" onclick="switchBroadcastMode(\'many\')">千人千面</button></div>'+(broadcastMode==='one'?renderOneToMany(groups):renderManyToMany());var send=document.getElementById('broadcastSendBtn'),group=broadcastMode==='one'?groups[broadcastGroupIndex]:null,canSend=broadcastMode==='one'?!!(group&&group.ids.length):selectedIds.some(function(id){return !isBroadcastBlocked(clients.find(function(c){return c.id===id;}));});send.className='bc-send-btn '+(canSend?'enabled':'');send.disabled=!canSend;send.textContent=broadcastMode==='one'?(canSend?'发送本组（'+group.ids.length+'人）':'暂无可发送客户'):(canSend?'发送千人千面（'+selectedIds.length+'人）':'暂无可发送客户');};
+    renderOneToMany = function(groups){if(!groups.length)return '<div class="material-empty">暂无可发送客户</div>';if(broadcastGroupIndex>=groups.length)broadcastGroupIndex=groups.length-1;var group=groups[broadcastGroupIndex],recipients=clients.filter(function(c){return group.ids.includes(c.id);}),script=broadcastGroupScripts[group.key]||groupScriptFor(group);broadcastGroupScripts[group.key]=script;return '<div class="bc-section-label"><span class="name">系统已按降级路径、原因判断拆分 '+groups.length+' 个群发组</span><span class="bc-preset-badge">不含固定素材</span></div><div class="bc-group-tabs">'+groups.map(function(g,i){return '<button class="bc-group-tab '+(i===broadcastGroupIndex?'active':'')+'" onclick="broadcastGroupIndex='+i+';renderBroadcastModal()"><b>第'+(i+1)+'组 · '+g.ids.length+'人</b><span>'+g.level+' · '+g.reason+'</span></button>';}).join('')+'</div><div class="bc-group-summary"><strong>本组客户：</strong>'+recipients.map(function(c){return c.name;}).join('、')+'<br><strong>降级路径：</strong>'+group.transition+'<br><strong>发送内容：</strong>本组统一服务话术，不包含单个客户画像</div><div class="bc-section-label" style="margin-top:14px"><span class="name">本组统一对客话术</span><span class="bc-preset-badge">可编辑</span></div><div class="bc-group-script" contenteditable="true" onblur="saveBroadcastGroupScript(\''+group.key+'\',this.innerText)">'+script+'</div><div class="bc-no-material">本场景无固定客户服务素材，将仅发送以上服务话术。</div>';};
+    renderManyToMany = function(){var recipients=clients.filter(function(c){return selectedIds.includes(c.id);});return '<div class="bc-section-label"><span class="name">逐客户个性化发送（'+recipients.length+' 人）</span><span class="bc-preset-badge">每位客户独立话术</span></div><div class="bc-personal-list">'+recipients.map(function(c){return '<article class="bc-personal-row"><div class="bc-personal-head"><span class="bc-personal-name">'+c.name+'</span><button class="bc-recipient-remove" type="button" onclick="removeRecipient(\''+c.id+'\')">移除</button></div><div class="bc-personal-meta">'+c.assetLevel+' · '+c.transition+' · '+c.reasonLabel+'</div><textarea class="bc-personal-script" onchange="savePersonalScript(\''+c.id+'\',this.value)">'+c.script+'</textarea><div class="bc-no-material">本场景无固定客户服务素材，仅发送本客户服务话术。</div></article>';}).join('')+'</div>';};
+    renderAll = function(){renderClients();renderPortrait();renderProfile();renderMindset();renderScript();renderFooter();updateStats();};
+    var filterTabs = document.getElementById('filterTabs');
+    var freshFilterTabs = filterTabs.cloneNode(true);
+    filterTabs.parentNode.replaceChild(freshFilterTabs, filterTabs);
+    freshFilterTabs.addEventListener('click',function(event){var button=event.target.closest('[data-filter]');if(!button)return;filterKey=button.dataset.filter;freshFilterTabs.querySelectorAll('[data-filter]').forEach(function(tab){tab.classList.toggle('active',tab===button);});renderClients();});
+    var manifest=document.querySelector('script[type="application/canvas-manifest"]');
+    if(manifest)manifest.textContent='{"version":"1.0","page":{"name":"高净值客户资产降级服务清单","order":2,"viewport":"desktop"},"frames":[{"key":"normal","kind":"state","label":"正常态","tag":"高保真服务清单","selector":"[data-frame=\\"normal\\"]"},{"key":"broadcast-modal","kind":"overlay","overlayType":"modal","label":"企微一键群发","selector":"[data-frame=\\"broadcast-modal\\"]","triggers":[{"fromStateKey":"normal","action":"选择客户后点击下一步"}]},{"key":"complete-modal","kind":"overlay","overlayType":"modal","label":"完成服务确认","selector":"[data-frame=\\"complete-modal\\"]","triggers":[{"fromStateKey":"normal","action":"点击完成服务"}]}]}';
+    renderAll();
+  }());
+</script>
+</body>
+</html>

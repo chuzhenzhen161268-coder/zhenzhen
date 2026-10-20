@@ -1,0 +1,105 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>产品需求文档</title><style>
+:root{--blue:#2b73ff;--blue-soft:#eaf1ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--orange:#d96d00}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}.top{position:sticky;top:0;z-index:10;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.brand{font-weight:700}.brand small{margin-left:10px;color:var(--muted);font-weight:400}.top a{color:var(--blue);text-decoration:none}.shell{max-width:1080px;margin:0 auto;padding:32px}.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 54px;box-shadow:0 10px 30px rgba(16,24,40,.04)}h1{margin:0 0 24px;font-size:30px;line-height:1.3}h2{margin:36px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:21px}h3{margin:26px 0 10px;font-size:17px}p{margin:10px 0;color:#344054}a{color:var(--blue)}blockquote{margin:0 0 26px;padding:14px 18px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:var(--blue-soft);color:#344054}table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0 24px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}th,td{padding:11px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f7f9fc;font-weight:650}tr:last-child td{border-bottom:0}th:last-child,td:last-child{border-right:0}ul,ol{padding-left:24px}li{margin:5px 0}pre{overflow:auto;padding:16px;border-radius:10px;background:#111827;color:#f8fafc}.mermaid{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;overflow:auto}.footer{margin-top:24px;text-align:center;color:#98a2b3;font-size:12px}@media(max-width:720px){.top{padding:0 16px}.shell{padding:16px}.paper{padding:26px 20px}table{display:block;overflow:auto}h1{font-size:24px}}
+</style><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script></head><body><header class="top"><div class="brand">高净值客户资产降级服务清单<small>v1.0</small></div><nav><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/prd/PRD.md" download>下载原文</a></nav></header><main class="shell"><article class="paper"><h1>产品需求文档：高净值客户资产降级服务清单</h1>
+<blockquote>
+<p>版本：v1.0（未上线前不升版本）<br />
+适用端：PC Web</p>
+</blockquote>
+<h2>1. 项目概览</h2>
+<p>高净值客户因市场波动、账户亏损或资金转出发生资产档位下降后，客户经理需要及时识别客户、理解账户变化并完成针对性的回访和服务承接。本场景为与资产升级服务清单并列的独立服务清单，复用 AI+服务清单的列表—详情、基础信息、待处理任务、电话外呼、企微群发和完成服务能力。</p>
+<p>目标是在自动任务或 WorkBuddy 查询后，向员工提供降级路径、客户画像、资产降级原因判断、完整沟通思路、摘要式服务话术和服务结果回写。</p>
+<h2>2. 核心规则</h2>
+<table>
+<thead>
+<tr>
+  <th>功能</th>
+  <th>规则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>圈客入口</td>
+  <td>支持每日自动任务、WorkBuddy 自由圈客和快捷生成。自动任务及快捷生成均识别近 20 日日均净资产较昨日下降的客户；自由圈客按员工明确条件执行。</td>
+</tr>
+<tr>
+  <td>降级路径</td>
+  <td>覆盖 1000万以上→500–1000万、500–1000万→300–500万、300–500万→300万以下。一次跨越两个及以上档位也纳入清单，按降级后的当前资产层级对应路径服务。</td>
+</tr>
+<tr>
+  <td>原因判断</td>
+  <td>比较近 1 月、近 3 月、近半年账户亏损与净资金转出；当前临时方案为单周期 1.5 倍阈值、三周期多数归类为亏损主导或资金转出主导，无多数为混合原因，数据不足为原因不明。</td>
+</tr>
+<tr>
+  <td>服务优先级</td>
+  <td>不做近 90 天剔除；按近 90 天“未联系优先 → 降级路径 → 当前资产”排序。点击完成服务、企微发送客户成功均视为已联系。</td>
+</tr>
+<tr>
+  <td>沟通思路</td>
+  <td>按降级路径完整展示业务提供的【亏损场景】【资金转出场景】【主动资产配置引导】和应答示例，仅供投顾参考，不进入对客发送内容。</td>
+</tr>
+<tr>
+  <td>服务话术</td>
+  <td>以降级路径 × 原因判断对应的业务示例为参照，默认引用 1 个、最多 2 个有效画像切入点生成摘要式话术；有效切入点须相关、完整可信且可转为中性表述；无有效切入点时用通用回访话术。详细规则见页面 PRD。</td>
+</tr>
+<tr>
+  <td>企微群发</td>
+  <td>支持千人一面和千人千面。千人一面可合并相同降级路径、相同原因判断客户；以企微“发送客户成功”回执写入防重标记。</td>
+</tr>
+<tr>
+  <td>数据缺失</td>
+  <td>画像显示“--”或数据不可用，不得编造；关键盈亏/资金数据缺失时允许使用通用回访话术触达。</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 页面与流程</h2>
+<p>页面采用左侧客户列表、右侧客户详情布局。左侧支持姓名/资金账号、资产等级和资产降级原因判断的组合筛选；右侧展示基础信息、ISMP 待处理任务、降级画像、沟通思路、服务话术和服务操作。</p>
+<h2>4. 数据与依赖</h2>
+<ul>
+<li>资产数据：近 20 日日均净资产及昨日对比，用于识别降级路径。</li>
+<li>AI+助手：账户盈亏、行业持仓结构及相关画像数据。</li>
+<li>资金数据：近 1 月、近 3 月、近半年净资金转出。</li>
+<li>ISMP / 服务记录：待处理任务、最近有效沟通日期、渠道与近半年有效服务次数。</li>
+<li>企微：发送客户成功回执，用于防重和已联系排序。</li>
+</ul>
+<h2>5. 待业务确认</h2>
+<ol>
+<li>资产降级原因判断的具体取数、阈值、零值处理与混合原因分支；</li>
+<li>三条路径的沟通思路原文和展示方式；</li>
+<li>服务话术生成参照、有效画像切入点和禁用表达；</li>
+<li>近半年有效服务次数的统计窗口、计入事件和数据来源。</li>
+</ol>
+<h2>6. 页面索引</h2>
+<table>
+<thead>
+<tr>
+  <th>页面</th>
+  <th>用途</th>
+  <th>文档</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>高净值客户资产降级服务清单</td>
+  <td>展示清单、画像、沟通思路、话术与触达闭环</td>
+  <td>页面 PRD</td>
+</tr>
+</tbody>
+</table>
+<h2>7. 版本记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-20</td>
+  <td>新建高净值客户资产降级服务清单，并持续补充业务评审确认项。</td>
+</tr>
+</tbody>
+</table>
+</article><div class="footer">本页可离线打开。</div></main><script>if(window.mermaid)mermaid.initialize({startOnLoad:true,securityLevel:'loose'});</script></body></html>
