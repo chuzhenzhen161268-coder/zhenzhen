@@ -1,0 +1,307 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRD</title><style>body{font:15px/1.75 -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif;color:#263442;margin:0;background:#f5f7f9}main{max-width:980px;margin:32px auto;padding:32px 42px;background:white;border:1px solid #e2e7eb;border-radius:6px}h1,h2,h3{line-height:1.35;color:#173b5c}h1{font-size:28px;border-bottom:1px solid #e8edf1;padding-bottom:12px}h2{font-size:21px;margin-top:34px}table{border-collapse:collapse;width:100%;display:block;overflow:auto}th,td{border:1px solid #dce3e9;padding:8px 10px;vertical-align:top}th{background:#f1f5f8}pre{background:#f4f6f8;padding:14px;overflow:auto;border-radius:4px}code{background:#f2f4f6;padding:2px 4px;border-radius:3px}blockquote{border-left:3px solid #6b95b7;margin-left:0;padding-left:14px;color:#536575}a{color:#17699d}img{max-width:100%}.mermaid{margin:20px 0;padding:20px;overflow:auto;border:1px solid #dce3e9;border-radius:8px;background:#fbfcfe}.source{display:inline-block;margin-bottom:18px;font-size:12px;color:#73818e}.top{position:sticky;top:0;background:#fff;padding:10px 0;border-bottom:1px solid #eef1f3}</style></head><body><main><div class="top"><a href="../../交付中心.html">返回交付中心</a>　<a href="PRD.md">查看/下载 Markdown 原文</a></div><span class="source">离线阅读版 · 源文件：PRD.md</span><h1>产品需求文档：存量合格投资者临近到期提醒服务清单</h1>
+<h2>1. 项目概览</h2>
+<p><strong>项目名称</strong>：存量合格投资者临近到期提醒服务清单<br />
+<strong>平台类型</strong>：PC Web</p>
+<h3>背景与目标</h3>
+<p>认证仍有效的私募、资管客户，其认证、持仓、历史认购与配置记录、沟通材料和服务动作分散在多个系统。员工需要在服务前手动拼接信息，难以按客户特征快速开展续期权益沟通，也不易区分不同服务场景的结果。</p>
+<p>本期维护独立的存量合格投资者临近到期提醒服务清单。员工可从自动任务或 GWork 进入清单，完成客户识别、画像查看、素材准备、话术编辑和服务记录。清单客户、筛选结果、服务状态和记录与资产升级、资产降级及既有高净值客户服务清单独立。</p>
+<h3>目标用户原型</h3>
+<ul>
+<li><strong>用户特征</strong>：负责名下高净值客户经营的客户经理或投顾，日常使用内部服务清单、电话和企微工具。</li>
+<li><strong>底层动机</strong>：快速确认客户仍可服务的认证状态，带着完整的客户信息和合规沟通材料开展有针对性的服务。</li>
+<li><strong>典型场景</strong>：客户认证首次进入距到期日 30 个交易日窗口时触发一次提醒；员工也可在 GWork 查询同一范围的存量合格投资者客户，查看认证、持仓、历史配置、沟通思路和话术，并开展电话或企微服务。</li>
+</ul>
+<h3>核心价值主张</h3>
+<p>为客户经理和投顾提供按认证与配置状态分层的独立服务清单，降低服务准备成本，并形成可追溯的服务闭环。</p>
+<h3>成功判定标准</h3>
+<ul>
+<li><strong>独立清单可用</strong>：员工可从自动任务或 GWork 生成本场景独立清单，且与资产升级、资产降级清单的客户、筛选和状态隔离。</li>
+<li><strong>服务准备完整</strong>：清单内客户可展示私募/资管认证、持仓、历史认购与配置信息，以及对应的 8 类沟通思路。</li>
+<li><strong>异常可继续服务</strong>：动态素材失败不阻断员工查看画像、生成初审话术和完成服务。</li>
+<li><strong>服务结果可追溯</strong>：电话/单聊完成服务、企微群发成功回执均能按本场景独立回流服务结果。</li>
+</ul>
+<h2>2. 产品发现结论</h2>
+<h3>价值层级分析</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>表面需求</th>
+  <th>底层动机</th>
+  <th>隐含假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>客群识别</td>
+  <td>判断私募/资管认证是否仍可服务，并形成 8 类分组</td>
+  <td>员工优先服务仍可承接的认证客户</td>
+  <td>私募、资管认证数据能独立返回且按任一有效条件准确圈客</td>
+</tr>
+<tr>
+  <td>服务准备</td>
+  <td>汇总认证、持仓、认购记录、材料与沟通思路</td>
+  <td>员工无需跨系统拼接信息即可开展服务</td>
+  <td>资配状态、历史记录和材料版本可获得且可用</td>
+</tr>
+<tr>
+  <td>独立闭环</td>
+  <td>在本场景记录电话、单聊和群发结果</td>
+  <td>经营结果可追溯，且不干扰其他服务清单</td>
+  <td>服务完成动作、群发成功回执可携带本场景标识回流</td>
+</tr>
+</tbody>
+</table>
+<h3>风险评估</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>价值风险（要不要）</th>
+  <th>可用性风险（会不会用）</th>
+  <th>可行性风险（做不做得出）</th>
+  <th>商业可行性风险（撑不撑得住）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>客群识别</td>
+  <td>低：自动任务每日调度节奏已明确，交易日历接入由研发按平台能力落实</td>
+  <td>低：员工已熟悉服务清单</td>
+  <td>中：依赖认证数据的完整性与时效</td>
+  <td>低：服务对象与现有高客经营目标一致</td>
+</tr>
+<tr>
+  <td>服务准备</td>
+  <td>中：8 类原文需保持准确且可用</td>
+  <td>中：信息密度高，需要清晰分层</td>
+  <td>高：依赖资配平台、柜台、物料中台和 AI+助手多方数据</td>
+  <td>低：复用既有服务工具，新增成本集中在数据接入</td>
+</tr>
+<tr>
+  <td>独立闭环</td>
+  <td>低：触达完成口径已明确</td>
+  <td>低：交互沿用既有流程</td>
+  <td>中：需保证服务记录不与其他场景串写</td>
+  <td>低：可直接支持服务过程统计</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 产品结构图</h2>
+<h3>核心功能清单</h3>
+<table>
+<thead>
+<tr>
+  <th>功能</th>
+  <th>优先级</th>
+  <th>一句话说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>独立清单生成</td>
+  <td>P0</td>
+  <td>支持认证临近到期自动任务、GWork 自由圈客和快捷生成，结果只进入本场景清单。</td>
+</tr>
+<tr>
+  <td>认证圈客与 8 类分组</td>
+  <td>P0</td>
+  <td>按私募/资管任一认证进入 30 个交易日窗口纳入，并按认证资格、当前私募持仓、资配方案状态分组。</td>
+</tr>
+<tr>
+  <td>客户列表与筛选</td>
+  <td>P0</td>
+  <td>提供客户搜索及认证资格、私募持仓、资配方案状态等本场景筛选。</td>
+</tr>
+<tr>
+  <td>客户画像</td>
+  <td>P0</td>
+  <td>展示两类认证信息、近 20 日日均净资产、KYC 风险等级、持仓结构和历史认购/配置记录。</td>
+</tr>
+<tr>
+  <td>沟通素材</td>
+  <td>P0</td>
+  <td>沟通素材区及企微群发仅展示当前客群沟通思路原文中点名的一页通，并仅按是否做过资配匹配版本，不按客户资产等级筛选；进入清单时从资配平台实时获取。财富月刊、大 C 方案不在本场景展示或发送。两份固定认证指引仅在完整沟通思路中以内部预览链接提供，不作为客户素材。</td>
+</tr>
+<tr>
+  <td>沟通思路与服务话术</td>
+  <td>P0</td>
+  <td>按 8 类客户分组键匹配需求表原文，仅展示当前客户对应的一组完整沟通思路，并生成经过初审的摘要式对客话术。</td>
+</tr>
+<tr>
+  <td>服务触达与记录</td>
+  <td>P0</td>
+  <td>支持电话、企微单聊、企微群发及完成服务记录，状态只写入本场景。</td>
+</tr>
+<tr>
+  <td>数据与素材异常处理</td>
+  <td>P1</td>
+  <td>对认证、画像、动态素材和话术失败提供明确状态与重试，不阻断可继续的服务动作。</td>
+</tr>
+</tbody>
+</table>
+<h3>页面组织方式</h3>
+<p>采用无全局导航的单页列表-详情结构。入口来自员工消息推送或 GWork，打开后进入独立的“存量合格投资者临近到期提醒服务清单”，不进入资产升级、资产降级或其他高净值客户服务清单。</p>
+<pre><code class="language-text">消息推送 / GWork
+└── 存量合格投资者临近到期提醒服务清单（独立清单）
+    ├── 左侧：客户搜索、分组筛选、客户列表、企微群发
+    └── 右侧：客户基础信息、认证画像、持仓与历史记录、适用的一页通素材、
+             完整沟通思路（含内部资料预览）、服务话术、电话/企微触达、完成服务
+</code></pre>
+<p>页面结构、基础交互和视觉风格继承既有高净值客户服务清单；客户集合、筛选结果、分组、群发结果、服务状态和服务记录独立维护。</p>
+<h3>本期不做</h3>
+<table>
+<thead>
+<tr>
+  <th>本期不做</th>
+  <th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>将本场景并入资产升级、资产降级或既有高净值客户服务清单</td>
+  <td>本场景需要独立的客群、分组和服务闭环，避免跨场景状态串写。</td>
+</tr>
+<tr>
+  <td>修改资产升级、资产降级清单的页面与业务规则</td>
+  <td>两个既有场景保持现状，本场景只继承其页面设计基线。</td>
+</tr>
+<tr>
+  <td>AI 选好股信号、推荐理由、热点/异动解读</td>
+  <td>与本场景认证续期及权益沟通无关，且需求已明确忽略。</td>
+</tr>
+<tr>
+  <td>展示产品到期时间或增加未回应客户月度跟进</td>
+  <td>不属于本期客户画像和服务规则。</td>
+</tr>
+<tr>
+  <td>在主 PRD 中定义接口字段、数据库结构、技术架构或模型提示词</td>
+  <td>这些内容归页面 PRD 与研发交付设计。</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 业务流程图</h2>
+<div class="mermaid">flowchart TD
+    Start([开始]) --> Entry{进入方式}
+
+    Entry -->|自动任务| Auto[每日 5:00 取 T-1 日数据执行<br/>按交易日历查询当前员工基础服务关系客户]
+    Entry -->|GWork 自由圈客| Free[解析认证类型、画像、排序与排除条件]
+    Entry -->|GWork 快捷生成| Quick[按默认规则查询<br/>距到期日≤30个交易日客户]
+
+    Free --> Parsed{条件可解析？}
+    Parsed -->|否| Clarify[提示员工补充或修改条件] --> Free
+    Parsed -->|是| Match[按员工条件生成命中客户]
+    Auto --> MatchAuto[按任一认证进入30个交易日窗口圈客<br/>首次进入窗口仅提醒一次]
+    MatchAuto --> Push[每日 9:00 定时推送提醒]
+    Push --> End
+    Quick --> MatchQuick[按任一认证进入30个交易日窗口圈客]
+    Match --> Merge[汇合为本场景独立客户集合]
+    MatchAuto --> Merge
+    MatchQuick --> Merge
+
+    Merge --> Empty{是否命中客户？}
+    Empty -->|否| EmptyResult[展示空结果及本次条件] --> End([结束])
+    Empty -->|是| Cert{认证数据可用？}
+    Cert -->|否| CertError[提示认证数据异常并支持重试] --> End
+    Cert -->|是| Group[按资格 × 私募持仓 × 资配状态归入 8 类]
+
+    Group --> Profile[批量获取客户画像与历史认购/配置记录]
+    Profile --> Materials[进入清单时实时获取动态材料]
+    Materials --> MaterialResult{材料是否获取成功？}
+    MaterialResult -->|部分失败| MaterialFallback[标记失败材料，可重试<br/>画像与话术继续]
+    MaterialResult -->|成功| Generate[按分组完整沟通思路与可用画像生成摘要话术]
+    MaterialFallback --> Generate
+
+    Generate --> Review[统一合规初审]
+    Review --> Ready{是否通过初审？}
+    Ready -->|全部失败| ScriptError[展示失败原因并支持重试] --> End
+    Ready -->|部分失败或全部通过| List[生成本场景独立服务清单]
+
+    List --> Prepare[员工查看画像、素材、完整沟通思路与话术<br/>清单可重复生成；已完成状态回显]
+    Prepare --> Edit[可编辑话术，失焦保存<br/>不触发再次合规审查]
+    Edit --> Contact{选择服务方式}
+
+    Contact -->|电话 / 企微单聊| Complete[员工点击完成服务]
+    Contact -->|企微群发| Broadcast[发送并接收逐客户成功回执]
+    Contact -->|暂不服务| Keep[保留本场景清单及当前状态] --> End
+
+    Complete --> Record[回写本场景服务完成记录]
+    Broadcast --> BroadcastResult{发送成功？}
+    BroadcastResult -->|是| Reach[回写本场景已触达记录] --> Record
+    BroadcastResult -->|否| Retry[标记失败，不记为触达] --> List
+    Record --> End
+</div>
+<h3>自动任务、清单重生成与状态规则</h3>
+<ul>
+<li>使用交易日历计算认证有效期剩余交易日；到期当天算未到期。</li>
+<li>自动任务每日 5:00 取 T-1 日数据执行圈客，执行结果每日 9:00 定时推送。</li>
+<li>客户首次进入“距认证有效期到期日 ≤ 30 个交易日”窗口时触发一次提醒，之后 29、28 个交易日不重复提醒。提醒去重按“客户 + 认证类型 + 当前有效期”记录；推送失败允许重试，但不得生成重复提醒。</li>
+<li>首次上线需补扫已处于窗口内且尚未记录提醒的客户。</li>
+<li>清单可以重复生成。每次生成按最新认证数据重新圈客：若客户完成续期或有效期被修正后不再满足条件，不再圈选；若仍满足条件则按最新数据处理。已在当前服务清单完成服务的客户，二次进入时保留在已服务区域并回显已服务状态。</li>
+<li>GWork 快捷生成默认查询与自动任务相同的 30 个交易日范围；自由圈客仍按员工明确条件执行。</li>
+</ul>
+<h2>5. 页面索引</h2>
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>页面名</th>
+  <th>一句话用途</th>
+  <th>状态/浮层备注</th>
+  <th>设计状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>01</td>
+  <td>存量合格投资者临近到期提醒服务清单</td>
+  <td>展示本场景独立客户、认证画像、沟通材料、完整沟通思路、服务话术和触达动作</td>
+  <td>正常态、无命中、数据加载/失败、话术初审/编辑、动态材料失败、服务完成</td>
+  <td>已确认</td>
+</tr>
+</tbody>
+</table>
+<h2>6. 变更记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>变更说明</th>
+  <th>影响范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-21</td>
+  <td>新建独立存量合格投资者认证客户服务跟踪主 PRD，明确页面设计继承关系与数据状态隔离</td>
+  <td>全部</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-22</td>
+  <td>将自动任务与 GWork 快捷生成统一调整为认证到期前 30 个交易日窗口；补充交易日历、一次提醒、清单重生成、已服务回显及有效期修正规则</td>
+  <td>生成流程、圈客、状态与验收标准</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-22</td>
+  <td>场景名称调整为“存量合格投资者临近到期提醒服务清单”，业务规则与交互不变</td>
+  <td>项目名称、入口、页面索引</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-22</td>
+  <td>两份固定指引调整为沟通思路内可预览的员工参考资料；沟通素材仅保留适用的一页通，移除财富月刊和大 C 方案</td>
+  <td>沟通素材、沟通思路、群发内容</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-22</td>
+  <td>确认自动任务 5 点取 T-1 日数据、9 点推送；资配状态直接依据资配平台已存储记录；群发默认千人一面并按 8 类客群分组；适用一页通默认勾选且允许取消</td>
+  <td>自动任务、客群分组、群发</td>
+</tr>
+</tbody>
+</table>
+</main><script src="../../assets/vendor/mermaid/dist/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",flowchart:{useMaxWidth:true,htmlLabels:true}});</script></body></html>

@@ -1,0 +1,46 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>研发交付说明</title><style>body{font:15px/1.75 -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif;color:#263442;margin:0;background:#f5f7f9}main{max-width:980px;margin:32px auto;padding:32px 42px;background:white;border:1px solid #e2e7eb;border-radius:6px}h1,h2,h3{line-height:1.35;color:#173b5c}h1{font-size:28px;border-bottom:1px solid #e8edf1;padding-bottom:12px}h2{font-size:21px;margin-top:34px}table{border-collapse:collapse;width:100%;display:block;overflow:auto}th,td{border:1px solid #dce3e9;padding:8px 10px;vertical-align:top}th{background:#f1f5f8}pre{background:#f4f6f8;padding:14px;overflow:auto;border-radius:4px}code{background:#f2f4f6;padding:2px 4px;border-radius:3px}blockquote{border-left:3px solid #6b95b7;margin-left:0;padding-left:14px;color:#536575}a{color:#17699d}img{max-width:100%}.mermaid{margin:20px 0;padding:20px;overflow:auto;border:1px solid #dce3e9;border-radius:8px;background:#fbfcfe}.source{display:inline-block;margin-bottom:18px;font-size:12px;color:#73818e}.top{position:sticky;top:0;background:#fff;padding:10px 0;border-bottom:1px solid #eef1f3}</style></head><body><main><div class="top"><a href="../交付中心.html">返回交付中心</a>　<a href="研发交付说明.md">查看/下载 Markdown 原文</a></div><span class="source">离线阅读版 · 源文件：研发交付说明.md</span><h1>研发交付说明</h1>
+<h2>交付范围</h2>
+<ul>
+<li>独立的“存量合格投资者临近到期提醒服务清单”，不与高净值资产升级、资产降级清单合并。</li>
+<li>页面沿用既有高净值客户服务清单的结构、交互与设计语言；圈客、筛选、分组、服务状态及服务记录在本场景独立维护。</li>
+<li>原型为可交互静态演示，客户数据和接口响应为演示数据，不代表生产接口已接通。</li>
+</ul>
+<h2>已确认规则</h2>
+<ol>
+<li>自动任务每日 5:00 读取 T-1 数据执行，9:00 定时推送；涉及日期计算时使用交易日历。</li>
+<li>首次进入“距认证到期日 ≤ 30 个交易日”窗口时提醒一次。剩余交易日继续减少不重复提醒；服务状态需要持久化并在再次进入清单时回显。</li>
+<li>每次生成清单重新圈选当前符合条件的客户。认证续期或有效期被修正后不再满足圈客条件的客户不纳入新清单；到期当天按未到期处理。</li>
+<li>私募、资管认证按“或”关系：任一类认证仍有效，即保留客户。资格、认证状态、有效期是独立字段展示，不做组合推导；默认包含符合和不符合认证资格的客户。</li>
+<li>私募持仓只看当前持仓；资管持仓不影响分组；同时有两类持仓不增加特殊分组。</li>
+<li>“已做过资配方案”直接读取资配平台存储记录。</li>
+<li>群发默认千人一面，按 8 类客群分组；一页通默认勾选，员工可取消。千人千面能力作为交互模式保留在原型设计中。</li>
+<li>电话、企微单聊需点击完成服务；企微群发成功回执计为已触达，并作为群发防重依据。服务记录沿用 AI+服务清单逻辑但按本场景隔离。</li>
+<li>沟通思路按需求表中的 8 类客群原文展示，不总结、不发挥；服务话术结合当前分组沟通思路与不超过两个有效画像切入点生成摘要式对客话术。有效画像切入点指真实、可用且与当前沟通场景相关的客户画像数据，不得引用缺失/异常数据或内部沟通思路原文；话术允许编辑，编辑后失焦保存，无需再次合规审查。</li>
+<li>财富月刊、大 C 方案不在本场景展示；固定认证指引只作为内部沟通思路中的预览资料，不作为客户沟通素材。</li>
+<li>一页通素材只取当前客群沟通思路原文明确点名的文件，并只按是否做过资配匹配版本，不按客户资产等级筛选。若思路同时列出 500 万和 1000 万版本，则相同资配状态的两档素材都进入预览、沟通素材区和企微群发，三处共用同一素材集合。原型本地 PNG 为静态示例，线上正式版本由清单进入时从资配平台实时获取，不能将示例图标注为接口已成功返回。</li>
+</ol>
+<h2>外部依赖</h2>
+<ul>
+<li>客户认证资格、认证状态、认证有效期及私募/资管持仓数据。</li>
+<li>交易日历及 T-1 数据调度、员工基础服务关系。</li>
+<li>资配平台：已做过资配方案记录、一页通动态素材。进入清单时实时获取；获取失败时允许继续查看画像和生成话术，并提供重试。</li>
+<li>一页通选择规则：先按当前客群沟通思路列出的文件名确定素材范围，再按资配方案完成状态匹配“已做过/未做过”版本；不根据客户资产等级选择。素材预览、员工沟通素材及群发素材集合保持一致。</li>
+<li>柜台历史认购/配置记录：字段需支持认购日期、认购金额、赎回状态及盈亏；资管产品沿用同一套柜台查询口径。</li>
+<li>物料中台：建议托管《合投认证指引.pdf》和《高净值客户合投认证被动响应指引（材料参考篇）.pdf》，由接口获取可预览版本。</li>
+<li>AI+助手数据口径：历史交易次数、账户盈亏等沿用既有口径（如页面展示）。</li>
+<li>企微：单聊入口、群发发送状态及按客户的成功回执。</li>
+</ul>
+<h2>业务待确认</h2>
+<ul>
+<li>历史认购与配置记录查询范围；同时确认记录数量上限或分页策略。</li>
+</ul>
+<h2>验收重点</h2>
+<ul>
+<li>到期窗口边界、首次提醒去重、再次进入服务状态回显、续期/有效期修正后的重圈客行为。</li>
+<li>八类客群分组与筛选组合正确；千人一面仅按同客群客户合并发送。</li>
+<li>群发素材与客户服务素材一致；一页通默认选中且可取消；成功回执按本场景正确防重。</li>
+<li>不论客户当前资产等级如何，只展示思路原文列出且资配状态匹配的一页通；同一思路列出的多个资产等级版本全部保留。原型静态图片带有示例标识。</li>
+<li>完整思路原文与对应客群匹配；编辑话术失焦保存；素材接口失败不阻断其他服务操作。</li>
+<li>本场景客户、状态、记录与其他高净值服务清单完全隔离。</li>
+</ul>
+</main><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",flowchart:{useMaxWidth:true,htmlLabels:true}});</script></body></html>
