@@ -544,6 +544,7 @@ a { color: inherit; }
   border-radius: 10px; background: var(--color-bg-page);
   padding: 16px;
 }
+.holding-hit-card { grid-column: auto; }
 .data-label { margin-bottom: 10px; display: flex; align-items: center; gap: 4px; font-size: var(--font-size-base); color: var(--color-text-tertiary); }
 .data-label .q-icon { cursor: pointer; color: var(--color-text-tertiary); position: relative; display: inline-flex; }
 .data-label .q-icon:hover { color: #475467; }
