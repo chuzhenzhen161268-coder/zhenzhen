@@ -451,6 +451,9 @@
           "signalType": "unsigned",
           "signalSubtype": ["未签约开发"],
           "signalReturn": 12.6,
+          "positionPct": 24.8,
+          "signalBuyPrice": 0.812,
+          "latestPrice": 0.93,
           "scenario": "G4-01",
           "events": [
             {
@@ -657,6 +660,10 @@
           "signalType": "unsigned",
           "signalSubtype": ["未签约"],
           "signalReturn": 9.8,
+          "positionPct": 21.4,
+          "holdingHitSignalReturn": 0.041,
+          "signalBuyPrice": 2.654,
+          "latestPrice": 2.81,
           "scenario": "G4-02",
           "events": [
             {

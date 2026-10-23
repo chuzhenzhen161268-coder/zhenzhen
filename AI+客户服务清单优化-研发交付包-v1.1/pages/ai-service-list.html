@@ -78,6 +78,8 @@
   .signal-card.collapsed .signal-head { align-items:center; padding:14px 20px; }
   .signal-head-actions { display:flex; flex-shrink:0; align-items:center; gap:12px; }
   .signal-card-toggle { flex-shrink:0; color:var(--color-primary); font-size:12px; font-weight:var(--font-weight-semibold); }
+  .holding-hit-card { grid-column:1 / -1; border-color:rgba(46,113,251,.2); background:#f8fbff; }
+  .holding-hit-card { grid-column:1 / -1; border-color:rgba(46,113,251,.2); background:#f8fbff; }
   @media (max-width:760px) { .client-metrics-grid { grid-template-columns:1fr; gap:8px; } }
 </style>
 </head>
@@ -403,6 +405,10 @@
       sceneCode: s.sceneCode,
       sceneScript: s.sceneScript,
       signalReturn: s.signalReturn,
+      positionPct: s.positionPct,
+      holdingHitSignalReturn: s.holdingHitSignalReturn,
+      signalBuyPrice: s.signalBuyPrice,
+      latestPrice: s.latestPrice,
       diagnosisUrls: s.diagnosisUrls || [],
       keyData: (s.keyData || []).map(function (d) {
         return { label: d.label, value: d.value, cls: d.cls, tone: d.cls === 'red' ? 'profit-tone' : d.cls === 'green' ? 'loss-tone' : undefined }
@@ -694,14 +700,21 @@
   /** 当前客户行情合并（对应 RightPanel securities memo：securityCode+sceneCode 匹配） */
   function mergedSecurities(client) {
     if (!client) return []
-    if (!state.marketData || state.marketData.length === 0) return client.securities
+    var positionDemo = { '300300': 7.8, '159928': 18.6, '159915': 12.4, '512660': 6.3, '512010': 24.8, '512800': 16.2, '512690': 9.5, '512000': 11.7, '510880': 21.4 }
+    var latestDemo = { '512010': 0.93, '510880': 2.81, '512000': 1.08 }
     return client.securities.map(function (s) {
-      var item = state.marketData.find(function (d) {
+      var item = (state.marketData || []).find(function (d) {
         return d.securityCode === s.securityCode && d.sceneCode === s.sceneCode
       })
-      if (!item) return s
       var copy = Object.assign({}, s)
+      if (copy.positionPct == null && positionDemo[copy.securityCode] != null) copy.positionPct = positionDemo[copy.securityCode]
+      if (copy.latestPrice == null && latestDemo[copy.securityCode] != null) copy.latestPrice = latestDemo[copy.securityCode]
+      if (!item) return copy
       copy.keyData = RT.mapFieldsToKeyData(item.fieldsMap, s.sceneCode)
+      var buyItem = (copy.keyData || []).find(function (d) { return d.label === '持仓命中信号买入提示价格' || d.label === '信号买入提示价格' })
+      var latestItem = (copy.keyData || []).find(function (d) { return d.label === '当前标的最新价' || d.label === '最新价' })
+      if (copy.signalBuyPrice == null && buyItem) copy.signalBuyPrice = parseFloat(String(buyItem.value))
+      if (copy.latestPrice == null && latestItem) copy.latestPrice = parseFloat(String(latestItem.value))
       return copy
     })
   }
@@ -1172,6 +1185,21 @@
     var items = (security.keyData || []).filter(function (item) {
       return security.signalType === 'unsigned' || clientLevelMetricNames.indexOf(item.label) < 0
     })
+    if (security.signalType === 'unsigned') {
+      var rawReturn = security.holdingHitSignalReturn
+      if (rawReturn == null) {
+        var buy = Number(security.signalBuyPrice)
+        var latest = Number(security.latestPrice)
+        rawReturn = buy > 0 && isFinite(latest) ? (latest - buy) / buy : null
+      }
+      var returnText = rawReturn == null || !isFinite(Number(rawReturn)) ? '--' : (Number(rawReturn) * 100).toFixed(2) + '%'
+      var holdingReturnCard = { label: '持仓命中信号盈亏率', value: returnText, cls: rawReturn != null && Number(rawReturn) < 0 ? 'green' : rawReturn != null ? 'red' : undefined, tone: rawReturn != null && Number(rawReturn) < 0 ? 'loss-tone' : rawReturn != null ? 'profit-tone' : undefined, description: '优先取上周自然周数据；缺失时按最新市价与信号买入价计算' }
+      var buyPriceIndex = items.findIndex(function (item) {
+        return item.label === '持仓命中信号买入提示价格' || item.label === '信号买入提示价格'
+      })
+      if (buyPriceIndex >= 0) items.splice(buyPriceIndex + 1, 0, holdingReturnCard)
+      else items.unshift(holdingReturnCard)
+    }
     if (!items || items.length === 0) return ''
     var cells = items.map(function (item, i) {
       var qIcon = item.description
@@ -1195,7 +1223,7 @@
       } else {
         valueHtml = '<span class="data-value' + valueToneClass(item) + '">' + esc(item.value) + '</span>'
       }
-      return '<div class="data-box">' + labelHtml + valueHtml + '</div>'
+      return '<div class="data-box' + (item.label === '持仓命中信号盈亏率' ? ' holding-hit-card' : '') + '">' + labelHtml + valueHtml + '</div>'
     }).join('')
     return '<div class="keydata-grid">' + cells + '</div>'
   }
@@ -1261,6 +1289,11 @@
         typeTags += '<span class="type-tag scene-desc">' + esc(layout.description) + '</span>'
       }
     }
+    if (security.positionPct != null) {
+      typeTags += '<span class="type-tag scene-desc">仓位占比 ' + esc(Number(security.positionPct).toFixed(1)) + '%</span>'
+    } else {
+      typeTags += '<span class="type-tag scene-desc">仓位占比 --</span>'
+    }
 
     // 一键复制（话术 + 板块诊断/个股·ETF诊断链接，已复制态 2s）
     var copied = !!scriptCopiedMap[security.signalId]
@@ -1296,6 +1329,11 @@
   /** 信号区（对应 SignalSection：标题 + 数量徽标 + 信号卡列表；无信号不渲染） */
   function signalSectionHtml(securities, riskCode, client) {
     if (!securities || securities.length === 0) return ''
+    securities = securities.slice().sort(function (a, b) {
+      var av = a.positionPct == null ? -Infinity : Number(a.positionPct)
+      var bv = b.positionPct == null ? -Infinity : Number(b.positionPct)
+      return bv - av
+    })
     var defaultExpanded = securities.length < 3
     var allExpanded = securities.every(function (security) {
       var value = signalExpandedMap[security.signalId]
