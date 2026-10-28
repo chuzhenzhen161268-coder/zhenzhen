@@ -37,6 +37,16 @@
           "key": "complete-modal",
           "label": "完成服务确认",
           "kind": "modal"
+        },
+        {
+          "key": "bigc-material-modal",
+          "label": "选择大C方案素材",
+          "kind": "modal"
+        },
+        {
+          "key": "bigc-preview-modal",
+          "label": "大C方案长图预览",
+          "kind": "modal"
         }
       ],
       "triggers": [
@@ -49,6 +59,16 @@
           "stateKey": "normal",
           "overlayKey": "complete-modal",
           "action": "点击完成服务"
+        },
+        {
+          "stateKey": "normal",
+          "overlayKey": "bigc-material-modal",
+          "action": "第四步沟通思路中点击选择大C方案素材"
+        },
+        {
+          "stateKey": "normal",
+          "overlayKey": "bigc-preview-modal",
+          "action": "点击大C方案预览长图"
         }
       ],
       "sourceFile": "pages/01-高净值客户资产升级服务清单.html"
