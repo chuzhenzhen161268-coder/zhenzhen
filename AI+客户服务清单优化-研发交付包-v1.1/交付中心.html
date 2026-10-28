@@ -12,6 +12,7 @@
   .meta { display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }.chip { padding:3px 10px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25); border-radius:99px; font-size:13px; }
   .wrap { padding:30px max(6vw,28px) 60px; }.notice { border:1px solid #f2cf80; border-radius:10px; background:var(--warn-bg); padding:15px 18px; color:#7c4a03; }.notice b { color:var(--warn); }
   h2 { margin:34px 0 14px; font-size:20px; }.grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }.card { display:flex; flex-direction:column; gap:12px; min-height:184px; padding:20px; border:1px solid var(--line); border-radius:12px; background:#fff; }.card h3 { margin:0; font-size:17px; }.card p { margin:0; color:var(--muted); font-size:14px; }.actions { display:flex; gap:8px; margin-top:auto; flex-wrap:wrap; }.btn { display:inline-block; padding:7px 11px; border:1px solid #cbd7ea; border-radius:7px; text-decoration:none; color:#285cb8; font-size:13px; }.btn.primary { background:var(--blue); border-color:var(--blue); color:#fff; }.source { color:#7b8798; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; word-break:break-all; }
+  .review-table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:#fff; }.review-table { width:100%; min-width:1180px; border-collapse:collapse; font-size:13px; }.review-table th,.review-table td { padding:12px 13px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; line-height:1.65; }.review-table th { background:#f7f9fc; color:#53627a; font-weight:700; white-space:nowrap; }.review-table tr:last-child td { border-bottom:0; }.review-table td:first-child { width:150px; font-weight:700; color:var(--ink); }.review-table td:nth-child(2) { width:100px; white-space:nowrap; }.review-table td:nth-child(3),.review-table td:nth-child(4) { min-width:210px; }.review-table td:nth-child(5) { min-width:300px; }
   .steps { margin:0; padding-left:22px; }.steps li { margin:8px 0; }.footer { margin-top:40px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
   @media (max-width:800px){.grid{grid-template-columns:1fr}.hero{padding-top:32px}.wrap{padding-top:22px}}
 </style>
@@ -28,23 +29,29 @@
     <h2>推荐阅读顺序</h2>
     <ol class="steps"><li>先阅读研发交付 PRD，确认规则、异常和验收口径。</li><li>再阅读 V1.1 补充 Spec，确认本轮新增范围。</li><li>打开可点击原型，核对页面位置和交互。</li><li>需要追溯范围与基线时，查阅 V1.1 需求规格和 V1.0 基线 PRD。</li></ol>
 
-    <h2>本次优化一览</h2>
-    <section class="grid">
-      <article class="card"><h3>客户定位与筛选</h3><p>新增按客户姓名或资金账号搜索；普通客户列表和企微群发选人列表均可使用，并可与其他条件叠加。</p></article>
-      <article class="card"><h3>客户标识与联系优先级</h3><p>客户卡片展示“今日新增”“今日已联系”“近7个交易日已联系”；今日联系与近7个交易日联系分别计算。</p></article>
-      <article class="card"><h3>企微群发防重复</h3><p>按“AI+选好股服务清单”场景返回逐客户实际发送成功名单；同一场景已成功客户自动排除，失败客户不锁定。</p></article>
-      <article class="card"><h3>群发批量筛选</h3><p>G1/G2/G3/G4 群发选人支持总资产、证券市值、当日群发状态筛选，默认优先未群发客户。</p></article>
-      <article class="card"><h3>客户列表排序</h3><p>总资产、证券市值支持正序/倒序；未签约客户额外支持“信号收益率”正序/倒序，保留原有优先级。</p></article>
-      <article class="card"><h3>信号指标与标的收展</h3><p>G1/G2/G3 的近一月信号指标按客户只展示一份；标的按仓位占比降序，圈客逻辑右侧展示占比；G4 未签约标的增加独立持仓命中信号盈亏率卡片。</p></article>
-      <article class="card"><h3>筛选与排序交互</h3><p>默认排序置于左侧，筛选置于右侧；筛选采用漏斗按钮与浮层，避免与排序展开语义混淆。</p></article>
-      <article class="card"><h3>个性化话术展示</h3><p>去掉个性化话术展开/收起，完整展示话术内容；编辑、保存、风险提示和诊断入口保持可用。</p></article>
-      <article class="card"><h3>个股诊断版本路由</h3><p>G1/G2/G3 使用 AI+签约版；G4 按 AI 投顾签约状态选择签约版或未签约版，多产品签约统一使用 AI 投顾签约版。</p></article>
-    </section>
+    <h2>V1.1 优化项明细（主评审表）</h2>
+    <div class="review-table-wrap"><table class="review-table"><thead><tr><th>功能模块</th><th>页面/功能位置</th><th>优化分类</th><th>调整前</th><th>调整后</th><th>具体优化逻辑说明</th></tr></thead><tbody>
+      <tr><td>客户定位</td><td>客户列表</td><td>交互优化</td><td>只能通过分类和既有条件定位客户。</td><td>支持按客户姓名或资金账号搜索。</td><td>搜索可与分类、资产、市值、联系状态、新增状态叠加，使用且逻辑；无结果展示空态。</td></tr>
+      <tr><td>客户标识</td><td>客户卡片 / 筛选区</td><td>逻辑优化</td><td>无法快速识别今日新增或近期已联系客户。</td><td>展示“今日新增”“今日已联系”“近7个交易日已联系”标签，并支持筛选。</td><td>今日联系与近7个交易日联系是两个独立字段；今日联系按当前场景当天完成服务或群发成功判断，近7个交易日按交易日历计算；说明只放筛选区，不影响客户卡片点击。</td></tr>
+      <tr><td>企微群发防重</td><td>企微群发选人</td><td>逻辑优化</td><td>已发送客户提示不明显，可能重复发送。</td><td>同一“AI+选好股服务清单”场景当日成功客户自动排除并锁定。</td><td>以群发服务返回的逐客户实际成功名单为准；跨 G1-G4 生效，其他场景不参与排除；失败或无企微关系客户不锁定，发送前再次校验。</td></tr>
+      <tr><td>群发批量筛选</td><td>企微群发选人</td><td>交互优化</td><td>未签约客户量大时筛选效率低。</td><td>所有 G1-G4 场景均支持总资产、证券市值、当日群发状态筛选。</td><td>默认“未群发”；区间下限不得大于上限；条件变化后移除不符合条件或已锁定的已选客户。</td></tr>
+      <tr><td>客户列表排序</td><td>客户列表</td><td>交互优化</td><td>排序字段有限，无法按收益优先级查看。</td><td>总资产、证券市值、未签约客户的信号收益率均支持正序/倒序。</td><td>保留完成置底和原有客户优先级；仅在同一优先级组内排序；缺失值置本组末尾。</td></tr>
+      <tr><td>G1/G2 圈客规则</td><td>圈客服务</td><td>圈客优化</td><td>亏损场景触发条件为跟投亏损≥10%。</td><td>调整为跟投亏损&gt;0%。</td><td>亏损等于 0% 或盈利不满足该条件；其他既有圈客条件不变。</td></tr>
+      <tr><td>G4 圈客规则</td><td>圈客服务</td><td>圈客优化</td><td>未排除已签约服务包客户。</td><td>剔除签约成长盈、价值盈、主题盈任一服务包的客户。</td><td>服务包签约状态缺失或查询失败时跳过该客户，不将未知状态当作未签约。</td></tr>
+      <tr><td>信号关联标的</td><td>客户详情 / 信号模块</td><td>圈客优化</td><td>标的顺序未按客户持仓权重体现，圈客标签不展示占比。</td><td>按仓位占比降序；圈客逻辑标签右侧展示仓位占比。</td><td>仓位占比=标的持仓金额÷客户 T-1 日持仓净资产×100%；无效值显示“--”并置底，不改变客户资格。</td></tr>
+      <tr><td>G4 持仓命中信号指标</td><td>标的详情数据卡</td><td>逻辑优化</td><td>未提供逐标的上周命中信号收益表现。</td><td>每只 G4 未签约标的独立展示“持仓命中信号盈亏率”，紧跟买入提示价格卡片。</td><td>优先取上周自然周最后一个实际交易日收盘数据；该标的缺失时按（最新市价-信号买入价）÷信号买入价×100%计算；仍不可用显示“--”，不参与圈客、排序或筛选。</td></tr>
+      <tr><td>客户级信号指标</td><td>G1/G2/G3 信号模块</td><td>交互优化</td><td>客户级指标重复显示在每只股票下，容易误读为单票指标。</td><td>近一月信号胜率、数量、累计收益率在客户维度各展示一份。</td><td>指标置于信号模块标题下；G4 不展示；单标的卡片不重复显示。</td></tr>
+      <tr><td>标的收展</td><td>信号关联标的</td><td>交互优化</td><td>多标的客户逐项浏览成本高，收展入口位置不稳定。</td><td>标的数为 1 不显示总控；大于 1 显示总控；标的数≥3 默认收起。</td><td>单项收展入口固定在标的标题行右侧；收起时隐藏详情和数据卡；本次打开期间保留手动状态。</td></tr>
+      <tr><td>筛选与排序布局</td><td>客户列表工具栏</td><td>交互优化</td><td>筛选和排序展开语义相似，容易误触。</td><td>默认排序放左侧，筛选放右侧；筛选使用漏斗按钮和浮层。</td><td>保持原有视觉风格，不改变未涉及的客户列表交互。</td></tr>
+      <tr><td>个性化话术</td><td>客户详情</td><td>交互优化</td><td>话术存在展开/收起操作，增加服务准备步骤。</td><td>完整展示话术，去掉展开/收起交互。</td><td>编辑、失焦保存、风险提示、诊断入口和复制能力保持可用。</td></tr>
+      <tr><td>个股诊断路由</td><td>诊断入口</td><td>逻辑优化</td><td>不同签约状态未统一路由到对应诊断版本。</td><td>G1-G3 使用 AI+签约版；G4 按 AI 投顾签约状态使用 AI 投顾签约版或未签约版。</td><td>AI+选好股、AI股票解套、AI投ETF 任一签约即进入 AI 投顾签约版；多个产品签约仍只使用该版本；诊断页面本身及免登录能力不在本项目实现。</td></tr>
+    </tbody></table></div>
 
     <h2>需求定义</h2>
     <section class="grid">
       <article class="card"><h3>V1.1 需求规格</h3><p>范围、产品决策、依赖与验收基线。用于需求评审与变更追溯。</p><div class="source">docs/specs/2026-09-22-ai-service-list-v1.1-spec.md</div><div class="actions"><a class="btn primary" href="文档/需求规格-v1.1.html">阅读版</a><a class="btn" href="docs/specs/2026-09-22-ai-service-list-v1.1-spec.md">原始 Markdown</a></div></article>
       <article class="card"><h3>V1.1 补充需求规格</h3><p>客户搜索、独立联系/新增标识筛选、说明口径与个股诊断版本路由。仍归属 V1.1，尚未进入研发。</p><div class="source">docs/specs/2026-10-19-ai-service-list-v1.1-supplement-spec.md</div><div class="actions"><a class="btn primary" href="docs/specs/2026-10-19-ai-service-list-v1.1-supplement-spec.md">阅读 Spec</a></div></article>
+      <article class="card"><h3>V1.1 圈客与持仓信号补充</h3><p>G1/G2 亏损阈值、G4 服务包排除、标的仓位占比排序及逐标的持仓命中信号盈亏率规则。</p><div class="source">docs/specs/2026-10-23-ai-service-list-v1.1-supplement-spec.md</div><div class="actions"><a class="btn primary" href="docs/specs/2026-10-23-ai-service-list-v1.1-supplement-spec.md">阅读 Spec</a></div></article>
       <article class="card"><h3>V1.0 上线基线</h3><p>从既有代码逆向还原的基线材料。用于确认本期未修改部分。</p><div class="source">docs/prd-基线-AI+客户服务清单-V1.0.md</div><div class="actions"><a class="btn primary" href="文档/V1.0基线PRD.html">阅读版</a><a class="btn" href="docs/prd-基线-AI+客户服务清单-V1.0.md">原始 Markdown</a></div></article>
     </section>
 
