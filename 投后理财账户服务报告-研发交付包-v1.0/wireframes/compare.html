@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>客户投后理财账户服务报告 · 三版线框对比</title>
+<style>
+:root{--w-bg:#fff;--w-surface:#f5f5f5;--w-border:#d4d4d4;--w-text-2:#737373;--w-text-1:#171717}*{box-sizing:border-box}body{margin:0;padding:22px;background:var(--w-surface);color:var(--w-text-1);font:14px/1.45 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}h1{font-size:21px;margin:0 0 5px}.meta{color:var(--w-text-2);font-size:13px;margin-bottom:14px}.diff{width:100%;border-collapse:collapse;background:#fff;margin-bottom:16px}.diff th,.diff td{border:1px solid var(--w-border);padding:8px;text-align:left;vertical-align:top}.diff th{background:var(--w-surface);font-weight:500}.variant{border:1px solid var(--w-border);background:#fff;margin-bottom:18px}.variant h2{font-size:14px;font-weight:500;padding:9px 12px;margin:0;background:var(--w-surface);border-bottom:1px solid var(--w-border)}.frame{height:620px;overflow:auto}.frame iframe{width:100%;height:790px;border:0;display:block}
+</style>
+</head>
+<body>
+<h1>客户投后理财账户服务报告 · 三版线框对比</h1>
+<div class="meta">三版围绕信息组织结构与异常状态可见性发散；均不设左侧导航，均覆盖客户清单、三类报告状态、报告对应话术及触达限制。</div>
+<table class="diff"><thead><tr><th>维度</th><th>v1 · 报告 Tab</th><th>v2 · 三报告总览卡</th><th>v3 · 三级工作区</th></tr></thead><tbody>
+<tr><th>信息组织</th><td>客户列表 + 单客户详情；报告类型横向 Tab，每次聚焦一份报告。</td><td>客户列表 + 单客户详情；三份报告卡片并排同时查看。</td><td>客户列表 → 报告类型列表 → 单份报告详情，三级并列。</td></tr>
+<tr><th>异常可见性</th><td>各 Tab 直接显示完成/异常状态；当前 Tab 展示报告和对应话术。</td><td>三张卡各自显示状态、摘要和话术；异常报告卡独立展示重试。</td><td>中栏汇总三类状态，右栏仅显示选中报告及对应异常/话术状态。</td></tr>
+<tr><th>适用场景</th><td>需完整阅读单份报告与话术，客户间快速切换。</td><td>需要同时比较周报、月报、诊断结论。</td><td>客户数与报告类型多，需快速定位异常并逐份处理。</td></tr>
+<tr><th>主要风险</th><td>报告类型间切换；其他报告摘要不可同时浏览。</td><td>横向内容较密，长报告/话术需要滚动。</td><td>横向区域多，详情宽度会受到挤压。</td></tr>
+</tbody></table>
+<section class="variant"><h2>v1 · 客户列表 + 报告 Tab 逐份查看</h2><div class="frame"><iframe src="v1.html" title="v1 报告 Tab"></iframe></div></section>
+<section class="variant"><h2>v2 · 客户列表 + 三报告总览卡</h2><div class="frame"><iframe src="v2.html" title="v2 三报告总览卡"></iframe></div></section>
+<section class="variant"><h2>v3 · 客户列表 + 报告类型 + 报告详情三级工作区</h2><div class="frame"><iframe src="v3.html" title="v3 三级工作区"></iframe></div></section>
+</body>
+</html>

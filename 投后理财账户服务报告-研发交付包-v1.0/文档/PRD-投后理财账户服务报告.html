@@ -1,0 +1,253 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRD-投后理财账户服务报告</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}</style><style>.flowchart{margin:16px 0;padding:18px 16px;background:#f8faff;border:1px solid #dbe7ff;border-radius:9px;overflow:auto}.flow-row{display:grid;grid-template-columns:minmax(210px,1fr) 90px minmax(210px,1fr);align-items:center;gap:12px;margin:7px 0}.flow-node{padding:10px 13px;background:#fff;border:1px solid #b8d0ff;border-radius:7px;color:#172033;text-align:center;line-height:1.45;box-shadow:0 2px 5px #175cd310}.flow-arrow{text-align:center;color:#2b73ff;font-size:20px;position:relative}.flow-label{display:block;color:#667085;font-size:11px;line-height:1.2;margin:2px 0}.flowchart + p{margin-top:12px}@media(max-width:700px){.flow-row{grid-template-columns:1fr;gap:3px}.flow-arrow{font-size:18px}.flow-label{display:inline;margin-left:7px}}</style><style>
+.flowchart{display:none!important}
+.flow-svg{margin:18px 0;padding:20px;background:#f8faff;border:1px solid #dbe7ff;border-radius:12px;overflow:auto}
+.flow-svg svg{display:block;width:100%;min-width:900px;height:auto}
+.flow-svg .node{fill:#fff;stroke:#8fb3f5;stroke-width:1.5}
+.flow-svg .decision{fill:#eef5ff;stroke:#2b73ff;stroke-width:1.6}
+.flow-svg .exception{fill:#fff7ed;stroke:#f59e0b;stroke-width:1.5}
+.flow-svg .line{stroke:#6b8dcc;stroke-width:1.6;fill:none;marker-end:url(#arrow)}
+.flow-svg text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033;font-size:14px}
+.flow-svg .small{font-size:12px;fill:#667085}
+.flow-svg .title{font-size:16px;font-weight:700;fill:#175cd3}
+</style><style>.hierarchy{margin:16px 0;padding:22px 24px;background:#f8faff;border:1px solid #dbe7ff;border-radius:12px;color:#172033}.hierarchy-root{display:inline-block;padding:10px 16px;background:#eaf2ff;border:1px solid #8fb3f5;border-radius:8px;font-weight:700;color:#175cd3}.hierarchy-branch{margin:12px 0 0 20px;padding:14px 18px;border-left:2px solid #9bbcf5}.hierarchy-parent{margin:8px 0;padding:10px 14px;background:#fff;border:1px solid #b8d0ff;border-radius:8px;font-weight:600}.hierarchy-children{margin:8px 0 0 20px;padding-left:18px;border-left:1px dashed #9bbcf5}.hierarchy-item{position:relative;margin:8px 0;padding:8px 12px;background:#fff;border:1px solid #e1eaff;border-radius:7px}.hierarchy-item:before{content:"";position:absolute;left:-19px;top:50%;width:17px;border-top:1px dashed #9bbcf5}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/prd/PRD-投后理财账户服务报告.md">原始 Markdown</a></p><h1>投后理财账户服务报告</h1>
+<h2>1. 项目概览</h2>
+<p><strong>项目名称</strong>：投后理财账户服务报告<br />
+<strong>平台类型</strong>：Web 网页 / GWork（WorkBuddy）与内部服务清单<br />
+<strong>版本</strong>：v1.0</p>
+<h3>背景与目标</h3>
+<p>周报、月报及诊断与优化报告生成后，员工需要一个统一入口查看报告、理解客户情况并执行服务。本产品支持周期自动推送和员工主动查询，连接客户圈选、画像、报告 Skill、对应话术、合规审核和服务清单。</p>
+<p>员工批量查询使用自由圈客；单客查询必须先经过内部安全任务码中转，不把客户姓名、资金账号等敏感信息直接传给 WorkBuddy。两个查询分支最终汇入同一套报告、话术和服务清单流程。</p>
+<h3>目标用户原型</h3>
+<ul>
+<li><strong>用户特征</strong>：负责名下客户经营的客户经理或投顾，日常通过 GWork、内部服务清单和企微开展客户服务。</li>
+<li><strong>底层动机</strong>：按周期或按需掌握客户账户服务报告，并能基于报告内容完成有依据的沟通。</li>
+<li><strong>典型场景</strong>：收到周报、月报或诊断与优化报告推送；批量查询一组客户；或在权限保护下查询单个客户。</li>
+</ul>
+<h3>核心价值主张</h3>
+<p>为客户经理和投顾提供安全、可分类型查看、可审核触达的账户服务报告，减少报告查找和服务准备成本。</p>
+<h3>成功判定标准</h3>
+<ul>
+<li><strong>用户侧</strong>：员工能够通过周期推送、批量自由圈客或单客任务码查询，查看报告及其对应话术并完成服务。</li>
+<li><strong>业务侧</strong>：报告与对应话术按类型可追溯，单客敏感信息不直接传给 WorkBuddy，异常报告和不可触达话术不会被误发送。</li>
+</ul>
+<h2>2. 产品发现结论</h2>
+<h3>价值层级分析</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>表面需求</th>
+  <th>底层动机</th>
+  <th>隐含假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>报告可得</td>
+  <td>查看周报、月报和诊断报告</td>
+  <td>查询时能拿到最新可用内容</td>
+  <td>开发三部 Skill 能复用或现场生成报告</td>
+</tr>
+<tr>
+  <td>查询安全</td>
+  <td>单客使用任务码中转</td>
+  <td>保护客户敏感信息和访问权限</td>
+  <td>内部系统能校验权限并生成一次性凭证</td>
+</tr>
+<tr>
+  <td>分类型服务</td>
+  <td>每类报告生成对应话术</td>
+  <td>沟通内容与报告主题严格对应</td>
+  <td>话术 Skill 能按报告类型独立生成和审核</td>
+</tr>
+</tbody>
+</table>
+<h3>风险评估</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>价值风险</th>
+  <th>可用性风险</th>
+  <th>可行性风险</th>
+  <th>商业可行性风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>报告可得</td>
+  <td>低</td>
+  <td>中</td>
+  <td>高</td>
+  <td>低</td>
+</tr>
+<tr>
+  <td>查询安全</td>
+  <td>低</td>
+  <td>中</td>
+  <td>中</td>
+  <td>中</td>
+</tr>
+<tr>
+  <td>分类型服务</td>
+  <td>低</td>
+  <td>中</td>
+  <td>中</td>
+  <td>中</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 产品结构图</h2>
+<h3>核心功能清单</h3>
+<table>
+<thead>
+<tr>
+  <th>功能</th>
+  <th>优先级</th>
+  <th>一句话说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>周期自动推送</td>
+  <td>P0</td>
+  <td>每周推送周报，每月推送月报和诊断与优化报告。</td>
+</tr>
+<tr>
+  <td>批量自由圈客查询</td>
+  <td>P0</td>
+  <td>先明确客户范围，再按资产、画像、排序和排除条件生成服务清单。</td>
+</tr>
+<tr>
+  <td>单客任务码中转</td>
+  <td>P0</td>
+  <td>内部校验资金账号和权限，生成一次性任务码后安全交由 WorkBuddy 取数。</td>
+</tr>
+<tr>
+  <td>三类报告读取/生成</td>
+  <td>P0</td>
+  <td>优先读取最新报告，缺失时在 GWork 内现场调用开发三部对应 Skill。</td>
+</tr>
+<tr>
+  <td>对应话术与合规</td>
+  <td>P0</td>
+  <td>周报、月报、诊断报告分别生成对应话术并独立审核。</td>
+</tr>
+<tr>
+  <td>账户服务清单</td>
+  <td>P0</td>
+  <td>展示客户画像、三类报告状态、对应话术和独立触达权限。</td>
+</tr>
+<tr>
+  <td>标准方案与受控群发</td>
+  <td>P0</td>
+  <td>按客户展示可用标准方案素材，并按报告/话术状态组织群发。</td>
+</tr>
+</tbody>
+</table>
+<h3>页面组织方式</h3>
+<p>采用客户列表-详情结构。详情区按报告类型组织周报、月报、诊断与优化报告及对应话术；单客安全中转页是主动查询的独立入口，不作为全局导航。</p>
+<h3>功能/页面层级关系</h3>
+<div class="hierarchy"><div class="hierarchy-root">周期自动任务 / GWork 主动查询</div><div class="hierarchy-branch"><div class="hierarchy-parent">批量自由圈客 → 客户投后理财账户服务报告</div><div class="hierarchy-parent">单客查询 → 客户服务任务码中转 → 客户投后理财账户服务报告</div><div class="hierarchy-children"><div class="hierarchy-item">客户列表与画像</div><div class="hierarchy-item">周报 + 周报话术</div><div class="hierarchy-item">月报 + 月报话术</div><div class="hierarchy-item">诊断与优化报告 + 对应话术</div></div></div></div>
+<h3>本期不做</h3>
+<table>
+<thead>
+<tr>
+  <th>本期不做</th>
+  <th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>两个理财场景页面互跳</td>
+  <td>两个场景独立使用，串联指业务链路而非页面关系。</td>
+</tr>
+<tr>
+  <td>账户报告以外场景使用任务码</td>
+  <td>V1.0 任务码只服务单客账户报告查询。</td>
+</tr>
+<tr>
+  <td>把多类报告合成一份综合话术</td>
+  <td>每类报告必须生成与自身内容对应的话术。</td>
+</tr>
+<tr>
+  <td>人工编辑后再次强制合规审核</td>
+  <td>已确认人工编辑后立即恢复该话术复制和企微触达。</td>
+</tr>
+<tr>
+  <td>报告 Skill、任务码和接口技术设计</td>
+  <td>属于技术方案，不属于主 PRD。</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 业务流程图</h2>
+<h3>核心业务流程</h3>
+<div class="flow-svg"><svg viewBox="0 0 1120 980" role="img" aria-label="投后理财账户服务报告业务流程图"><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#6b8dcc"/></marker></defs>
+<text x="40" y="28" class="title">投后理财账户服务报告：从客户查询到服务清单</text>
+<rect x="40" y="52" width="300" height="58" rx="10" class="node"/><text x="190" y="78" text-anchor="middle">系统主动任务</text><text x="190" y="98" text-anchor="middle" class="small">按周 / 月周期识别应生成报告</text>
+<rect x="400" y="52" width="300" height="58" rx="10" class="node"/><text x="550" y="78" text-anchor="middle">员工主动查询</text><text x="550" y="98" text-anchor="middle" class="small">批量圈客或指定单个客户</text>
+<rect x="760" y="52" width="300" height="58" rx="10" class="node"/><text x="910" y="78" text-anchor="middle">客户范围确认</text><text x="910" y="98" text-anchor="middle" class="small">批量自由圈客 / 单客安全中转</text><path d="M340 82 H760" class="line"/><path d="M700 82 H760" class="line"/>
+<rect x="760" y="155" width="300" height="58" rx="10" class="node"/><text x="910" y="181" text-anchor="middle">获取客户画像</text><text x="910" y="201" text-anchor="middle" class="small">风险等级、持仓与客户特征</text><path d="M910 110 V155" class="line"/>
+<polygon points="550,250 680,305 550,360 420,305" class="decision"/><text x="550" y="300" text-anchor="middle">报告类型？</text><path d="M910 213 V235 H550 V250" class="line"/>
+<rect x="60" y="405" width="300" height="62" rx="10" class="node"/><text x="210" y="432" text-anchor="middle">周报 / 月报</text><text x="210" y="452" text-anchor="middle" class="small">周期任务或员工指定</text><path d="M420 305 H210 V405" class="line"/>
+<rect x="410" y="405" width="300" height="62" rx="10" class="node"/><text x="560" y="432" text-anchor="middle">诊断与优化报告</text><text x="560" y="452" text-anchor="middle" class="small">分析账户与资产配置</text><path d="M550 360 V405" class="line"/>
+<rect x="760" y="405" width="300" height="62" rx="10" class="node"/><text x="910" y="432" text-anchor="middle">主动查询未指定类型</text><text x="910" y="452" text-anchor="middle" class="small">默认生成三类报告</text><path d="M680 305 H910 V405" class="line"/>
+<rect x="410" y="520" width="300" height="62" rx="10" class="node"/><text x="560" y="547" text-anchor="middle">判断是否有可复用报告</text><text x="560" y="567" text-anchor="middle" class="small">有则读取，无则现场调用报告 Skill</text><path d="M210 467 V495 H560 V520" class="line"/><path d="M560 467 V520" class="line"/><path d="M910 467 V495 H560 V520" class="line"/>
+<rect x="410" y="635" width="300" height="62" rx="10" class="node"/><text x="560" y="662" text-anchor="middle">按报告类型生成对应话术</text><text x="560" y="682" text-anchor="middle" class="small">周报、月报、诊断优化分别生成</text><path d="M560 582 V635" class="line"/>
+<polygon points="560,740 690,795 560,850 430,795" class="decision"/><text x="560" y="790" text-anchor="middle">合规审核结果？</text><path d="M560 697 V740" class="line"/>
+<rect x="80" y="885" width="300" height="58" rx="10" class="node"/><text x="230" y="911" text-anchor="middle">通过</text><text x="230" y="931" text-anchor="middle" class="small">报告与话术进入服务清单</text><path d="M430 795 H230 V885" class="line"/>
+<rect x="790" y="885" width="300" height="58" rx="10" class="exception"/><text x="940" y="911" text-anchor="middle">失败</text><text x="940" y="931" text-anchor="middle" class="small">未达3次重生成；3次后人工编辑且禁触达</text><path d="M690 795 H940 V885" class="line"/>
+</svg></div><h2>5. 页面索引</h2>
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>页面名</th>
+  <th>一句话用途</th>
+  <th>状态/浮层备注</th>
+  <th>设计状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>01</td>
+  <td>客户投后理财账户服务报告</td>
+  <td>查看客户列表、画像、三类报告、方案素材、对应话术和触达状态</td>
+  <td>报告长图预览/下载；方案抽屉；报告成功/异常/空；话术审核通过/人工编辑态</td>
+  <td>已确认</td>
+</tr>
+<tr>
+  <td>02</td>
+  <td>客户服务任务码中转</td>
+  <td>单客查询时完成账号权限校验并安全对接 WorkBuddy</td>
+  <td>输入、校验失败、生成中、成功、对接失败、过期</td>
+  <td>已确认，未纳入本次原型</td>
+</tr>
+</tbody>
+</table>
+<h2>6. 变更记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>变更说明</th>
+  <th>影响范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-30</td>
+  <td>初始版本，建立账户报告到服务清单的完整链路</td>
+  <td>全部</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-11-03</td>
+  <td>同步最终服务清单展示、公共方案素材、长图预览、话术编辑和按报告群发规则</td>
+  <td>页面与业务规则</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

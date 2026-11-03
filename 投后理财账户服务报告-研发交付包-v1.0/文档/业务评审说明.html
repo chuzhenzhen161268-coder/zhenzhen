@@ -1,0 +1,57 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>业务评审说明</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/业务评审说明.md">原始 Markdown</a></p><h1>投后理财账户服务报告｜业务评审说明</h1>
+<blockquote>
+<p>评审版本：业务评审版 v1.0<br />
+评审目标：确认周期/主动查询、客户画像、三类报告、对应话术、标准方案素材和受控企微群发闭环。</p>
+</blockquote>
+<h2>一、评审范围</h2>
+<p>本包为独立的投后理财账户服务场景，与理财投后异动服务报告并列。页面不互相跳转，业务链路可在 GWork 中串联。</p>
+<p>本次评审重点覆盖：</p>
+<ol>
+<li>周期任务、批量自由圈客和单客安全任务码查询；</li>
+<li>客户列表、风险等级、整体持仓和理财持仓；</li>
+<li>周报、月报、诊断与优化报告及各自对应话术；</li>
+<li>报告长图预览/下载、话术页内编辑和合规失败兜底；</li>
+<li>按客户隔离的小 C/大 C 五档标准方案素材和企微群发。</li>
+</ol>
+<h2>二、建议评审路径</h2>
+<ol>
+<li>打开可点击原型，确认顶部展示生成来源和生成时间，且没有独立任务批次卡。</li>
+<li>搜索并切换客户，检查风险等级的业务展示口径和账户概览。</li>
+<li>切换周报、月报、诊断与优化报告，确认每份报告有自己的更新时间、摘要、长图预览、下载和对应话术。</li>
+<li>点击话术正文直接编辑，失焦后确认保存；检查人工编辑后不显示“合规通过”标签。</li>
+<li>在标准方案公共区域打开小 C/大 C 抽屉，检查五档预览、下载、默认不勾选和按客户隔离选择。</li>
+<li>点击加入群发素材，再打开左侧企微群发，检查逐客户逐报告的可发送内容、异常排除和底部固定确认按钮。</li>
+</ol>
+<h2>三、已确认业务规则</h2>
+<ul>
+<li>未指定报告类型时默认生成周报、月报、诊断与优化报告三类；指定时只生成指定类型。</li>
+<li>有最新报告优先复用，无可用报告时在 GWork 内现场调用对应报告 Skill。</li>
+<li>三类报告独立处理，单类异常不阻塞其他成功报告及话术。</li>
+<li>每份报告生成一份对应话术，话术只使用对应报告作为输入。</li>
+<li>话术合规失败最多重生成三次；三次失败后该话术人工编辑前不可复制和触达，人工编辑后无需再次审核。</li>
+<li>标准方案是客户公共素材，不属于诊断报告正文；公募展示小 C，私募展示大 C，同时持有两类则两组均展示。</li>
+<li>五档名称为低波动、中低波动、中波动、中高波动、高波动；默认不勾选，选择状态按客户隔离。</li>
+<li>报告预览为只读长图，不提供发送操作；群发从左侧客户列表发起，按客户和报告类型计算可发送内容。</li>
+</ul>
+<h2>四、交付边界</h2>
+<p>本包包含服务清单的可点击原型和单客任务码中转页面 PRD。任务码中转页是已确认的安全查询需求，当前没有对应 HTML 原型；研发应依据 Spec 和页面 PRD 实现。</p>
+<h2>五、评审通过标准</h2>
+<ul>
+<li>业务能区分三类报告与三份对应话术。</li>
+<li>业务能理解报告异常、合规失败和人工编辑后的触达权限。</li>
+<li>业务能按客户分别选择标准方案素材，不会跨客户串用。</li>
+<li>业务能在群发确认中识别可发送内容、排除原因和防重规则。</li>
+<li>研发可根据正式 Spec、主 PRD、页面 PRD 和原型开始技术方案拆解。</li>
+</ul>
+<h2>六、评审结论模板</h2>
+<ul>
+<li>评审结论：通过 / 有条件通过 / 不通过</li>
+<li>查询与安全中转：</li>
+<li>三类报告与对应话术：</li>
+<li>标准方案素材：</li>
+<li>企微群发与防重：</li>
+<li>需修改内容：</li>
+<li>业务负责人：</li>
+<li>确认日期：</li>
+</ul>
+</main></body></html>
