@@ -1,0 +1,283 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>理财投后异动服务报告</title><!-- 视觉决策卡：brand；以异动事件为主角，事件卡用于筛选，双栏用于对象选择与服务处理；红色仅指示风险异动。 --><style>
+:root{--b:#2b73ff;--i:#101828;--t:#344054;--m:#667085;--l:#e4e7ec;--bg:#f5f7fa;--w:#f8f9fb;--r:#d92d20;--g:#039855}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--i);font:14px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}button,input{font:inherit}.page{max-width:1440px;margin:auto;padding:24px}.top,.panel,.event,.card{background:#fff;border:1px solid var(--l);border-radius:8px}.top{padding:20px 24px;display:flex;justify-content:space-between;gap:24px}.title{font-size:20px;margin:0 0 7px}.sub,.muted{color:var(--m)}.metrics{display:flex;align-items:center}.metric{min-width:100px;text-align:center;border-left:1px solid var(--l);padding:0 18px}.metric:first-child{border:0}.metric label{display:block;font-size:12px;color:var(--m);margin-bottom:6px}.metric b{font-size:20px}.filterbar{margin-top:12px;padding:14px;background:#fff;border:1px solid var(--l);border-radius:8px}.seg{display:inline-flex;border:1px solid var(--l);padding:3px;border-radius:6px}.seg button{border:0;background:#fff;color:var(--m);border-radius:4px;padding:7px 12px;cursor:pointer}.seg button.active{background:var(--b);color:#fff}.events{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.event{padding:12px;text-align:left;cursor:pointer}.event.active{border-color:var(--b);box-shadow:0 0 0 2px #eaf1ff}.event .tag{color:var(--b);font-size:12px;margin-right:7px}.event b{font-size:14px}.event small{display:block;color:var(--m);line-height:1.6;margin-top:7px}.tools{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.workspace{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;margin-top:14px}.panel{overflow:hidden}.head{padding:15px 16px;border-bottom:1px solid var(--l);display:flex;align-items:center;justify-content:space-between}.head h2{font-size:15px;margin:0}.searchwrap{padding:12px 16px 0}.search{width:100%;height:36px;border:1px solid var(--l);border-radius:6px;padding:0 11px;outline:0}.search:focus{border-color:var(--b);box-shadow:0 0 0 3px #eaf1ff}.listaction{width:calc(100% - 32px);margin:10px 16px;height:38px;border:1px solid var(--b);background:#fff;color:var(--b);border-radius:6px;text-align:left;padding:0 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.list{max-height:610px;overflow:auto;border-top:1px solid var(--l)}.item{padding:14px 16px;border-bottom:1px solid #f0f2f5;cursor:pointer}.item:hover{background:#f8faff}.item.active{background:#eaf1ff;border-left:3px solid var(--b);padding-left:13px}.line{display:flex;justify-content:space-between;gap:8px}.name{font-weight:650}.risk{font-size:11px;background:#f2f4f7;color:#475467;padding:2px 6px;border-radius:4px;white-space:nowrap}.small{color:var(--m);font-size:12px;margin-top:6px}.impact{color:var(--r);font-weight:650;font-size:12px;margin-top:6px}.detail{padding:22px 24px}.detailtop{display:flex;justify-content:space-between;gap:16px}.detail h1{font-size:20px;margin:0 0 6px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.stat{background:var(--w);border-radius:6px;padding:12px}.stat label{display:block;font-size:12px;color:var(--m);margin-bottom:7px}.stat b{font-size:17px}.red{color:var(--r)}.card{margin-top:14px;overflow:hidden}.cardhead{padding:13px 16px;border-bottom:1px solid #f0f2f5;display:flex;justify-content:space-between;align-items:center;gap:8px}.body{padding:14px 16px;line-height:1.75;color:var(--t)}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--l);font-size:12px;vertical-align:top}th{color:var(--m)}.hit{display:inline-block;border:1px solid #dbe7ff;background:#f4f8ff;color:#175cd3;border-radius:4px;padding:2px 5px;margin:0 4px 4px 0}.btn{height:32px;padding:0 11px;background:#fff;border:1px solid var(--l);border-radius:6px;color:#344054;cursor:pointer}.btn.primary{background:var(--b);color:#fff;border-color:var(--b)}.speech{padding:12px;background:#f8faff;border-left:3px solid #84adff;border-radius:3px}.empty{padding:38px;text-align:center;color:var(--m)}.mask{position:fixed;inset:0;background:#10182870;z-index:10;display:none;align-items:center;justify-content:center}.mask.show{display:flex}.modal{width:650px;max-width:92vw;max-height:84vh;overflow:auto;background:#fff;border-radius:9px}.modalhead,.modalfoot{padding:15px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--l)}.modalfoot{border-top:1px solid var(--l);border-bottom:0;justify-content:flex-end;gap:8px}.modalbody{padding:18px;line-height:1.8;color:var(--t)}.close{border:0;background:transparent;color:var(--m);font-size:22px;cursor:pointer}.toast{position:fixed;z-index:20;top:22px;left:50%;transform:translateX(-50%);display:none;padding:11px 17px;border-radius:7px;background:#1d2939;color:#fff}.toast.show{display:block}@media(max-width:960px){.page{padding:14px}.top{display:block}.metrics{margin-top:18px}.events,.workspace,.stats{grid-template-columns:1fr}.list{max-height:300px}}
+</style></head><body><main class="page"><section class="top"><div><h1 class="title">理财投后异动服务报告</h1><div class="sub">汇总已生成的组合与大类资产异动服务任务，按客户或产品开展后续服务</div></div><div class="metrics"><div class="metric"><label>组合异动</label><b>2</b></div><div class="metric"><label>大类资产异动</label><b>3</b></div><div class="metric"><label>影响客户</label><b>128</b></div><div class="metric"><label>影响产品</label><b>17</b></div></div></section><section class="filterbar"><div class="seg" id="filters"><button class="active" onclick="filterType('all',this)">全部异动（5）</button><button onclick="filterType('combo',this)">组合层面异动（2）</button><button onclick="filterType('asset',this)">大类资产层面异动（3）</button></div><div id="eventList" class="events"></div></section><section class="tools"><div class="seg"><button class="active" id="cv" onclick="setMode('customer')">按客户维度</button><button id="pv" onclick="setMode('product')">按产品维度</button></div><span class="muted" id="modeTip">选择客户，查看命中异动、服务报告与沟通话术</span></section><div class="workspace"><aside class="panel"><div class="head"><h2 id="listTitle">受影响客户（128）</h2></div><div class="searchwrap"><input id="search" class="search" placeholder="搜索客户姓名或资金账号"></div><button id="broadcast" class="listaction" onclick="openBroadcast()"><span>✈　企微一键群发</span><span>⌄</span></button><div class="list" id="list"></div></aside><section class="panel"><div class="detail" id="detail"></div></section></div></main><div id="mask" class="mask" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modalhead"><b id="modalTitle">服务报告预览</b><button class="close" onclick="closeModal()">×</button></div><div id="modalBody" class="modalbody"></div><div class="modalfoot"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmSend()">确认发送</button></div></div></div><div id="toast" class="toast"></div><script>
+const events=[{type:'asset',name:'黄金 Au9999',kind:'大类资产',value:'当日 -2.56%',rule:'单日跌幅超过 2.5%',customers:86,products:8},{type:'combo',name:'全球稳健配置组合',kind:'组合',value:'连续 3 日累计 -1.02%',rule:'连续 3 个交易日回撤超过 1%',customers:54,products:5},{type:'asset',name:'沪深 300',kind:'大类资产',value:'连续 4 日累计 -3.18%',rule:'连续回撤触发观察线',customers:42,products:4}];const customers=[{n:'张晓雯',a:'010238',r:'C3（中风险承受）',t:'682.4 万',f:'516.8 万',i:'248.6 万',p:'36.4%',ps:[['百分安心·全球稳健配置','168.2 万','+4.82%',['全球稳健配置组合｜组合层面｜连续 3 日累计 -1.02%','黄金 Au9999｜大类资产｜当日 -2.56%']],['华安黄金 ETF 联接 A','80.4 万','+7.15%',['黄金 Au9999｜大类资产｜当日 -2.56%']]]},{n:'李承泽',a:'019472',r:'C4（中高风险承受）',t:'648.5 万',f:'472.8 万',i:'186.2 万',p:'28.7%',ps:[['稳健宝固收+组合','119.6 万','+2.36%',['全球稳健配置组合｜组合层面｜连续 3 日累计 -1.02%']],['博时黄金 ETF 联接 C','66.6 万','+5.47%',['黄金 Au9999｜大类资产｜当日 -2.56%']]]},{n:'周思远',a:'023108',r:'专业投资者（无需测评）',t:'438.2 万',f:'312.6 万',i:'96.8 万',p:'22.1%',ps:[['全球进取多资产组合','64.2 万','+1.18%',['沪深 300｜大类资产｜连续 4 日累计 -3.18%']],['华夏沪深 300 ETF 联接','32.6 万','-1.26%',['沪深 300｜大类资产｜连续 4 日累计 -3.18%']]]}];const products=[{n:'百分安心·全球稳健配置',type:'多资产组合',p:'32.6%',v:'连续 3 日累计 -1.02%',h:[['张晓雯','168.2 万','+4.82%'],['李承泽','119.6 万','+2.36%']]},{n:'华安黄金 ETF 联接 A',type:'大类资产基金',p:'28.4%',v:'当日 -2.56%',h:[['张晓雯','80.4 万','+7.15%'],['周思远','32.6 万','-1.26%']]}];let mode='customer',sel=0,type='all';const $=x=>document.getElementById(x);function toast(x){$('toast').textContent=x;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}function renderEvents(){let rows=events.filter(e=>type==='all'||e.type===type);$('eventList').innerHTML=rows.map((e,i)=>`<button class="event ${i===0?'active':''}" onclick="selectEvent('${e.name}',this)"><span class="tag">${e.kind}</span><b>${e.name}</b><small>${e.value} · ${e.rule}<br>影响客户 ${e.customers}　影响产品 ${e.products}</small></button>`).join('')}function filterType(t,el){type=t;document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderEvents();renderList()}function selectEvent(n,el){document.querySelectorAll('.event').forEach(e=>e.classList.remove('active'));el.classList.add('active');toast('已按“'+n+'”更新服务清单')}function setMode(m){mode=m;sel=0;$('cv').classList.toggle('active',m==='customer');$('pv').classList.toggle('active',m==='product');$('listTitle').textContent=m==='customer'?'受影响客户（128）':'受影响产品（17）';$('search').placeholder=m==='customer'?'搜索客户姓名或资金账号':'搜索产品名称';$('broadcast').style.display=m==='customer'?'flex':'none';$('modeTip').textContent=m==='customer'?'选择客户，查看命中异动、服务报告与沟通话术':'选择产品，查看异动说明、持有客户与产品话术';$('search').value='';renderList();renderDetail()}function renderList(){let q=$('search').value.trim();if(mode==='customer'){let rows=customers.filter(c=>(c.n+c.a).includes(q));$('list').innerHTML=rows.length?rows.map(c=>{let i=customers.indexOf(c);return `<div class="item ${i===sel?'active':''}" onclick="pick(${i})"><div class="line"><span class="name">${c.n}</span><span class="risk">${c.r}</span></div><div class="small">资金账号 ${c.a}</div><div class="impact">受影响 ${c.i} · ${c.p}</div></div>`}).join(''):'<div class="empty">未找到匹配客户</div>'}else{let rows=products.filter(p=>p.n.includes(q));$('list').innerHTML=rows.length?rows.map(p=>{let i=products.indexOf(p);return `<div class="item ${i===sel?'active':''}" onclick="pick(${i})"><div class="line"><span class="name">${p.n}</span><span class="risk">${p.type}</span></div><div class="small">${p.v}</div><div class="impact">受影响比例 ${p.p}</div></div>`}).join(''):'<div class="empty">未找到匹配产品</div>'}}function pick(i){sel=i;renderList();renderDetail()}function renderDetail(){if(mode==='customer'){let c=customers[sel];$('detail').innerHTML=`<div class="detailtop"><div><h1>${c.n} · 客户异动服务详情</h1><div class="muted">资金账号 ${c.a}　·　${c.r}</div></div></div><div class="stats"><div class="stat"><label>客户整体持仓</label><b>${c.t}</b></div><div class="stat"><label>客户理财持仓</label><b>${c.f}</b></div><div class="stat"><label>受影响持仓</label><b class="red">${c.i}</b></div><div class="stat"><label>受影响占比</label><b class="red">${c.p}</b></div></div><div class="card"><div class="cardhead"><b>受影响产品与命中异动</b></div><div class="body"><table><tr><th>产品名称</th><th>持仓金额</th><th>持仓收益率</th><th>命中异动</th></tr>${c.ps.map(p=>`<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3].map(h=>'<span class="hit">'+h+'</span>').join('')}</td></tr>`).join('')}</table></div></div><div class="card"><div class="cardhead"><b>异动服务报告</b><div><button class="btn" onclick="preview()">查看完整报告</button><button class="btn" onclick="toast('报告图片已准备下载')">下载图片</button></div></div><div class="body">黄金及相关资产出现明显波动，受影响资产合计 ${c.i}，占理财持仓 ${c.p}。建议结合风险承受能力关注资产分散及市场后续变化。</div></div><div class="card"><div class="cardhead"><b>沟通话术</b><div><button class="btn" onclick="toast('话术已复制')">复制话术</button><button class="btn primary" onclick="toast('已通过企微发送给 ${c.n}')">企微发送</button></div></div><div class="body"><div class="speech">您好，近期您的部分持仓资产触发市场异动，我已整理本次影响与后续关注建议，您可以先查看。</div></div></div>`}else{let p=products[sel];$('detail').innerHTML=`<div class="detailtop"><div><h1>${p.n}</h1><div class="muted">${p.type}　·　${p.v}</div></div><button class="btn primary" onclick="openBroadcast(true)">按产品一键群发</button></div><div class="stats"><div class="stat"><label>受影响比例</label><b class="red">${p.p}</b></div><div class="stat"><label>当前异动值</label><b class="red">${p.v}</b></div><div class="stat"><label>报告形式</label><b>千人一面</b></div><div class="stat"><label>持有客户</label><b>${p.h.length} 人</b></div></div><div class="card"><div class="cardhead"><b>异动服务报告</b><button class="btn" onclick="preview()">查看完整报告</button></div><div class="body">${p.n}触发${p.v}规则。建议向持有客户同步市场变化与后续观察重点。</div></div><div class="card"><div class="cardhead"><b>沟通话术</b><button class="btn" onclick="toast('话术已复制')">复制话术</button></div><div class="body"><div class="speech">您好，您持有的${p.n}近期出现${p.v}，我把本次异动的背景和后续安排整理成一份说明。</div></div></div><div class="card"><div class="cardhead"><b>持有客户（${p.h.length} 人）</b></div><div class="body"><table><tr><th>客户姓名</th><th>持仓资产</th><th>持有收益</th><th>操作</th></tr>${p.h.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td><button class="btn" onclick="toast('已定位到${x[0]}')">查看详情</button></td></tr>`).join('')}</table></div></div>`}}function preview(){$('modalTitle').textContent='异动服务报告预览';$('modalBody').innerHTML='<b>异动服务报告（演示）</b><p>报告包含异动说明、影响范围、客户持仓影响和服务建议。</p>';$('mask').classList.add('show')}function openBroadcast(product=false){let rows=product?products[sel].h.map(x=>x[0]):customers.map(x=>x.n);$('modalTitle').textContent=product?'按产品一键群发':'企微一键群发';$('modalBody').innerHTML=`<p>${product?'将发送同一份产品服务报告与沟通话术':'将按客户持仓生成千人千面报告与沟通话术'}</p>${rows.map(n=>`<label style="display:flex;padding:10px 0;border-bottom:1px solid #eee"><input type="checkbox" checked style="margin-right:9px">${n}</label>`).join('')}`;$('mask').classList.add('show')}function closeModal(){$('mask').classList.remove('show')}function confirmSend(){let n=document.querySelectorAll('#modalBody input:checked').length;closeModal();toast('已通过企微群发发送给 '+n+' 位客户')}$('search').oninput=renderList;renderEvents();renderList();renderDetail();
+</script><script>
+/* 产品详情：异动是事件集合，不以单一“当前异动值”替代事件口径。 */
+const productEventMap={
+  '百分安心·全球稳健配置':[
+    {name:'全球稳健配置组合',layer:'组合层面',metric:'连续 3 日累计收益率',value:'-1.02%',rule:'连续 3 个交易日回撤超过 1%',basis:'该产品为此组合的底层持仓'}
+  ],
+  '华安黄金 ETF 联接 A':[
+    {name:'黄金 Au9999',layer:'大类资产层面',metric:'当日跌幅',value:'-2.56%',rule:'单日跌幅超过 2.5%',basis:'底层黄金资产穿透占比 18.6%'},
+    {name:'全球稳健配置组合',layer:'组合层面',metric:'连续 3 日累计收益率',value:'-1.02%',rule:'连续 3 个交易日回撤超过 1%',basis:'被纳入全球稳健配置组合'}
+  ]
+};
+const baseRenderDetail=renderDetail;
+renderDetail=function(){
+  baseRenderDetail();
+  if(mode!=='product')return;
+  const product=products[sel], rows=productEventMap[product.n]||[];
+  const stats=$('detail').querySelector('.stats');
+  if(stats){
+    stats.innerHTML=`<div class="stat"><label>受影响比例</label><b class="red">${product.p}</b></div><div class="stat"><label>报告形式</label><b>千人一面</b></div><div class="stat"><label>持有客户</label><b>${product.h.length} 人</b></div>`;
+  }
+  const eventSection=`<div class="card product-event-card"><div class="cardhead"><b>命中异动事件（${rows.length}）</b><span class="muted">按事件层级展示</span></div><div class="body"><table><tr><th>异动事件</th><th>观测指标 / 实际值</th><th>触发条件</th><th>产品匹配依据</th></tr>${rows.map(e=>`<tr><td><b>${e.name}</b><br><span class="hit">${e.layer}</span></td><td>${e.metric}<br><b class="red">${e.value}</b></td><td>${e.rule}</td><td>${e.basis}</td></tr>`).join('')}</table></div></div>`;
+  const reportCard=$('detail').querySelector('.card');
+  if(reportCard)reportCard.insertAdjacentHTML('beforebegin',eventSection);
+  const subtitle=$('detail').querySelector('.detailtop .muted');
+  if(subtitle)subtitle.textContent=product.type+' · 命中 '+rows.length+' 个异动事件';
+};
+renderDetail();
+</script><script>
+/* 默认是“全部异动”汇总态；只有主动点击事件卡片才进入单事件筛选态。 */
+window.selectedEventName = null;
+renderEvents = function(){
+  const rows = events.filter(e => type === 'all' || e.type === type);
+  $('eventList').innerHTML = rows.map(e => `<button class="event ${window.selectedEventName===e.name?'active':''}" onclick="selectEvent('${e.name}',this)"><span class="tag">${e.kind}</span><b>${e.name}</b><small>${e.value} · ${e.rule}<br>影响客户 ${e.customers}　影响产品 ${e.products}</small></button>`).join('');
+};
+filterType = function(nextType, el){
+  type = nextType;
+  window.selectedEventName = null;
+  document.querySelectorAll('#filters button').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderEvents();
+  renderList();
+  $('modeTip').textContent = mode === 'customer' ? '全部异动汇总：选择客户，查看命中异动、服务报告与沟通话术' : '全部异动汇总：选择产品，查看异动说明、持有客户与产品话术';
+};
+selectEvent = function(name, el){
+  window.selectedEventName = name;
+  document.querySelectorAll('.event').forEach(card => card.classList.remove('active'));
+  el.classList.add('active');
+  $('modeTip').textContent = '当前仅查看“' + name + '”的受影响对象；点击“全部异动（5）”返回汇总范围';
+  renderList();
+};
+renderEvents();
+</script><script>
+/* 报告弹窗是纯预览；群发弹窗才展示发送确认。 */
+function modalFoot(html){ document.querySelector('.modalfoot').innerHTML = html; }
+preview = function(){
+  $('modalTitle').textContent = '异动服务报告预览';
+  $('modalBody').innerHTML = '<b>异动服务报告（演示）</b><p>报告包含异动说明、影响范围、客户持仓影响和服务建议。</p>';
+  modalFoot('<button class="btn primary" onclick="closeModal()">关闭预览</button>');
+  $('mask').classList.add('show');
+};
+openBroadcast = function(product=false){
+  const rows = product ? products[sel].h.map(x=>x[0]) : customers.map(x=>x.n);
+  $('modalTitle').textContent = product ? '按产品一键群发' : '企微一键群发';
+  $('modalBody').innerHTML = `<p>${product?'将发送同一份产品服务报告与沟通话术':'将按客户持仓生成千人千面报告与沟通话术'}</p>${rows.map(n=>`<label style="display:flex;padding:10px 0;border-bottom:1px solid #eee"><input type="checkbox" checked style="margin-right:9px">${n}</label>`).join('')}`;
+  modalFoot('<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmSend()">确认发送</button>');
+  $('mask').classList.add('show');
+};
+function removeSingleCustomerSend(){
+  if(mode !== 'customer') return;
+  document.querySelectorAll('#detail button').forEach(button => {
+    if(button.textContent.trim() === '企微发送') button.remove();
+  });
+}
+new MutationObserver(removeSingleCustomerSend).observe($('detail'),{childList:true,subtree:true});
+removeSingleCustomerSend();
+</script><style>
+.report-long{max-width:520px;margin:auto;background:#fff;border:1px solid #e4e7ec;color:#101828}.report-long-head{padding:26px 24px 18px;background:#f4f8ff;border-bottom:3px solid #2b73ff}.report-long-kicker{font-size:12px;color:#2b73ff;margin-bottom:8px}.report-long h2{font-size:22px;margin:0 0 8px}.report-long-date{font-size:12px;color:#667085}.report-long-body{padding:20px 24px}.report-long-title{font-weight:700;margin:0 0 9px}.report-long-summary{background:#f8f9fb;border-left:3px solid #84adff;padding:12px 13px;line-height:1.7;color:#344054}.report-long-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.report-long-metric{padding:11px;background:#f8f9fb;border-radius:5px}.report-long-metric span{display:block;font-size:11px;color:#667085;margin-bottom:5px}.report-long-metric b{font-size:17px}.report-long-section{margin-top:18px;padding-top:16px;border-top:1px solid #eaecf0}.report-long-section p{margin:0;color:#475467;line-height:1.8}.report-long-risk{margin-top:18px;padding:11px 12px;border:1px solid #fecdca;background:#fff5f4;color:#b42318;font-size:12px;line-height:1.6}
+</style><script>
+function longReport(title, context){return `<div class="report-long"><div class="report-long-head"><div class="report-long-kicker">投后服务报告</div><h2>${title}</h2><div class="report-long-date">报告生成时间：2026-09-22 15:30</div></div><div class="report-long-body"><p class="report-long-title">本次异动概览</p><div class="report-long-summary">${context}</div><div class="report-long-grid"><div class="report-long-metric"><span>受影响持仓</span><b>248.6 万</b></div><div class="report-long-metric"><span>受影响占比</span><b>36.4%</b></div></div><div class="report-long-section"><p class="report-long-title">市场异动解读</p><p>相关资产波动达到预设观察阈值。建议结合客户风险承受能力、持仓期限和整体资产配置进行持续跟踪。</p></div><div class="report-long-section"><p class="report-long-title">后续关注建议</p><p>建议重点关注市场波动是否延续、组合回撤与流动性安排，并在适当时机开展客户沟通。</p></div><div class="report-long-risk">风险提示：本报告仅用于投后服务信息解读，不构成投资建议或收益承诺。</div></div></div>`}
+preview=function(){
+  $('modalTitle').textContent='异动服务报告预览';
+  const customer=mode==='customer'?customers[sel]:null;
+  $('modalBody').innerHTML=longReport(mode==='customer'?customer.n+' · 异动服务报告':products[sel].n+' · 异动服务报告',mode==='customer'?'黄金及相关资产出现明显波动，已对客户持仓影响进行梳理。':products[sel].n+'已命中相关异动事件，报告对事件影响和后续观察重点进行说明。');
+  modalFoot('<button class="btn primary" onclick="closeModal()">关闭预览</button>');$('mask').classList.add('show');
+};
+</script><script>
+/* 客户群发发送的是逐客生成的话术与对应报告长图，而非统一文案。 */
+openBroadcast=function(product=false){
+  const rows=product?products[sel].h.map(x=>x[0]):customers.map(x=>x.n);
+  $('modalTitle').textContent=product?'按产品一键群发':'企微一键群发';
+  $('modalBody').innerHTML=`<p>${product?'将向每位持有客户发送该产品的服务报告长图和对应沟通话术。':'将向每位客户发送其专属的千人千面沟通话术和对应异动服务报告长图。'}</p><div class="speech" style="margin:12px 0">${product?'发送内容：产品服务报告长图 + 产品沟通话术':'发送内容：客户专属异动服务报告长图 + 千人千面沟通话术'}</div>${rows.map(n=>`<label style="display:flex;padding:10px 0;border-bottom:1px solid #eee"><input type="checkbox" checked style="margin-right:9px">${n}</label>`).join('')}`;
+  modalFoot('<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmSend()">确认发送</button>');
+  $('mask').classList.add('show');
+};
+</script><script>
+/* 最终筛选层：事件选择同时限定左右清单和当前详情，演示数据仅用于交互样例。 */
+events.push(
+  {type:'combo',name:'短债优享组合',kind:'组合',value:'当日 -0.42%',rule:'固收类组合单日跌幅达到 0.4%',customers:31,products:3},
+  {type:'asset',name:'原油',kind:'大类资产',value:'当日 -6.32%',rule:'单日跌幅超过 6%',customers:19,products:2}
+);
+customers[1].ps.push(['短债优享组合','49.6 万','+1.42%',['短债优享组合｜组合层面｜当日 -0.42%']]);
+customers[2].ps.push(['原油主题基金','24.8 万','-2.14%',['原油｜大类资产｜当日 -6.32%']]);
+products.push(
+  {n:'短债优享组合',type:'固收组合',p:'18.6%',v:'当日 -0.42%',h:[['李承泽','49.6 万','+1.42%']]},
+  {n:'华夏沪深 300 ETF 联接',type:'权益类基金',p:'16.2%',v:'连续 4 日累计 -3.18%',h:[['周思远','32.6 万','-1.26%']]},
+  {n:'原油主题基金',type:'大类资产基金',p:'12.8%',v:'当日 -6.32%',h:[['周思远','24.8 万','-2.14%']]}
+);
+window.selectedEventName=null;
+const eventHitsForCustomer=c=>c.ps.flatMap(p=>p[3]||[]);
+const customerMatchesEvent=(c,name)=>eventHitsForCustomer(c).some(hit=>hit.startsWith(name+'｜')||hit.startsWith(name+' |'));
+const productEventNames={
+  '百分安心·全球稳健配置':['全球稳健配置组合','黄金 Au9999'],
+  '华安黄金 ETF 联接 A':['黄金 Au9999','全球稳健配置组合'],
+  '短债优享组合':['短债优享组合'],
+  '华夏沪深 300 ETF 联接':['沪深 300'],
+  '原油主题基金':['原油']
+};
+const eventMatchesProduct=(p,name)=>(productEventNames[p.n]||[]).includes(name);
+const customerMatchesType=c=>type==='all'||events.filter(e=>e.type===type).some(e=>customerMatchesEvent(c,e.name));
+const productMatchesType=p=>type==='all'||events.filter(e=>e.type===type).some(e=>eventMatchesProduct(p,e.name));
+productEventMap['短债优享组合']=[{name:'短债优享组合',layer:'组合层面',metric:'当日收益率',value:'-0.42%',rule:'固收类组合单日跌幅达到 0.4%',basis:'该产品本身为触发组合'}];
+productEventMap['华夏沪深 300 ETF 联接']=[{name:'沪深 300',layer:'大类资产层面',metric:'连续 4 日累计跌幅',value:'-3.18%',rule:'达到连续回撤观察条件',basis:'底层沪深 300 资产穿透匹配'}];
+productEventMap['原油主题基金']=[{name:'原油',layer:'大类资产层面',metric:'当日跌幅',value:'-6.32%',rule:'单日跌幅超过 6%',basis:'底层原油资产穿透占比符合演示条件'}];
+renderEvents=function(){
+  const rows=events.filter(e=>type==='all'||e.type===type);
+  $('eventList').innerHTML=rows.map(e=>`<button class="event ${window.selectedEventName===e.name?'active':''}" onclick="selectEvent('${e.name}',this)"><span class="tag">${e.kind}</span><b>${e.name}</b><small>${e.value} · ${e.rule}<br>影响客户 ${e.customers}　影响产品 ${e.products}</small></button>`).join('');
+};
+const renderEventListBase=renderList;
+renderList=function(){
+  const name=window.selectedEventName;
+  const q=$('search').value.trim();
+  const event=events.find(item=>item.name===name);
+  $('listTitle').textContent=mode==='customer'?'受影响客户'+(event?'（'+event.customers+'）':type==='all'?'（128）':''):'受影响产品'+(event?'（'+event.products+'）':type==='all'?'（17）':'');
+  const source=mode==='customer'?customers:products;
+  const matches=source.filter(x=>{
+    const matchesEvent=name?(mode==='customer'?customerMatchesEvent(x,name):eventMatchesProduct(x,name)):(mode==='customer'?customerMatchesType(x):productMatchesType(x));
+    const matchesQuery=mode==='customer'?(x.n+x.a).includes(q):x.n.includes(q);
+    return matchesEvent&&matchesQuery;
+  });
+  if(matches.length&&!matches.some(x=>source.indexOf(x)===sel))sel=source.indexOf(matches[0]);
+  if(mode==='customer'){
+    $('list').innerHTML=matches.length?matches.map(c=>{const i=customers.indexOf(c);return `<div class="item ${i===sel?'active':''}" onclick="pick(${i})"><div class="line"><span class="name">${c.n}</span><span class="risk">${c.r}</span></div><div class="small">资金账号 ${c.a}</div><div class="impact">受影响 ${c.i} · ${c.p}</div></div>`}).join(''):'<div class="empty">当前异动范围内没有匹配客户</div>';
+  }else{
+    $('list').innerHTML=matches.length?matches.map(p=>{const i=products.indexOf(p);return `<div class="item ${i===sel?'active':''}" onclick="pick(${i})"><div class="line"><span class="name">${p.n}</span><span class="risk">${p.type}</span></div><div class="small">${p.v}</div><div class="impact">受影响比例 ${p.p}</div></div>`}).join(''):'<div class="empty">当前异动范围内没有匹配产品</div>';
+  }
+  if(matches.length)renderDetail();
+  else $('detail').innerHTML='<div class="empty">当前筛选范围暂无详情</div>';
+};
+const selectEventBase=selectEvent;
+selectEvent=function(name,el){
+  window.selectedEventName=name;
+  document.querySelectorAll('.event').forEach(card=>card.classList.remove('active'));
+  el.classList.add('active');
+  $('modeTip').textContent='当前仅查看“'+name+'”的受影响对象；点击“全部异动（5）”返回汇总范围';
+  renderList();
+};
+const filterTypeBase=filterType;
+filterType=function(nextType,el){
+  type=nextType;
+  window.selectedEventName=null;
+  document.querySelectorAll('#filters button').forEach(button=>button.classList.remove('active'));
+  el.classList.add('active');
+  renderEvents();
+  $('modeTip').textContent=nextType==='all'?'全部异动汇总：选择客户，查看命中异动、服务报告与沟通话术':'已筛选'+(nextType==='combo'?'组合异动':'大类资产异动')+'；选择事件卡片进一步查看影响对象';
+  renderList();
+};
+const setModeBase=setMode;
+setMode=function(nextMode){window.selectedEventName=null;setModeBase(nextMode);renderEvents();renderList()};
+const renderEventDetailBase=renderDetail;
+renderDetail=function(){
+  renderEventDetailBase();
+  const name=window.selectedEventName;
+  const allowedNames=name?[name]:(type==='all'?null:events.filter(item=>item.type===type).map(item=>item.name));
+  if(!allowedNames)return;
+  if(mode==='customer'){
+    const table=$('detail').querySelector('.card table');
+    if(table){
+      [...table.rows].slice(1).forEach(row=>{
+        if(![...row.cells[3].querySelectorAll('.hit')].some(hit=>allowedNames.some(item=>hit.textContent.startsWith(item+'｜')||hit.textContent.startsWith(item+' |'))))row.remove();
+      });
+    }
+  }else{
+    const card=$('detail').querySelector('.product-event-card');
+    if(card){
+      [...card.querySelectorAll('tr')].slice(1).forEach(row=>{if(!allowedNames.some(item=>row.cells[0].textContent.includes(item)))row.remove()});
+      const title=card.querySelector('.cardhead b');if(title)title.textContent='命中异动事件（'+(card.querySelectorAll('tr').length-1)+'）';
+    }
+  }
+};
+renderEvents();renderList();
+</script></body></html>
+<style>
+/* 事件卡一行横向浏览，避免 5 张卡片把页面纵向撑高。 */
+.filterbar{position:relative}
+.events{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;scrollbar-width:none;padding:2px 34px}
+.events::-webkit-scrollbar{display:none}
+.events .event{flex:0 0 300px;min-width:300px}
+.event-scroll-btn{position:absolute;top:50%;z-index:2;width:28px;height:28px;border:1px solid var(--l);border-radius:50%;background:#fff;color:var(--b);box-shadow:0 2px 7px #10182818;cursor:pointer;transform:translateY(-50%);line-height:1}
+.event-scroll-btn:hover{background:#f4f8ff;border-color:#b2ccff}
+.event-scroll-btn.prev{left:10px}.event-scroll-btn.next{right:10px}
+@media(max-width:960px){.events{padding:2px 30px}.events .event{flex-basis:280px;min-width:280px}}
+</style><script>
+/* 在事件卡区增加左右滚动控制；按钮只负责视图移动，不改变筛选状态。 */
+(function(){
+  const list=$('eventList');
+  if(!list||document.querySelector('.event-scroll-btn'))return;
+  const prev=document.createElement('button'),next=document.createElement('button');
+  prev.className='event-scroll-btn prev';prev.type='button';prev.setAttribute('aria-label','向左查看异动');prev.textContent='‹';
+  next.className='event-scroll-btn next';next.type='button';next.setAttribute('aria-label','向右查看异动');next.textContent='›';
+  prev.onclick=()=>list.scrollBy({left:-330,behavior:'smooth'});next.onclick=()=>list.scrollBy({left:330,behavior:'smooth'});
+  list.parentElement.append(prev,next);
+  const sync=()=>{const overflow=list.scrollWidth>list.clientWidth+2;prev.style.display=overflow?'block':'none';next.style.display=overflow?'block':'none'};
+  new ResizeObserver(sync).observe(list);new MutationObserver(sync).observe(list,{childList:true});sync();
+})();
+</script><style>
+.event-speech-editor{width:100%;min-height:126px;resize:vertical;border:1px solid #98a2b3;border-radius:6px;padding:11px 12px;line-height:1.75;color:#344054;font:inherit;outline-color:#2b73ff}
+.event-speech-actions{display:flex;align-items:center;gap:8px}
+.speech-editable{cursor:text}
+</style><script>
+/* 客户综合话术与产品通用话术分别保存，切换对象时不互相覆盖。 */
+const eventManualSpeech={customer:{},product:{}};
+const renderDetailBeforeEditableEventSpeech=renderDetail;
+renderDetail=function(){
+  renderDetailBeforeEditableEventSpeech();
+  const card=[...$('detail').querySelectorAll('.card')].find(node=>node.querySelector('.cardhead b')?.textContent.trim()==='沟通话术');
+  if(!card)return;
+  const objectKey=mode==='customer'?customers[sel].a:products[sel].n;
+  const display=card.querySelector('.speech');
+  if(eventManualSpeech[mode][objectKey]!==undefined)display.textContent=eventManualSpeech[mode][objectKey];
+  display.classList.add('speech-editable');
+  display.title='点击编辑话术';
+  display.onclick=()=>editEventSpeech(card,mode,objectKey);
+  const header=card.querySelector('.cardhead');
+  let actions=header.querySelector('div');
+  if(!actions){actions=document.createElement('div');header.appendChild(actions)}
+  actions.classList.add('event-speech-actions');
+  const copy=[...header.querySelectorAll('button')].find(button=>button.textContent.trim()==='复制话术');
+  if(copy){actions.appendChild(copy);copy.onclick=()=>{navigator.clipboard?.writeText(card.querySelector('.speech')?.textContent||'');toast('话术已复制')}}
+};
+function editEventSpeech(card,speechMode,objectKey){
+  const display=card.querySelector('.speech');if(!display)return;
+  const original=display.textContent;
+  const editor=document.createElement('textarea');editor.className='event-speech-editor';editor.setAttribute('aria-label','编辑沟通话术');editor.value=original;
+  display.replaceWith(editor);editor.focus();
+  editor.addEventListener('blur',()=>{
+    const value=editor.value.trim();
+    if(!value){editor.replaceWith(display);toast('话术不能为空，未保存修改');return}
+    if(value!==original){eventManualSpeech[speechMode][objectKey]=value;display.textContent=value;toast('话术已保存')}
+    editor.replaceWith(display);
+  },{once:true});
+}
+renderDetail();
+</script><script>
+/* 产品维度的异动服务报告与客户维度一致，支持下载报告长图。 */
+const renderDetailBeforeProductReportDownload=renderDetail;
+renderDetail=function(){
+  renderDetailBeforeProductReportDownload();
+  if(mode!=='product')return;
+  const reportCard=[...$('detail').querySelectorAll('.card')].find(card=>card.querySelector('.cardhead b')?.textContent.trim()==='异动服务报告');
+  if(!reportCard)return;
+  const head=reportCard.querySelector('.cardhead');
+  let actions=head.querySelector('div');
+  if(!actions){actions=document.createElement('div');actions.className='product-report-actions';head.appendChild(actions)}
+  actions.classList.add('product-report-actions');
+  const preview=[...head.querySelectorAll(':scope > button')].find(button=>button.textContent.trim()==='查看完整报告');
+  if(preview)actions.prepend(preview);
+  if([...actions.querySelectorAll('button')].some(button=>button.textContent.trim()==='下载图片'))return;
+  const download=document.createElement('button');download.type='button';download.className='btn';download.textContent='下载图片';
+  download.onclick=()=>toast('《'+products[sel].n+'异动服务报告》已准备下载');
+  actions.appendChild(download);
+};
+renderDetail();
+</script><style>.product-report-actions{display:flex;align-items:center;gap:8px;margin-left:auto}.generation-meta{display:flex;align-items:center;gap:9px;margin-top:10px;color:#667085;font-size:12px}.generation-meta i{width:1px;height:12px;background:#d0d5dd}@media(max-width:960px){.generation-meta{flex-wrap:wrap}}</style><script>
+const generationMessageName='2026年9月理财投后异动服务任务';
+const generationMeta=document.createElement('div');
+generationMeta.className='generation-meta';
+generationMeta.innerHTML='<span>生成来源：员工消息「'+generationMessageName+'」</span><i></i><span>生成时间：2026-09-22 15:30</span>';
+document.querySelector('.top > div:first-child .sub')?.insertAdjacentElement('afterend',generationMeta);
+</script></html>

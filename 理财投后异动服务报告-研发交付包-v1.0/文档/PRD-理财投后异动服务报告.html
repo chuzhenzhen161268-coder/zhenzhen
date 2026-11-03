@@ -1,0 +1,242 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRD-理财投后异动服务报告</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}</style><style>.flowchart{margin:16px 0;padding:18px 16px;background:#f8faff;border:1px solid #dbe7ff;border-radius:9px;overflow:auto}.flow-row{display:grid;grid-template-columns:minmax(210px,1fr) 90px minmax(210px,1fr);align-items:center;gap:12px;margin:7px 0}.flow-node{padding:10px 13px;background:#fff;border:1px solid #b8d0ff;border-radius:7px;color:#172033;text-align:center;line-height:1.45;box-shadow:0 2px 5px #175cd310}.flow-arrow{text-align:center;color:#2b73ff;font-size:20px;position:relative}.flow-label{display:block;color:#667085;font-size:11px;line-height:1.2;margin:2px 0}.flowchart + p{margin-top:12px}@media(max-width:700px){.flow-row{grid-template-columns:1fr;gap:3px}.flow-arrow{font-size:18px}.flow-label{display:inline;margin-left:7px}}</style><style>
+.flowchart{display:none!important}
+.flow-svg{margin:18px 0;padding:20px;background:#f8faff;border:1px solid #dbe7ff;border-radius:12px;overflow:auto}
+.flow-svg svg{display:block;width:100%;min-width:900px;height:auto}
+.flow-svg .node{fill:#fff;stroke:#8fb3f5;stroke-width:1.5}
+.flow-svg .decision{fill:#eef5ff;stroke:#2b73ff;stroke-width:1.6}
+.flow-svg .exception{fill:#fff7ed;stroke:#f59e0b;stroke-width:1.5}
+.flow-svg .line{stroke:#6b8dcc;stroke-width:1.6;fill:none;marker-end:url(#arrow)}
+.flow-svg text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033;font-size:14px}
+.flow-svg .small{font-size:12px;fill:#667085}
+.flow-svg .title{font-size:16px;font-weight:700;fill:#175cd3}
+</style><style>.hierarchy{margin:16px 0;padding:22px 24px;background:#f8faff;border:1px solid #dbe7ff;border-radius:12px;color:#172033}.hierarchy-root{display:inline-block;padding:10px 16px;background:#eaf2ff;border:1px solid #8fb3f5;border-radius:8px;font-weight:700;color:#175cd3}.hierarchy-branch{margin:12px 0 0 20px;padding:14px 18px;border-left:2px solid #9bbcf5}.hierarchy-parent{margin:8px 0;padding:10px 14px;background:#fff;border:1px solid #b8d0ff;border-radius:8px;font-weight:600}.hierarchy-children{margin:8px 0 0 20px;padding-left:18px;border-left:1px dashed #9bbcf5}.hierarchy-item{position:relative;margin:8px 0;padding:8px 12px;background:#fff;border:1px solid #e1eaff;border-radius:7px}.hierarchy-item:before{content:"";position:absolute;left:-19px;top:50%;width:17px;border-top:1px dashed #9bbcf5}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/prd/PRD-理财投后异动服务报告.md">原始 Markdown</a></p><h1>理财投后异动服务报告</h1>
+<h2>1. 项目概览</h2>
+<p><strong>项目名称</strong>：理财投后异动服务报告<br />
+<strong>平台类型</strong>：Web 网页 / GWork（WorkBuddy）与内部服务清单<br />
+<strong>版本</strong>：v1.0</p>
+<h3>背景与目标</h3>
+<p>市场出现组合净值或大类资产异动时，客户经理需要知道哪些客户和产品真正受到影响，并快速获得可解释、可审核、可执行的服务内容。本产品将异动监测、异动与产品匹配、客户画像、报告生成、话术生成、合规审核和服务清单串成一条业务链路。</p>
+<p>系统主动任务按日监测并向员工推送；员工也可在 GWork 中全量查询或自由圈客。两种入口最终进入同一套异动匹配、报告、话术和服务清单流程，不做两个页面互相跳转。</p>
+<h3>目标用户原型</h3>
+<ul>
+<li><strong>用户特征</strong>：负责名下客户经营的客户经理或投顾，日常通过 GWork、内部服务清单、电话和企微开展服务。</li>
+<li><strong>底层动机</strong>：在市场异动后快速判断服务优先级，避免遗漏受影响客户，也避免向不相关客户重复触达。</li>
+<li><strong>典型场景</strong>：收到异动推送，或在 GWork 中查询某类资产/组合异动影响客户时，需要直接获得报告、话术和客户清单。</li>
+</ul>
+<h3>核心价值主张</h3>
+<p>为客户经理和投顾识别可解释的异动影响范围，提供经过合规控制的客户/产品服务清单，帮助员工完成及时、准确的投后服务。</p>
+<h3>成功判定标准</h3>
+<ul>
+<li><strong>用户侧</strong>：员工能够从自动推送或 GWork 查询完成异动识别、受影响对象查看、报告阅读和话术触达。</li>
+<li><strong>业务侧</strong>：同一异动周期内，组合层与资产层不重复推送；服务清单中的每个对象均能追溯至具体异动条件和匹配依据。</li>
+</ul>
+<h2>2. 产品发现结论</h2>
+<h3>价值层级分析</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>表面需求</th>
+  <th>底层动机</th>
+  <th>隐含假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>准确匹配</td>
+  <td>展示异动影响客户和产品</td>
+  <td>只服务真正需要关注的对象</td>
+  <td>组合映射、资产穿透、持仓占比和资格数据准确可用</td>
+</tr>
+<tr>
+  <td>可解释服务</td>
+  <td>提供异动报告和沟通话术</td>
+  <td>员工能理解异动并向客户说明</td>
+  <td>报告 Skill 能提供可读内容，话术能严格引用报告</td>
+</tr>
+<tr>
+  <td>安全执行</td>
+  <td>审核、编辑和企微触达</td>
+  <td>服务动作可控且可留痕</td>
+  <td>合规审核和人工编辑状态能控制对客触达</td>
+</tr>
+</tbody>
+</table>
+<h3>风险评估</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>价值风险</th>
+  <th>可用性风险</th>
+  <th>可行性风险</th>
+  <th>商业可行性风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>准确匹配</td>
+  <td>中</td>
+  <td>中</td>
+  <td>高</td>
+  <td>低</td>
+</tr>
+<tr>
+  <td>可解释服务</td>
+  <td>低</td>
+  <td>中</td>
+  <td>中</td>
+  <td>低</td>
+</tr>
+<tr>
+  <td>安全执行</td>
+  <td>低</td>
+  <td>中</td>
+  <td>中</td>
+  <td>中</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 产品结构图</h2>
+<h3>核心功能清单</h3>
+<table>
+<thead>
+<tr>
+  <th>功能</th>
+  <th>优先级</th>
+  <th>一句话说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>系统主动异动监测</td>
+  <td>P0</td>
+  <td>每日检测组合和大类资产异动，命中后进入生成与推送链路。</td>
+</tr>
+<tr>
+  <td>GWork 主动查询与自由圈客</td>
+  <td>P0</td>
+  <td>支持全量异动查询，以及资产、画像、排序和排除条件圈客。</td>
+</tr>
+<tr>
+  <td>异动与产品匹配</td>
+  <td>P0</td>
+  <td>按组合风险阈值、资产阈值、10%占比和产品资格匹配。</td>
+</tr>
+<tr>
+  <td>客户画像与报告生成</td>
+  <td>P0</td>
+  <td>获取客户画像，优先读取报告，无可用报告时调用开发三部 Skill。</td>
+</tr>
+<tr>
+  <td>话术生成与合规控制</td>
+  <td>P0</td>
+  <td>客户维度生成个性化话术，产品维度生成通用话术并独立审核。</td>
+</tr>
+<tr>
+  <td>双维度服务清单</td>
+  <td>P0</td>
+  <td>按客户和产品查看报告、话术、触达权限和服务结果。</td>
+</tr>
+<tr>
+  <td>清单元数据与受控触达</td>
+  <td>P0</td>
+  <td>展示生成来源/时间；以长图只读预览、下载、编辑和按规则群发完成服务动作。</td>
+</tr>
+</tbody>
+</table>
+<h3>页面组织方式</h3>
+<p>采用单一服务清单的列表-详情结构。页面内部通过“全部异动/组合异动/大类资产异动”和“客户维度/产品维度”切换结果范围，不增加全局导航，也不与账户服务报告页面互跳。</p>
+<h3>功能/页面层级关系</h3>
+<div class="hierarchy"><div class="hierarchy-root">系统主动任务 / GWork 主动查询</div><div class="hierarchy-branch"><div class="hierarchy-parent">理财投后异动服务报告</div><div class="hierarchy-children"><div class="hierarchy-item">异动事件范围：全部 / 组合 / 大类资产</div><div class="hierarchy-item">客户维度：受影响客户 → 客户画像 → 产品、报告、话术、触达</div><div class="hierarchy-item">产品维度：受影响产品 → 持有客户 → 报告、话术、触达</div></div></div></div>
+<h3>本期不做</h3>
+<table>
+<thead>
+<tr>
+  <th>本期不做</th>
+  <th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>两个理财场景页面互相跳转</td>
+  <td>两个场景独立使用，串联指业务链路而非页面关系。</td>
+</tr>
+<tr>
+  <td>异动场景单客任务码中转</td>
+  <td>V1.0 任务码中转只用于账户服务报告。</td>
+</tr>
+<tr>
+  <td>自动调仓、产品推荐和收益承诺</td>
+  <td>本产品提供服务依据，不替员工做投资决策。</td>
+</tr>
+<tr>
+  <td>在主 PRD 中定义接口、数据库和模型部署</td>
+  <td>属于后续技术方案，不属于产品结构设计。</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 业务流程图</h2>
+<h3>核心业务流程</h3>
+<div class="flow-svg"><svg viewBox="0 0 1120 940" role="img" aria-label="理财投后异动服务报告业务流程图"><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#6b8dcc"/></marker></defs>
+<text x="40" y="28" class="title">理财投后异动服务报告：从触发到服务清单</text>
+<rect x="40" y="52" width="300" height="58" rx="10" class="node"/><text x="190" y="78" text-anchor="middle">系统主动任务</text><text x="190" y="98" text-anchor="middle" class="small">每日监测组合与大类资产异动</text>
+<rect x="400" y="52" width="300" height="58" rx="10" class="node"/><text x="550" y="78" text-anchor="middle">员工主动查询</text><text x="550" y="98" text-anchor="middle" class="small">在 GWork 发起查询</text>
+<rect x="760" y="52" width="300" height="58" rx="10" class="node"/><text x="910" y="78" text-anchor="middle">任务进入异动识别</text><text x="910" y="98" text-anchor="middle" class="small">合并主动与自动触发</text>
+<path d="M340 82 H760" class="line"/><path d="M700 82 H760" class="line"/>
+<polygon points="550,150 680,205 550,260 420,205" class="decision"/><text x="550" y="200" text-anchor="middle">是否命中异动？</text><path d="M910 110 V135 H550 V150" class="line"/>
+<rect x="80" y="300" width="260" height="58" rx="10" class="exception"/><text x="210" y="326" text-anchor="middle">未命中</text><text x="210" y="346" text-anchor="middle" class="small">不推送，结束本次任务</text><path d="M420 205 H210 V300" class="line"/><text x="300" y="224" class="small">否</text>
+<rect x="760" y="300" width="280" height="58" rx="10" class="node"/><text x="900" y="326" text-anchor="middle">组合层优先匹配并去重</text><text x="900" y="346" text-anchor="middle" class="small">组合异动与大类资产异动</text><path d="M680 205 H900 V300" class="line"/><text x="720" y="224" class="small">是</text>
+<polygon points="900,395 1030,450 900,505 770,450" class="decision"/><text x="900" y="445" text-anchor="middle">查询方式？</text><path d="M900 358 V395" class="line"/>
+<rect x="80" y="540" width="300" height="64" rx="10" class="node"/><text x="230" y="568" text-anchor="middle">全量查询</text><text x="230" y="588" text-anchor="middle" class="small">按受影响组合 / 产品圈客</text><path d="M770 450 H230 V540" class="line"/><text x="620" y="470" class="small">全量</text>
+<rect x="740" y="540" width="320" height="64" rx="10" class="node"/><text x="900" y="568" text-anchor="middle">自由圈客</text><text x="900" y="588" text-anchor="middle" class="small">解析资产、画像、排序与排除条件</text><path d="M1030 450 H900 V540" class="line"/><text x="985" y="470" class="small">自由圈客</text>
+<rect x="400" y="650" width="320" height="64" rx="10" class="node"/><text x="560" y="678" text-anchor="middle">客户画像与报告处理</text><text x="560" y="698" text-anchor="middle" class="small">复用已有报告或现场调用报告 Skill</text><path d="M230 604 V630 H560 V650" class="line"/><path d="M900 604 V630 H560 V650" class="line"/>
+<rect x="400" y="760" width="320" height="64" rx="10" class="node"/><text x="560" y="788" text-anchor="middle">生成异动服务话术</text><text x="560" y="808" text-anchor="middle" class="small">按客户 / 产品规则生成一份话术</text><path d="M560 714 V760" class="line"/>
+<rect x="400" y="870" width="320" height="52" rx="10" class="node"/><text x="560" y="902" text-anchor="middle">合规审核 → 服务清单 → 群发与回执防重</text><path d="M560 824 V870" class="line"/>
+</svg></div><h2>5. 页面索引</h2>
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>页面名</th>
+  <th>一句话用途</th>
+  <th>状态/浮层备注</th>
+  <th>设计状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>01</td>
+  <td>理财异动服务报告看板</td>
+  <td>查看异动事件、受影响客户/产品、报告、话术和服务动作</td>
+  <td>全部/组合/大类资产；客户/产品；报告长图预览/下载；异常、空状态、人工编辑态</td>
+  <td>已确认</td>
+</tr>
+</tbody>
+</table>
+<h2>6. 变更记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>变更说明</th>
+  <th>影响范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-10-30</td>
+  <td>初始版本，建立异动监测到服务清单的完整链路</td>
+  <td>全部</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-11-03</td>
+  <td>同步最终服务清单展示、报告长图预览、话术编辑和群发约束</td>
+  <td>页面与业务规则</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>
