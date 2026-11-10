@@ -281,3 +281,83 @@ generationMeta.className='generation-meta';
 generationMeta.innerHTML='<span>生成来源：员工消息「'+generationMessageName+'」</span><i></i><span>生成时间：2026-09-22 15:30</span>';
 document.querySelector('.top > div:first-child .sub')?.insertAdjacentElement('afterend',generationMeta);
 </script></html>
+<style>
+/* 报告 Skill 返回的文件按固定宽度单行展示，避免报告数量多时拉长详情页。 */
+.report-files-card .cardhead{align-items:flex-start}.report-file-strip{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 10px;scroll-snap-type:x proximity;scrollbar-color:#cbd5e1 transparent;scrollbar-width:thin}.report-file{flex:0 0 280px;min-height:166px;display:flex;flex-direction:column;border:1px solid #d0d5dd;border-radius:7px;background:#fff;padding:14px;scroll-snap-align:start}.report-file.error{border-color:#fecdca;background:#fffafa}.report-file-meta{display:flex;align-items:center;gap:7px;margin-bottom:10px;color:#667085;font-size:12px}.report-file-kind{padding:2px 6px;border-radius:3px;background:#eff8ff;color:#175cd3}.report-file.error .report-file-kind{background:#fff0ef;color:#b42318}.report-file h3{margin:0 0 11px;font-size:14px;line-height:1.45;color:#101828}.report-file-event{margin:0;color:#475467;font-size:12px;line-height:1.55}.report-file-event b{color:#344054}.report-file-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:auto;padding-top:14px}.report-file-empty{width:100%;padding:18px 4px;color:#667085;font-size:13px}.report-file-error-note{margin-top:auto;padding-top:12px;color:#b42318;font-size:12px;line-height:1.55}.report-files-tip{margin-top:8px;color:#667085;font-size:12px}@media(max-width:960px){.report-file{flex-basis:252px}}
+</style>
+<script>
+/* 多报告展示只消费 Report Skill 返回的文件清单，不在前端推导或拆分报告。 */
+(function(){
+  customers[0].reports=[
+    {id:'r-c-010238-combo',name:'全球稳健配置组合异动服务报告',eventName:'全球稳健配置组合',eventType:'组合层面',context:'全球稳健配置组合连续 3 日累计回撤 -1.02%，已结合张晓雯的相关持仓形成服务说明。',status:'ready'},
+    {id:'r-c-010238-gold',name:'黄金资产异动服务报告',eventName:'黄金 Au9999',eventType:'大类资产层面',context:'黄金 Au9999 当日跌幅 -2.56%，已结合张晓雯的相关持仓形成服务说明。',status:'ready'}
+  ];
+  customers[1].reports=[
+    {id:'r-c-019472-combo',name:'全球稳健配置组合异动服务报告',eventName:'全球稳健配置组合',eventType:'组合层面',context:'全球稳健配置组合连续 3 日累计回撤 -1.02%，已结合李承泽的相关持仓形成服务说明。',status:'ready'},
+    {id:'r-c-019472-shortbond',name:'短债优享组合异动服务报告',eventName:'短债优享组合',eventType:'组合层面',context:'短债优享组合当日收益率 -0.42%，已结合李承泽的相关持仓形成服务说明。',status:'ready'}
+  ];
+  customers[2].reports=[
+    {id:'r-c-023108-oil',name:'原油资产异动服务报告',eventName:'原油',eventType:'大类资产层面',context:'报告 Skill 未返回可用文件，请在上游任务中重试。',status:'error'}
+  ];
+  products[0].reports=[
+    {id:'r-p-steady-combo',name:'全球稳健配置组合异动服务报告',eventName:'全球稳健配置组合',eventType:'组合层面',context:'全球稳健配置组合连续 3 日累计回撤 -1.02%，报告说明本次异动与后续关注重点。',status:'ready'},
+    {id:'r-p-steady-gold',name:'黄金资产异动服务报告',eventName:'黄金 Au9999',eventType:'大类资产层面',context:'黄金 Au9999 当日跌幅 -2.56%，报告说明相关资产波动及服务关注重点。',status:'ready'}
+  ];
+  products[1].reports=[
+    {id:'r-p-gold',name:'黄金资产异动服务报告',eventName:'黄金 Au9999',eventType:'大类资产层面',context:'黄金 Au9999 当日跌幅 -2.56%，报告说明产品关联资产的市场变化和后续关注重点。',status:'ready'}
+  ];
+  products[2].reports=[
+    {id:'r-p-shortbond',name:'短债优享组合异动服务报告',eventName:'短债优享组合',eventType:'组合层面',context:'短债优享组合当日收益率 -0.42%，报告说明本次异动和后续观察重点。',status:'ready'}
+  ];
+  products[3].reports=[];
+  products[4].reports=[
+    {id:'r-p-oil',name:'原油资产异动服务报告',eventName:'原油',eventType:'大类资产层面',context:'报告 Skill 未返回可用文件，请在上游任务中重试。',status:'error'}
+  ];
+
+  const htmlEscape=value=>String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+  const ownerForReport=()=>mode==='customer'?customers[sel]:products[sel];
+  const ownerKey=owner=>mode==='customer'?owner.a:owner.n;
+  const reportsForCurrentScope=owner=>{
+    const reports=Array.isArray(owner.reports)?owner.reports:[];
+    if(window.selectedEventName)return reports.filter(report=>report.eventName===window.selectedEventName);
+    if(type==='all')return reports;
+    return reports.filter(report=>type==='combo'?report.eventType.includes('组合'):report.eventType.includes('资产'));
+  };
+  const renderDetailBeforeReportFiles=renderDetail;
+  renderDetail=function(){
+    renderDetailBeforeReportFiles();
+    const reportCard=[...$('detail').querySelectorAll('.card')].find(card=>card.querySelector('.cardhead b')?.textContent.trim()==='异动服务报告');
+    if(!reportCard)return;
+    const owner=ownerForReport();
+    const files=reportsForCurrentScope(owner);
+    reportCard.classList.add('report-files-card');
+    reportCard.innerHTML=`<div class="cardhead"><b>异动服务报告</b><span class="muted">${files.length?'共 '+files.length+' 份':'无可用报告文件'}</span></div><div class="body">${files.length?`<div class="report-file-strip" aria-label="异动服务报告文件列表">${files.map(file=>file.status==='ready'?`<article class="report-file"><div class="report-file-meta"><span class="report-file-kind">${htmlEscape(file.eventType)}</span><span>可用</span></div><h3>${htmlEscape(file.name)}</h3><p class="report-file-event">关联异动：<b>${htmlEscape(file.eventName)}</b></p><div class="report-file-actions"><button type="button" class="btn" onclick="previewReportFile('${file.id}','${ownerKey(owner)}')">预览</button><button type="button" class="btn" onclick="downloadReportFile('${file.id}','${ownerKey(owner)}')">下载</button></div></article>`:`<article class="report-file error"><div class="report-file-meta"><span class="report-file-kind">${htmlEscape(file.eventType)}</span><span>文件异常</span></div><h3>${htmlEscape(file.name)}</h3><p class="report-file-event">关联异动：<b>${htmlEscape(file.eventName)}</b></p><p class="report-file-error-note">报告文件暂不可用，请在上游任务中重试。</p></article>`).join('')}</div><div class="report-files-tip">横向滚动可查看全部报告文件</div>`:'<div class="report-file-empty">当前筛选范围没有可用的异动服务报告文件。</div>'}</div>`;
+  };
+  window.previewReportFile=function(id,key){
+    const owner=ownerForReport();
+    if(ownerKey(owner)!==key)return;
+    const file=(owner.reports||[]).find(item=>item.id===id);
+    if(!file||file.status!=='ready')return;
+    $('modalTitle').textContent=file.name;
+    $('modalBody').innerHTML=longReport(file.name,file.context);
+    modalFoot('<button class="btn primary" onclick="closeModal()">关闭预览</button>');
+    $('mask').classList.add('show');
+  };
+  window.downloadReportFile=function(id,key){
+    const owner=ownerForReport();
+    if(ownerKey(owner)!==key)return;
+    const file=(owner.reports||[]).find(item=>item.id===id);
+    if(!file||file.status!=='ready')return;
+    const escapeXml=value=>htmlEscape(value).replace(/&#39;/g,'&apos;');
+    const lines=[file.name,'关联异动：'+file.eventName,'异动层级：'+file.eventType,file.context];
+    const text=lines.map((line,index)=>`<text x="48" y="${84+index*54}" font-size="${index===0?28:18}" font-weight="${index===0?700:400}" fill="${index===0?'#101828':'#344054'}">${escapeXml(line)}</text>`).join('');
+    const image=`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="400" viewBox="0 0 900 400"><rect width="900" height="400" fill="#ffffff"/><rect width="900" height="12" fill="#2b73ff"/><text x="48" y="48" font-size="14" fill="#2b73ff">投后服务报告</text>${text}<text x="48" y="348" font-size="14" fill="#667085">本报告仅用于投后服务信息解读，不构成投资建议或收益承诺。</text></svg>`;
+    const blob=new Blob([image],{type:'image/svg+xml;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement('a');link.href=url;link.download=file.name+'.svg';link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),0);
+    toast('《'+file.name+'》已开始下载');
+  };
+  renderDetail();
+})();
+</script>

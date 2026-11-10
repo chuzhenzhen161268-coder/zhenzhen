@@ -1,10 +1,10 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01-理财异动服务报告看板</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/prd/pages/01-理财异动服务报告看板.md">原始 Markdown</a></p><h1>理财异动服务报告看板</h1>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01-理财异动服务报告看板</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/prd/pages/01-理财异动服务报告看板.md">原始 Markdown</a></p><h1>理财异动服务报告看板</h1>
 <blockquote>
 <p><strong>元信息</strong></p>
 <ul>
 <li>创建时间：2026-09-22</li>
-<li>最后更新：2026-11-03</li>
-<li>关联需求规格：../../specs/2026-10-30-理财投后异动服务报告-spec.md</li>
+<li>最后更新：2026-11-10</li>
+<li>关联需求规格：2026-10-30-理财投后异动服务报告-spec.html</li>
 <li>设计状态：已确认</li>
 <li>原型路径：../../../prototypes/pages/01-理财异动服务报告看板.html</li>
 </ul>
@@ -85,14 +85,15 @@
 <li>“受影响产品与命中异动”采用一个表格，每个产品一行，字段为产品名称、持仓金额、持仓收益率、命中异动。</li>
 <li>一个产品命中多个异动时，在同一行的命中异动单元格内逐项展示事件名称、异动层级、实际观测指标/值和命中条件；不重复产品持仓信息。</li>
 <li>对单事件/异动层级筛选，仅保留符合当前范围的客户产品与命中事件。</li>
-<li>异动服务报告以长图呈现。点击“查看完整报告”打开只读预览；预览仅提供关闭操作，不出现发送给客户或企微发送操作。报告卡提供下载图片。</li>
+<li>异动服务报告按 Report Skill 实际返回的报告文件逐份展示；前端不得按客户、产品或异动规则自行合并、拆分或补造报告。多份文件以固定宽度卡片单行横向排列，超出区域横向滚动；单份文件沿用同一结构，不展示报告一句话总结。</li>
+<li>每张报告卡展示报告名称、关联异动名称、异动层级和可用状态；可用文件分别提供“预览”和“下载”。预览打开对应报告的长图只读浮层，仅提供关闭操作，不出现发送给客户或企微发送操作。</li>
 <li>沟通话术按客户综合其相关异动及受影响产品生成一份千人千面内容。话术可点击进入页内编辑框，失焦保存；空内容不保存并提示。支持复制；客户维度不提供单独企微发送按钮。</li>
 </ul>
 <h3>3.5 产品详情</h3>
 <ul>
 <li>产品概况展示产品名称、类型、受影响比例和与当前产品相关的异动。</li>
 <li>命中异动列表按事件逐项展示层级、真实指标和值、触发规则及产品匹配依据；多事件不压缩成一个混合数值。</li>
-<li>产品异动服务报告采用长图；支持只读预览和下载图片，预览不提供发送操作。</li>
+<li>产品异动服务报告与客户维度使用同一多文件规则：按 Report Skill 实际返回文件逐份横向展示，每份独立只读预览和下载；预览不提供发送操作，也不展示报告一句话总结。</li>
 <li>产品话术为该产品的通用内容，可点击编辑并失焦保存、可复制。</li>
 <li>持有客户列表展示客户姓名、持仓资产、持有收益和查看操作。</li>
 <li>“按产品一键群发”向该产品持有客户发送同一产品报告长图与产品沟通话术；可在确认弹窗取消个别收件人。</li>
@@ -143,14 +144,19 @@
   <td>更新选中态和右侧详情</td>
 </tr>
 <tr>
-  <td>查看完整报告</td>
-  <td>点击</td>
-  <td>打开报告长图只读预览；关闭后返回原页面上下文</td>
+  <td>报告卡横向列表</td>
+  <td>滚动</td>
+  <td>浏览当前对象全部报告文件；不改变异动筛选、客户/产品选择或报告顺序</td>
 </tr>
 <tr>
-  <td>下载图片</td>
+  <td>报告卡预览</td>
   <td>点击</td>
-  <td>下载/演示下载对应完整报告长图</td>
+  <td>打开当前报告文件对应的长图只读预览；关闭后返回原页面上下文</td>
+</tr>
+<tr>
+  <td>报告卡下载</td>
+  <td>点击</td>
+  <td>下载/演示下载当前报告文件；不影响其他报告卡或群发内容</td>
 </tr>
 <tr>
   <td>话术正文</td>
@@ -209,8 +215,12 @@
   <td>提示当前范围没有匹配客户/产品，右侧不保留过期详情</td>
 </tr>
 <tr>
+  <td>多报告态</td>
+  <td>当前对象有多份可用报告文件时，固定宽度报告卡单行横向滚动；每份独立预览和下载</td>
+</tr>
+<tr>
   <td>报告预览态</td>
-  <td>只读长图预览，无任何发送操作</td>
+  <td>当前报告文件的只读长图预览，无任何发送操作</td>
 </tr>
 <tr>
   <td>群发确认态</td>
@@ -218,7 +228,7 @@
 </tr>
 <tr>
   <td>报告异常/空态</td>
-  <td>相关报告不可用时展示异常或空状态，不伪造报告内容；重试按上游能力处理</td>
+  <td>无可用报告文件时展示空/异常状态；部分文件异常时保留其余可用文件，异常卡禁用预览/下载；不伪造报告内容，重试按上游能力处理</td>
 </tr>
 <tr>
   <td>话术合规失败态</td>
@@ -229,7 +239,7 @@
 <h2>6. 业务约束</h2>
 <ul>
 <li>组合与大类资产异动阈值、组合优先级、5 个交易日防重、资产穿透占比和产品资格规则以关联 Spec 为准。</li>
-<li>报告优先复用已生成内容；没有可用报告时在 GWork 调用报告 Skill。报告成功后才生成话术；话术及合规完成后进入清单。</li>
+<li>报告优先复用已生成内容；没有可用报告时在 GWork 调用报告 Skill。报告成功后才生成话术；话术及合规完成后进入清单。服务清单只消费 Report Skill 返回的报告文件清单及关联异动元数据，不在页面端推导拆分粒度。</li>
 <li>客户维度综合同一客户多个异动和产品；产品维度每个产品单独形成通用报告/话术。</li>
 <li>员工人工编辑话术不标记为“合规通过”；人工编辑后按已确认规则恢复触达能力。</li>
 <li>原型为静态交互 Demo，不代表真实企微发送、报告文件服务、回执、防重或客户数据接口已经实现。</li>
@@ -257,7 +267,7 @@
 </tr>
 <tr>
   <td>重要交互决策</td>
-  <td>默认全部异动且不选单事件；事件单行横向滚动；客户群发在左侧客户列表；报告预览纯预览</td>
+  <td>默认全部异动且不选单事件；事件与报告文件均单行横向滚动；客户群发在左侧客户列表；报告预览纯预览</td>
 </tr>
 </tbody>
 </table>
@@ -277,6 +287,12 @@
   <td>2026-11-03</td>
   <td>按已确认的可交互原型补齐页面模块、异动筛选、客户/产品详情、长图报告、话术编辑、群发及异常状态；修正 Spec 与原型路径</td>
   <td>用户要求完整同步 PRD/Spec</td>
+</tr>
+<tr>
+  <td>v1.0</td>
+  <td>2026-11-10</td>
+  <td>异动服务报告改为按 Report Skill 返回的文件逐份横向展示，每份独立预览和下载；补齐无文件与部分/全部文件异常状态</td>
+  <td>用户确认的 V1.0 内迭代</td>
 </tr>
 </tbody>
 </table>
