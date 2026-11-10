@@ -1,0 +1,2 @@
+window.__CANVAS_DATA__ = window.__CANVAS_DATA__ || {};
+window.__CANVAS_DATA__["refs-index"] = {"version": "1", "generatedAt": "2026-11-05T10:37:32.533Z", "refsDir": "refs", "files": []};

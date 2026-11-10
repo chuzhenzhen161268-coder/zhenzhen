@@ -1,0 +1,987 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>投后理财账户服务报告</title><!-- 视觉决策卡：brand；克制的数据服务页。主角为当前客户的三类报告，蓝色只用于操作与当前状态；摘要、素材、话术按阅读顺序展开。 --><style>
+:root{--b:#2b73ff;--i:#101828;--t:#344054;--m:#667085;--l:#e4e7ec;--bg:#f5f7fa;--w:#f8f9fb;--r:#d92d20;--g:#039855}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--i);font:14px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}button,input{font:inherit}.page{max-width:1440px;margin:auto;padding:24px}.top,.panel,.card{background:#fff;border:1px solid var(--l);border-radius:8px}.top{padding:20px 24px;display:flex;justify-content:space-between;gap:30px}.title{font-size:20px;margin:0 0 7px}.sub,.muted{color:var(--m)}.sub{line-height:1.6}.metrics{display:flex;align-items:center}.metric{min-width:106px;text-align:center;border-left:1px solid var(--l);padding:0 18px}.metric:first-child{border:0}.metric label{display:block;color:var(--m);font-size:12px;margin-bottom:6px}.metric b{font-size:20px}.task{margin-top:12px;padding:11px 14px;background:#fff;border:1px solid #dbe7ff;border-radius:8px;color:#475467}.task b{color:#175cd3}.workspace{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;margin-top:16px}.panel{overflow:hidden}.head{padding:16px;border-bottom:1px solid var(--l);display:flex;align-items:center;justify-content:space-between}.head h2{font-size:15px;margin:0}.searchwrap{padding:12px 16px 0}.search{width:100%;height:36px;border:1px solid var(--l);border-radius:6px;padding:0 11px;outline:0}.search:focus{border-color:var(--b);box-shadow:0 0 0 3px #eaf1ff}.broadcast{width:calc(100% - 32px);margin:10px 16px 6px;height:38px;background:#fff;color:var(--b);border:1px solid var(--b);border-radius:6px;text-align:left;padding:0 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}.tip{font-size:12px;line-height:1.55;color:var(--m);padding:0 16px 10px}.list{max-height:670px;overflow:auto;border-top:1px solid var(--l)}.customer{padding:14px 16px;border-bottom:1px solid #f0f2f5;cursor:pointer}.customer:hover{background:#f8faff}.customer.active{background:#eaf1ff;border-left:3px solid var(--b);padding-left:13px}.line{display:flex;justify-content:space-between;gap:8px}.name{font-weight:650}.risk{font-size:11px;background:#f2f4f7;color:#475467;padding:2px 6px;border-radius:4px;white-space:nowrap}.small{font-size:12px;color:var(--m);margin-top:6px}.detail{padding:22px 24px}.detailtop{display:flex;justify-content:space-between;gap:18px}.detail h1{font-size:20px;margin:0 0 6px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.stat{background:var(--w);padding:12px;border-radius:6px}.stat label{display:block;color:var(--m);font-size:12px;margin-bottom:7px}.stat b{font-size:17px}.tabs{display:flex;border-bottom:1px solid var(--l);gap:4px}.tabs button{border:0;background:transparent;color:var(--m);padding:12px 16px;cursor:pointer;border-bottom:2px solid transparent}.tabs button.active{color:var(--b);border-bottom-color:var(--b);font-weight:650}.card{margin-top:14px;overflow:hidden}.cardhead{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #f0f2f5}.cardhead b{font-size:15px}.body{padding:14px 16px;line-height:1.75;color:var(--t)}.meta{font-size:12px;color:var(--m);margin-bottom:8px}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{height:32px;padding:0 11px;background:#fff;color:#344054;border:1px solid var(--l);border-radius:6px;cursor:pointer}.btn:hover{border-color:#98a2b3;background:#f9fafb}.btn.primary{background:var(--b);color:#fff;border-color:var(--b)}.status{font-size:12px;border-radius:4px;padding:3px 7px}.ok{background:#ecfdf3;color:#027a48}.error{background:#fef3f2;color:#b42318}.speech{background:#f8faff;border-left:3px solid #84adff;padding:12px 14px;border-radius:3px;white-space:pre-line}.bad{background:#fff5f4;border-left-color:var(--r);color:#b42318}.materials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.material{border:1px solid var(--l);border-radius:7px;padding:14px}.material h3{font-size:14px;margin:0 0 6px}.material p{color:var(--m);font-size:12px;line-height:1.55;margin:0 0 12px}.empty{padding:35px;text-align:center;color:var(--m)}.mask{position:fixed;inset:0;background:#10182870;z-index:10;display:none;align-items:center;justify-content:center}.mask.show{display:flex}.modal{width:680px;max-width:92vw;max-height:85vh;overflow:auto;background:#fff;border-radius:9px;box-shadow:0 20px 45px #10182838}.modalhead,.modalfoot{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--l)}.modalfoot{border-top:1px solid var(--l);border-bottom:0;justify-content:flex-end;gap:8px}.modalbody{padding:18px;line-height:1.8;color:var(--t)}.close{border:0;background:transparent;color:var(--m);font-size:22px;cursor:pointer}.drawer{position:fixed;right:0;top:0;bottom:0;width:560px;max-width:95vw;background:#fff;z-index:20;box-shadow:-12px 0 30px #10182828;transform:translateX(102%);transition:transform .22s ease}.drawer.show{transform:translateX(0)}.drawerhead{padding:18px 20px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between}.drawerbody{padding:16px 20px;overflow:auto;height:calc(100% - 132px)}.scheme{border:1px solid var(--l);border-radius:7px;margin-bottom:10px;padding:13px}.schemetop{display:flex;gap:10px;align-items:center}.schemetop b{flex:1}.scheme p{font-size:12px;color:var(--m);margin:7px 0 0}.drawerfoot{height:64px;border-top:1px solid var(--l);display:flex;align-items:center;justify-content:space-between;padding:0 20px}.toast{position:fixed;z-index:30;top:22px;left:50%;transform:translateX(-50%);padding:11px 17px;border-radius:7px;background:#1d2939;color:#fff;display:none}.toast.show{display:block}@media(max-width:960px){.page{padding:14px}.top{display:block}.metrics{margin-top:18px}.workspace{grid-template-columns:1fr}.list{max-height:280px}.stats,.materials{grid-template-columns:1fr}}
+</style></head><body><main class="page"><section class="top"><div><h1 class="title">投后理财账户服务报告</h1><div class="sub">查看名下客户已完成的周报、月报及账户诊断，并基于对应报告开展服务触达</div><div class="generation-meta"><span>生成来源：员工消息任务</span><i></i><span>生成时间：2026-09-22 15:30</span></div></div><div class="metrics"><div class="metric"><label>服务客户</label><b>86</b></div><div class="metric"><label>报告任务</label><b>258</b></div><div class="metric"><label>已完成</label><b>241</b></div></div></section><div class="workspace"><aside class="panel"><div class="head"><h2>服务客户（86）</h2></div><div class="searchwrap"><input id="search" class="search" placeholder="搜索客户姓名或资金账号"></div><button class="broadcast" onclick="openBroadcast()"><span>✈　企微一键群发</span><span>⌄</span></button><div class="tip">已成功触达客户不可再次勾选</div><div class="list" id="customerList"></div></aside><section class="panel"><div class="detail" id="detail"></div></section></div></main><div id="mask" class="mask" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modalhead"><b id="modalTitle">报告预览</b><button class="close" onclick="closeModal()">×</button></div><div id="modalBody" class="modalbody"></div><div class="modalfoot"><button class="btn primary" onclick="closeModal()">关闭</button></div></div></div><div id="drawerMask" class="mask" onclick="if(event.target===this)closeDrawer()"></div><aside id="drawer" class="drawer"><div class="drawerhead"><div><b id="drawerTitle">小 C 标准方案</b><div class="small">默认不勾选；勾选后可随本客户服务内容进入群发确认</div></div><button class="close" onclick="closeDrawer()">×</button></div><div id="schemeList" class="drawerbody"></div><div class="drawerfoot"><span id="schemeCount" class="muted">已选择 0 档方案</span><button class="btn primary" onclick="confirmSchemes()">加入企微群发</button></div></aside><div id="toast" class="toast"></div><script>
+const customers=[{name:'张晓雯',account:'010238',risk:'C3（中风险承受）',total:'682.4 万',finance:'516.8 万',hold:'公募、私募',reports:{weekly:'ok',monthly:'ok',diagnosis:'ok'}},{name:'李承泽',account:'019472',risk:'C4（中高风险承受）',total:'648.5 万',finance:'472.8 万',hold:'公募',reports:{weekly:'ok',monthly:'error',diagnosis:'ok'}},{name:'周思远',account:'023108',risk:'专业投资者（无需测评）',total:'438.2 万',finance:'312.6 万',hold:'私募',reports:{weekly:'ok',monthly:'ok',diagnosis:'ok'}}];const info={weekly:{tab:'理财账户周报',time:'2026-09-22 更新',title:'账户本周复盘',summary:'本周理财账户收益 +0.42%，权益类资产贡献主要收益，整体波动处于风险承受范围内。',speech:'您好，这是您的本周理财账户周报。我已将账户表现和需要关注的变化做了整理，您可以先查看。'},monthly:{tab:'理财账户月报',time:'2026-09-01 更新',title:'账户月度复盘',summary:'本月账户收益 +1.86%，固收资产维持底仓稳定，海外权益配置带来主要增量。',speech:'您好，这是您的理财账户月报。我结合本月表现整理了收益来源和资产配置变化，供您查阅。'},diagnosis:{tab:'诊断与优化报告',time:'2026-09-03 更新',title:'账户诊断与优化建议',summary:'账户整体风险等级与客户画像基本匹配，权益资产占比略高于同风险等级建议区间，建议关注资产分散与流动性安排。',speech:'您好，我已为您完成理财账户诊断与优化分析，并整理了当前结构的关注点和建议，欢迎随时沟通。'}};let selected=0,tab='weekly',states={weekly:{tries:0,fail:false,edited:false},monthly:{tries:0,fail:false,edited:false},diagnosis:{tries:0,fail:false,edited:false}},drawerKind='',chosen={small:new Set(),big:new Set()};const $=x=>document.getElementById(x);function toast(x){$('toast').textContent=x;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}function renderList(){let q=$('search').value.trim(),rows=customers.filter(c=>(c.name+c.account).includes(q));$('customerList').innerHTML=rows.length?rows.map(c=>{let i=customers.indexOf(c);return `<div class="customer ${i===selected?'active':''}" onclick="selectCustomer(${i})"><div class="line"><span class="name">${c.name}</span><span class="risk">${c.risk}</span></div><div class="small">资金账号 ${c.account}</div><div class="small">整体持仓 ${c.total}</div></div>`}).join(''):'<div class="empty">未找到匹配客户</div>'}function selectCustomer(i){selected=i;tab='weekly';states={weekly:{tries:0,fail:false,edited:false},monthly:{tries:0,fail:false,edited:false},diagnosis:{tries:0,fail:false,edited:false}};renderList();renderDetail()}function renderDetail(){let c=customers[selected],x=info[tab],status=c.reports[tab];$('detail').innerHTML=`<div class="detailtop"><div><h1>${c.name} · 理财账户服务详情</h1><div class="muted">资金账号 ${c.account}　·　${c.risk}　·　持有 ${c.hold}</div></div></div><div class="stats"><div class="stat"><label>客户整体持仓</label><b>${c.total}</b></div><div class="stat"><label>客户理财持仓</label><b>${c.finance}</b></div><div class="stat"><label>最近服务时间</label><b style="font-size:14px">2026-09-22</b></div></div><div class="tabs">${Object.entries(info).map(([k,v])=>`<button class="${k===tab?'active':''}" onclick="switchTab('${k}')">${v.tab}${c.reports[k]==='error'?' · 异常':''}</button>`).join('')}</div><div id="reportArea"></div>`;renderReport(c,x,status)}function switchTab(k){tab=k;renderDetail()}function renderReport(c,x,status){if(status==='error'){$('reportArea').innerHTML=`<div class="card"><div class="cardhead"><b>${x.title}</b><span class="status error">生成异常</span></div><div class="body"><p>本报告暂未生成成功，其他已完成报告不受影响。</p><button class="btn primary" onclick="retryReport()">重新生成报告</button></div></div>`;return}let s=states[tab],blocked=s.fail&&!s.edited;$('reportArea').innerHTML=`<div class="card"><div class="cardhead"><b>${x.title}</b><div class="actions"><button class="btn" onclick="previewReport()">查看完整报告</button><button class="btn" onclick="download('${x.title}')">下载图片</button></div></div><div class="body"><div class="meta">${x.time}</div>${x.summary}${tab==='diagnosis'?materials(c):''}</div></div><div class="card"><div class="cardhead"><b>沟通话术</b>${blocked?'<span class="status error">待人工编辑</span>':'<span class="status ok">合规通过</span>'}</div><div class="body"><div class="speech ${blocked?'bad':''}">${blocked?'AI生成话术未通过合规审核，请自行编辑话术':x.speech}</div><div class="actions" style="margin-top:12px">${blocked?'<button class="btn primary" onclick="editSpeech()">编辑话术</button>':'<button class="btn" onclick="copySpeech()">复制话术</button><button class="btn primary" onclick="sendSingle()">企微发送</button><button class="btn" onclick="simulateFail()">[演示] 模拟合规失败</button>'}</div></div></div>`}function materials(c){let h='';if(c.hold.includes('公募'))h+=card('small','小 C 标准方案','适用于公募产品持仓客户，含 5 档标准配置方案。');if(c.hold.includes('私募'))h+=card('big','大 C 标准方案','适用于私募产品持仓客户，含 5 档标准配置方案。');return `<div class="card" style="margin:16px 0 0"><div class="cardhead"><b>标准方案素材</b><span class="muted">公共标准内容，不参与话术生成</span></div><div class="body"><div class="materials">${h}</div></div></div>`}function card(k,t,d){return `<div class="material"><h3>${t}</h3><p>${d}</p><button class="btn" onclick="openDrawer('${k}')">查看 5 档方案</button></div>`}function retryReport(){customers[selected].reports[tab]='ok';toast('报告已重新生成并完成话术审核');renderDetail()}function previewReport(){$('modalTitle').textContent=info[tab].title+' · 完整报告';$('modalBody').innerHTML=`<b>${info[tab].title}</b><p>${info[tab].summary}</p><p>报告包含账户表现、资产结构、收益贡献与风险匹配等分析。本页面为交互演示，下载操作将模拟获得完整长图报告。</p>`;$('mask').classList.add('show')}function closeModal(){$('mask').classList.remove('show')}function download(n){toast('《'+n+'》已准备下载')}function copySpeech(){navigator.clipboard?.writeText(info[tab].speech);toast('话术已复制')}function sendSingle(){toast('已通过企微发送给 '+customers[selected].name)}function simulateFail(){states[tab].tries++;if(states[tab].tries>=3){states[tab].fail=true;toast('已连续 3 次未通过合规审核，请人工编辑')}else toast('未通过合规审核，已自动重新生成（'+states[tab].tries+'/3）');renderDetail()}function editSpeech(){let t=prompt('编辑话术：',info[tab].speech);if(t!==null&&t.trim()){info[tab].speech=t.trim();states[tab].edited=true;toast('已保存人工编辑话术，复制与企微发送已恢复');renderDetail()}}const names=['低波动方案','中低波动方案','中波动方案','中高波动方案','高波动方案'];function openDrawer(k){drawerKind=k;$('drawerTitle').textContent=(k==='small'?'小 C':'大 C')+' 标准方案';renderSchemes();$('drawerMask').classList.add('show');$('drawer').classList.add('show')}function closeDrawer(){$('drawerMask').classList.remove('show');$('drawer').classList.remove('show')}function renderSchemes(){let set=chosen[drawerKind];$('schemeList').innerHTML=names.map((n,i)=>`<div class="scheme"><div class="schemetop"><input type="checkbox" ${set.has(i)?'checked':''} onchange="toggleScheme(${i},this.checked)"><b>${n}</b><button class="btn" onclick="previewScheme(${i})">预览</button><button class="btn" onclick="download('${n}')">下载</button></div><p>标准方案长图素材 · ${drawerKind==='small'?'小 C':'大 C'} · 不与客户画像或话术联动</p></div>`).join('');$('schemeCount').textContent='已选择 '+set.size+' 档方案'}function toggleScheme(i,on){on?chosen[drawerKind].add(i):chosen[drawerKind].delete(i);renderSchemes()}function previewScheme(i){$('modalTitle').textContent=names[i]+' · 方案预览';$('modalBody').innerHTML=`<div style="height:420px;background:#f5f7fa;border:1px dashed #98a2b3;padding:28px"><b>${drawerKind==='small'?'小 C':'大 C'} · ${names[i]}</b><p>方案长图预览区域</p><p>配置思路、适配范围、策略要点与风险提示将在长图中展示。</p></div>`;$('mask').classList.add('show')}function confirmSchemes(){let n=chosen.small.size+chosen.big.size;if(!n){toast('请先勾选需要加入群发的方案');return}closeDrawer();openBroadcast()}function openBroadcast(){let schemes=[...chosen.small].map(i=>'小 C · '+names[i]).concat([...chosen.big].map(i=>'大 C · '+names[i]));$('modalTitle').textContent='企微一键群发';$('modalBody').innerHTML=`<p>将向勾选客户发送其已通过合规的报告话术${schemes.length?'及以下标准方案素材：':''}</p>${schemes.length?'<p class="speech">'+schemes.join('\n')+'</p>':''}${customers.slice(0,2).map(c=>`<label style="display:flex;padding:10px 0;border-bottom:1px solid #eee"><input type="checkbox" checked style="margin-right:9px">${c.name}<span style="margin-left:auto;color:#667085">${c.risk}</span></label>`).join('')}<p class="small">已成功触达客户不可再次勾选</p>`;$('mask').classList.add('show')}$('search').oninput=renderList;renderList();renderDetail();
+</script><script>
+/* 演示客户用于固定呈现“话术三次审核失败 → 人工编辑恢复”的异常分支。 */
+customers.push({name:'王海宁',account:'031586',risk:'C3（中风险承受）',total:'356.8 万',finance:'268.4 万',hold:'公募',demoComplianceFailed:true,reports:{weekly:'ok',monthly:'ok',diagnosis:'ok'}});
+
+const baseSelectCustomer=selectCustomer;
+selectCustomer=function(i){
+  baseSelectCustomer(i);
+  if(customers[i].demoComplianceFailed){
+    states.weekly={tries:3,fail:true,edited:false};
+    renderDetail();
+  }
+};
+
+const baseRenderReport=renderReport;
+renderReport=function(customer, report, status){
+  baseRenderReport(customer, report, status);
+  const actionBar=$('reportArea')?.querySelector('.card:last-child .actions');
+  if(actionBar){
+    actionBar.querySelectorAll('button').forEach(button=>{
+      const label=button.textContent.trim();
+      if(label==='企微发送'||label.includes('模拟合规失败')) button.remove();
+    });
+  }
+};
+
+const baseRenderList=renderList;
+renderList=function(){
+  baseRenderList();
+  document.querySelectorAll('#customerList .customer').forEach(row=>{
+    if(row.textContent.includes('王海宁')){
+      const tag=document.createElement('div');
+      tag.className='small';
+      tag.style.color='#b42318';
+      tag.textContent='周报话术待人工编辑';
+      row.appendChild(tag);
+    }
+  });
+};
+renderList();
+renderDetail();
+</script><script>
+/* 合规失败的话术在卡片内完成编辑，避免跳出当前服务上下文。 */
+editSpeech=function(){
+  const card=$('reportArea')?.querySelector('.card:last-child');
+  if(!card)return;
+  const speech=card.querySelector('.speech');
+  const actions=card.querySelector('.actions');
+  if(!speech||!actions)return;
+  const original=info[tab].speech;
+  speech.outerHTML=`<textarea id="inlineSpeechEditor" aria-label="编辑沟通话术" style="width:100%;min-height:126px;resize:vertical;border:1px solid #98a2b3;border-radius:6px;padding:11px 12px;line-height:1.75;color:#344054;outline-color:#2b73ff">${original}</textarea>`;
+  actions.innerHTML='<button class="btn" onclick="cancelInlineEdit()">取消</button><button class="btn primary" onclick="saveInlineEdit()">保存并恢复复制</button>';
+};
+cancelInlineEdit=function(){renderDetail()};
+saveInlineEdit=function(){
+  const editor=$('inlineSpeechEditor');
+  const value=editor?.value.trim();
+  if(!value){toast('请输入沟通话术');return;}
+  info[tab].speech=value;
+  states[tab].edited=true;
+  toast('已保存人工编辑话术，复制能力已恢复');
+  renderDetail();
+};
+</script><script>
+/* 人工编辑是人工兜底态，不沿用 AI 话术“合规通过”标签。 */
+const renderReportBeforeManualLabel=renderReport;
+renderReport=function(customer, report, status){
+  renderReportBeforeManualLabel(customer, report, status);
+  if(states[tab]?.edited){
+    $('reportArea')?.querySelector('.card:last-child .status.ok')?.remove();
+  }
+};
+</script><style>
+.report-long{max-width:520px;margin:auto;background:#fff;border:1px solid #e4e7ec;color:#101828}.report-long-head{padding:26px 24px 18px;background:#f4f8ff;border-bottom:3px solid #2b73ff}.report-long-kicker{font-size:12px;color:#2b73ff;margin-bottom:8px}.report-long h2{font-size:22px;margin:0 0 8px}.report-long-date{font-size:12px;color:#667085}.report-long-body{padding:20px 24px}.report-long-title{font-weight:700;margin:0 0 9px}.report-long-summary{background:#f8f9fb;border-left:3px solid #84adff;padding:12px 13px;line-height:1.7;color:#344054}.report-long-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.report-long-metric{padding:11px;background:#f8f9fb;border-radius:5px}.report-long-metric span{display:block;font-size:11px;color:#667085;margin-bottom:5px}.report-long-metric b{font-size:17px}.report-long-section{margin-top:18px;padding-top:16px;border-top:1px solid #eaecf0}.report-long-section p{margin:0;color:#475467;line-height:1.8}.report-long-risk{margin-top:18px;padding:11px 12px;border:1px solid #b2ddff;background:#eff8ff;color:#175cd3;font-size:12px;line-height:1.6}
+</style><script>
+previewReport=function(){
+  const c=customers[selected], r=info[tab];
+  $('modalTitle').textContent=r.title+' · 完整报告';
+  $('modalBody').innerHTML=`<div class="report-long"><div class="report-long-head"><div class="report-long-kicker">投后理财账户服务报告</div><h2>${c.name} · ${r.tab}</h2><div class="report-long-date">${r.time}</div></div><div class="report-long-body"><p class="report-long-title">报告摘要</p><div class="report-long-summary">${r.summary}</div><div class="report-long-grid"><div class="report-long-metric"><span>整体持仓</span><b>${c.total}</b></div><div class="report-long-metric"><span>理财持仓</span><b>${c.finance}</b></div></div><div class="report-long-section"><p class="report-long-title">账户表现与结构</p><p>本报告从账户收益、资产结构、风险匹配和后续关注事项四个维度对理财账户进行持续复盘。</p></div><div class="report-long-section"><p class="report-long-title">服务建议</p><p>建议客户结合自身风险承受能力和资金使用安排，持续关注账户配置与市场变化。</p></div><div class="report-long-risk">风险提示：本报告为投后账户服务材料，不构成投资建议或收益承诺。</div></div></div>`;
+  $('mask').classList.add('show');
+};
+</script><script>
+/* 账户服务群发：逐客发送对应报告长图与对应报告话术；标准方案仅在勾选后作为附加素材。 */
+openBroadcast=function(){
+  const schemes=[...chosen.small].map(i=>'小 C · '+names[i]).concat([...chosen.big].map(i=>'大 C · '+names[i]));
+  $('modalTitle').textContent='企微一键群发';
+  $('modalBody').innerHTML=`<p>将向勾选客户发送其专属的千人千面沟通话术和对应报告长图。</p><div class="speech">发送内容：客户对应的周报 / 月报 / 诊断与优化报告长图 + 对应报告话术${schemes.length?'\n附加标准方案素材：'+schemes.join('、'):''}</div>${customers.slice(0,3).map(c=>`<label style="display:flex;padding:10px 0;border-bottom:1px solid #eee"><input type="checkbox" checked style="margin-right:9px">${c.name}<span style="margin-left:auto;color:#667085">${c.risk}</span></label>`).join('')}<p class="small">已成功触达客户不可再次勾选</p>`;
+  $('mask').classList.add('show');
+};
+confirmAccountSend=function(){const n=document.querySelectorAll('#modalBody input:checked').length;if(n){closeModal();toast('已向 '+n+' 位客户发送专属报告长图和对应沟通话术')}else closeModal()};
+</script><script>
+/* 方案抽屉只负责把选中的长图加入群发素材，不直接发起企微发送。 */
+confirmSchemes=function(){
+  const n=chosen.small.size+chosen.big.size;
+  if(!n){toast('请先勾选需要加入群发的方案');return}
+  closeDrawer();
+  renderDetail();
+  toast('已加入 '+n+' 档标准方案素材，可在左侧企微一键群发时统一发送');
+};
+</script><style>
+/* 方案预览需覆盖侧拉抽屉，关闭预览后仍返回抽屉。 */
+#mask{z-index:40}
+</style><script>
+const generationMessageName='2026年9月投后理财账户服务任务';
+const generationSource=$('detail')?.ownerDocument.querySelector('.generation-meta span');
+if(generationSource)generationSource.textContent='生成来源：员工消息「'+generationMessageName+'」';
+</script><style>
+/* 客户详情方案：位于沟通话术下方，外层直接操作；每类方案单选且按客户隔离。 */
+.customer-schemes{margin-top:14px;border:1px solid var(--l);border-radius:8px;background:#fff;overflow:hidden}.customer-schemes .cardhead{background:#fff}.customer-scheme-group{padding:12px 16px;border-bottom:1px solid #f0f2f5}.customer-scheme-group:last-child{border-bottom:0}.customer-scheme-group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.customer-scheme-group-head b{font-size:13px}.customer-scheme-group-head span{font-size:12px;color:var(--m)}.customer-scheme-row{display:grid;grid-template-columns:18px minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f6f8}.customer-scheme-row:last-child{border-bottom:0}.customer-scheme-row input{accent-color:var(--b);margin:0}.customer-scheme-row strong{font-size:13px;font-weight:600}.customer-scheme-row small{color:var(--m);font-size:11px}.customer-scheme-row .btn{height:28px;padding:0 9px;font-size:12px}.customer-scheme-empty{padding:14px 16px;color:var(--m);font-size:12px}
+</style><script>
+/* 最新确认：客户详情中的大小 C 五档方案移到沟通话术下方，外层直接预览/单选/下载。 */
+function customerSchemeState(index){
+  if(!customerSchemeChoices[index])customerSchemeChoices[index]={small:new Set(),big:new Set()};
+  return customerSchemeChoices[index];
+}
+function customerSchemeAvailable(c){
+  const out=[];
+  if(c.hold.includes('公募'))out.push('small');
+  if(c.hold.includes('私募'))out.push('big');
+  return out;
+}
+function customerSchemeBlock(c){
+  const available=customerSchemeAvailable(c),state=customerSchemeState(customers.indexOf(c));
+  if(!available.length)return '';
+  const title=k=>k==='small'?'小C五档方案':'大C五档方案';
+  const rows=k=>names.map((name,i)=>{
+    const checked=state[k].has(i)?'checked':'';
+    const asset=k==='small'?'small-c-five-schemes.png':'big-c-five-schemes.pdf';
+    return `<div class="customer-scheme-row"><input type="radio" name="customer-${customers.indexOf(c)}-${k}" ${checked} onchange="selectCustomerScheme('${k}',${i})" aria-label="${title(k)} ${name}"><strong>${name}</strong><small>${k==='small'?'风险资产配置比例':'风险资产配置比例'} ${['15%','30%','50%','65%','80%'][i]}</small><span class="actions"><button class="btn" onclick="previewCustomerScheme('${k}',${i})">预览</button><button class="btn" onclick="downloadCustomerScheme('${k}',${i},'${asset}')">下载</button></span></div>`;
+  }).join('');
+  return `<div class="customer-schemes"><div class="cardhead"><b>大小 C 五档方案</b><span class="muted">每类方案单选；选择按客户独立保存</span></div>${available.map(k=>`<div class="customer-scheme-group"><div class="customer-scheme-group-head"><b>${title(k)}</b><span>${state[k].size?'已选择 1 档':'暂未选择'}</span></div>${rows(k)}</div>`).join('')}</div>`;
+}
+function selectCustomerScheme(kind,index){
+  const state=customerSchemeState(selected);
+  state[kind].clear();state[kind].add(index);
+  chosen.small=state.small;chosen.big=state.big;
+  renderDetail();toast('已选择'+(kind==='small'?'小C':'大C')+' · '+names[index]);
+}
+function previewCustomerScheme(kind,index){
+  const title=(kind==='small'?'小C':'大C')+' · '+names[index]+' · 方案预览';
+  $('modalTitle').textContent=title;
+  $('modalBody').innerHTML=kind==='small'
+    ? `<img class="scheme-preview-image" src="../assets/standard-schemes/small-c-five-schemes.png" alt="${title}">`
+    : `<iframe class="scheme-preview-pdf" src="../assets/standard-schemes/big-c-five-schemes.pdf#view=FitH" title="${title}"></iframe>`;
+  const foot=document.querySelector('#mask .modalfoot');if(foot)foot.innerHTML='<button class="btn primary" onclick="closeModal()">关闭</button>';
+  $('mask').classList.add('show');
+}
+function downloadCustomerScheme(kind,index,asset){download((kind==='small'?'小C':'大C')+' · '+names[index]+' · '+asset);}
+function renderReportWithCustomerSchemes(c,x,status){
+  if(status==='error'){$('reportArea').innerHTML=`<div class="card"><div class="cardhead"><b>${x.title}</b><span class="status error">生成异常</span></div><div class="body"><p>本报告暂未生成成功，其他已完成报告不受影响。</p><button class="btn primary" onclick="retryReport()">重新生成报告</button></div></div>`;return;}
+  const s=states[tab],blocked=s.fail&&!s.edited;
+  const speechActions=blocked?'<button class="btn primary" onclick="editSpeech()">编辑话术</button>':'<button class="btn" onclick="copySpeech()">复制话术</button><button class="btn" onclick="simulateFail()">[演示] 模拟合规失败</button>';
+  $('reportArea').innerHTML=`<div class="card"><div class="cardhead"><b>${x.title}</b><div class="actions"><button class="btn" onclick="previewReport()">查看完整报告</button><button class="btn" onclick="download('${x.title}')">下载图片</button></div></div><div class="body"><div class="meta">${x.time}</div>${x.summary}</div></div><div class="card"><div class="cardhead"><b>沟通话术</b>${blocked?'<span class="status error">待人工编辑</span>':'<span class="status ok">合规通过</span>'}</div><div class="body"><div class="speech ${blocked?'bad':''}">${blocked?'AI生成话术未通过合规审核，请自行编辑话术':x.speech}</div><div class="actions" style="margin-top:12px">${speechActions}</div></div></div>${customerSchemeBlock(c)}`;
+}
+renderReport=renderReportWithCustomerSchemes;
+renderDetail();
+</script><style>
+/* 紧凑客户方案卡：默认折叠，选择后明确反馈已加入群发素材。 */
+.customer-schemes{margin-top:14px;border:1px solid var(--l);border-radius:8px;background:#fff;overflow:hidden}.customer-scheme-compact{padding:11px 16px;border-bottom:1px solid #f0f2f5}.customer-scheme-compact:last-child{border-bottom:0}.customer-scheme-line{display:flex;align-items:center;gap:9px;min-height:32px}.customer-scheme-line>strong{min-width:108px;font-size:13px}.customer-scheme-status{flex:1;color:var(--m);font-size:12px}.customer-scheme-status.selected{color:#175cd3;font-weight:600}.scheme-chip{display:inline-flex;align-items:center;padding:3px 7px;border-radius:4px;background:#eaf1ff;color:#175cd3;margin-left:5px;font-size:11px}.customer-scheme-actions{display:flex;gap:6px}.customer-scheme-actions .btn{height:28px;padding:0 9px;font-size:12px}.customer-scheme-options{display:none;padding:7px 0 0 117px}.customer-scheme-options.open{display:block}.customer-scheme-option{display:grid;grid-template-columns:18px minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #f5f6f8}.customer-scheme-option strong{font-size:12px}.customer-scheme-option small{font-size:11px;color:var(--m)}.customer-scheme-option .btn{height:26px;padding:0 8px;font-size:11px}.customer-scheme-option input{accent-color:var(--b);margin:0}
+</style><script>
+/* 方案 A：小C/大C各一行，默认收起；选择后立即显示已加入群发素材。 */
+function compactCustomerSchemeBlock(c){
+  const index=customers.indexOf(c), state=customerSchemeState(index), available=customerSchemeAvailable(c);
+  if(!available.length)return '';
+  const label=k=>k==='small'?'小C方案':'大C方案';
+  const rows=k=>names.map((name,i)=>`<div class="customer-scheme-option"><input type="radio" name="compact-${index}-${k}" ${state[k].has(i)?'checked':''} onchange="selectCompactScheme('${k}',${i})"><strong>${name}</strong><small>风险资产配置比例 ${['15%','30%','50%','65%','80%'][i]}</small><button class="btn" onclick="previewCustomerScheme('${k}',${i})">预览</button><button class="btn" onclick="downloadCustomerScheme('${k}',${i},'${k==='small'?'small-c-five-schemes.png':'big-c-five-schemes.pdf'}')">下载</button></div>`).join('');
+  return `<div class="customer-schemes"><div class="cardhead"><b>客户方案素材</b><span class="muted">每类最多加入 1 档，选择按客户独立保存</span></div>${available.map(k=>{const chosenIndex=state[k].size?[...state[k]][0]:null; const status=chosenIndex===null?'<span>未选择方案</span>':`<span class="customer-scheme-status selected">已加入群发素材<span class="scheme-chip">${label(k)} · ${names[chosenIndex]}</span></span>`; return `<div class="customer-scheme-compact"><div class="customer-scheme-line"><strong>${label(k)}</strong>${status}<div class="customer-scheme-actions"><button class="btn" onclick="toggleCompactScheme('${k}')">${chosenIndex===null?'选择方案':'更换方案'}</button>${chosenIndex===null?'':'<button class="btn" onclick="clearCompactScheme(\''+k+'\')">移除</button>'}</div></div><div id="compact-options-${k}" class="customer-scheme-options">${rows(k)}</div></div>`;}).join('')}</div>`;
+}
+function refreshCompactSchemes(){const area=$('reportArea');const old=area?.querySelector('.customer-schemes');if(old)old.remove();if(area)area.insertAdjacentHTML('beforeend',compactCustomerSchemeBlock(customers[selected]));}
+function toggleCompactScheme(k){const box=document.getElementById('compact-options-'+k);if(box)box.classList.toggle('open');}
+function selectCompactScheme(k,i){selectCustomerScheme(k,i);setTimeout(()=>{const box=document.getElementById('compact-options-'+k);if(box)box.classList.remove('open')},0);}
+function clearCompactScheme(k){const state=customerSchemeState(selected);state[k].clear();chosen.small=state.small;chosen.big=state.big;refreshCompactSchemes();toast('已移除'+(k==='small'?'小C':'大C')+'群发素材');}
+const renderReportWithCompactSchemes=renderReport;
+renderReport=function(customer,report,status){renderReportWithCompactSchemes(customer,report,status);if(status!=='error')refreshCompactSchemes();};
+renderDetail();
+</script><style>
+/* 客户详情档位预览层：下载统一放入预览页面底部。 */
+.scheme-preview-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--l)}
+</style><script>
+function previewCustomerScheme(kind,index){
+  const title=(kind==='small'?'小C':'大C')+' · '+names[index]+' · 方案预览';
+  const asset=kind==='small'?'small-c-five-schemes.png':'big-c-five-schemes.pdf';
+  $('modalTitle').textContent=title;
+  $('modalBody').innerHTML=(kind==='small'
+    ? `<img class="scheme-preview-image" src="../assets/standard-schemes/${asset}" alt="${title}">`
+    : `<iframe class="scheme-preview-pdf" src="../assets/standard-schemes/${asset}#view=FitH" title="${title}"></iframe>`)
+    + `<div class="scheme-preview-actions"><button class="btn" onclick="downloadCustomerScheme('${kind}',${index},'${asset}')">下载素材</button><button class="btn primary" onclick="closeModal()">关闭</button></div>`;
+  $('mask').classList.add('show');
+}
+function downloadCustomerScheme(kind,index,asset){download((kind==='small'?'小C':'大C')+' · '+names[index]+' · '+asset);}
+const renderReportBeforeCompactFinal=renderReport;
+renderReport=function(customer,report,status){
+  renderReportBeforeCompactFinal(customer,report,status);
+  const area=$('reportArea');
+  area?.querySelector('.customer-schemes')?.remove();
+  if(status!=='error'&&area)area.insertAdjacentHTML('beforeend',compactCustomerSchemeBlock(customer));
+};
+renderDetail();
+</script><script>
+/* 历史覆盖说明：最终客户五档方案模块由文末统一逻辑渲染；顶部公共标准方案素材保留。 */
+const renderReportWithoutCustomerScheme=renderReport;
+renderReport=function(customer,report,status){
+  renderReportWithoutCustomerScheme(customer,report,status);
+  document.querySelector('#reportArea .customer-schemes')?.remove();
+};
+renderDetail();
+</script><style>
+/* 客户详情不再展示客户方案素材；仅保留顶部公共标准方案素材。 */
+#reportArea .customer-schemes{display:none !important}
+</style></body></html>
+<script>
+/* 历史修正说明：客户详情最终保留“客户五档方案素材”，顶部公共标准方案素材同步保留。 */
+(function(){
+  const finalRenderReport=window.renderReport;
+  window.renderReport=function(customer,report,status){
+    finalRenderReport(customer,report,status);
+    document.querySelector('#reportArea .customer-schemes')?.remove();
+  };
+  window.renderDetail();
+})();
+</script>
+<script>
+/* 画布专用状态切换：仅在 canvasMode 下供静态评审 frame 激活，不改变可点击演示流程。 */
+(function(){
+  const canvasMode=new URLSearchParams(location.search).get('canvasMode')==='1';
+  if(!canvasMode)return;
+  window.switchFrame=function(key){
+    closeModal();closeDrawer();
+    if(key==='report-error'){
+      selectCustomer(1);switchTab('monthly');return;
+    }
+    if(key==='compliance-failed'){
+      customers[0].demoComplianceFailed=true;selectCustomer(0);switchTab('weekly');return;
+    }
+    selectCustomer(0);
+    if(key==='monthly')switchTab('monthly');
+    else if(key==='diagnosis')switchTab('diagnosis');
+  };
+  window.toggleOverlay=function(key,open){
+    if(!open){closeModal();closeDrawer();return}
+    if(key==='report-preview')previewReport();
+    else if(key==='scheme-drawer')openDrawer('small');
+    else if(key==='scheme-preview'){openDrawer('small');previewCustomerScheme('small',2)}
+    else if(key==='broadcast')openBroadcast();
+  };
+})();
+</script>
+
+<style data-canvas-mode-bootstrap="19">
+html[data-canvas-mode="1"],
+html[data-canvas-mode="1"] body {
+  height: auto !important;
+  min-height: 100vh;
+  overflow: visible !important;
+}
+html[data-canvas-mode="1"] body { display: block !important; }
+/* mark / remount 模式的 iframe 内表现。注意：平铺态起父画布就给 iframe 设了 pointer-events:none，
+   光标与选区已由父文档接管，本段在当前实现下几乎不会生效；留着是兜底——万一 picker 异常退出
+   残留了 inline pointer-events:auto，crosshair 仍能提示「这里点了也是打钉，不是操作原型」。 */
+html[data-canvas-mode="1"][data-mark-active="1"],
+html[data-canvas-mode="1"][data-mark-active="1"] * {
+  cursor: crosshair !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+</style>
+<script data-canvas-mode-bootstrap="19">
+(function () {
+  var p = new URLSearchParams(location.search);
+  if (p.get('canvasMode') !== '1') return;
+  document.documentElement.setAttribute('data-canvas-mode', '1');
+
+  function readManifest() {
+    var s = document.querySelector('script[type="application/canvas-manifest"]');
+    if (!s) return null;
+    try { return JSON.parse(s.textContent.trim()); } catch (e) { return null; }
+  }
+
+  function getFrameKey() {
+    var h = (location.hash || '').replace(/^#/, '');
+    if (!h) return null;
+    var m = h.match(/^frame=(.+)$/);
+    return m ? decodeURIComponent(m[1]) : decodeURIComponent(h);
+  }
+
+  function activate(frameKey) {
+    if (!frameKey) return;
+    var manifest = readManifest();
+    var frames = (manifest && manifest.frames) || [];
+    var target = null;
+    for (var i = 0; i < frames.length; i++) {
+      if (frames[i].key === frameKey) { target = frames[i]; break; }
+    }
+    if (!target) return;
+    if (target.kind === 'state') {
+      var group = [];
+      for (var j = 0; j < frames.length; j++) {
+        if (frames[j].kind === 'state') group.push(frames[j].key);
+      }
+      if (typeof window.switchFrame === 'function') {
+        window.switchFrame(frameKey, group);
+      } else {
+        for (var k = 0; k < group.length; k++) {
+          var el = document.querySelector('[data-frame="' + group[k] + '"]');
+          if (el) el.hidden = (group[k] !== frameKey);
+        }
+      }
+    } else if (target.kind === 'overlay') {
+      var triggers = target.triggers || [];
+      if (triggers[0] && triggers[0].fromStateKey) activate(triggers[0].fromStateKey);
+      if (typeof window.toggleOverlay === 'function') {
+        window.toggleOverlay(frameKey, true);
+      } else {
+        var oel = document.querySelector('[data-frame="' + frameKey + '"]');
+        if (oel) oel.hidden = false;
+      }
+    }
+  }
+
+  function disableInteractions() {
+    // 与画布「选元素 picker」工具协调：picker 模式打开时让路，关闭时恢复拦截
+    window.__canvasPickerActive = false;
+    window.addEventListener('message', function (e) {
+      var d = e.data || {};
+      if (d.type === 'picker:setActive') {
+        // picker 选元素：放行点击命中子元素，bootstrap 这一层处理一致
+        window.__canvasPickerActive = !!d.active;
+        // 同步切换 data-picker-active：picker 模式下让外层 stage 的 .mark-active 失效，
+        // e.target 能命中具体子元素（button/div），而不是停在 html 顶层
+        if (d.active) {
+          document.documentElement.setAttribute('data-picker-active', '1');
+        } else {
+          document.documentElement.removeAttribute('data-picker-active');
+        }
+      } else if (d.type === 'mark:setActive') {
+        // mark / remount 模式：让 PATCH_CSS 的 cursor:crosshair + user-select:none 生效
+        if (d.active) {
+          document.documentElement.setAttribute('data-mark-active', '1');
+        } else {
+          document.documentElement.removeAttribute('data-mark-active');
+        }
+      }
+    });
+
+    function swallow(e) {
+      if (window.__canvasPickerActive) {
+        // picker 态要把 click 让给 bridge 上报选中元素，但 <a> 跳转 / form 提交必须仍然掐掉——
+        // 一旦真跳走，iframe 就脱离了 canvasMode（新 URL 没有 ?canvasMode=1），整帧变成活页面。
+        // 只 preventDefault、不掐传播：bridge 的 capture 监听要收得到这次 click。
+        if (e.type === 'click' || e.type === 'submit') e.preventDefault();
+        return;
+      }
+      // keydown 放行 cmd/ctrl + C / A：复制 + 全选是文字可选语义的硬前提
+      if (e.type === 'keydown') {
+        var meta = e.metaKey || e.ctrlKey;
+        var k = (e.key || '').toLowerCase();
+        if (meta && (k === 'c' || k === 'a')) return;
+      }
+      e.preventDefault();
+      // capture 阶段 stopImmediatePropagation 会终止 target phase 的行内 onclick
+      e.stopImmediatePropagation();
+    }
+    // wheel 不锁死，而是转发给父画布做平移/缩放：画布里 iframe 是静态快照、自身无需滚动，
+    // 鼠标悬在 iframe 上时把滚轮中继出去，否则那片区域就成了滚动死区（picker 态一并转发，不影响选元素）
+    function forwardWheel(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      try {
+        parent.postMessage({
+          type: 'canvas-wheel',
+          deltaX: e.deltaX, deltaY: e.deltaY, deltaMode: e.deltaMode,
+          ctrlKey: e.ctrlKey, metaKey: e.metaKey,
+          clientX: e.clientX, clientY: e.clientY
+        }, '*');
+      } catch (err) {}
+    }
+    // 全交互拦截：click/submit + pointerup/touchend 触屏兜底 + keydown 键盘兜底 + contextmenu 右键菜单兜底
+    ['click', 'submit', 'pointerup', 'touchend', 'keydown', 'contextmenu']
+      .forEach(function (ev) { document.addEventListener(ev, swallow, true); });
+    // touchmove 必须显式 passive:false：document 级浏览器默认 passive=true，preventDefault 会被静默忽略，
+    // 导致 iframe 内背景滚动锁不住（浮层下面的 state 仍可滑）
+    document.addEventListener('touchmove', swallow, { capture: true, passive: false });
+    // wheel 同样 passive:false，由 forwardWheel 接管：先拦 iframe 自身滚动，再中继给父画布
+    document.addEventListener('wheel', forwardWheel, { capture: true, passive: false });
+
+    // 静默后续启动的定时器/动画/跳转（已经发生的同步代码不可回收，是接受的取舍）
+    window.setInterval = function () { return 0; };
+    window.requestAnimationFrame = function () { return 0; };
+    try {
+      history.pushState = function () {};
+      history.replaceState = function () {};
+      if (window.location && typeof window.location.assign === 'function') {
+        window.location.assign = function () {};
+        window.location.replace = function () {};
+      }
+    } catch (e) {}
+  }
+
+  // 选元素 picker 的桥接：内置在 bootstrap 里，而不是由父画布注入。
+  // 父画布的 injectBridge 走 iframe.contentDocument 塞 <script>，但 file:// 下每个文件都是
+  // 独立 origin，contentDocument 恒为 null（Chromium 静默返回 null 而非抛错），脚本永远进不来。
+  // 评审画布的常态就是本地双击打开，所以 picker 必须自带一份；父画布那份保留作同源（http://）
+  // 兜底，两边靠 window.__pickerBridge 去重，谁先到谁生效。
+  function setupPicker() {
+    if (window.__pickerBridge) return;
+    window.__pickerBridge = true;
+    var HL_ID = '__picker_hl__';
+    var active = false;
+
+    function ensureHl() {
+      var hl = document.getElementById(HL_ID);
+      if (!hl) {
+        hl = document.createElement('div');
+        hl.id = HL_ID;
+        hl.style.cssText = 'position:fixed;pointer-events:none;z-index:2147483646;border:2px solid #F93838;'
+          + 'background:rgba(249,56,56,0.08);transition:all .08s;display:none;box-sizing:border-box;border-radius:2px;';
+        document.documentElement.appendChild(hl);
+      }
+      return hl;
+    }
+
+    function cssPath(el) {
+      if (!(el instanceof Element)) return '';
+      var parts = [];
+      while (el && el.nodeType === 1 && parts.length < 6) {
+        var seg = el.nodeName.toLowerCase();
+        if (el.id) { seg += '#' + el.id; parts.unshift(seg); break; }
+        if (el.className && typeof el.className === 'string') {
+          var cls = el.className.trim().split(/\s+/).filter(function (c) {
+            return c && c.indexOf('__picker') !== 0;
+          }).slice(0, 2).join('.');
+          if (cls) seg += '.' + cls;
+        }
+        var parent = el.parentNode;
+        if (parent && parent.nodeType === 1) {
+          var sib = Array.prototype.slice.call(parent.children).filter(function (x) {
+            return x.nodeName === el.nodeName;
+          });
+          if (sib.length > 1) seg += ':nth-of-type(' + (sib.indexOf(el) + 1) + ')';
+        }
+        parts.unshift(seg);
+        el = el.parentElement;
+      }
+      return parts.join(' > ');
+    }
+
+    function metaFor(el) {
+      var r = el.getBoundingClientRect();
+      var text = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      var html = el.outerHTML || '';
+      if (html.length > 240) html = html.slice(0, 240) + '...';
+      return {
+        frameKey: getFrameKey(),
+        tag: el.nodeName.toLowerCase(),
+        selector: cssPath(el),
+        text: text,
+        html: html,
+        rect: { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }
+      };
+    }
+
+    function setHl(el) {
+      var hl = ensureHl();
+      if (!el) { hl.style.display = 'none'; return; }
+      var r = el.getBoundingClientRect();
+      hl.style.display = 'block';
+      hl.style.left = r.left + 'px';
+      hl.style.top = r.top + 'px';
+      hl.style.width = r.width + 'px';
+      hl.style.height = r.height + 'px';
+    }
+
+    document.addEventListener('mouseover', function (e) {
+      if (!active) return;
+      var el = e.target;
+      if (!el || el.id === HL_ID) return;
+      setHl(el);
+    }, true);
+    document.addEventListener('click', function (e) {
+      if (!active) return;
+      var el = e.target;
+      if (!el || el.id === HL_ID) return;
+      e.preventDefault();
+      e.stopPropagation();
+      try { parent.postMessage({ type: 'picker:select', payload: metaFor(el) }, '*'); } catch (err) {}
+    }, true);
+    document.addEventListener('mouseleave', function () { if (active) setHl(null); }, true);
+
+    window.addEventListener('message', function (e) {
+      var d = e.data || {};
+      if (d.type === 'picker:setActive') {
+        active = !!d.active;
+        if (!active) setHl(null);
+      }
+    });
+
+    try { parent.postMessage({ type: 'picker:bridgeReady', frameKey: getFrameKey() }, '*'); } catch (e) {}
+  }
+
+  // 测量期间的自屏蔽标志：中和 min-height 会瞬时改动 body 尺寸，不挡住 ResizeObserver 就会自触发下一轮
+  var measuring = false;
+
+  // 内容自然高度：必须与 iframe 当前视口高度解耦。父画布把上报值回填成 iframe 高度，
+  // 而页面里任何「跟视口等高」的撑满约束（min-h-screen / min-height:100vh）都会让下一次
+  // scrollHeight 再高出同一个固定偏移，构成无限放大的正反馈（实测能涨到 17000px+）。
+  // 所以测量前把这类约束临时中和，只留内容真正撑出来的高度；下限由父画布按视口档位补。
+  function naturalHeight() {
+    var body = document.body;
+    if (!body) return document.documentElement.scrollHeight;
+    var vpH = window.innerHeight;
+    var touched = [];
+    function neutralize(el) {
+      var cs;
+      try { cs = getComputedStyle(el); } catch (e) { return; }
+      var mh = parseFloat(cs.minHeight);
+      // 只中和跟视口等高的那一类；min-height:400px 这种固定值是内容自己的诉求，不能动
+      if (!mh || Math.abs(mh - vpH) > 1) return;
+      touched.push([el, el.style.getPropertyValue('min-height'), el.style.getPropertyPriority('min-height')]);
+      el.style.setProperty('min-height', '0', 'important');
+    }
+    measuring = true;
+    try {
+      neutralize(document.documentElement);
+      neutralize(body);
+      var all = body.getElementsByTagName('*');
+      for (var i = 0; i < all.length; i++) neutralize(all[i]);
+      return Math.max(document.documentElement.scrollHeight, body.scrollHeight);
+    } finally {
+      for (var k = 0; k < touched.length; k++) {
+        var t = touched[k];
+        if (t[1]) t[0].style.setProperty('min-height', t[1], t[2]);
+        else t[0].style.removeProperty('min-height');
+      }
+      measuring = false;
+    }
+  }
+
+  function reportHeight() {
+    // 只报真实内容高度、不设下限：视口档位（APP 手机壳 812 / 中台宽屏 800）由父画布按
+    // pages.json 的 viewport clamp，同一份 bootstrap 才能同时服务两种原型
+    var h = naturalHeight();
+    try {
+      parent.postMessage({ type: 'canvas-frame-ready', frameKey: getFrameKey(), height: h }, '*');
+    } catch (e) {}
+  }
+
+  function boot() {
+    // 保存原 rAF 引用：必须在 disableInteractions 覆盖之前，供 ResizeObserver 节流用
+    var origRAF = window.requestAnimationFrame.bind(window);
+    activate(getFrameKey());
+    disableInteractions();
+    setupPicker();
+    var report = reportHeight;
+    report();
+    setTimeout(report, 250);
+    setTimeout(report, 1200);
+    window.addEventListener('load', report);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(report).catch(function(){});
+    }
+    // 持续监听 body 尺寸变化（图片/字体异步加载撑高后回报）
+    if (window.ResizeObserver) {
+      var pending = false;
+      var ro = new ResizeObserver(function () {
+        if (pending || measuring) return;
+        pending = true;
+        origRAF(function () { pending = false; report(); });
+      });
+      if (document.body) ro.observe(document.body);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  window.addEventListener('hashchange', function () {
+    activate(getFrameKey());
+    setTimeout(reportHeight, 100);
+  });
+})();
+</script>
+<script type="application/canvas-manifest" data-version="1.0">
+{
+  "version":"1.0",
+  "page":{"id":"account-service","name":"投后理财账户服务报告","order":1,"viewport":{"width":1440,"height":900}},
+  "frames":[
+    {"key":"normal","kind":"state","label":"默认客户 · 周报","tag":"default"},
+    {"key":"monthly","kind":"state","label":"月报","tag":"report"},
+    {"key":"diagnosis","kind":"state","label":"诊断与优化报告","tag":"report"},
+    {"key":"report-error","kind":"state","label":"报告生成异常","tag":"error"},
+    {"key":"compliance-failed","kind":"state","label":"话术三次合规失败 · 人工编辑","tag":"error"},
+    {"key":"report-preview","kind":"overlay","overlayType":"modal","label":"账户报告长图预览","triggers":[{"fromStateKey":"normal","action":"点击报告卡片的「查看完整报告」"}]},
+    {"key":"scheme-drawer","kind":"overlay","overlayType":"drawer","label":"客户五档方案素材抽屉 · 单选","triggers":[{"fromStateKey":"normal","action":"在沟通话术下方点击「查看/选择方案」"}]},
+    {"key":"scheme-preview","kind":"overlay","overlayType":"modal","label":"方案档位预览与下载","triggers":[{"fromStateKey":"normal","action":"在方案抽屉选择单一档位并点击「预览」"}]},
+    {"key":"broadcast","kind":"overlay","overlayType":"modal","label":"企微一键群发确认","triggers":[{"fromStateKey":"normal","action":"点击左侧客户列表上方「企微一键群发」"}]}
+  ]
+}
+</script>
+<script>
+/* 侧拉抽屉五档方案改为单选：小C和大C分别最多选择一档。 */
+(function(){
+  window.renderSchemes=function(){
+    const set=chosen[drawerKind];
+    $('schemeList').innerHTML=names.map((n,i)=>`<div class="scheme"><div class="schemetop"><input type="radio" name="drawer-${drawerKind}" ${set.has(i)?'checked':''} onchange="toggleDrawerScheme(${i})"><b>${n}</b><button class="btn" onclick="previewScheme(${i})">预览</button><button class="btn" onclick="download('${n}')">下载</button></div><p>标准方案长图素材 · ${drawerKind==='small'?'小 C':'大 C'} · 同一客户同类方案单选</p></div>`).join('');
+    $('schemeCount').textContent=set.size?'已选择 1 档方案':'未选择方案';
+  };
+  window.toggleDrawerScheme=function(i){
+    const set=chosen[drawerKind];set.clear();set.add(i);
+    if(typeof customerSchemeChoices!=='undefined')customerSchemeChoices[selected][drawerKind]=set;
+    renderSchemes();
+    toast('已选择'+(drawerKind==='small'?'小C':'大C')+' · '+names[i]);
+  };
+})();
+</script>
+<style>
+/* 正式演示不展示合规失败模拟按钮；异常分支由独立演示客户承载。 */
+#reportArea button[data-demo-compliance]{display:none !important}
+</style>
+<script>
+(function(){
+  const removeDemoComplianceButton=()=>document.querySelectorAll('#reportArea button').forEach(button=>{
+    if(button.textContent.includes('模拟合规失败')){button.dataset.demoCompliance='true';button.remove();}
+  });
+  const previousRenderReport=window.renderReport;
+  window.renderReport=function(customer,report,status){
+    previousRenderReport(customer,report,status);
+    removeDemoComplianceButton();
+  };
+  removeDemoComplianceButton();
+})();
+</script>
+
+<style>
+.material-selected{display:inline-flex;align-items:center;gap:4px;margin:8px 4px 0 0;padding:3px 7px;border-radius:4px;background:#eaf1ff;color:#175cd3;font-size:11px}.material-selected-count{color:#175cd3;font-size:12px;font-weight:600}.broadcast-dialog{width:760px;max-width:94vw}.broadcast-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.broadcast-stat{padding:11px 12px;background:#f8f9fb;border-radius:6px}.broadcast-stat span{display:block;color:#667085;font-size:12px;margin-bottom:5px}.broadcast-stat b{font-size:17px}.broadcast-section{border:1px solid #e4e7ec;border-radius:7px;margin-top:12px;overflow:hidden}.broadcast-section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#f8f9fb;border-bottom:1px solid #eaecf0}.broadcast-section-head b{font-size:14px}.broadcast-section-body{padding:12px 14px}.broadcast-recipient{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid #f0f2f5}.broadcast-recipient:last-child{border-bottom:0}.broadcast-recipient small{margin-left:auto;color:#667085}.broadcast-content-row{display:flex;gap:8px;align-items:flex-start;padding:9px 0;color:#344054}.broadcast-content-icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px;background:#eaf1ff;color:#175cd3;font-size:12px}.broadcast-content-row div{flex:1}.broadcast-content-row small{display:block;color:#667085;margin-top:3px}.broadcast-scheme-chip{display:inline-flex;margin:3px 5px 0 0;padding:4px 8px;border:1px solid #b2ddff;border-radius:4px;background:#eff8ff;color:#175cd3;font-size:12px}.broadcast-tip{font-size:12px;color:#667085;line-height:1.6;margin-top:12px}
+</style><script>
+/* 外层素材卡显示已加入档位；群发确认参考存量到期提醒：客户、发送内容、素材、统计和确认按钮分层呈现。 */
+const baseMaterialsForSelected=materials;
+materials=function(c){
+  let cards='';
+  if(c.hold.includes('公募')) cards+=card('small','小 C 标准方案','适用于公募产品持仓客户，含 5 档标准配置方案。');
+  if(c.hold.includes('私募')) cards+=card('big','大 C 标准方案','适用于私募产品持仓客户，含 5 档标准配置方案。');
+  const chips=[...chosen.small].map(i=>`<span class="material-selected">小 C · ${names[i]}</span>`).concat([...chosen.big].map(i=>`<span class="material-selected">大 C · ${names[i]}</span>`));
+  return `<div class="card" style="margin:16px 0 0"><div class="cardhead"><b>标准方案素材</b><span class="muted">公共标准内容，不参与话术生成</span></div><div class="body"><div class="materials">${cards}</div>${chips.length?`<div style="margin-top:12px"><span class="material-selected-count">已加入群发素材（${chips.length}）</span><div>${chips.join('')}</div></div>`:'<div class="small" style="margin-top:12px">尚未加入群发素材</div>'}</div></div>`;
+};
+
+openBroadcast=function(){
+  const schemes=[...chosen.small].map(i=>'小 C · '+names[i]).concat([...chosen.big].map(i=>'大 C · '+names[i]));
+  const recipients=customers.slice(0,3);
+  $('modalTitle').textContent='企微一键群发';
+  $('modalBody').innerHTML=`<div class="broadcast-summary"><div class="broadcast-stat"><span>待发送客户</span><b>${recipients.length} 人</b></div><div class="broadcast-stat"><span>报告与话术</span><b>逐客生成</b></div><div class="broadcast-stat"><span>附加方案素材</span><b>${schemes.length} 档</b></div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>发送客户</b><span class="muted">已成功触达客户不可再次勾选</span></div><div class="broadcast-section-body">${recipients.map(c=>`<label class="broadcast-recipient"><input type="checkbox" checked style="margin-right:9px"><span>${c.name} · ${c.account}</span><small>${c.risk}</small></label>`).join('')}</div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>本次发送内容</b><span class="status ok">合规话术优先发送</span></div><div class="broadcast-section-body"><div class="broadcast-content-row"><span class="broadcast-content-icon">图</span><div><b>客户专属报告长图</b><small>按每位客户当前报告类型发送对应周报、月报或诊断与优化报告长图</small></div></div><div class="broadcast-content-row"><span class="broadcast-content-icon">话</span><div><b>客户专属千人千面话术</b><small>话术与对应报告一一匹配；未通过合规审核的话术不会发送</small></div></div>${schemes.length?`<div class="broadcast-content-row"><span class="broadcast-content-icon">材</span><div><b>已加入的标准方案素材</b><small>${schemes.map(s=>`<span class="broadcast-scheme-chip">${s}</span>`).join('')}</small></div></div>`:'<div class="broadcast-content-row"><span class="broadcast-content-icon">材</span><div><b>标准方案素材</b><small>本次未加入额外标准方案素材</small></div></div>'}</div></div><div class="broadcast-tip">发送成功后将记录企微触达回执，用于本场景防重；发送前可取消任一客户。</div>`;
+  modalFoot('<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmAccountSend()">确认发送</button>');
+  $('mask').classList.add('show');
+};
+confirmAccountSend=function(){const n=document.querySelectorAll('#modalBody .broadcast-recipient input:checked').length;if(n){closeModal();toast('已向 '+n+' 位客户发送专属报告长图、对应话术和 '+([...chosen.small].length+[...chosen.big].length)+' 档方案素材')}else{toast('请至少选择 1 位客户')}};
+
+renderDetail();
+</script><script>
+/* 最终交互修正：账户页使用自己的弹窗底部渲染器，避免群发按钮因未定义 modalFoot 而无响应。 */
+function accountModalFoot(html){const foot=document.querySelector('#mask .modalfoot');if(foot)foot.innerHTML=html}
+document.querySelectorAll('#drawer .drawerfoot button').forEach(btn=>{btn.textContent='加入群发素材'});
+const openAccountBroadcast=openBroadcast;
+openBroadcast=function(){
+  try{openAccountBroadcast();}catch(e){
+    const schemes=[...chosen.small].map(i=>'小 C · '+names[i]).concat([...chosen.big].map(i=>'大 C · '+names[i]));
+    const recipients=customers.slice(0,3);
+    $('modalTitle').textContent='企微一键群发';
+    $('modalBody').innerHTML=`<div class="broadcast-summary"><div class="broadcast-stat"><span>待发送客户</span><b>${recipients.length} 人</b></div><div class="broadcast-stat"><span>报告与话术</span><b>逐客生成</b></div><div class="broadcast-stat"><span>附加方案素材</span><b>${schemes.length} 档</b></div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>发送客户</b><span class="muted">已成功触达客户不可再次勾选</span></div><div class="broadcast-section-body">${recipients.map(c=>`<label class="broadcast-recipient"><input type="checkbox" checked style="margin-right:9px"><span>${c.name} · ${c.account}</span><small>${c.risk}</small></label>`).join('')}</div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>本次发送内容</b><span class="status ok">合规话术优先发送</span></div><div class="broadcast-section-body"><div class="broadcast-content-row"><span class="broadcast-content-icon">图</span><div><b>客户专属报告长图</b><small>发送对应周报、月报或诊断与优化报告长图</small></div></div><div class="broadcast-content-row"><span class="broadcast-content-icon">话</span><div><b>客户专属千人千面话术</b><small>话术与对应报告一一匹配</small></div></div>${schemes.length?`<div class="broadcast-content-row"><span class="broadcast-content-icon">材</span><div><b>已加入的标准方案素材</b><small>${schemes.join('、')}</small></div></div>`:''}</div></div>`;
+    accountModalFoot('<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmAccountSend()">确认发送</button>');
+    $('mask').classList.add('show');
+  }
+};
+const oldConfirmSchemes=confirmSchemes;
+confirmSchemes=function(){oldConfirmSchemes();renderDetail()};
+</script>
+<script>
+/* 五档方案选择按客户隔离保存，客户之间不共享勾选状态。 */
+const customerSchemeChoices={};
+customers.forEach((c,i)=>{customerSchemeChoices[i]={small:new Set(),big:new Set()}});
+customerSchemeChoices[selected]={small:chosen.small,big:chosen.big};
+const selectCustomerWithSchemeState=selectCustomer;
+selectCustomer=function(i){
+  customerSchemeChoices[selected]={small:chosen.small,big:chosen.big};
+  if(!customerSchemeChoices[i])customerSchemeChoices[i]={small:new Set(),big:new Set()};
+  chosen.small=customerSchemeChoices[i].small;
+  chosen.big=customerSchemeChoices[i].big;
+  selectCustomerWithSchemeState(i);
+  renderDetail();
+};
+const toggleSchemeWithCustomerState=toggleScheme;
+toggleScheme=function(i,on){
+  toggleSchemeWithCustomerState(i,on);
+  customerSchemeChoices[selected]={small:chosen.small,big:chosen.big};
+};
+document.querySelectorAll('#drawer .drawerfoot button').forEach(btn=>btn.textContent='加入群发素材');
+
+/* 群发确认按客户汇总各自已选档位，避免将当前客户素材误发给其他客户。 */
+openBroadcast=function(){
+  customerSchemeChoices[selected]={small:chosen.small,big:chosen.big};
+  const recipients=customers.slice(0,3);
+  const schemeText=c=>{const s=customerSchemeChoices[customers.indexOf(c)]||{small:new Set(),big:new Set()};return [...s.small].map(i=>'小 C · '+names[i]).concat([...s.big].map(i=>'大 C · '+names[i]))};
+  const allSchemes=recipients.flatMap(schemeText);
+  $('modalTitle').textContent='企微一键群发';
+  $('modalBody').innerHTML=`<div class="broadcast-summary"><div class="broadcast-stat"><span>待发送客户</span><b>${recipients.length} 人</b></div><div class="broadcast-stat"><span>报告与话术</span><b>逐客生成</b></div><div class="broadcast-stat"><span>附加方案素材</span><b>${allSchemes.length} 档</b></div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>发送客户</b><span class="muted">已成功触达客户不可再次勾选</span></div><div class="broadcast-section-body">${recipients.map(c=>`<label class="broadcast-recipient"><input type="checkbox" checked style="margin-right:9px"><span>${c.name} · ${c.account}</span><small>${c.risk}</small></label>`).join('')}</div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>本次发送内容</b><span class="status ok">按客户分别发送</span></div><div class="broadcast-section-body"><div class="broadcast-content-row"><span class="broadcast-content-icon">图</span><div><b>客户专属报告长图</b><small>按每位客户当前报告类型发送对应报告长图</small></div></div><div class="broadcast-content-row"><span class="broadcast-content-icon">话</span><div><b>客户专属千人千面话术</b><small>每位客户使用自己的对应报告话术</small></div></div>${recipients.map(c=>{const ss=schemeText(c);return `<div class="broadcast-content-row"><span class="broadcast-content-icon">材</span><div><b>${c.name} 的标准方案素材</b><small>${ss.length?ss.map(s=>`<span class="broadcast-scheme-chip">${s}</span>`).join(''):'未选择方案素材'}</small></div></div>`}).join('')}</div></div>`;
+  const foot=document.querySelector('#mask .modalfoot');if(foot)foot.innerHTML='<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmAccountSend()">确认发送</button>';
+  $('mask').classList.add('show');
+};
+</script>
+<script>
+/* 最终覆盖：确保左侧企微按钮始终打开完整确认层，且不依赖未定义的 modalFoot。 */
+function accountModalFoot(html){const foot=document.querySelector('#mask .modalfoot');if(foot)foot.innerHTML=html}
+document.querySelectorAll('#drawer .drawerfoot button').forEach(btn=>btn.textContent='加入群发素材');
+openBroadcast=function(){
+  const schemes=[...chosen.small].map(i=>'小 C · '+names[i]).concat([...chosen.big].map(i=>'大 C · '+names[i])), recipients=customers.slice(0,3);
+  $('modalTitle').textContent='企微一键群发';
+  $('modalBody').innerHTML=`<div class="broadcast-summary"><div class="broadcast-stat"><span>待发送客户</span><b>${recipients.length} 人</b></div><div class="broadcast-stat"><span>报告与话术</span><b>逐客生成</b></div><div class="broadcast-stat"><span>附加方案素材</span><b>${schemes.length} 档</b></div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>发送客户</b><span class="muted">已成功触达客户不可再次勾选</span></div><div class="broadcast-section-body">${recipients.map(c=>`<label class="broadcast-recipient"><input type="checkbox" checked style="margin-right:9px"><span>${c.name} · ${c.account}</span><small>${c.risk}</small></label>`).join('')}</div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>本次发送内容</b><span class="status ok">合规话术优先发送</span></div><div class="broadcast-section-body"><div class="broadcast-content-row"><span class="broadcast-content-icon">图</span><div><b>客户专属报告长图</b><small>发送对应周报、月报或诊断与优化报告长图</small></div></div><div class="broadcast-content-row"><span class="broadcast-content-icon">话</span><div><b>客户专属千人千面话术</b><small>话术与对应报告一一匹配</small></div></div>${schemes.length?`<div class="broadcast-content-row"><span class="broadcast-content-icon">材</span><div><b>已加入的标准方案素材</b><small>${schemes.map(s=>`<span class="broadcast-scheme-chip">${s}</span>`).join('')}</small></div></div>`:''}</div></div><div class="broadcast-tip">发送成功后记录企微触达回执，用于本场景防重。</div>`;
+  accountModalFoot('<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="confirmAccountSend()">确认发送</button>');
+  $('mask').classList.add('show');
+};
+confirmSchemes=function(){const n=chosen.small.size+chosen.big.size;if(!n){toast('请先勾选需要加入群发的方案');return}closeDrawer();renderDetail();toast('已加入 '+n+' 档标准方案素材，可在左侧企微一键群发时统一发送')};
+</script><script>
+/* 群发按客户、报告和话术状态逐项计算；只发送可用内容并记录成功回执防重。 */
+const accountReportKeys=Object.keys(info);
+const accountBaselineSpeech=Object.fromEntries(accountReportKeys.map(key=>[key,info[key].speech]));
+const accountCustomerStates={};
+const accountManualSpeech={};
+const accountSentReports=new Set();
+const copyStates=source=>Object.fromEntries(accountReportKeys.map(key=>[key,{...(source?.[key]||{tries:0,fail:false,edited:false})}]));
+customers.forEach((customer,index)=>{
+  accountCustomerStates[index]=copyStates();
+  if(customer.demoComplianceFailed)accountCustomerStates[index].weekly={tries:3,fail:true,edited:false};
+});
+accountCustomerStates[selected]=copyStates(states);
+const selectCustomerWithAccountState=selectCustomer;
+selectCustomer=function(index){
+  accountCustomerStates[selected]=copyStates(states);
+  selected=index;
+  if(!accountCustomerStates[index])accountCustomerStates[index]=copyStates();
+  states=copyStates(accountCustomerStates[index]);
+  if(customers[index].demoComplianceFailed&&!states.weekly.edited)states.weekly={tries:3,fail:true,edited:false};
+  tab='weekly';
+  const schemeState=customerSchemeChoices[index]||{small:new Set(),big:new Set()};
+  chosen.small=schemeState.small;chosen.big=schemeState.big;
+  renderList();renderDetail();
+};
+const simulateFailBeforeAccountFix=simulateFail;
+simulateFail=function(){
+  simulateFailBeforeAccountFix();
+  accountCustomerStates[selected]=copyStates(states);
+};
+const saveInlineSpeechBeforeAccountFix=saveInlineEdit;
+saveInlineEdit=function(){
+  const value=$('inlineSpeechEditor')?.value.trim();
+  saveInlineSpeechBeforeAccountFix();
+  if(value&&states[tab]?.edited)accountManualSpeech[selected+':'+tab]=value;
+  accountCustomerStates[selected]=copyStates(states);
+};
+function accountPackagesFor(index){
+  const customer=customers[index];
+  const customerStates=index===selected?states:(accountCustomerStates[index]||copyStates());
+  const available=[],excluded=[];
+  accountReportKeys.forEach(key=>{
+    const report=info[key],state=customerStates[key]||{tries:0,fail:false,edited:false};
+    const receiptKey=index+':'+key;
+    if(customer.reports[key]!=='ok')excluded.push({key,title:report.tab,reason:'报告生成异常'});
+    else if(state.fail&&!state.edited)excluded.push({key,title:report.tab,reason:'话术待人工编辑，禁止触达'});
+    else if(accountSentReports.has(receiptKey))excluded.push({key,title:report.tab,reason:'已成功触达'});
+    else available.push({key,title:report.tab,speech:state.edited?(accountManualSpeech[receiptKey]||accountBaselineSpeech[key]):accountBaselineSpeech[key]});
+  });
+  return {available,excluded};
+}
+function accountSchemesFor(index){
+  const selectedSchemes=customerSchemeChoices[index]||{small:new Set(),big:new Set()};
+  return [...selectedSchemes.small].map(i=>'小 C · '+names[i]).concat([...selectedSchemes.big].map(i=>'大 C · '+names[i]));
+}
+function updateAccountBroadcast(){
+  const checked=[...document.querySelectorAll('#modalBody .account-recipient-toggle:checked')];
+  const customerCount=checked.length;
+  const packageCount=checked.reduce((count,input)=>count+accountPackagesFor(Number(input.dataset.customer)).available.length,0);
+  const selectedCount=$('accountBroadcastCustomers');
+  const selectedPackages=$('accountBroadcastPackages');
+  const confirm=$('accountBroadcastConfirm');
+  if(selectedCount)selectedCount.textContent=customerCount+' 位';
+  if(selectedPackages)selectedPackages.textContent=packageCount+' 份';
+  if(confirm)confirm.disabled=packageCount===0;
+}
+openBroadcast=function(){
+  accountCustomerStates[selected]=copyStates(states);
+  customerSchemeChoices[selected]={small:chosen.small,big:chosen.big};
+  $('modalTitle').textContent='企微一键群发';
+  $('modalBody').innerHTML=`<div class="broadcast-summary"><div class="broadcast-stat"><span>发送客户</span><b id="accountBroadcastCustomers">0 位</b></div><div class="broadcast-stat"><span>可发送报告与话术</span><b id="accountBroadcastPackages">0 份</b></div><div class="broadcast-stat"><span>发送规则</span><b>逐客逐报告</b></div></div><div class="broadcast-section"><div class="broadcast-section-head"><b>客户及对应发送内容</b><span class="muted">异常报告、待人工编辑话术和已触达报告不会发送</span></div><div class="broadcast-section-body">${customers.map((customer,index)=>{
+    const {available,excluded}=accountPackagesFor(index),schemes=accountSchemesFor(index),disabled=!available.length;
+    return `<section class="account-broadcast-customer"><label class="broadcast-recipient"><input class="account-recipient-toggle" data-customer="${index}" type="checkbox" ${disabled?'disabled':''} ${disabled?'':'checked'} onchange="updateAccountBroadcast()" style="margin-right:9px"><span><b>${customer.name}</b> · ${customer.account}</span><small>${disabled?'无可发送内容':customer.risk}</small></label><div class="account-broadcast-packages">${available.map(item=>`<div class="broadcast-content-row"><span class="broadcast-content-icon">图</span><div><b>${item.title}报告长图</b><small>对应话术：${item.speech}</small></div></div>`).join('')}${schemes.length?`<div class="broadcast-content-row"><span class="broadcast-content-icon">材</span><div><b>${customer.name} 的标准方案素材</b><small>${schemes.map(s=>`<span class="broadcast-scheme-chip">${s}</span>`).join('')}</small></div></div>`:''}${excluded.map(item=>`<div class="account-broadcast-excluded">${item.title}：${item.reason}</div>`).join('')}</div></section>`;
+  }).join('')}</div></div><div class="broadcast-tip">每份报告只发送其对应话术；同一份报告成功触达后将记录回执，不再重复发送。方案素材按客户分别发送。</div>`;
+  accountModalFoot('<button class="btn" onclick="closeModal()">取消</button><button class="btn primary" id="accountBroadcastConfirm" onclick="confirmAccountSend()">确认发送</button>');
+  updateAccountBroadcast();
+  $('mask').classList.add('show');
+};
+confirmAccountSend=function(){
+  const selectedCustomers=[...document.querySelectorAll('#modalBody .account-recipient-toggle:checked')].map(input=>Number(input.dataset.customer));
+  let packageCount=0;
+  selectedCustomers.forEach(index=>accountPackagesFor(index).available.forEach(item=>{accountSentReports.add(index+':'+item.key);packageCount++}));
+  if(!packageCount){toast('请至少选择一位有可发送报告的客户');return}
+  closeModal();
+  toast('已向 '+selectedCustomers.length+' 位客户发送 '+packageCount+' 份对应报告与话术');
+};
+const copySpeechBeforeAccountGuard=copySpeech;
+copySpeech=function(){
+  const state=states[tab];
+  if(customers[selected].reports[tab]!=='ok'||(state.fail&&!state.edited)){toast('当前话术不可复制');return}
+  const text=state.edited?(accountManualSpeech[selected+':'+tab]||info[tab].speech):accountBaselineSpeech[tab];
+  navigator.clipboard?.writeText(text);toast('话术已复制');
+};
+sendSingle=function(){
+  const state=states[tab];
+  if(customers[selected].reports[tab]!=='ok'||(state.fail&&!state.edited)){toast('当前报告或话术不可触达');return}
+  toast('已通过企微发送给 '+customers[selected].name);
+};
+</script><style>
+.account-broadcast-customer{padding:2px 0 10px;border-bottom:1px solid #eaecf0}.account-broadcast-customer:last-child{border-bottom:0}.account-broadcast-packages{padding:0 4px 4px 28px}.account-broadcast-excluded{padding:5px 0;color:#b42318;font-size:12px}.account-recipient-toggle:disabled{cursor:not-allowed}.account-broadcast-customer .broadcast-recipient{margin:0}
+</style><script>
+/* 标准方案素材是客户维度公共模块，独立于周报、月报和诊断报告。 */
+function customerMaterialsModule(customer){
+  let cards='';
+  if(customer.hold.includes('公募'))cards+=card('small','小 C 标准方案','适用于公募产品持仓客户，含 5 档标准配置方案。');
+  if(customer.hold.includes('私募'))cards+=card('big','大 C 标准方案','适用于私募产品持仓客户，含 5 档标准配置方案。');
+  const selections=accountSchemesFor(selected).map(label=>`<span class="material-selected">${label}</span>`);
+  return `<div class="card customer-materials-card"><div class="cardhead"><b>标准方案素材</b></div><div class="body"><div class="materials">${cards||'<div class="empty">当前客户暂无可用标准方案</div>'}</div>${selections.length?`<div class="customer-materials-selected"><span class="material-selected-count">已加入群发素材（${selections.length}）</span><div>${selections.join('')}</div></div>`:'<div class="small customer-materials-none">尚未加入群发素材</div>'}</div></div>`;
+}
+const renderAccountDetailWithMaterials=renderDetail;
+renderDetail=function(){
+  renderAccountDetailWithMaterials();
+  const detail=$('detail');
+  if(!detail)return;
+  detail.querySelectorAll('#reportArea .card').forEach(node=>{
+    const heading=node.querySelector('.cardhead b');
+    if(heading&&heading.textContent.trim()==='标准方案素材')node.remove();
+  });
+  const tabs=detail.querySelector('.tabs');
+  if(tabs)tabs.insertAdjacentHTML('beforebegin',customerMaterialsModule(customers[selected]));
+};
+renderDetail();
+</script><style>
+.customer-materials-card{margin-top:16px}.customer-materials-card .materials{margin-top:0}.customer-materials-selected{margin-top:12px;padding-top:10px;border-top:1px solid #f0f2f5}.customer-materials-none{margin-top:10px}.material-selected{display:inline-flex;align-items:center;gap:4px;margin:8px 4px 0 0;padding:3px 7px;border-radius:4px;background:#eaf1ff;color:#175cd3;font-size:11px}.material-selected-count{color:#175cd3;font-size:12px;font-weight:600}
+</style><style>
+/* 话术复制入口放在标题栏右侧；群发/预览弹框的操作栏固定可见。 */
+.speech-copy-head{margin-left:auto}
+.modal{display:flex;flex-direction:column;overflow:hidden}
+.modalhead,.modalfoot{flex-shrink:0;background:#fff;z-index:2}
+.modalbody{overflow:auto;flex:1;min-height:0}
+.modalfoot{position:sticky;bottom:0}
+</style><script>
+function moveSpeechCopyToHeader(){
+  const area=$('reportArea');
+  if(!area)return;
+  area.querySelectorAll('.card').forEach(card=>{
+    const heading=card.querySelector('.cardhead b');
+    if(!heading||heading.textContent.trim()!=='沟通话术')return;
+    const action=[...card.querySelectorAll('.actions button')].find(button=>button.textContent.trim()==='复制话术');
+    if(!action)return;
+    action.classList.add('speech-copy-head');
+    card.querySelector('.cardhead').appendChild(action);
+  });
+}
+new MutationObserver(moveSpeechCopyToHeader).observe($('detail'),{childList:true,subtree:true});
+moveSpeechCopyToHeader();
+</script><style>
+.speech-editor{width:100%;min-height:126px;resize:vertical;border:1px solid #98a2b3;border-radius:6px;padding:11px 12px;line-height:1.75;color:#344054;font:inherit;outline-color:#2b73ff}
+.speech-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.speech-editable{cursor:text}
+.generation-meta{display:flex;align-items:center;gap:9px;margin-top:10px;color:#667085;font-size:12px}.generation-meta i{width:1px;height:12px;background:#d0d5dd}@media(max-width:960px){.generation-meta{flex-wrap:wrap}}
+</style><script>
+/* 人工修改分别保存在当前客户和报告类型下，不覆盖其他客户的 AI 话术。 */
+const renderReportBeforeEditableSpeech=renderReport;
+renderReport=function(customer,report,status){
+  renderReportBeforeEditableSpeech(customer,report,status);
+  const card=[...$('reportArea').querySelectorAll('.card')].find(node=>node.querySelector('.cardhead b')?.textContent.trim()==='沟通话术');
+  if(!card)return;
+  const state=states[tab],key=selected+':'+tab;
+  const speech=card.querySelector('.speech');
+  if(speech&&state.edited&&accountManualSpeech[key]!==undefined)speech.textContent=accountManualSpeech[key];
+  if(speech){speech.classList.add('speech-editable');speech.title='点击编辑话术';speech.onclick=()=>editAccountSpeech(card,selected,tab)}
+  const header=card.querySelector('.cardhead');
+  let actions=header.querySelector('.speech-header-actions');
+  if(!actions){actions=document.createElement('div');actions.className='speech-header-actions';header.appendChild(actions)}
+  const copy=[...card.querySelectorAll('button')].find(button=>button.textContent.trim()==='复制话术');
+  if(copy)actions.appendChild(copy);
+};
+function editAccountSpeech(card,customerIndex,reportKey){
+  const display=card.querySelector('.speech');if(!display)return;
+  const state=states[reportKey],blocked=state.fail&&!state.edited;
+  const original=blocked?'':display.textContent;
+  const editor=document.createElement('textarea');editor.className='speech-editor';editor.setAttribute('aria-label','编辑沟通话术');editor.value=original;
+  display.replaceWith(editor);editor.focus();
+  editor.addEventListener('blur',()=>{
+    const value=editor.value.trim();
+    if(!value){editor.replaceWith(display);if(blocked||original)toast('话术不能为空，未保存修改');return}
+    if(value===original&&!blocked){editor.replaceWith(display);return}
+    accountManualSpeech[customerIndex+':'+reportKey]=value;
+    accountCustomerStates[customerIndex][reportKey].edited=true;
+    if(selected===customerIndex)states[reportKey].edited=true;
+    display.textContent=value;display.classList.remove('bad');editor.replaceWith(display);
+    card.querySelector('.cardhead .status')?.remove();
+    const headerActions=card.querySelector('.speech-header-actions');
+    if(![...headerActions.querySelectorAll('button')].some(button=>button.textContent.trim()==='复制话术')){
+      const copy=document.createElement('button');copy.type='button';copy.className='btn';copy.textContent='复制话术';copy.onclick=()=>copySpeech();headerActions.prepend(copy);
+    }
+    toast('话术已保存');
+  },{once:true});
+}
+renderDetail();
+</script><style>
+/* 公共方案素材：位于任务概览下方，与客户详情解耦。 */
+.public-schemes{margin-top:14px;background:#fff;border:1px solid var(--l);border-radius:8px;padding:14px 16px}.public-schemes-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}.public-schemes-head b{font-size:15px}.public-schemes-head span{font-size:12px;color:var(--m)}.public-scheme-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.public-scheme{min-width:0;border:1px solid var(--l);border-radius:7px;padding:11px 12px}.public-scheme-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.public-scheme-top b{font-size:14px}.public-scheme-desc{font-size:11px;color:var(--m);margin:5px 0 8px}.public-risk-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.public-risk-cell{padding:5px 2px;border:1px solid #e7ecf5;background:#f8faff;border-radius:5px;text-align:center}.public-risk-cell span{display:block;font-size:10px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.public-risk-cell b{display:block;font-size:12px;color:var(--i);margin-top:2px}.scheme-preview-image{display:block;width:100%;max-width:520px;margin:auto;background:#102238}.scheme-preview-pdf{display:block;width:100%;height:66vh;min-height:520px;border:0;background:#f5f7fa}@media(max-width:960px){.public-scheme-grid{grid-template-columns:1fr}.public-risk-cell span{font-size:9px}}
+</style><script>
+/* 已确认：大小 C 为页面级公共素材，不与某位客户的报告、话术或群发选择绑定。 */
+const publicSchemeLevels=[['低波动','15%'],['中低波动','30%'],['中波动','50%'],['中高波动','65%'],['高波动','80%']];
+function publicSchemeCard(kind,title){
+  const cells=publicSchemeLevels.map(([name,value])=>`<div class="public-risk-cell"><span>${name}</span><b>${value}</b></div>`).join('');
+  return `<section class="public-scheme"><div class="public-scheme-top"><b>${title}</b><button class="btn" onclick="previewPublicScheme('${kind}')">预览长图</button></div><div class="public-scheme-desc">不同风险偏好客户的风险资产配置比例建议</div><div class="public-risk-grid">${cells}</div></section>`;
+}
+function renderPublicSchemes(){
+  const box=document.createElement('section');box.className='public-schemes';box.id='publicSchemes';
+  box.innerHTML=`<div class="public-schemes-head"><b>标准方案素材</b><span>公共素材</span></div><div class="public-scheme-grid">${publicSchemeCard('small','小C五档方案')}${publicSchemeCard('big','大C五档方案')}</div>`;
+  document.querySelector('.top').insertAdjacentElement('afterend',box);
+}
+function previewPublicScheme(kind){
+  const small=kind==='small',title=small?'小C五档方案':'大C五档方案';
+  $('modalTitle').textContent=title+' · 长图预览';
+  $('modalBody').innerHTML=small
+    ? `<img class="scheme-preview-image" src="../assets/standard-schemes/small-c-five-schemes.png" alt="小C五档方案完整长图">`
+    : `<iframe class="scheme-preview-pdf" src="../assets/standard-schemes/big-c-five-schemes.pdf#view=FitH" title="大C五档方案完整长图"></iframe>`;
+  const foot=document.querySelector('#mask .modalfoot');if(foot)foot.innerHTML='<button class="btn primary" onclick="closeModal()">关闭</button>';
+  $('mask').classList.add('show');
+}
+/* 客户详情不重复展示公共方案素材，避免和顶部公共区混淆。 */
+materials=()=>'';
+renderPublicSchemes();renderDetail();
+</script><style>
+/* 最终覆盖：客户详情方案区固定在沟通话术之后。 */
+</style><script>
+const accountRenderReportWithSpeech=renderReport;
+renderReport=function(customer,report,status){
+  accountRenderReportWithSpeech(customer,report,status);
+  if(status==='error')return;
+  const area=$('reportArea');
+  if(!area || area.querySelector('.customer-schemes'))return;
+  area.insertAdjacentHTML('beforeend',customerSchemeBlock(customer));
+};
+renderDetail();
+</script></body></html>
+<script>
+/* 最终定位修正：沿用现有标准方案模块视觉，移动到沟通话术后并改名。 */
+(function(){
+  const moveCustomerFiveSchemeModule=()=>{
+    const detail=document.getElementById('detail');
+    if(!detail)return;
+    /* 统一保留客户详情中的最终方案模块，移除历史脚本遗留的重复模块。 */
+    detail.querySelectorAll('.customer-schemes').forEach(node=>node.remove());
+    const module=detail.querySelector('.customer-materials-card');
+    if(!module)return;
+    const title=module.querySelector('.cardhead b');
+    if(title)title.textContent='客户五档方案素材';
+    const cards=[...detail.querySelectorAll('#reportArea .card')];
+    const speechCard=cards.find(card=>card.querySelector('.cardhead b')?.textContent.trim()==='沟通话术');
+    if(speechCard)speechCard.insertAdjacentElement('afterend',module);
+  };
+  const previousRenderDetail=window.renderDetail;
+  window.renderDetail=function(){previousRenderDetail();moveCustomerFiveSchemeModule();};
+  moveCustomerFiveSchemeModule();
+})();
+</script>
+<script>
+/* 最终兜底：正式页面不展示合规失败模拟按钮。 */
+(function(){
+  const removeDemoButton=()=>document.querySelectorAll('#reportArea button').forEach(button=>{
+    if((button.textContent||'').includes('模拟合规失败'))button.remove();
+  });
+  removeDemoButton();
+  const area=document.getElementById('reportArea');
+  if(area)new MutationObserver(removeDemoButton).observe(area,{childList:true,subtree:true});
+})();
+</script>

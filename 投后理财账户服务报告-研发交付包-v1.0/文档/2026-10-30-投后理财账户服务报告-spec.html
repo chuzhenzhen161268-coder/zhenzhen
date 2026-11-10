@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2026-10-30-投后理财账户服务报告-spec</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/specs/2026-10-30-投后理财账户服务报告-spec.md">原始 Markdown</a></p><h1>投后理财账户服务报告 — 需求规格（Spec）</h1>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>投后理财账户服务报告 — 需求规格（Spec）</title><style>body{margin:0;background:#f4f6f8;color:#172033;font:15px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:980px;margin:28px auto;padding:34px 42px;background:#fff;border:1px solid #e4e7ec;border-radius:10px}h1{font-size:28px;line-height:1.3;border-bottom:1px solid #eaecf0;padding-bottom:16px}h2{margin-top:30px;color:#175cd3}h3{margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:8px 10px;border:1px solid #eaecf0;text-align:left;vertical-align:top}th{background:#f8f9fb;font-weight:700}code{background:#f2f4f7;padding:2px 5px;border-radius:4px}pre{padding:14px;background:#101828;color:#f8f9fb;overflow:auto;border-radius:6px}a{color:#175cd3}blockquote{border-left:3px solid #84adff;padding-left:14px;color:#667085}.task-list-item{list-style:none}.task-list-item input{margin-right:7px}.hierarchy{margin:16px 0;padding:22px 24px;background:#f8faff;border:1px solid #dbe7ff;border-radius:12px;color:#172033}.hierarchy-root{display:inline-block;padding:10px 16px;background:#eaf2ff;border:1px solid #8fb3f5;border-radius:8px;font-weight:700;color:#175cd3}.hierarchy-branch{margin:12px 0 0 20px;padding:14px 18px;border-left:2px solid #9bbcf5}.hierarchy-parent{margin:8px 0;padding:10px 14px;background:#fff;border:1px solid #b8d0ff;border-radius:8px;font-weight:600}.hierarchy-children{margin:8px 0 0 20px;padding-left:18px;border-left:1px dashed #9bbcf5}.hierarchy-item{position:relative;margin:8px 0;padding:8px 12px;background:#fff;border:1px solid #e1eaff;border-radius:7px}.hierarchy-item:before{content:"";position:absolute;left:-19px;top:50%;width:17px;border-top:1px dashed #9bbcf5}.flow-svg{margin:18px 0;padding:20px;background:#f8faff;border:1px solid #dbe7ff;border-radius:12px;overflow:auto}.flow-svg svg{display:block;width:100%;min-width:900px;height:auto}.flow-svg .node{fill:#fff;stroke:#8fb3f5;stroke-width:1.5}.flow-svg .decision{fill:#eef5ff;stroke:#2b73ff;stroke-width:1.6}.flow-svg .exception{fill:#fff7ed;stroke:#f59e0b;stroke-width:1.5}.flow-svg .line{stroke:#6b8dcc;stroke-width:1.6;fill:none;marker-end:url(#arrow)}.flow-svg text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;fill:#172033;font-size:14px}.flow-svg .small{font-size:12px;fill:#667085}.flow-svg .title{font-size:16px;font-weight:700;fill:#175cd3}</style></head><body><main><p><a href="../交付中心.html">返回交付中心</a>　<a href="../docs/specs/2026-10-30-投后理财账户服务报告-spec.md">原始 Markdown</a></p><h1>投后理财账户服务报告 — 需求规格（Spec）</h1>
 <p><strong>产品名称</strong>：投后理财账户服务报告
 <strong>模式</strong>：新需求（greenfield）
 <strong>平台类型</strong>：Web 网页 / GWork（WorkBuddy）串联内部服务清单
@@ -34,8 +34,11 @@
 <li>单客任务码无效、过期或无权限：中转页阻止传递并提示重新输入或联系权限管理员；敏感信息不得传给 WorkBuddy。</li>
 <li>无命中客户：展示圈客条件和无数据状态，不生成空客户详情。</li>
 <li>画像字段缺失：展示不可用标识，话术不得补造缺失信息。</li>
-<li><strong>标准方案素材</strong>：作为当前客户维度的公共模块，位于客户概况之后、报告 Tab 之前，随详情区域滚动；不归属诊断与优化报告正文。外层仅展示小 C、大 C 两张方案卡片，点击后从右侧抽屉展示对应详情；小 C、大 C 各 5 档，五档名称统一为“低波动方案、中低波动方案、中波动方案、中高波动方案、高波动方案”。持有公募产品展示小 C 五档，持有私募产品展示大 C 五档，同时持有两类产品展示两组共 10 档。不按单个客户资产金额或画像再次筛选档位。</li>
-<li>标准方案素材在抽屉中按档位支持预览、下载和勾选“加入群发素材”，默认均不勾选；仅员工主动勾选的方案进入群发确认。素材不参与报告或话术生成，不因客户画像改写。方案选择按客户隔离保存，群发时随该客户自身的报告/话术发送，不得跨客户复用。</li>
+<li><strong>标准方案素材分层</strong>：页面顶部保留页面级公共“标准方案素材”模块，位于顶部任务概览卡片下方、客户列表与详情区域上方；不归属诊断与优化报告正文，也不按当前选中客户过滤。外层并排展示“小C五档方案”和“大C五档方案”两张紧凑素材卡，各卡明确列出低波动、中低波动、中波动、中高波动、高波动五档及其风险资产配置比例 15%、30%、50%、65%、80%。</li>
+<li>员工点击顶部任一公共素材卡的“预览长图”后，直接在预览层查看完整长图：小C展示 PNG 长图，大C展示 PDF 长图。顶部公共素材仅供浏览，不参与报告或话术生成，也不进入客户企微群发素材选择。</li>
+<li>客户详情在沟通话术下方增加“客户五档方案素材”模块，沿用现有方案素材卡视觉结构。根据客户持仓类型过滤可用素材：持有公募展示小C，持有私募展示大C，同时持有公募和私募则同时展示小C、大C。</li>
+<li>客户详情模块外层不展开五档内容；点击查看/选择后打开侧拉抽屉。小C和大C分别使用 radio 单选，默认均不选；同一类型再次选择新档位自动替换旧档位，切换客户时恢复该客户自己的选择状态，客户之间不得共享选择。</li>
+<li>抽屉内每一档均支持预览和下载；点击“加入群发素材”后将所选档位写入当前客户的客户级素材状态，并在外层卡片展示已加入的类型与档位。客户级方案素材可与当前客户可发送的报告长图和对应话术一起进入企微群发确认。</li>
 <li>报告预览为长图只读预览，预览层不提供企微发送或“发送给客户”操作；报告卡提供下载图片。</li>
 <li>AI 话术支持在页面内直接编辑，失焦保存非空内容；人工编辑话术不标记“合规通过”。</li>
 </ul>
@@ -117,7 +120,7 @@
 <li>详情区展示风险等级、整体持仓金额、理财持仓金额、客户视图入口以及周报、月报、诊断与优化报告三个独立状态。</li>
 <li>三类报告支持成功、异常和空状态；成功报告支持预览/下载，异常报告支持重试。</li>
 <li>周报、月报、诊断与优化报告分别展示对应话术；每份话术仅使用其对应报告作为输入。合规失败三次后，该话术进入人工编辑态并仅限制该话术的复制和企微触达权限。</li>
-<li>顶部展示生成来源/生成时间；群发从左侧客户列表搜索框下方发起，确认时按客户逐份展示可发送报告长图、对应话术、不可发送原因及该客户已选方案素材。</li>
+<li>顶部展示生成来源/生成时间；群发从左侧客户列表搜索框下方发起，确认时按客户逐份展示可发送报告长图、对应话术和不可发送原因，不包含页面公共方案素材。</li>
 </ul>
 <h4><code>./docs/prd/pages/03-客户服务任务码中转.md</code></h4>
 <ul>
@@ -140,10 +143,11 @@
 <li>有最新报告时可复用；缺失时在 GWork 内现场调用开发三部 Skill，报告完成前不进入服务清单。</li>
 <li>三类报告独立处理，单类失败不阻塞其他已完成报告和对应话术；异常 Tab 可识别并支持重试。</li>
 <li>一个客户按周报、月报、诊断与优化报告分别生成对应话术；每份话术只使用其对应的成功报告，不读取其他报告内容。</li>
-<li>当前客户公共素材区中，公募客户展示小 C 五档标准方案，私募客户展示大 C 五档标准方案，同时持有两类产品展示两组；主页面只展示两张方案卡片，五档详情在右侧抽屉中查看。每档支持预览、下载和勾选加入群发素材，默认不勾选，且按客户隔离保存。</li>
+<li>页面顶部公共素材区固定展示小C、大C两张五档方案卡，不受客户持仓、公募/私募类型或当前客户选择影响。卡片直接展示五档名称和风险资产配置比例（15%/30%/50%/65%/80%），点击“预览长图”后打开对应完整方案长图；该公共素材不进入群发。</li>
+<li>客户详情在沟通话术下方展示“客户五档方案素材”，按公募/私募持仓决定可用的小C/大C类型；每类抽屉内最多单选 1 档，默认不选，选择状态按客户隔离；每档支持预览和下载，确认后作为当前客户群发附加素材并在外层显示已加入状态。</li>
 <li>每份话术审核失败最多重生成 3 次；三次失败后客户仍展示，但仅该话术在人工编辑前不可复制和触达，人工编辑后立即恢复。</li>
 <li>单客查询必须经过内部任务码中转，任务码不含客户敏感信息且无权限/过期时不能继续查询。</li>
-<li>群发按客户、报告类型、话术审核状态和成功回执计算可发送内容；异常报告、待人工编辑话术、已触达报告不发送，确认操作固定在弹窗底部。</li>
+<li>群发按客户、报告类型、话术审核状态、客户级方案素材和成功回执计算可发送内容；异常报告、待人工编辑话术、已触达报告不发送，确认操作固定在弹窗底部；顶部公共方案不进入群发。</li>
 <li>完整报告以长图只读预览；AI 话术可页内编辑并失焦保存，人工编辑后不展示“合规通过”标签。</li>
 </ol>
 <h2>六、风险与依赖</h2>

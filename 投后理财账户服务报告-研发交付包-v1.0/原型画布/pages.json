@@ -1,0 +1,97 @@
+{
+  "version": "1",
+  "generatedAt": "2026-11-05T10:37:32.514Z",
+  "project": "投后理财账户服务报告-研发交付包-v1.0",
+  "initialPage": "account-service",
+  "demoEntry": "demo/demo.html",
+  "viewDefaults": {
+    "theme": "light",
+    "locked": false
+  },
+  "pages": [
+    {
+      "id": "account-service",
+      "name": "投后理财账户服务报告",
+      "order": 1,
+      "sourceHtml": "/Users/zhenzhen/Documents/Codex/2026-09-22/wo-x/投后理财账户服务报告-研发交付包-v1.0/原型画布/pages/02-客户投后理财账户服务报告.html",
+      "lastScannedAt": "2026-11-05T10:37:32.513Z",
+      "missing": false,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mainStates": [
+        {
+          "key": "normal",
+          "label": "默认客户 · 周报",
+          "tag": "default"
+        },
+        {
+          "key": "monthly",
+          "label": "月报",
+          "tag": "report"
+        },
+        {
+          "key": "diagnosis",
+          "label": "诊断与优化报告",
+          "tag": "report"
+        },
+        {
+          "key": "report-error",
+          "label": "报告生成异常",
+          "tag": "error"
+        },
+        {
+          "key": "compliance-failed",
+          "label": "话术三次合规失败 · 人工编辑",
+          "tag": "error"
+        }
+      ],
+      "overlays": [
+        {
+          "key": "report-preview",
+          "label": "账户报告长图预览",
+          "kind": "modal"
+        },
+        {
+          "key": "scheme-drawer",
+          "label": "客户五档方案素材抽屉 · 单选",
+          "kind": "drawer"
+        },
+        {
+          "key": "scheme-preview",
+          "label": "方案档位预览与下载",
+          "kind": "modal"
+        },
+        {
+          "key": "broadcast",
+          "label": "企微一键群发确认",
+          "kind": "modal"
+        }
+      ],
+      "triggers": [
+        {
+          "stateKey": "normal",
+          "overlayKey": "report-preview",
+          "action": "点击报告卡片的「查看完整报告」"
+        },
+        {
+          "stateKey": "normal",
+          "overlayKey": "scheme-drawer",
+          "action": "在沟通话术下方点击「查看/选择方案」"
+        },
+        {
+          "stateKey": "normal",
+          "overlayKey": "scheme-preview",
+          "action": "在方案抽屉选择单一档位并点击「预览」"
+        },
+        {
+          "stateKey": "normal",
+          "overlayKey": "broadcast",
+          "action": "点击左侧客户列表上方「企微一键群发」"
+        }
+      ],
+      "sourceFile": "pages/02-客户投后理财账户服务报告.html"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>投后理财账户服务报告｜交互逻辑映射</title>
+<style>
+:root{--blue:#2b73ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa;--soft:#f8faff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:1440px;margin:0 auto;padding:32px 36px 64px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:24px}.eyebrow{color:var(--blue);font-weight:700;font-size:12px}.title{font-size:30px;line-height:1.3;margin:6px 0}.intro{max-width:860px;color:var(--muted);margin:0}.back{color:var(--blue);text-decoration:none;border:1px solid #b8d0ff;background:#fff;border-radius:7px;padding:9px 13px;white-space:nowrap}.section{margin-top:24px}.section h2{font-size:20px;margin:0 0 12px}.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:1120px}th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--soft);font-size:12px;color:#475467;white-space:nowrap}tr:last-child td{border-bottom:0}.id{color:var(--blue);font-weight:750;white-space:nowrap}.frame{font-weight:650}.rule{color:#344054}.note{margin-top:18px;padding:15px 17px;border-left:3px solid var(--blue);background:#eef4ff;color:#344054;border-radius:4px}.index td{white-space:normal}.footer{margin-top:28px;color:#98a2b3;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div><div class="eyebrow">原型评审画布配套文档 · v1.0</div><h1 class="title">投后理财账户服务报告｜交互逻辑映射</h1><p class="intro">按 AC 编号将画布上的页面状态、浮层和逻辑节点映射到触发条件、页面结果、业务规则及研发文档。可点击演示请返回原型入口，画布用于静态评审、标注和状态总览。</p></div><a class="back" href="index.html">返回原型画布</a></div>
+<section class="section"><h2>入口与报告链路</h2><div class="table-wrap"><table><thead><tr><th>编号</th><th>功能/页面区域</th><th>触发操作</th><th>前置条件</th><th>页面结果</th><th>关键规则</th><th>对应文档</th></tr></thead><tbody>
+<tr><td class="id">AC-01</td><td>自动任务 / 员工主动查询</td><td>周期任务推送；或员工在 GWork 发起查询</td><td>自动任务按周/月周期；主动查询先明确客户范围</td><td>进入统一报告服务链路</td><td class="rule">自动任务仅圈选名下有基础服务关系且有持仓的客户；周报周一、月报每月首个交易日、诊断报告每月第二个交易日</td><td>主 PRD 4.1；Spec 5</td></tr>
+<tr><td class="id">AC-02</td><td>客户范围与安全中转</td><td>批量查询选自由圈客；单客查询进入中转页并校验</td><td>批量客户范围已确认；单客账号和员工权限有效</td><td>授权客户信息安全进入 WorkBuddy/GWork</td><td class="rule">不把客户姓名、资金账号直接传给 WorkBuddy；任务码一次性、限本场景、10 分钟有效；失败/过期阻断并允许重试</td><td>主 PRD 4.2；任务码中转页面 PRD</td></tr>
+<tr><td class="id">AC-03</td><td>报告读取/生成</td><td>发起报告任务</td><td>有画像与客户范围；员工未指定类型或指定类型</td><td>有最新报告则读取，否则现场调用对应报告 Skill</td><td class="rule">未指定时默认周报、月报、诊断与优化三类；指定时只生成指定类型；报告类型相互独立</td><td>主 PRD 4.3；Spec 5</td></tr>
+<tr><td class="id">AC-04</td><td>报告 Tab 与异常状态</td><td>点击周报/月报/诊断 Tab；异常时重试</td><td>当前客户已进入服务清单</td><td>切换对应报告摘要、更新时间、话术；异常呈现空/异常态</td><td class="rule">单类失败不阻塞其他已完成报告；异常报告不可进入群发</td><td>页面 PRD 3.2、4；Spec 5</td></tr>
+<tr><td class="id">AC-05</td><td>完整报告长图</td><td>点击“查看完整报告”或下载</td><td>当前报告生成成功</td><td>打开只读长图预览或下载报告图片</td><td class="rule">预览不提供发送操作；下载不改变触达状态</td><td>页面 PRD 3.3、4</td></tr>
+</tbody></table></div></section>
+<section class="section"><h2>话术与素材</h2><div class="table-wrap"><table><thead><tr><th>编号</th><th>功能/页面区域</th><th>触发操作</th><th>前置条件</th><th>页面结果</th><th>关键规则</th><th>对应文档</th></tr></thead><tbody>
+<tr><td class="id">AC-06</td><td>按报告生成对应话术</td><td>对应报告生成/读取完成</td><td>报告内容可用</td><td>周报、月报、诊断各有一份话术</td><td class="rule">话术只依赖对应报告；每份分别进行合规审核，不混合不同报告</td><td>主 PRD 4.3；页面 PRD 3.4</td></tr>
+<tr><td class="id">AC-07</td><td>AI 话术编辑</td><td>点击话术正文进入编辑；失焦保存</td><td>当前客户/报告话术存在</td><td>当前模块内直接编辑并保存非空内容</td><td class="rule">空内容不保存；客户和报告类型之间状态隔离；复制入口置于话术卡右上</td><td>页面 PRD 3.4、4</td></tr>
+<tr><td class="id">AC-08</td><td>合规失败人工编辑</td><td>合规失败自动重生成；第三次失败后员工编辑</td><td>单份话术连续三次审核失败</td><td>显示待人工编辑态；编辑保存后恢复复制/群发资格</td><td class="rule">编辑前禁止复制和触达；人工编辑不再审且不显示“合规通过”；其他报告话术不受影响</td><td>主 PRD 4.4；页面 PRD 3.4</td></tr>
+<tr><td class="id">AC-09</td><td>顶部标准方案公共素材</td><td>点击小C/大C“预览长图”</td><td>页面加载</td><td>打开对应完整 PNG/PDF 长图</td><td class="rule">固定展示全部五档及比例，不随客户切换；仅预览，不进入客户群发</td><td>页面 PRD 3.5；Spec 5</td></tr>
+<tr><td class="id">AC-10</td><td>客户方案类型过滤</td><td>切换客户查看“客户五档方案素材”</td><td>当前客户有公募/私募持仓</td><td>公募展示小C，私募展示大C，两者皆有则同时展示</td><td class="rule">客户无对应持仓时不出现该类型；客户级选择不共享</td><td>页面 PRD 3.5</td></tr>
+<tr><td class="id">AC-11</td><td>客户五档单选与素材加入</td><td>在抽屉选择档位、预览/下载，点击“加入群发素材”</td><td>当前客户存在相应持仓类型</td><td>外层显示已加入类型与档位，并作为该客户附加群发素材</td><td class="rule">小C、大C分别最多单选1档；默认不选；选择新档位替换原档；不等于立即发送</td><td>页面 PRD 3.5、4</td></tr>
+<tr><td class="id">AC-12</td><td>客户间选择状态隔离</td><td>在不同客户间切换、分别选档</td><td>多个客户可选同类方案</td><td>返回客户时恢复自己的选择</td><td class="rule">同类同档可以被多个客户分别选择，但状态与素材归属按客户隔离</td><td>页面 PRD 3.5</td></tr>
+</tbody></table></div></section>
+<section class="section"><h2>企微群发</h2><div class="table-wrap"><table><thead><tr><th>编号</th><th>功能/页面区域</th><th>触发操作</th><th>前置条件</th><th>页面结果</th><th>关键规则</th><th>对应文档</th></tr></thead><tbody>
+<tr><td class="id">AC-13</td><td>可发送内容计算</td><td>打开群发确认</td><td>当前任务包含客户和各报告状态</td><td>按客户列出可发送报告长图、对应话术、该客户已加入方案；列出排除原因</td><td class="rule">报告异常、话术待人工编辑、已成功触达的报告排除；顶部公共素材不纳入</td><td>页面 PRD 3.6；Spec 5</td></tr>
+<tr><td class="id">AC-14</td><td>收件人确认与发送</td><td>勾选/取消客户，点击固定底部“确认发送”</td><td>至少有一个客户包含可发送报告/话术</td><td>按客户分别发送专属报告与对应话术，以及该客户已选方案素材</td><td class="rule">可取消单个客户；无可发送内容时禁用确认；成功回执用于防重；不发送其他客户方案素材</td><td>页面 PRD 3.6、4</td></tr>
+</tbody></table></div></section>
+<section class="section"><h2>画布状态索引</h2><div class="table-wrap"><table class="index"><thead><tr><th>画布 Frame</th><th>对应功能编号</th><th>核对重点</th></tr></thead><tbody>
+<tr><td class="frame">默认客户 · 周报</td><td>AC-01、AC-03、AC-04、AC-09、AC-10</td><td>来源/时间、公共素材、客户画像、报告摘要与话术、客户级素材入口</td></tr>
+<tr><td class="frame">月报</td><td>AC-03、AC-04、AC-06</td><td>月报摘要、更新时间与对应话术</td></tr>
+<tr><td class="frame">诊断与优化报告</td><td>AC-03、AC-04、AC-06</td><td>诊断内容与独立话术</td></tr>
+<tr><td class="frame">报告生成异常</td><td>AC-04、AC-13</td><td>异常态、重试入口、其他报告仍可用</td></tr>
+<tr><td class="frame">话术三次合规失败 · 人工编辑</td><td>AC-07、AC-08、AC-13</td><td>待编辑话术不可复制/触达；保存后恢复且不显示合规通过</td></tr>
+<tr><td class="frame">账户报告长图预览</td><td>AC-05</td><td>只读预览，无发送入口</td></tr>
+<tr><td class="frame">客户五档方案素材抽屉 · 单选</td><td>AC-10、AC-11、AC-12</td><td>按持仓展示；默认不选；radio 单选；加入当前客户素材</td></tr>
+<tr><td class="frame">方案档位预览与下载</td><td>AC-11</td><td>预览叠在抽屉上方；可下载当前档位</td></tr>
+<tr><td class="frame">企微一键群发确认</td><td>AC-13、AC-14</td><td>客户/报告/话术/方案分层，排除原因和固定底部确认</td></tr>
+</tbody></table></div></section>
+<div class="note">任务码中转没有 HTML 原型，不生成虚构截图；其字段校验、权限、一次性凭证、有效期与失败分支通过 AC-02 逻辑节点和主 PRD/页面 PRD 说明。</div>
+<div class="footer">画布用于静态评审与标注；可点击交互请从交付中心进入 demo/demo.html。</div>
+</main>
+</body>
+</html>

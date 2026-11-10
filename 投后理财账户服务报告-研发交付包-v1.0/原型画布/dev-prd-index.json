@@ -1,0 +1,58 @@
+{
+  "version": "1",
+  "generatedAt": "2026-11-05T10:37:32+00:00",
+  "devPrdDir": "dev-prd",
+  "latest": "交互逻辑映射.md",
+  "files": [
+    {
+      "file": "交互逻辑映射.md",
+      "name": "交互逻辑映射",
+      "product": "交互逻辑映射",
+      "version": null,
+      "versionTuple": null,
+      "mtime": 1793874057.2930372,
+      "mtimeIso": "2026-11-05T10:20:57+00:00",
+      "size": 6444
+    },
+    {
+      "file": "2026-10-30-投后理财账户服务报告-spec.md",
+      "name": "2026-10-30-投后理财账户服务报告-spec",
+      "product": "2026-10-30-投后理财账户服务报告-spec",
+      "version": null,
+      "versionTuple": null,
+      "mtime": 1793874057.2897341,
+      "mtimeIso": "2026-11-05T10:20:57+00:00",
+      "size": 12323
+    },
+    {
+      "file": "03-客户服务任务码中转.md",
+      "name": "03-客户服务任务码中转",
+      "product": "03-客户服务任务码中转",
+      "version": null,
+      "versionTuple": null,
+      "mtime": 1793874057.2862961,
+      "mtimeIso": "2026-11-05T10:20:57+00:00",
+      "size": 3150
+    },
+    {
+      "file": "02-客户投后理财账户服务报告.md",
+      "name": "02-客户投后理财账户服务报告",
+      "product": "02-客户投后理财账户服务报告",
+      "version": null,
+      "versionTuple": null,
+      "mtime": 1793874057.283693,
+      "mtimeIso": "2026-11-05T10:20:57+00:00",
+      "size": 11055
+    },
+    {
+      "file": "PRD-投后理财账户服务报告.md",
+      "name": "PRD-投后理财账户服务报告",
+      "product": "PRD-投后理财账户服务报告",
+      "version": null,
+      "versionTuple": null,
+      "mtime": 1793874057.28019,
+      "mtimeIso": "2026-11-05T10:20:57+00:00",
+      "size": 11669
+    }
+  ]
+}
