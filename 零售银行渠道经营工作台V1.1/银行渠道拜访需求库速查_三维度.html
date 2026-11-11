@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>渠道信任经营 · 需求库速查（三维度）</title>
+<style>
+  :root{
+    --navy:#0218BD; --blue:#1D78FA; --lightblue:#6FA8F5; --text:#444441;
+    --orange:#D87A2E; --bg:#EEF3FA; --card:#FFFFFF; --line:#DCE6F4;
+    --c-job:#0218BD; --c-soc:#1D78FA; --c-per:#6FA8F5;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"微软雅黑","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
+  .topbar{background:linear-gradient(90deg,var(--navy),var(--blue));color:#fff;padding:16px 26px;display:flex;align-items:center;gap:14px;}
+  .topbar .logo{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;}
+  .topbar h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.5px;}
+  .topbar .sub{font-size:12px;opacity:.85;margin-top:2px;}
+  .topbar .right{margin-left:auto;font-size:12px;opacity:.9;}
+  .wrap{max-width:1120px;margin:22px auto;padding:0 18px 60px;}
+
+  .note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:18px;box-shadow:0 2px 10px rgba(2,24,189,.06);font-size:13px;}
+  .note b{color:var(--navy);}
+  .note .frame{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
+  .note .pyr{flex:1;min-width:200px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#FBFDFF;}
+  .note .pyr .t{font-weight:700;margin-bottom:6px;}
+  .note .pyr.job .t{color:var(--c-job);}
+  .note .pyr.soc .t{color:var(--c-soc);}
+  .note .pyr.per .t{color:var(--c-per);}
+  .note .pyr ul{margin:0;padding-left:18px;font-size:12.5px;color:#5a6172;}
+
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:16px;box-shadow:0 2px 10px rgba(2,24,189,.06);}
+  .grp{display:flex;gap:4px;}
+  .grp button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 14px;cursor:pointer;font-size:13px;font-family:inherit;color:var(--text);}
+  .grp button.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .toolbar input[type=text]{padding:7px 10px;min-width:220px;}
+  .count{font-size:13px;color:#7a8194;margin-left:auto;}
+
+  .liblist{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .libcard{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;box-shadow:0 1px 6px rgba(2,24,189,.04);}
+  .libcard .lt{display:flex;align-items:center;gap:8px;}
+  .libcard .ln{font-weight:700;color:var(--navy);font-size:13.5px;}
+  .libcard .lc{font-size:11px;color:#8a93a6;margin-top:5px;}
+  .star{color:var(--orange);font-size:12px;}
+  .footer{text-align:center;color:#9aa3b3;font-size:12px;padding:24px;}
+  @media(max-width:860px){.liblist{grid-template-columns:1fr;}.topbar .right{display:none;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">需</div>
+  <div>
+    <h1>渠道信任经营 · 需求库速查</h1>
+    <div class="sub">银行关键人需求 · 三维度 46 项（职业需求 / 社会需求 / 个人需求）</div>
+  </div>
+  <div class="right">零售金融部 · 供科技系统建设参考</div>
+</div>
+
+<div class="wrap">
+
+  <div class="note">
+    <b>怎么用：</b>银行关键人的需求按「3」个维度刻画——<b>职业需求</b>是与关键人建立信任的主要起点（最该先谈）；<b>社会 / 个人需求</b>靠信任积累后自然浮现。可点击维度筛选、搜索需求项。
+    <div class="frame">
+      <div class="pyr job"><div class="t">① 职业需求（36 项）</div><ul><li>做事·成就·规避</li><li>KPI考核 / 职业发展 / 合作保障</li></ul></div>
+      <div class="pyr soc"><div class="t">② 社会需求（5 项）</div><ul><li>责任·连接·形象</li><li>父母医疗 / 子女教育 / 朋友 / 社交</li></ul></div>
+      <div class="pyr per"><div class="t">③ 个人需求（5 项）</div><ul><li>生存·享受·发展</li><li>爱好 / 投资 / 学习 / 减压</li></ul></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <span class="grp" id="libTabs">
+      <button data-l="all" class="on">全部</button>
+      <button data-l="职业需求">职业需求</button>
+      <button data-l="社会需求">社会需求</button>
+      <button data-l="个人需求">个人需求</button>
+    </span>
+    <input type="text" id="libQ" placeholder="搜索需求项 / 分组…">
+    <span class="count" id="cnt"></span>
+  </div>
+
+  <div class="liblist" id="libList"></div>
+
+  <div class="footer">渠道信任经营 · 需求库速查（三维度）· 情境需求(+1)本期不纳入</div>
+</div>
+
+<script>
+const DEMAND_LIB = [
+ {dim:'职业需求',cat:'对私零售-存款',role:'两者通用',name:'个人存款 / AUM 增量'},
+ {dim:'职业需求',cat:'对私零售-账户',role:'两者通用',name:'三方存管开户数',star:true},
+ {dim:'职业需求',cat:'客户类',role:'理财经理',name:'客户防流失与拉回'},
+ {dim:'职业需求',cat:'对私零售-账户',role:'两者通用',name:'个人养老金账户',star:true},
+ {dim:'职业需求',cat:'对私零售-客户',role:'两者通用',name:'财富级 / 私人银行客户数增加'},
+ {dim:'职业需求',cat:'对私零售-客户',role:'两者通用',name:'普通 / 金卡 / 白金卡客户增长'},
+ {dim:'职业需求',cat:'对私零售-产品',role:'两者通用',name:'理财产品销售'},
+ {dim:'职业需求',cat:'对私零售-产品',role:'两者通用',name:'基金销售'},
+ {dim:'职业需求',cat:'对私零售-产品',role:'两者通用',name:'保险产品销售'},
+ {dim:'职业需求',cat:'对私零售-产品',role:'两者通用',name:'贵金属销售'},
+ {dim:'职业需求',cat:'对私零售-产品',role:'两者通用',name:'信用卡发卡',star:true},
+ {dim:'职业需求',cat:'个贷产品',role:'理财经理',name:'贷款推荐（个贷 / 信用贷）'},
+ {dim:'职业需求',cat:'客户类',role:'两者通用',name:'客户满意度'},
+ {dim:'职业需求',cat:'对公业务',role:'行长',name:'对公存款'},
+ {dim:'职业需求',cat:'对公业务',role:'行长',name:'对公贷款'},
+ {dim:'职业需求',cat:'对公业务',role:'行长',name:'对公客户新增'},
+ {dim:'职业需求',cat:'对公业务（同业）',role:'行长',name:'同业存款'},
+ {dim:'职业需求',cat:'对公业务（托管）',role:'行长',name:'产品托管（资管 / 理财 / 信托）'},
+ {dim:'职业需求',cat:'综合管理',role:'行长',name:'网点综合排名'},
+ {dim:'职业需求',cat:'综合管理',role:'行长',name:'合规风控'},
+ {dim:'职业需求',cat:'综合管理',role:'行长',name:'员工管理 / 流失率'},
+ {dim:'职业需求',cat:'收入',role:'两者通用',name:'收入 / 绩效奖金'},
+ {dim:'职业需求',cat:'晋升',role:'两者通用',name:'晋升 / 职业发展'},
+ {dim:'职业需求',cat:'拓客',role:'两者通用',name:'客户面见与触达',star:true},
+ {dim:'职业需求',cat:'管理',role:'行长',name:'管理赋能（团队管理 + 员工成长）'},
+ {dim:'职业需求',cat:'管理',role:'行长',name:'资源整合（外部资源 + 异业合作）'},
+ {dim:'职业需求',cat:'信息',role:'两者通用',name:'信息情报'},
+ {dim:'职业需求',cat:'专业能力',role:'理财经理',name:'专业能力提升'},
+ {dim:'职业需求',cat:'效率',role:'理财经理',name:'效率提升'},
+ {dim:'职业需求',cat:'避险',role:'两者通用',name:'避险（避免违规和客户投诉）'},
+ {dim:'职业需求',cat:'合作保障-客户保护',role:'两者通用',name:'客户资产归属安全'},
+ {dim:'职业需求',cat:'合作保障-专业保护',role:'理财经理',name:'自身专业形象不被替代'},
+ {dim:'职业需求',cat:'合作保障-风险隔离',role:'两者通用',name:'合作风险隔离与兜底'},
+ {dim:'职业需求',cat:'合作保障-利益清晰',role:'两者通用',name:'利益回报清晰、可量化'},
+ {dim:'职业需求',cat:'合作保障-服务持续',role:'两者通用',name:'服务持续性与团队稳定性'},
+ {dim:'职业需求',cat:'合作保障-流程简化',role:'两者通用',name:'合作流程简化与操作指引'},
+ {dim:'社会需求',cat:'作为子女',role:'两者通用',name:'父母医疗 / 健康'},
+ {dim:'社会需求',cat:'作为父母',role:'两者通用',name:'子女教育 / 升学'},
+ {dim:'社会需求',cat:'作为父母',role:'两者通用',name:'子女实习 / 就业'},
+ {dim:'社会需求',cat:'作为朋友',role:'两者通用',name:'朋友托付 / 朋友圈互助'},
+ {dim:'社会需求',cat:'作为社交人',role:'两者通用',name:'社交圈维护与拓展'},
+ {dim:'个人需求',cat:'个人爱好',role:'两者通用',name:'运动 / 休闲 / 娱乐'},
+ {dim:'个人需求',cat:'个人投资',role:'两者通用',name:'个人理财 / 炒股 / 资产配置'},
+ {dim:'个人需求',cat:'个人投资（进阶）',role:'行长',name:'税务规划 / 资产传承'},
+ {dim:'个人需求',cat:'个人发展',role:'两者通用',name:'学习充电 / 自我提升'},
+ {dim:'个人需求',cat:'身心健康',role:'两者通用',name:'减压 / 健康管理'}
+];
+
+let libFilter='all', libQ='';
+function renderLib(){
+  const list=DEMAND_LIB.filter(d=>{
+    if(libFilter!=='all'&&d.dim!==libFilter) return false;
+    if(libQ&&!(d.name+d.cat).toLowerCase().includes(libQ.toLowerCase())) return false;
+    return true;
+  });
+  document.getElementById('cnt').textContent='共 '+list.length+' 项';
+  document.getElementById('libList').innerHTML=list.map(d=>{
+    const dc=d.dim==='职业需求'?'var(--c-job)':d.dim==='社会需求'?'var(--c-soc)':'var(--c-per)';
+    const bg=d.dim==='职业需求'?'#EAEcFB':d.dim==='社会需求'?'#E6F0FE':'#EAF2FD';
+    return `<div class="libcard">
+      <div class="lt"><span class="ln">${d.name}</span>${d.star?'<span class="star">★ 话术已就绪</span>':''}</div>
+      <div class="lc"><span style="padding:0 6px;font-size:11px;color:${dc};background:${bg}">${d.dim}</span> ｜ 分组：${d.cat} ｜ 适用：${d.role}</div>
+    </div>`;
+  }).join('')||'<div class="empty" style="text-align:center;color:#9aa3b3;padding:40px">没有匹配的需求项</div>';
+}
+document.querySelectorAll('#libTabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#libTabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');libFilter=b.dataset.l;renderLib();
+});
+document.getElementById('libQ').addEventListener('input',e=>{libQ=e.target.value;renderLib();});
+renderLib();
+</script>
+</body>
+</html>

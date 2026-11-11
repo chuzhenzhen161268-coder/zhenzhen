@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 过程跟进网点联动 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-02-过程跟进网点联动-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>过程跟进网点联动 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-02 <strong>迭代版本号</strong>：零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code> <strong>流程设计要求</strong>：跳过（同一页内一个既有控件的联动范围扩展，不涉及页面流转、入口或分支决策的变化）</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：与现有用户一致。员工端＝客户经理（名下管辖一批网点）。</p>
+<p><strong>要解决的问题</strong>：员工端首页「过程跟进」四格当前只随「我的渠道」顶部的「时间周期」联动，<strong>不随同一行的「网点选择器」联动</strong>——员工把网点切到某个具体网点后，四格仍显示名下全量汇总，与「我的渠道」经营数据卡的口径不一致，无法回答"这个网点本周拜访了几次、还剩几条需求未满足"。改造后：过程跟进四格与「我的渠道」共用同一套「时间周期 + 网点」选择状态、整页联动；数据口径由 <code>userId + 周期</code> 扩为 <code>userId + 周期 + 网点</code>。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用。本产品为内部经营工作台，无对外竞品；"同页筛选控件驱动页内多模块"为通用做法，本次沿用。</p>
+<p><strong>AI 能力边界</strong>：不适用（本需求不涉及 AI 生成 / 判断 / 自动化）。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>员工端首页，「我的渠道」顶部网点选择器选中某具体网点 → 同页「过程跟进」四格数值按「该网点 + 当前所选周期」重算并即时刷新 → 四格点击行为与跳转目标不变（拜访/活动滚动至渠道拜访模块，需求格进入需求跟进表）。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li>网点＝「全部网点」（员工维度）→ 四格展示员工名下全量汇总（与现状一致）</li>
+<li>网点＝具体网点（网点维度）→ 四格展示该网点数据；清回「全部网点」恢复汇总</li>
+<li>周期切换（昨日 / 本周 / 自然月 / 本年）→ 在「当前所选网点」范围内重算四格（周期与网点两个维度同时生效、可任意组合）</li>
+<li>「需求未满足」的紧急副文本「N条紧急」→ 同口径随「网点 + 周期」重算</li>
+<li>四格点击行为不变：拜访次数 / 活动次数 → 滚动至「渠道拜访」模块；需求已满足 / 需求未满足 → 进入「需求跟进表」</li>
+<li>网点选择器自身行为不变（弹层、搜索、银行大类 chips、最近选择、建码卡片显隐均不动）</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li>状态：全部网点态（员工汇总）／具体网点态（该网点数据），每种 × 四个周期</li>
+<li>异常：沿用「过程跟进」既有的失败态（接口失败显示「--」+ 重试提示），本次不新增失败链路</li>
+<li>回退：网点清回「全部网点」、周期切回原值，四格各自恢复为对应口径的数值</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li>被动影响页：员工端首页「过程跟进」模块</li>
+<li>数据口径：过程数据聚合键由 <code>userId + 周期</code> 扩为 <code>userId + 周期 + 网点</code></li>
+<li>不受影响：员工端「我的渠道」经营数据卡口径（上一轮已改造）、「渠道星级分布」（仍只随周期联动）、「需求跟进表」自身的网点筛选、团队长端全部模块</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<p>无阻塞项。</p>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>§5.2「过程跟进」1.页面定位 / 4.页面模块说明 / 6.页面状态说明 / 7.数据字段建议 / 9.依赖说明；§4.4「我的渠道」展示内容</td>
+<td>「过程跟进」由「只跟周期」改为「周期 + 网点双维度联动」（与「我的渠道」同一套选择状态、整页联动）；数据字段补 <code>networkId</code> 维度说明；依赖聚合键改为 <code>userId + 周期 + 网点</code>；§4.4 明确该网点选择器为页面级、同时驱动「过程跟进」</td>
+</tr>
+</tbody></table>
+<blockquote><p>本轮两份 PRD 的相关章节已按本 Spec 同步更新（涉及章节见上表）；改动落在既有页面的模块联动与数据维度层，不触及产品结构与核心流程。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改（仅员工端）</td>
+<td>① 员工端「过程跟进」四格数值由「仅随 <code>period</code>」改为「随 <code>period</code> + <code>nwSel</code> 双维度」刷新（新增 4 周期 × 网点维度的取值，网点＝具体网点时取该网点数值、全部网点时取汇总数值）；② 「N条紧急」副文本同口径联动；③ 其余内容与团队长端一律不动</td>
+</tr>
+</tbody></table>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>员工端首页「过程跟进」模块</h4>
+<ul>
+<li>四格数值改由「当前所选周期 + 当前所选网点」共同决定：网点＝「全部网点」时展示员工名下汇总（与现状一致），网点＝具体网点时展示该网点数据；两维度可任意组合、同时生效</li>
+<li>「需求未满足」的紧急副文本「N条紧急」同口径随两维度刷新</li>
+<li>四格点击行为与跳转目标不变（拜访 / 活动 → 滚动至「渠道拜访」模块；需求 → 进入「需求跟进表」）</li>
+<li>空态口径不变：该网点该周期无数据显示「0」、不显示副文本</li>
+</ul>
+<h4>员工端「我的渠道」模块</h4>
+<ul>
+<li>无功能变化：其顶部网点选择器的作用域由「仅本模块」扩展为「本模块 + 过程跟进模块」；选择器自身交互与「我的渠道」内各项展示均不变</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 不改员工端「我的渠道」经营数据卡的取值口径（上一轮已完成：选中具体网点时 5→4 项、数值切该网点），保持现状</li>
+<li>❌ 不改员工端「渠道星级分布」——仍只随周期联动，不引入网点维度</li>
+<li>❌ 不改「需求跟进表」自身的网点筛选与数据口径；本轮<strong>不</strong>让「过程跟进 → 需求跟进表」的跳转继承当前所选网点（维持需求跟进表独立筛选，见 §六 风险）</li>
+<li>❌ 不改网点选择弹层实现本身（搜索、银行大类 chips、最近选择、空态兜底）</li>
+<li>❌ 不改员工端其余模块（重点关注、建码卡片、渠道拜访、工具库、知识库等）</li>
+<li>❌ 不改团队长端全部模块，含其「过程跟进 / 需求管理」的独立网点筛选器</li>
+<li>❌ 两份 PRD 中与本次无关的章节本轮不变（相关章节已同步更新，见 §3.1）</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>主路径可完成</strong>：员工端首页把网点切到某具体网点后，「过程跟进」四格与紧急副文本立即变为该网点对应数值；清回「全部网点」恢复员工汇总</li>
+<li><strong>关键分支成立</strong>：逐条对应 2.2 —— 周期与网点两维度可任意组合且同时生效；某网点某周期无数据显示「0」且无副文本；四格点击跳转不变</li>
+<li><strong>状态与异常口径</strong>：逐条对应 2.3 —— 接口失败仍显示「--」+ 重试提示；网点 / 周期回退后四格恢复对应口径数值</li>
+<li><strong>范围守界</strong>：第四节列出的模块、口径、埋点与版本号均未发生变化</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>推翻既有裁定（文档一致性）</strong>：本 Spec 推翻 2026-11-02 同日早些时候确认的「过程跟进只跟周期、不引入网点维度」口径，即 <code>product-manifest.json</code> 决策日志中的「过程跟进联动范围」条目。该条目已于本 Spec 批准后改写为「周期 + 网点双维度」。另经核定：<code>./docs/specs/2026-11-02-名下渠道数维度约束-spec.md</code> 中提及「不受影响」的两处（§二 2.4 与 §四）所指为员工端「需求跟进表」与团队长端「过程跟进 / 需求管理」的网点筛选，均不在本 Spec 改动范围内，无需修订。</li>
+<li><strong>风险（跳转口径不一致）</strong>：「过程跟进」按网点展示的「需求未满足」数，与点击进入的「需求跟进表」独立网点筛选之间可能出现数量对不上（如四格显示 3 条、进去看到 8 条）。本轮默认<strong>不继承</strong>当前网点、保持「需求跟进表」现状；若评审认为需要继承，作为独立后续需求处理。</li>
+<li><strong>前置依赖（阻塞数据侧）</strong>：过程数据统计接口需支持按 <code>userId + 周期 + networkId</code> 聚合。当前口径仅为 <code>userId + 周期</code>（员工 PRD §5.2 依赖说明）。数仓需确认可提供网点级过程数据（拜访记录表 / 需求记录表具备 <code>networkId</code> 归属）。<strong>兜底口径</strong>：若网点级过程数据不可得，四格在具体网点态下显示「--」并提示暂不支持，全部网点态不受影响。</li>
+<li><strong>依赖</strong>：「过程跟进」与「我的渠道」共用同一套「周期 + 网点」选择状态，建议复用同一状态源，避免再次分叉。</li>
+<li><strong>风险（数据形态）</strong>：网点级过程数据量级远小于员工级，可能出现大量 0 值网点；空数据展示沿用「0，不显示副文本」口径（文案已在页 PRD 细化）。</li>
+</ul>
+</main>
+</body>
+</html>

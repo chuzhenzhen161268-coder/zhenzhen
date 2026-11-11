@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 团队长端员工筛选搜索 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-09-团队长端员工筛选搜索-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>团队长端员工筛选搜索 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-09 <strong>迭代版本号</strong>：不升版本号（沿用 零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code>，仅页级追加修订行） <strong>流程设计要求</strong>：跳过（纯页内弹层交互增强，无入口 / 路径 / 分支变化，无需流程图）</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：团队长（与现有团队长端用户一致，不新增用户画像）。</p>
+<p><strong>要解决的问题</strong>：团队长端有 4 处「按员工筛选」入口（渠道星级详情页、过程跟进详情页、主页拜访记录日历、拜访记录日历详情二级页），其员工选择弹层目前是一张<strong>无搜索、无分组的固定长度平铺列表</strong>，只能逐条滚动查找。实际团队员工数量多时，滚动查找效率低、容易漏选。增加姓名搜索后，团队长可输入姓名关键字即时定位目标员工并选中。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用（本次为既有弹层加搜索框的局部增强，未做外部调研）。内部惯例对齐：同产品的「网点选择弹层」已实现"固定头部搜索框 + 列表内部滚动 + 空态兜底"的成熟模式，员工搜索沿用同一交互骨架。</p>
+<p><strong>AI 能力边界</strong>：不适用（纯字符串包含匹配，无 AI 参与）。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>团队长在 4 处页面点击「员工筛选」→ 弹出员工选择弹层 → 在搜索框输入姓名关键字 → 列表实时过滤出姓名包含关键字的员工 → 点击目标员工 → 筛选条件回填并关闭弹层 → 页面列表按该员工刷新。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>未输入关键字</strong> → 列表展示全部员工（= 现状口径）。</li>
+<li><strong>输入关键字且有命中</strong> → 列表仅展示姓名包含关键字的员工；「全部员工」常驻置顶、不参与过滤（与网点选择器「全部网点」置顶同理）。</li>
+<li><strong>输入关键字无命中</strong> → 列表区展示空态「没有找到匹配的员工」。</li>
+<li><strong>清空关键字</strong> → 立即恢复全量员工列表。</li>
+<li><strong>点击某员工 / 「全部员工」</strong> → 回填筛选条件、关闭弹层、刷新对应页面列表（沿用现状行为）。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>状态</strong>：正常（全量列表）／ 过滤态（按搜索词收窄）／ 空态（无匹配）。</li>
+<li><strong>空态</strong>：无匹配时列表区展示「没有找到匹配的员工」，搜索框保留输入内容以便用户修改。</li>
+<li><strong>异常</strong>：无（本地过滤，不涉及请求失败链路）。员工数据本身加载失败的口径沿用各页现有列表加载失败表现，本次不改。</li>
+<li><strong>回退</strong>：点遮罩 / 关闭按钮关闭弹层，<strong>不清空</strong>已选员工；<strong>重新打开弹层</strong>时搜索词清空、列表回到全量，当前已选员工保持高亮选中态。</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>主改页（4 处入口 → 3 个弹层）</strong>：</li>
+<li>团队长端「渠道星级详情页」与「拜访记录日历详情二级页」→ 共用 <code>csEmp</code> 员工弹层（一处改动两页生效）。</li>
+<li>团队长端「过程跟进详情页」→ <code>pdEmp</code> 员工弹层。</li>
+<li>团队长端「主页拜访记录」日历模块 → <code>vrEmp</code> 员工弹层。</li>
+<li><strong>被动影响页</strong>：无。各页列表刷新、筛选联动、返回保留筛选与滚动位置等既有口径均不变。</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<ul>
+<li>无阻塞项。</li>
+</ul>
+<hr>
+<h2>三、改/写的范围</h2>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售团队长看板_PRD_v0_4.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>§5.4 星级渠道详情 / §5.5 过程详情列表 / §5.5 拜访记录日历（含其日历详情二级页）</td>
+<td>三处「员工筛选器」统一补充姓名搜索能力说明：固定头部搜索框、输入即时按姓名包含匹配过滤、「全部员工」常驻置顶不过滤、无匹配空态「没有找到匹配的员工」、重新打开弹层清空搜索词且保留已选高亮；同步标注该能力为 4 处员工筛选共用同一实现</td>
+</tr>
+</tbody></table>
+<blockquote><p>说明：本产品为整份产品级 PRD（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区，故不新增独立页 PRD 文件；页级更新由 <strong>lon-page-design</strong> 产出。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改</td>
+<td>① 3 个员工选择弹层（<code>csEmpOpen</code> / <code>pdEmpOpen</code> / <code>vrEmpOpen</code>）在标题下方新增固定头部搜索框；② 员工选项由写死数组改为「姓名包含关键字」实时过滤，「全部员工」常驻置顶不参与过滤；③ 新增无匹配空态；④ 重新打开弹层清空搜索词（保留已选高亮）；⑤ 三处弹层的交互与文案保持一致</td>
+</tr>
+</tbody></table>
+<blockquote><p>内容权威：更新后的团队长端 PRD（§5.4 / §5.5）。未点名的弹层（网点选择弹层、周期 / 维度 / 星级变化弹层等）与页面其余部分保持原样。</p></blockquote>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>团队长端 · 渠道星级详情页 &amp; 拜访记录日历详情二级页（共用同一员工弹层）</h4>
+<ul>
+<li>「员工筛选」弹层新增姓名搜索能力：输入即时过滤、无匹配空态、重开清空搜索词；选中员工回填并关闭弹层的既有逻辑不变。</li>
+</ul>
+<h4>团队长端 · 过程跟进详情页</h4>
+<ul>
+<li>「员工筛选」弹层新增姓名搜索能力，行为与上面完全一致；切换员工后刷新过程明细列表的既有逻辑不变。</li>
+</ul>
+<h4>团队长端 · 主页拜访记录（日历模块）</h4>
+<ul>
+<li>「员工筛选」弹层新增姓名搜索能力，行为一致；切换员工后刷新日历标记的既有逻辑不变。</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 不新增员工数据字段（姓名拼音 / 工号）；搜索<strong>仅按姓名</strong>做包含匹配。</li>
+<li>❌ 不做「最近选择」员工置顶（与网点选择器的"最近选择"不对齐）。</li>
+<li>❌ 不给员工列表项增加副信息（工号 / 所属网点）；列表项维持仅展示姓名。</li>
+<li>❌ 不改网点选择弹层（<code>pdNet</code> / 网点选择器）及其搜索、大类 chips、最近选择逻辑。</li>
+<li>❌ 不改员工端任何页面；<code>./docs/prd/零售员工工作台_PRD_v1_5.md</code> 不动（员工端无同类员工筛选场景）。</li>
+<li>❌ 不改各弹层的高度、头部标题、关闭按钮、选中态样式等既有结构，仅追加搜索区与过滤逻辑。</li>
+<li>❌ 不改各页列表刷新、筛选联动、返回保留筛选与滚动位置等既有口径。</li>
+<li>❌ 不做跨页「员工搜索词/最近选择」状态共享；各弹层搜索状态相互独立。</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点。</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>主路径可完成</strong>：4 处入口的员工弹层均可输入姓名、列表即时过滤，并能选中目标员工回填、关闭弹层、刷新页面列表。</li>
+<li><strong>关键分支成立</strong>：未输入=全量；有命中=仅展示命中员工（「全部员工」常驻置顶）；无命中=空态；清空输入=立即恢复全量（逐条对应 2.2）。</li>
+<li><strong>状态与异常口径</strong>：无匹配时展示「没有找到匹配的员工」；重新打开弹层时搜索词已清空、列表回全量、已选员工仍高亮（逐条对应 2.3）。</li>
+<li><strong>口径一致</strong>：4 处入口的弹层行为、文案一致（其中渠道星级详情页与拜访记录日历详情二级页共用同一弹层，须同时生效）。</li>
+<li><strong>范围守界</strong>：第四节列出的文件、弹层与功能未发生变化。</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>前置依赖</strong>：无（姓名包含匹配不依赖任何新增数据字段）。</li>
+<li><strong>数据量风险</strong>：团队员工数量很大时，若采用全量本地过滤，列表长度与客户端渲染需关注；正式实现可考虑服务端过滤 / 分页（本次原型不涉及，建议在 PRD 依赖说明中提示）。</li>
+<li><strong>同名风险</strong>：仅按姓名匹配且列表项仅显示姓名，同名员工无法区分，存在选错可能；<strong>为已知限制、用户已确认接受</strong>（后续如需可再引入工号副信息）。</li>
+<li><strong>一致性风险</strong>：<code>csEmp</code> 弹层被「渠道星级详情页」与「拜访记录日历详情二级页」共用，改动须同时覆盖两页，避免只改一处导致行为不一致。</li>
+</ul>
+</main>
+</body>
+</html>

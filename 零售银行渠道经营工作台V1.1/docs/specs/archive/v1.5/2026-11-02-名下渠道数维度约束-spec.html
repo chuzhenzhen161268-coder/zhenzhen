@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 名下渠道数维度约束 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-02-名下渠道数维度约束-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>名下渠道数维度约束 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-02 <strong>迭代版本号</strong>：零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code> <strong>流程设计要求</strong>：跳过（纯指标可选项与展示项数调整，不涉及页面流转、入口或分支决策的变化）</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：与现有用户一致。员工端＝客户经理（名下管辖一批网点）；团队长端＝团队长（管辖团队覆盖的全部网点）。</p>
+<p><strong>要解决的问题</strong>：「名下渠道数」是员工级结构性指标（一个员工持有多少条渠道），在<strong>具体网点</strong>维度下不成立。当前两处把它按网点维度呈现：① 员工端「我的渠道」选中某具体网点后，经营数据卡仍列出「名下渠道数」；② 团队长端「团队总览 / 完整排名」把排名维度切到「按网点」后，仍可选「渠道数」作指标，得出"某网点＝N 个渠道"这类矛盾结果。本次把「该指标不得出现在网点维度」的口径正式写进两份 PRD，并把团队长端原型对齐（员工端原型已按同口径实现）。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用。本产品为内部经营工作台，无对外竞品；「维度不适用则该指标从该维度下退出」为通用做法，本次沿用。</p>
+<p><strong>AI 能力边界</strong>：不适用（本需求不涉及 AI 生成 / 判断 / 自动化）。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<ul>
+<li>员工端：「我的渠道」用网点选择器选中某具体网点 → 经营数据卡只展示 4 项（不含「名下渠道数」），数值切换为该网点数据。</li>
+<li>团队长端：「团队总览」把排名维度切到「按网点」→ 排名指标不再提供「渠道数」，排名列表按当前指标正常展示。</li>
+</ul>
+<h3>2.2 关键分支</h3>
+<ul>
+<li>员工端 网点＝「全部网点」（员工维度）→ 经营数据卡 5 项，含「名下渠道数」</li>
+<li>员工端 网点＝具体网点（网点维度）→ 经营数据卡 4 项，不含「名下渠道数」；清回「全部网点」恢复 5 项</li>
+<li>团队长端 排名维度＝「按员工」→ 排名可选指标 5 个，含「渠道数」</li>
+<li>团队长端 排名维度＝「按网点」→ 排名可选指标 4 个，「渠道数」不可选；切回「按员工」恢复 5 个可选</li>
+<li>团队长端 当前已选中「渠道数」时把维度切到「按网点」→ 维度切换照常生效，排名指标自动回落到默认指标「新增资产」，排名标题与列表按「新增资产 · 按网点」刷新；不给打断式提示；该回落是一次性的，之后把维度切回「按员工」不自动恢复为「渠道数」</li>
+<li>团队长端「团队业务指标」区恒展示 5 项（含「团队名下渠道数」），项数不随排名维度变化；但在排名维度＝「按网点」时，「名下渠道数」卡片整卡置灰（不可选态），切回「按员工」恢复正常外观。该卡一卡两用（团队维度指标展示 + 排名指标选择器），置灰表达的是"不可作为网点维度的排名指标"，其数值本身仍是有效的团队维度汇总</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li>状态：员工端 全部网点态（5 项）/ 具体网点态（4 项）；团队长端 排名维度＝按员工态（5 个可选指标，外观正常）/ 按网点态（4 个可选指标，其中「渠道数」卡呈置灰的不可选态）</li>
+<li>异常：指标加载失败等既有失败态不受本次影响（本次不新增失败链路，只调整指标可选项与展示项数）</li>
+<li>回退：员工端把网点清回「全部网点」、团队长端把排名维度切回「按员工」，指标项数各自恢复为 5</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li>被动影响页：员工端「我的渠道」（经营数据卡区块）；团队长端「团队总览」（团队业务指标区 + 当前排名分析）；团队长端「完整排名详情」</li>
+<li>结果页：无（不新增页面、不新增跳转）</li>
+<li>不受影响：员工端「需求跟进表」与团队长端「过程跟进 / 需求管理」的网点筛选（其指标不含渠道数）；团队长端「员工详情」的「名下渠道数」（员工维度，本就成立）</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<p>无阻塞项。</p>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>功能清单「我的渠道 · 渠道经营数据统计卡」、§4.4「我的渠道」展示内容 / 页面状态 / 数据字段表、§8 首版范围</td>
+<td>「名下渠道数」补维度可用性说明（仅员工维度展示，选中具体网点时不展示）；把「5 个经营数据统计卡片」的表述补上"具体网点态为 4 项"的例外</td>
+</tr>
+<tr>
+<td><code>./docs/prd/零售团队长看板_PRD_v0_4.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>功能清单「团队总览 · 团队业务指标 / 当前排名分析」、§4 团队总览的「团队业务指标」「当前排名分析」「完整排名详情」、对应页面状态与数据字段表</td>
+<td>明确「团队业务指标」区恒 5 项、不受排名维度影响；「按网点」维度下「渠道数」从排名可选指标中退出（不可选），并写明选中「渠道数」时切维度的自动回落口径</td>
+</tr>
+</tbody></table>
+<blockquote><p>本轮两份 PRD 的相关章节已按本 Spec 同步更新（涉及章节见上表）；改动落在既有页面的指标维度口径层，不触及产品结构与核心流程。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改（仅团队长端）</td>
+<td>① 团队长端「团队总览」：排名维度＝「按网点」时「渠道数」不可作为排名指标（不可选），该卡在「团队业务指标」区仍照常展示 5 项；② 团队长端：当前选中「渠道数」时切到「按网点」→ 排名指标自动回落到默认「新增资产」；③ 团队长端「完整排名详情」页同规则</td>
+</tr>
+</tbody></table>
+<blockquote><p>员工端「我的渠道」经营数据卡的同口径实现已在本次 Spec 之前完成（选中具体网点即隐藏「名下渠道数」），本轮不重复改动。</p></blockquote>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>员工端「我的渠道」页</h4>
+<ul>
+<li>经营数据卡：网点＝「全部网点」时展示 5 项（含「名下渠道数」）；选中具体网点后隐藏「名下渠道数」、只展示 4 项，且数值切换为该网点数据；清回「全部网点」恢复 5 项</li>
+</ul>
+<h4>团队长端「团队总览」页</h4>
+<ul>
+<li>「团队业务指标」区：恒展示 5 项业务指标（含「团队名下渠道数」），项数不随排名维度变化；排名维度＝「按网点」时该卡整卡置灰（不可选态），切回「按员工」恢复正常外观；其余 4 张卡与各项数值、环比趋势均不变</li>
+<li>「当前排名分析」区：排名维度＝「按员工」时可选 5 个指标；切换到「按网点」时「渠道数」退出可选范围（表现为不可选、对应卡片置灰），其余 4 个指标照常可选</li>
+<li>冲突回落：当前选中「渠道数」时切到「按网点」，排名指标自动回落到默认「新增资产」，排名标题与列表随「新增资产 · 按网点」刷新；该回落为一次性，切回「按员工」不自动恢复</li>
+</ul>
+<h4>团队长端「完整排名详情」页</h4>
+<ul>
+<li>指标选择器与维度选择器同规则：维度＝「按网点」时「渠道数」不可选且对应卡片置灰；当前选中「渠道数」时切到「按网点」自动回落到默认指标</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 员工端「我的渠道」的「名下渠道数」卡片在「全部网点」态照常展示，不删除该指标本身</li>
+<li>❌ 不把该约束写成通用规则（如"员工级结构性指标一律不得出现在网点维度"）；本次只点名「名下渠道数」一个指标</li>
+<li>❌ 不改员工端「我的渠道」其余 4 项经营指标的取值口径与周期联动逻辑</li>
+<li>❌ 不改团队长端「团队业务指标」区的 5 项项数、各项数值与环比趋势；唯一例外：排名维度＝「按网点」时为「名下渠道数」卡增置灰的不可选态（2026-11-02 追加，见 2.2 / 3.3）</li>
+<li>❌ 不改团队长端「团队总览」的周期下拉、按员工/按网点排序能力、员工穿透入口</li>
+<li>❌ 不改团队长端「员工详情」的「名下渠道数」（员工维度，本就成立）</li>
+<li>❌ 不改员工端「需求跟进表」、团队长端「过程跟进 / 需求管理」的网点筛选（其指标不含渠道数）</li>
+<li>❌ 两份 PRD 中与「名下渠道数」指标维度无关的章节本轮不变（相关章节已同步更新，见 §3.1）</li>
+<li>❌ 不改的原型：员工端经营数据卡实现（本次 Spec 之前已按同口径完成）；团队长端其余页面与模块</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>主路径可完成</strong>：员工端「我的渠道」选中具体网点后，经营数据卡看不到「名下渠道数」、只展示 4 项且数值为该网点数据；团队长端「团队总览」切到「按网点」后，无法选到「渠道数」作排名指标</li>
+<li><strong>关键分支成立</strong>：逐条对应 2.2 —— 员工端清回「全部网点」恢复 5 项；团队长端切回「按员工」恢复 5 个可选指标；团队长端「团队业务指标」区恒 5 项且「按网点」维度下「渠道数」卡置灰、切回「按员工」恢复外观；当前选中「渠道数」时切到「按网点」自动回落到「新增资产」且切回维度不自动恢复</li>
+<li><strong>状态与异常口径</strong>：逐条对应 2.3 —— 网点 / 维度回退后指标项数恢复为 5；既有加载失败态不受影响</li>
+<li><strong>范围守界</strong>：第四节列出的页面、模块、埋点与版本号均未发生变化</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>口径来源</strong>：本约束此前由产品在评审中确认（网点级视图下展示员工级结构性指标会造成误解）。本 Spec 已把它正式落档，并已按本 Spec 同步回写两份 PRD 的相关章节（见 §3.1）；研发实现以本次补充的维度可用性说明为准。</li>
+<li><strong>风险（两端表现不一致）</strong>：员工端用「整卡隐藏」、团队长端用「不可选 + 整卡置灰但不隐藏」。原因：员工端该卡纯为展示；团队长端该卡一卡两用（团队维度指标展示 + 排名指标选择器），隐藏会误伤团队维度指标，故改用置灰表达不可选。页 PRD 已写明该差异的原因，避免下游误判为口径不统一。</li>
+<li><strong>风险（置灰的副作用）</strong>：团队长端置灰后，该卡在「团队业务指标」语境下会显得像失效值，而其数值（团队名下渠道数）实际仍有效。页 PRD 已说明置灰仅表示"不可作为网点维度的排名指标"。</li>
+<li><strong>依赖</strong>：团队长端「完整排名详情」与「团队总览」共用同一套指标与维度选择逻辑，建议复用同一实现，避免再次分叉。</li>
+<li><strong>风险（未来）</strong>：若后续新增其他员工级结构性指标，需逐个人工判断是否适用本约束（本次刻意未写成通用规则）。</li>
+</ul>
+</main>
+</body>
+</html>

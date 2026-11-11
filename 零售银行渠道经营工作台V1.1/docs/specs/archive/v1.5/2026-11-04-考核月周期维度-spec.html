@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 考核月周期维度 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-04-考核月周期维度-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>考核月周期维度 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-04 <strong>迭代版本号</strong>：零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code> <strong>流程设计要求</strong>：跳过（在同一既有控件上增加一个并列选项 + 一个选期弹层，不涉及页面流转、入口或分支决策的变化）</p>
+<blockquote><p><strong>2026-11-05 修订（口径变更）</strong>：员工端「渠道星级详情」的周期由「与『我的渠道』共用同一状态、双向联动」改为<strong>独立周期状态 <code>sdPeriod</code></strong>——进入时继承「我的渠道」当前周期（含所选考核期次），进入后页内独立切换、仅影响本页，返回「我的渠道」时其周期保持原状态（页内切换不回写）。同步更新：§2.4、§3.2、类别一 / 三 / 四 / 五 / 八、§3.3 员工端表格，以及《2026-11-02-渠道星级变化可视化-spec.md》。</p></blockquote>
+<blockquote><p><strong>2026-11-09 修订（口径变更，本条推翻本 Spec 原边界）</strong>：<strong>废除</strong>本 Spec 中「历史拜访记录页不接入考核月」的口径。自 2026-11-09 起，员工端「历史拜访记录」页与团队长端拜访记录（含<strong>拜访记录二级列表页</strong>）均<strong>接入含「考核月」的统一周期控件</strong>（<code>昨日/本周/自然月/本年/考核月</code> + 考核期次），原「全部/拜访/活动/自然月」中的「自然月」标签被该统一周期筛选器取代。同步更新：§2.4、§3.2（第⑦项）、§四（首条）、§五（第 8 条）；另 §2.4 中「10 处控件 / 7 个周期状态变量」的计数亦随之增加（新增员工端「历史拜访记录」与团队长端「拜访记录二级列表」两处控件）。驱动文档：《2026-11-09-拜访记录列表与筛选改版-spec.md》。</p></blockquote>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：员工端＝客户经理；团队长端＝团队长 / 网点负责人。</p>
+<p><strong>要解决的问题</strong>：现有「时间周期」仅提供 昨日 / 本周 / 自然月 / 本年 四个<strong>自然历</strong>口径。实际渠道经营考核以「<strong>考核月</strong>」为管理节奏——考核账期为 <strong>T-1 月 16 日 ~ T 月 15 日（含当日）</strong>。当前页面无法按考核账期查看经营结果，员工与团队长无法回答"本考核月进度如何""上一个考核月做得怎样"。</p>
+<p><strong>解决方式</strong>：在「时间周期」控件中<strong>并列新增「考核月」选项</strong>（与 昨日 / 本周 / 自然月 / 本年 同级）；点选「考核月」后弹出<strong>考核期次列表</strong>，可选<strong>近 6 期</strong>考核账期；页面全部指标按所选考核账期同轴刷新。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用（本产品为内部经营工作台，无对外竞品；"同一控件并列新增口径 + 选期弹层"为通用做法）。</p>
+<p><strong>AI 能力边界</strong>：不适用。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>任一含「时间周期」控件的页面 → 点开周期下拉（现有底部弹层，标题「选择时间范围」）→ 选择「<strong>考核月</strong>」→ 弹层内容切换为「<strong>选择考核期次</strong>」列表（近 6 期，默认高亮当期）→ 选定某一期 → 弹层关闭，控件回显「<strong>考核月</strong>」并在控件旁标注所选期次区间与状态（如 <code>10/16–11/15 · 进行中</code>）→ 页面全部受周期驱动的指标按该考核账期即时刷新。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>期次默认</strong>：首次选「考核月」时默认高亮<strong>当期考核月</strong>（进行中）。</li>
+<li><strong>期次列表内容</strong>：近 6 期（含当期）；当期在最上、往期依次向下；每行展示"日期区间 + 状态标记"。</li>
+<li><strong>期次状态</strong>：当期＝蓝色「进行中」；往期＝灰色「已结束」。</li>
+<li><strong>期次记忆</strong>：选定后再次打开列表，高亮上次所选期次；切走（改为 昨日/本周/自然月/本年）后再切回「考核月」，仍保留上次所选期次。</li>
+<li><strong>周期互切</strong>：五个选项（昨日 / 本周 / 自然月 / 本年 / 考核月）在<strong>同一控件内并列互斥</strong>；选自然历口径时按原口径刷新，回到「考核月」恢复所选期次。</li>
+<li><strong>二级页继承</strong>：从上游页进入二级页时（如「我的渠道」→「名下渠道排名」），若上游周期为「考核月」，二级页继承该周期与所选期次。</li>
+<li><strong>共用状态</strong>：员工端首页「过程跟进」四格与「我的渠道」共用同一周期状态——「我的渠道」切到考核月时，四格同步刷新。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>状态</strong>：进行中（当期）／已结束（往期）；控件展开态／收起态；期次选中态（6 选 1）。</li>
+<li><strong>空数据</strong>：某期某指标无数据 → 按各页既有口径显示 <code>0</code> 或占位符（不新增特殊空态）。</li>
+<li><strong>回退</strong>：切回自然历周期（昨日/本周/自然月/本年），各页恢复对应口径数值；考核月的期次记忆保留、不丢失。</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>主动影响</strong>：全部 <strong>10 处</strong>「时间周期」控件（清单见 §3.3），覆盖 <strong>7 个周期状态变量</strong>。（2026-11-09 修订：其后新增员工端「历史拜访记录」与团队长端「拜访记录二级列表」两处控件，当前控件总数大于此数）</li>
+<li><strong>被动影响</strong>：员工端首页「过程跟进」四格（跟随「我的渠道」周期，无独立控件）。</li>
+<li><strong>不涉及</strong>：网点 / 员工 / 星级 / 状态筛选；其余与周期无关的模块。（原「历史拜访记录页不接入考核月」一条已于 2026-11-09 修订<strong>废除</strong>——该页改为接入含「考核月」的统一周期控件，见本文首修订说明）</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<ul>
+<li>无阻塞项。</li>
+</ul>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。<br>本轮两份 PRD 的相关章节已按本 Spec 同步更新（涉及章节见上表）；改动落在既有「时间周期」控件与数据映射层，不触及产品结构与核心流程。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>员工端各含「时间周期」页面（我的渠道 / 渠道星级详情 / 名下渠道排名）之「时间周期」说明</td>
+<td>「时间周期」由 4 项扩为 5 项：新增「考核月」并列选项；补充考核月口径（T-1 月 16 日 ~ T 月 15 日，含当日）、期次列表（近 6 期）、期次状态标记与记忆规则</td>
+</tr>
+<tr>
+<td><code>./docs/prd/零售团队长看板_PRD_v0_4.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>团队长端各含「时间周期」页面（团队总览 / 团队总览详情 / 星级渠道 / 渠道星级详情 / 员工详情 / 过程跟进 / 过程跟进详情）之「时间周期」说明</td>
+<td>同上一并补充考核月选项、口径与期次选择规则</td>
+</tr>
+</tbody></table>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改</td>
+<td>① 7 个周期状态下辖的 <strong>10 处</strong>周期下拉，选项列表由 4 项扩为 5 项（追加「考核月」）；② 每处周期底部弹层内新增「选择考核期次」子视图（近 6 期，行＝日期区间 + 状态徽标 + 选中勾）；③ 10 处控件旁新增考核期次标注（<code>区间 · 状态</code>）；④ 7 个周期状态各记忆所选期次（默认当期，跨周期切换保留）；⑤ 各受周期驱动的数据 map 增加「考核月」分支（按所选期次取值）；⑥ 二级页进入时继承上游考核月期次；⑦ 历史拜访记录页本轮<strong>不动</strong>（2026-11-09 修订：本项已作废——该页已由《2026-11-09-拜访记录列表与筛选改版》改造为接入含「考核月」的统一周期控件）</td>
+</tr>
+</tbody></table>
+<h4>3.2.1 实现 checklist（联动点全清单）</h4>
+<blockquote><p><strong>用途</strong>：改原型时的逐项自检清单。行号基于 2026-11-05 回退后基线，实现时以<strong>符号名</strong>为准。<br><strong>最高风险项：类别二（数据映射）</strong>——这些 map 均以 <code>map[key] || 兜底值</code> 取值，新增「考核月」后若漏补分支，会<strong>静默回退到「本周/自然月」的旧数，不报错、极难发现</strong>。实现完成后必须以下表 map 名为 <code>grep</code> 锚点逐一核验。</p></blockquote>
+<p><strong>类别一 · 选项数组（7 个状态 → 10 处控件）</strong></p>
+<table>
+<thead><tr>
+<th>数组</th>
+<th>基线行</th>
+<th>覆盖控件</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>periodOpts</code></td>
+<td>L3444</td>
+<td>我的渠道 / 团队长端员工详情（2 处共用 <code>s.period</code>）</td>
+</tr>
+<tr>
+<td><code>sdPeriodOpts</code></td>
+<td>新增</td>
+<td>员工端渠道星级详情（独立状态 <code>s.sdPeriod</code>，2026-11-05 起；进入时继承 <code>s.period</code>）</td>
+</tr>
+<tr>
+<td><code>tovPeriodOpts</code></td>
+<td>L2702</td>
+<td>团队总览 / 团队总览详情（2 处共用 <code>tovPeriod</code>）</td>
+</tr>
+<tr>
+<td><code>tsPeriodOpts</code></td>
+<td>L2912</td>
+<td>星级渠道 / 渠道星级详情（2 处共用 <code>tsPeriod</code>）</td>
+</tr>
+<tr>
+<td><code>ppPeriodOpts</code></td>
+<td>L2998</td>
+<td>团队长端 过程跟进</td>
+</tr>
+<tr>
+<td><code>pdPeriodOpts</code></td>
+<td>L3032</td>
+<td>过程跟进详情</td>
+</tr>
+<tr>
+<td><code>mdPeriodOpts</code></td>
+<td>L2758</td>
+<td>名下渠道排名</td>
+</tr>
+</tbody></table>
+<ul>
+<li>[ ] 7 个数组均追加「考核月」（由 4 项 → 5 项）</li>
+<li>[ ] ⚠️ <strong>顺带统一</strong>：<code>pdPeriodOpts</code>（L3032）当前顺序为 <code>['自然月','本周','昨日','本年']</code>，与其余 6 个 <code>['昨日','本周','自然月','本年']</code> 不一致，本轮统一</li>
+</ul>
+<p><strong>类别二 · 数据映射（漏改即静默失效）</strong></p>
+<table>
+<thead><tr>
+<th>map</th>
+<th>基线行</th>
+<th>兜底</th>
+<th>受影响界面</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>mcAllVals</code></td>
+<td>L2305</td>
+<td>本周</td>
+<td>我的渠道（员工维度）+ 名下渠道排名（<code>mdVals</code> L2717）</td>
+</tr>
+<tr>
+<td><code>mcNetVals</code></td>
+<td>L2312</td>
+<td>本周</td>
+<td>我的渠道（网点维度）</td>
+</tr>
+<tr>
+<td><code>procPeriodVals</code></td>
+<td>L2331</td>
+<td>本周</td>
+<td>员工端过程跟进四格</td>
+</tr>
+<tr>
+<td><code>procRatio</code></td>
+<td>L2346</td>
+<td>本周</td>
+<td>过程跟进·网点派生比例</td>
+</tr>
+<tr>
+<td><code>starPeriodCnt</code></td>
+<td>L2368</td>
+<td>本周</td>
+<td>星级分布（我的渠道 + 员工详情）</td>
+</tr>
+<tr>
+<td><code>cardPeriodIdx</code></td>
+<td>L2637</td>
+<td><code>?? 1</code></td>
+<td>渠道详情卡片（4 处调用）</td>
+</tr>
+<tr>
+<td><code>mdRatio</code></td>
+<td>L2726</td>
+<td>自然月</td>
+<td>名下渠道排名</td>
+</tr>
+<tr>
+<td><code>tsCntSets</code></td>
+<td>L2913</td>
+<td>自然月</td>
+<td>星级渠道</td>
+</tr>
+<tr>
+<td><code>trendPeriodShift</code></td>
+<td>L2936</td>
+<td><code>?? 0</code></td>
+<td>星级变化（星级渠道详情 L2937 + 员工星级详情 L2962）</td>
+</tr>
+<tr>
+<td><code>nwTrendMap</code></td>
+<td>L2980</td>
+<td>本周</td>
+<td>我的渠道·网点卡星级变化</td>
+</tr>
+</tbody></table>
+<ul>
+<li>[ ] 10 个 map 均补「考核月」分支（按所选期次取值），无一遗漏</li>
+<li>[ ] 以 <code>grep</code> 上述 map 名逐一复核，确认无 <code>undefined</code> 落兜底</li>
+</ul>
+<p><strong>类别三 · 新增「所选期次」伴随状态（7 个）</strong></p>
+<ul>
+<li>[ ] <code>s.period</code> / <code>s.sdPeriod</code> / <code>s.tovPeriod</code> / <code>s.tsPeriod</code> / <code>s.ppPeriod</code> / <code>s.pdPeriod</code> / <code>s.mdPeriod</code> 各配一个「所选考核期次」值（默认当期）</li>
+<li>[ ] 注意初始值不一致：<code>s.period</code> 默认 <code>'本周'</code>（L1950），其余渲染时以 <code>|| '自然月'</code> 兜底（L2700/2714/2910/2997/3024）</li>
+<li>[ ] 期次值跨周期切换后保留（切走再切回「考核月」仍为上次所选）</li>
+</ul>
+<p><strong>类别四 · 弹层模板块（7 个，均需加「考核期次列表」子视图 + 回显标注）</strong></p>
+<ul>
+<li>[ ] <code>periodOpen</code>（L1571）</li>
+<li>[ ] <code>sdPeriodOpen</code>（新增，员工端渠道星级详情独立弹层）</li>
+<li>[ ] <code>pdPeriodOpen</code>（L1585）</li>
+<li>[ ] <code>ppPeriodOpen</code>（L1652）</li>
+<li>[ ] <code>tsPeriodOpen</code>（L1698）</li>
+<li>[ ] <code>tovPeriodOpen</code>（L1730）</li>
+<li>[ ] <code>mdPeriodOpen</code>（L1762）</li>
+</ul>
+<p><strong>类别五 · 选择行为（「考核月」需开例外）</strong></p>
+<ul>
+<li>[ ] <code>pickPeriod</code>（L2122）当前为 <code>setState({period:v, periodOpen:false})</code>；选「考核月」时应<strong>打开期次列表</strong>而非关闭</li>
+<li>[ ] 新增 <code>sdPeriod</code> 专用选择行为（选「考核月」打开期次列表；选自然历口径关闭弹层）</li>
+<li>[ ] 另外 6 处内联 <code>onClick: () =&gt; this.setState({ xxxPeriod:v, xxxPeriodOpen:false })</code>（L2702/2758/2912/2998/3032 + 新增 sdPeriod）同样加「考核月」分支</li>
+</ul>
+<p><strong>类别六 · 二级页继承（会丢期次）</strong></p>
+<ul>
+<li>[ ] L2326 进入名下渠道排名时 <code>mdPeriod: s.period</code>；若 <code>s.period==='考核月'</code>，须同时把所选期次传给 <code>mdPeriod</code> 的伴随状态，否则二级页回落为当期</li>
+</ul>
+<p><strong>类别七 · 详情卡片周期传参 <code>cardOf(net, period)</code>（4 处调用）</strong></p>
+<ul>
+<li>[ ] tov 按网点（L2683）、星级详情（L2952）、员工星级详情（L2970）、名下渠道排名（L2744）</li>
+<li>[ ] 均依赖 <code>cardPeriodIdx</code>（见类别二），需支持「考核月」</li>
+</ul>
+<p><strong>类别八 · <code>renderVals</code> 绑定（6 组）</strong></p>
+<ul>
+<li>[ ] L3334-3379（tov / md / pd / ts / pp）与 L3436-3444（员工端 period）+ 员工端 <code>sdPeriod</code> 新增一组</li>
+<li>[ ] 每组补：期次列表 items、回显标注、打开/关闭期次弹层方法</li>
+</ul>
+<p><strong>类别九 · 深链演示态（可选）</strong></p>
+<ul>
+<li>[ ] L1984-1995 的状态映射（<code>period-sheet</code> / <code>tov-period</code> / <code>proc-period</code>）可选补一个「考核月」演示入口</li>
+</ul>
+<p><strong>两个结论性发现（用于收敛实现范围）</strong></p>
+<ul>
+<li>全文件<strong>不存在</strong>「上期基线 / 环比」独立逻辑——趋势均为 seed 派生（<code>trendPeriodShift</code> / <code>csTrendSeeds</code> / <code>empTrendSeeds</code> / <code>nwTrendMap</code>）。故 Spec 中「上期基线取上一期考核月」实际只落到"期次 → 趋势 seed 映射"，<strong>无需新增基线字段</strong>。</li>
+<li>全文件<strong>不存在</strong>「统计区间 / 数据截至」文案（grep 0 处）。故本轮无需回收任何旧文案，去掉"数据截至"是安全的。</li>
+</ul>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<blockquote><p>全部 10 处控件的改动<strong>完全一致</strong>：下拉追加「考核月」→ 弹期次列表 → 选定后回显「考核月」+ 旁标注期次。下表仅列出各页对应的周期状态变量与页面归属。</p></blockquote>
+<p><strong>员工端（3 处控件，3 个状态）</strong></p>
+<table>
+<thead><tr>
+<th>#</th>
+<th>页面</th>
+<th>周期状态变量</th>
+<th>说明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>我的渠道（首页顶部）</td>
+<td><code>period</code></td>
+<td>同时驱动同页「过程跟进」四格（四格无独立控件）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>渠道星级详情</td>
+<td><code>sdPeriod</code></td>
+<td>独立周期状态；进入时继承「我的渠道」的周期与所选期次，页内独立切换、不回写「我的渠道」</td>
+</tr>
+<tr>
+<td>3</td>
+<td>名下渠道排名</td>
+<td><code>mdPeriod</code></td>
+<td>由「我的渠道」进入时继承上游周期与所选期次</td>
+</tr>
+</tbody></table>
+<p><strong>团队长端（7 处控件，4 个状态）</strong></p>
+<table>
+<thead><tr>
+<th>#</th>
+<th>页面</th>
+<th>周期状态变量</th>
+<th>说明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>团队总览（首页）</td>
+<td><code>tovPeriod</code></td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>团队总览详情（查看完整排名）</td>
+<td><code>tovPeriod</code></td>
+<td>与「团队总览」共用同一周期状态</td>
+</tr>
+<tr>
+<td>7</td>
+<td>星级渠道（首页）</td>
+<td><code>tsPeriod</code></td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>渠道星级详情</td>
+<td><code>tsPeriod</code></td>
+<td>与「星级渠道」共用同一周期状态</td>
+</tr>
+<tr>
+<td>9</td>
+<td>过程跟进（首页）</td>
+<td><code>ppPeriod</code></td>
+<td>团队长端独立周期</td>
+</tr>
+<tr>
+<td>10</td>
+<td>过程跟进详情</td>
+<td><code>pdPeriod</code></td>
+<td>团队长端独立周期</td>
+</tr>
+<tr>
+<td>11</td>
+<td>员工详情（团队总览排名进入；内嵌「我的渠道」Tab）</td>
+<td><code>period</code></td>
+<td>复用员工端「我的渠道」的周期状态（跨端共用，无独立控件）；页内星级分布随其刷新</td>
+</tr>
+</tbody></table>
+<p><strong>期次列表规格（10 处共用同一形态）</strong></p>
+<ul>
+<li>弹层标题：<code>选择考核期次</code></li>
+<li>列表：近 6 期，当期在首、往期向下；每行左侧为日期区间，右侧为状态徽标，选中行右侧显示勾选图标</li>
+<li>行文案：仅<strong>日期区间</strong>（如 <code>10/16–11/15</code>），<strong>不含</strong>「XXXX年XX月考核月 ·」前缀</li>
+<li>状态徽标：进行中＝蓝色；已结束＝灰色</li>
+<li>交互：点击某行 → 选中该期并关闭弹层</li>
+<li>以 2026-11-04 为例，近 6 期如下：</li>
+</ul>
+<table>
+<thead><tr>
+<th>期次</th>
+<th>日期区间</th>
+<th>状态</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>当期</td>
+<td><code>10/16–11/15</code></td>
+<td>进行中（蓝）</td>
+</tr>
+<tr>
+<td>上 1 期</td>
+<td><code>09/16–10/15</code></td>
+<td>已结束（灰）</td>
+</tr>
+<tr>
+<td>上 2 期</td>
+<td><code>08/16–09/15</code></td>
+<td>已结束（灰）</td>
+</tr>
+<tr>
+<td>上 3 期</td>
+<td><code>07/16–08/15</code></td>
+<td>已结束（灰）</td>
+</tr>
+<tr>
+<td>上 4 期</td>
+<td><code>06/16–07/15</code></td>
+<td>已结束（灰）</td>
+</tr>
+<tr>
+<td>上 5 期</td>
+<td><code>05/16–06/15</code></td>
+<td>已结束（灰）</td>
+</tr>
+</tbody></table>
+<p><strong>控件回显规格</strong></p>
+<ul>
+<li>控件内文案：<code>考核月</code>（与 昨日/本周/自然月/本年 同级显示）</li>
+<li>控件旁标注：所选期次的<strong>区间 + 状态</strong>（如 <code>10/16–11/15 · 进行中</code>）；选自然历口径时该标注不展示</li>
+<li>标注仅表达<strong>考核账期区间</strong>，不出现「数据截至 …」类数据切点文案，避免与账期口径混淆</li>
+</ul>
+<p><strong>趋势 / 变化标识</strong></p>
+<ul>
+<li>各页既有趋势 / 变化标识（如星级变化、指标涨跌）随所选<strong>期次</strong>联动，取该期次对应的口径值</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ <strong>历史拜访记录页不接入考核月</strong>（保持现状：筛选为 全部/拜访/活动/自然月 tab，按自然月分组）→ <strong>2026-11-09 已废除</strong>：员工端「历史拜访记录」页与团队长端拜访记录（含拜访记录二级列表页）改为接入含「考核月」的统一周期控件（<code>昨日/本周/自然月/本年/考核月</code> + 期次），原「自然月」标签被该控件取代；详见《2026-11-09-拜访记录列表与筛选改版-spec.md》</li>
+<li>❌ 不改变周期粒度本身、不删除 昨日/本周/自然月/本年 任一选项（考核月为<strong>新增并列项</strong>）</li>
+<li>❌ 不提供"任意起止日"的自选日期区间（考核月口径固定为 T-1 月 16 日 ~ T 月 15 日，仅可选<strong>哪一期</strong>）</li>
+<li>❌ 可选期次范围不超出"近 6 期（含当期）"（不做"更早历史"分页）</li>
+<li>❌ 不新增、不修改 网点 / 员工 / 星级 / 状态 等任何筛选控件</li>
+<li>❌ 不改动与时间周期无关的模块（重点关注、建码卡片、渠道拜访、需求跟进、知识库、工具库、上报需求、拜访详情等）</li>
+<li>❌ 不新增「自然月 / 考核月」二级子切换（该形态在本轮被"并列一级选项"取代）</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>并列选项成立</strong>：10 处周期控件下拉均为 5 项（昨日 / 本周 / 自然月 / 本年 / 考核月），互斥单选。</li>
+<li><strong>期次列表正确</strong>：点「考核月」弹出「选择考核期次」列表，共 6 期；当期在首并标「进行中」（蓝），往期标「已结束」（灰）；行文案仅日期区间。</li>
+<li><strong>口径正确</strong>：当期（2026-11-04）所示区间为 <code>10/16–11/15</code>；上一期为 <code>09/16–10/15</code>（符合 T-1 月 16 日 ~ T 月 15 日）。</li>
+<li><strong>回显正确</strong>：选定期次后控件显示「考核月」，旁标注 <code>区间 · 状态</code>；切回自然历口径时标注消失。</li>
+<li><strong>记忆正确</strong>：选定某期次后，再次打开列表高亮该期次；切到其它周期再切回「考核月」仍保留所选期次。</li>
+<li><strong>数据联动</strong>：切换期次 / 切换周期，页面受周期驱动的指标同轴刷新；员工端首页「过程跟进」四格跟随「我的渠道」同步刷新。</li>
+<li><strong>二级页继承</strong>：由「我的渠道」进入「名下渠道排名」时，继承上游周期与所选期次。</li>
+<li><strong>范围守界</strong>：其余未点名模块<strong>无任何变化</strong>；第四节所列项（除已废除的「历史拜访记录页不接入考核月」外）均未发生。（2026-11-09 修订：原「历史拜访记录页无任何变化」的表述同步废除——该页其后经《2026-11-09-拜访记录列表与筛选改版》接入统一周期控件）</li>
+<li><strong>无异常</strong>：控制台无页面自身 JS 报错；切换过程无白屏、无残留显示。</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>前置依赖（数据侧）</strong>：需各页指标支持按「考核账期」聚合（<code>period = 考核月 + 期次</code>）。当前演示为静态派生数据；研发阶段需明确后端按考核账期出数口径，以及"进行中账期"的数据切点（默认截至 T-1 日）。<strong>兜底</strong>：数据未到位时原型按演示数据派生。</li>
+<li><strong>口径边界</strong>：本 Spec 明确"考核账期窗口（固定右端 M 月 15 日，含当日）"与"数据切点（进行中账期数据截至 T-1 日）"为两个概念，页面标注只呈现前者，不混用。</li>
+<li><strong>推翻既有裁定（文档一致性）</strong>：本 Spec 取代此前（2026-11-04 早些时候）"在时间周期下增设 自然月/考核月/上个考核月 二级子切换"的方案，该方案已被完整回退（Spec 删除、原型还原、<code>product-manifest.json</code> 移除对应 decision）。本轮以"并列一级选项 + 期次列表"重新落地。</li>
+<li><strong>风险（记忆态与共用状态）</strong>：员工端 3 处控件共用 <code>period</code> 状态，团队长端各为独立状态。共用状态下的期次记忆需保证跨页一致（同一状态变量天然一致）；独立状态间互不影响，符合预期。</li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 拜访打卡网点选择改造 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-09-拜访打卡网点选择改造-spec.md　·　迭代版本：员工端 v1.5 / 团队长端 v0.4</p>
+<h1>拜访打卡网点选择改造 — 需求规格（Spec）</h1>
+<blockquote><p><strong>修订说明（同版迭代）</strong><br>- <strong>2026-11-10</strong>：① 于打卡网点选择处<strong>回加</strong>手工输入能力；② <strong>解除</strong>「打卡只能选择系统已录入网点」的限制，允许以<strong>纯自由文本</strong>落库（<strong>不恢复</strong>"名称比对系统网点"校验）。对应地，拜访表单 Q1「拜访对象」在<strong>未录入网点</strong>场景下改为空态说明 + 就地手输。<br>- <strong>2026-11-11</strong>：<strong>取消打卡页的「底部弹层」形态，改为页内内联</strong>——原「选择拜访网点」触发器位置<strong>直接改为输入框</strong>；未输入时其下方直接按 GPS 距离升序列出「<strong>附近网点</strong>」（网点名 + 归属标签 + <code>≈xxm</code>）；输入关键字后切换为「<strong>搜索结果</strong>」（全部已录入网点，本人名下优先，含归属标签与距离）；关键字<strong>未匹配到任何已录入网点</strong>时仅提示「<strong>未匹配到系统已录入网点，将按所输名称作为未录入网点打卡</strong>」。点选列表网点后区域<strong>收起为已选态</strong>（网点名 + 归属标签 + 清除）；点「立即打卡」时——列表已选网点<strong>直接</strong>生成凭证，未录入（手输未匹配）则弹出<strong>二次确认</strong>「确认拜访该网点？」。原打卡专用弹层变体、弹层内的手动输入输入态<strong>作废</strong>；「我的渠道」「需求跟进表」的网点选择弹层<strong>保持现状</strong>。</p></blockquote>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-09（2026-11-10、2026-11-11 修订） <strong>迭代版本号</strong>：不升版本号（沿用 零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code>，仅页级追加修订行） <strong>流程设计要求</strong>：跳过（同一页内地点选择控件的形态调整，不涉及页面流转、入口归属或分支决策的变化）</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：与现有用户一致。员工端＝客户经理（名下管辖一批网点）。</p>
+<p><strong>要解决的问题（2026-11-09 主体）</strong>：员工端「我要拜访」打卡页原用<strong>两个并列入口</strong>选打卡地点——上方「从我的渠道中选择网点」（搜索框为静态占位，实际只能点本人名下网点列表）、下方「手动输入地点」自由文本。而「手动输入地点」自 2026-11-05 起已被约束为「必须命中系统已录入网点」，本质上退化成一个隐式的全量网点检索框，与上方搜索框职能重叠、数据源却不同（上框仅本人名下、下框覆盖全部已录入网点）。员工必须先自判"这个网点是不是我名下的"，再决定用哪个入口，认知负担重且易走错路径。改造后：<strong>合并为单一「选择拜访网点」入口</strong>，在结果行标注归属，按 GPS 就近推荐，并让本人名下网点优先排序。</p>
+<p><strong>追加要解决的问题（2026-11-10）</strong>：单一入口且"仅可选系统已录入网点"在实操中形成硬约束——外勤常遇到系统尚未录入的拜访对象（他行新开网点、临时合作点位、支行下设未建档门店等），搜不到也选不了，导致<strong>无法打卡</strong>。故<strong>解除</strong>"仅已录入网点"限制：允许以<strong>纯自由文本</strong>作为打卡地点落库，<strong>不做</strong>是否命中系统网点的比对。因未录入网点无系统关键人档案，拜访表单 Q1「拜访对象」在该场景下同步提供<strong>空态 + 就地手输</strong>。</p>
+<p><strong>追加要解决的问题（2026-11-11）</strong>：11-09／11-10 的打卡地点选择被放进<strong>底部弹层</strong>——员工要点开弹层才能看见网点，弹层内还要再切"列表态／输入态"两层，操作层级偏深；且弹层内的输入态与页内搜索框语义割裂。故<strong>取消弹层、改为页内内联</strong>：触发器位置直接是输入框，下方直接铺开「附近网点」，输入即切「搜索结果」，选完即收起为已选态，并把"未录入网点"收敛为<strong>搜索结果为空时的自然兜底</strong>（不再需要单独的"手动输入"入口与输入态）。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用。本产品为内部经营工作台，无对外竞品；"内联搜索框 + 就近推荐 + 归属标识 + 无结果即按所输名称兜底"为打卡 / 签到类应用的通用做法，本次沿用。</p>
+<p><strong>AI 能力边界</strong>：不适用（本需求不涉及 AI 生成 / 判断 / 自动化）。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<ul>
+<li><strong>路径 A（列表点选 · 已录入网点）</strong>：打卡页 → 「选择拜访网点」区显示<strong>输入框</strong>，其下方直接是「附近网点」（GPS 距离升序）→（可输入关键字切为「搜索结果」）→ 点选任一网点行 → 区域<strong>收起为已选态</strong>（网点名 + 归属标签）→ 点「立即打卡」→ <strong>直接</strong>生成打卡凭证、进入成功确认区。</li>
+<li><strong>路径 B（未录入网点 · 2026-11-11）</strong>：打卡页 → 在输入框输入网点名称 → 下方<strong>无匹配结果</strong>、仅提示「未匹配到系统已录入网点，将按所输名称作为未录入网点打卡」→ 点「立即打卡」→ 弹出<strong>二次确认</strong>「确认拜访该网点？」（含所输名称）→ 点「确认打卡」→ 生成打卡凭证（地点＝所输名称）。</li>
+</ul>
+<blockquote><p>路径 B 与路径 A 共用同一条「立即打卡」的后续链路，<strong>不新增</strong>任何确认页或独立页面；差异仅在"是否弹二次确认"。</p></blockquote>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>形态（2026-11-11 修订）</strong>：打卡页地点选择<strong>页内内联、不使用弹层</strong>；「我的渠道」「需求跟进表」的网点选择弹层<strong>保持现状</strong>（大类 chips、最近选择、搜索×大类交集）不受影响</li>
+<li><strong>默认态</strong>：输入框为空 → 显示「<strong>附近网点</strong>」分组，按 GPS 距离升序取前 4，行内显示 <code>≈xxm</code>；无距离数据时该分组不展示</li>
+<li><strong>搜索态</strong>：输入关键字 → 显示「<strong>搜索结果</strong>」分组，命中全部已录入网点（不受归属限制，支持跨银行关键字模糊匹配）；行内带归属标签（有距离数据时一并显示距离）</li>
+<li><strong>排序</strong>：搜索结果<strong>本人名下优先在前、非本人名下在后</strong>，同组内保持原顺序；附近网点单按距离升序、不掺入归属排序</li>
+<li><strong>归属标签</strong>：网点属当前员工名下 → 蓝色「本人名下」；否则灰色「非本人名下」；<strong>未录入网点无归属关系 → 不展示归属标签</strong></li>
+<li><strong>未匹配兜底（2026-11-11 修订）</strong>：关键字<strong>未匹配到任何已录入网点</strong>时，结果区仅展示提示「<strong>未匹配到系统已录入网点，将按所输名称作为未录入网点打卡</strong>」，不展示任何网点行；所输文本即视为<strong>未录入网点</strong>（无需额外点选、无独立"手动输入"入口与输入态）</li>
+<li><strong>已选态（2026-11-11）</strong>：点选任一结果行 → 该区域<strong>收起</strong>为「网点名 + 归属标签 + 清除」；点击已选区域可<strong>再次展开</strong>（回到输入框 + 附近网点）改选</li>
+<li><strong>清除</strong>：已选态右侧「×」清除已选网点，区域回到输入框 + 附近网点</li>
+<li><strong>打卡校验与确认（2026-11-11 修订）</strong>：</li>
+<li><strong>列表已选网点</strong>：点「立即打卡」→ <strong>直接</strong>生成凭证，<strong>不弹</strong>确认</li>
+<li><strong>未录入（手输未匹配）</strong>：点「立即打卡」→ 弹出居中二次确认「<strong>确认拜访该网点？</strong>」（正文含所输名称、"确认打卡／取消"）；「取消」关闭弹窗、停留打卡页并保留输入</li>
+<li><strong>两者皆无（未选且输入为空）</strong>：点「立即打卡」→ Toast「请先选择拜访网点」，不生成凭证</li>
+<li><strong>拜访对象（Q1）联动（2026-11-10）</strong>：打卡网点为<strong>未录入网点</strong>时，拜访表单 Q1「拜访对象」无关键人档案 → 展示空态说明 + <strong>自由文本输入</strong>（就地手输）；该输入非空即视为满足 Q1 必填，且<strong>不展示</strong>任何补录关键人入口。已录入网点<strong>保持「关键人多选」口径</strong>（<strong>2026-11-10 修订</strong>：已录入网点不论本人名下 / 非本人名下，一律不可在拜访表单内新增关键人，原「＋ 添加关键人」入口作废、改为「其他」按钮（自由文本写拜访对象、不入关键人档案）、无关键人走空态且模块不阻塞，详见《2026-11-05-拜访对象关联关键人》Spec 2026-11-10 / 2026-11-11 修订）</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>区域状态（2026-11-11）</strong>：</li>
+<li><strong>输入态</strong>：输入框 + （输入为空→「附近网点」／输入有匹配→「搜索结果」／输入无匹配→「未匹配到系统已录入网点，将按所输名称作为未录入网点打卡」提示）</li>
+<li><strong>已选态</strong>：收起为「网点名 + 归属标签（未录入网点无） + 清除按钮」</li>
+<li><strong>无附近网点</strong>：无 GPS 距离数据时不显示该分组</li>
+<li><strong>异常</strong>：经纬度采集失败（权限拒绝 / 容器限制 / 超时 / 不支持）沿用现有失败态，<strong>不阻断</strong>网点选择与打卡</li>
+<li><strong>回退</strong>：已在输入态改选但未点选 → 保持原选择不变；点选后收起 → 点已选区域可再展开改选；二次确认点「取消」→ 关闭弹窗、保留输入与页面状态；清除 → 回到未选态</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li>主影响页：员工端「我要拜访」打卡页（地点选择区）</li>
+<li>联动页：员工端拜访表单 Q1「拜访对象」（未录入网点场景走空态 + 自由文本手输；已录入网点无关键人场景同样走空态，见《2026-11-05-拜访对象关联关键人》Spec 2026-11-10 修订）</li>
+<li>共享组件：<strong>打卡页不再使用</strong>网点选择弹层；「我的渠道」「需求跟进表」的弹层行为与数据源<strong>不变</strong></li>
+<li>网点主数据新增两个字段用途：GPS 距离（供附近网点排序展示）、员工归属标识（供归属标签与排序）</li>
+<li><strong>未录入网点无 <code>networkId</code> 与归属关系</strong>：打卡记录仅以名称落库，不参与网点维度经营统计</li>
+<li>不受影响：打卡成功确认区、拜访表单其余 5 个模块、我的渠道、需求跟进表、团队长端全部模块</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<p>无阻塞项。非本人名下拜访是否需要留痕/统计、未录入网点的统计归集，见 §六 风险（本轮不作为范围）。</p>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>§3 核心使用场景「场景 1」操作路径；§5.1「网点选择弹层」；§5.3 流程 1；§5.4「我要拜访」3.状态说明 / 4.1 打卡入口 / 4.2 打卡确认区 / 拜访表单 Q1「拜访对象」；§4 功能清单；验收清单；修订记录</td>
+<td>2026-11-09：操作路径改为"搜索并选择打卡网点"。2026-11-10：回加手工输入、明确"纯自由文本、不校验是否命中已录入网点"，Q1 补"未录入网点时空态 + 就地手输"。<strong>2026-11-11</strong>：§5.4 4.1 改为"页内内联（输入框 + 附近网点 / 搜索结果 / 未匹配提示 + 已选态收起）"、<strong>删除</strong>"打卡复用网点选择弹层（打卡变体）"与"弹层内手动输入输入态"的表述；4.2 补"未录入网点点打卡弹二次确认、列表已选网点直接打卡"；§5.1 撤回打卡变体、明确打卡页不再使用弹层；§5.3 流程 1 操作路径改为页内选择；§4 功能清单与验收清单同步；修订记录追加一行</td>
+</tr>
+</tbody></table>
+<blockquote><p>团队长端 PRD <code>./docs/prd/零售团队长看板_PRD_v0_4.md</code> 不涉及（打卡在员工端、团队长端只读展示不改），本轮不改。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改（仅员工端打卡页 + 拜访表单 Q1）</td>
+<td>① 打卡页地点选择<strong>内联化</strong>：原「选择拜访网点」触发器改为输入框；输入框下方按 GPS 距离升序列出「附近网点」（含归属标签 + <code>≈xxm</code>）；输入关键字切「搜索结果」（本人名下优先）；无匹配仅提示「未匹配到系统已录入网点，将按所输名称作为未录入网点打卡」；② 点选后区域<strong>收起为已选态</strong>（网点名 + 归属标签 + 清除），点击已选区域可再展开；③ 「立即打卡」——列表已选<strong>直接</strong>打卡，未录入（手输未匹配）弹<strong>二次确认</strong>「确认拜访该网点？」；④ 网点主数据补 <code>dist</code>（GPS 距离）与归属判定来源；⑤ 拜访表单 Q1 在"未录入网点"场景走空态说明 + 自由文本输入并纳入必填校验；⑥ <strong>删除</strong>原打卡专用弹层变体、弹层内手动输入输入态、<code>netSheetMode</code> 等死代码；「我的渠道」「需求跟进表」弹层行为一律不动</td>
+</tr>
+<tr>
+<td><code>./docs/pages/零售银行渠道经营工作台_原型.html</code></td>
+<td>修改</td>
+<td>同上（渲染版与源文件保持一致）</td>
+</tr>
+</tbody></table>
+<blockquote><p>3.2 已在原型落地并完成浏览器端到端验证（默认态附近网点、搜索态名下优先、未匹配提示、已选态收起、未录入网点二次确认与取消、列表已选直接打卡闭环均通过）。</p></blockquote>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>员工端「我要拜访」打卡页</h4>
+<ul>
+<li><strong>地点选择区（2026-11-11 内联化）</strong>：删除"触发器 + 底部弹层"形态。改为——</li>
+<li>未选：<strong>输入框</strong>（占位「输入网点关键字…」）+ 下方「<strong>附近网点</strong>」分组（GPS 距离升序取前 4，行含网点名 + 归属标签 + <code>≈xxm</code>）</li>
+<li>输入关键字：分组标题切为「<strong>搜索结果</strong>」，展示全部命中的已录入网点（本人名下优先，行含归属标签、有距离则显示距离）</li>
+<li>无匹配：结果区仅展示「<strong>未匹配到系统已录入网点，将按所输名称作为未录入网点打卡</strong>」提示，不展示网点行</li>
+<li>已选：区域<strong>收起</strong>为「网点名 + 归属标签（未录入网点无） + 清除按钮」；点击已选区域可再次展开改选</li>
+<li><strong>打卡校验与确认</strong>：列表已选网点 → 「立即打卡」<strong>直接</strong>生成凭证；未录入（手输未匹配）→ 弹二次确认「确认拜访该网点？」（确认打卡 / 取消）；未选且输入为空 → Toast「请先选择拜访网点」</li>
+<li><strong>不变</strong>：入口按钮「我要拜访·立即打卡」、GPS 定位卡片、经纬度采集与失败不阻断、打卡成功确认区、随后进入拜访表单的流程</li>
+</ul>
+<h4>员工端「我要拜访」拜访表单 · Q1「拜访对象」（2026-11-10）</h4>
+<ul>
+<li><strong>未录入网点场景</strong>：打卡网点为未录入系统时，本模块无关键人可选 → 展示空态说明 + 自由文本输入框；输入非空即通过本模块必填、<strong>不展示</strong>任何补录关键人入口</li>
+<li><strong>已录入网点场景（2026-11-10 / 11-11 修订）</strong>：仍从该网点关键人（职位 + 姓名）多选；<strong>有关键人时</strong>另附<strong>「其他」按钮</strong>（点选展开文本框、输入拜访对象自由文本，仅入本次记录、不写入关键人档案）；<strong>无关键人时</strong>展示空态提示（<strong>本人名下</strong>指向「我的渠道」编辑建码信息 / <strong>非本人名下</strong>仅提示）、<strong>不展示「其他」按钮、直接展示拜访对象输入框</strong>且该模块<strong>为必填</strong>（自由文本，为空则拦截提交并在该模块描红提示「必填未完成」，<strong>回归 v1.4 无条件必填口径</strong>）；<strong>不再保留</strong>「＋ 添加关键人」，详见《2026-11-05-拜访对象关联关键人》Spec 2026-11-10 修订</li>
+</ul>
+<h4>员工端「我的渠道」／「需求跟进表」</h4>
+<ul>
+<li>无功能变化：其网点选择弹层保持现状（保留银行大类 chips、「更多」、「最近选择」、搜索×大类交集与空态兜底）</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 不回退打卡页"就近推荐、归属标签、本人名下优先"的既有口径</li>
+<li>❌ 不改「我的渠道」「需求跟进表」的网点选择弹层（保留大类筛选、最近选择）——打卡页内联化<strong>不</strong>外溢到这两页</li>
+<li>❌ 不改团队长端全部模块及其独立网点筛选器</li>
+<li>❌ 不做「新增渠道 / 录入新网点」能力（未录入网点<strong>不</strong>回写为系统网点档案）</li>
+<li>❌ 不做未录入网点的"非系统 / 自定义"留痕标识、统计口径与团队长端可见性（见 §六 风险，作为后续独立需求）</li>
+<li>❌ 不改打卡成功确认区（原型内为演示静态文案，不随所选网点联动）、拜访表单其余 5 个模块、待补充记录、日历打点</li>
+<li>❌ 不改搜索匹配算法与空态兜底逻辑</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>形态正确（2026-11-11）</strong>：打卡页地点选择为<strong>页内内联、无底部弹层</strong>；「选择拜访网点」处即为输入框，其下方直接展示「附近网点」列表</li>
+<li><strong>附近网点</strong>：默认态按 GPS 距离升序展示前 4 个网点，行内显示 <code>≈xxm</code> 与归属标签（本人名下蓝 / 非本人名下灰）</li>
+<li><strong>搜索与排序</strong>：输入关键字后标题切为「搜索结果」，命中全部已录入网点（含非本人名下）且<strong>本人名下网点排在前</strong></li>
+<li><strong>未匹配兜底</strong>：输入<strong>任意未录入</strong>网点名称 → 结果区仅提示「未匹配到系统已录入网点，将按所输名称作为未录入网点打卡」、无网点行；点「立即打卡」→ 弹出二次确认「确认拜访该网点？」→ 点「确认打卡」成功生成凭证（地点＝所输名称）；点「取消」→ 关闭弹窗并停留打卡页（输入保留）；<strong>全程不出现</strong>任何"未录入 / 不可打卡"拦截</li>
+<li><strong>已选态与直接打卡</strong>：点选任一列表网点 → 区域<strong>收起</strong>为「网点名 + 归属标签 + 清除」；点「立即打卡」<strong>直接</strong>生成凭证、<strong>不弹</strong>确认；点「清除」→ 回到输入框 + 附近网点；点已选区域可再次展开改选</li>
+<li><strong>未选拦截</strong>：未选且输入为空点「立即打卡」→ Toast「请先选择拜访网点」</li>
+<li><strong>拜访对象联动</strong>：未录入网点进入拜访表单 Q1 → 展示空态说明 + 自由文本输入；输入非空通过必填、输入为空按"必填未完成"拦截；已录入网点 Q1 行为与 2026-11-05 口径一致（<strong>2026-11-10 / 11-11 修订</strong>：不展示「＋ 添加关键人」；有关键人时以「其他」按钮自由文本输入、无关键人时直接展示拜访对象输入框且<strong>为必填</strong>（为空则拦截提交并在该模块描红提示「必填未完成」，回归 v1.4 无条件必填口径））</li>
+<li><strong>范围守界</strong>：「我的渠道」「需求跟进表」弹层、团队长端全部模块、打卡成功确认区、其余表单模块与埋点均未发生变化</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>推翻既有裁定（文档一致性）</strong>：本 Spec（2026-11-09）曾推翻 PRD v1.5 §5.4 于 2026-11-05 的「保留『手动输入地点』自由文本输入」口径；<strong>2026-11-10</strong> 又回加手工输入并允许纯自由文本（<strong>不恢复</strong>名称比对校验）；<strong>2026-11-11</strong> 进一步把打卡地点选择<strong>从弹层改为页内内联</strong>，并<strong>作废</strong> 2026-11-09 的"打卡弹层变体"与 2026-11-10 的"弹层内手动输入入口 / 输入态"。相关口径已在本文档与 PRD、<code>product-manifest.json</code> 决策日志中同步。</li>
+<li><strong>前置依赖（GPS 距离数据）</strong>：附近网点排序与 <code>≈xxm</code> 展示依赖定位服务/网点主数据提供"当前坐标到网点"的距离。原型内为演示用静态距离值；正式落地需数仓/地图服务按实时坐标计算距离并返回排序。<strong>兜底口径</strong>：无距离数据时不展示「附近网点」分组（仍可输入关键字搜索）。</li>
+<li><strong>前置依赖（归属标识数据）</strong>：本人名下判定依赖"员工 ↔ 网点"归属关系数据（与「名下渠道数」等既有员工维度指标同源），需保证归属口径一致。</li>
+<li><strong>风险（归属优先与就近推荐的取舍）</strong>：附近网点按距离排序、搜索结果按归属优先，两者口径不同。若评审认为附近分组也应归属优先，需另议（当前维持"距离优先"）。</li>
+<li><strong>风险（非名下拜访治理）</strong>：仍允许打卡非本人名下网点。是否需要在打卡记录上留痕"非名下拜访"、是否纳入团队长端查看与统计，本轮未定，作为后续独立需求登记。</li>
+<li><strong>风险（未录入网点无 networkId · 2026-11-10）</strong>：未录入网点不在网点主数据内、无 <code>networkId</code> 与归属关系，打卡记录<strong>仅以名称落库</strong>。由此带来：① 归属标签不展示；② 拜访对象无关键人档案（走手输）；③ 该记录不参与"名下渠道 / 网点维度"经营统计。如后续需要归集统计或团队长端可见性，需单独立项（本轮不做）。</li>
+<li><strong>风险（主数据治理 · 2026-11-10）</strong>：允许自由文本后，可能出现同网点多名（"建行建国路支行" / "建设银行建国路支行"）的脏数据。本轮不引入去重 / 归一化，亦不回写主数据；如需治理，作为后续独立需求。</li>
+</ul>
+</main>
+</body>
+</html>

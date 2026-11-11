@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 渠道名称完整显示 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-03-渠道名称完整显示-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>渠道名称完整显示 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-03 <strong>迭代版本号</strong>：零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code> <strong>流程设计要求</strong>：单版（纯展示层规则统一，无流程分支变化，无需多版对比）</p>
+<blockquote><p><strong>2026-11-05 补登（范围追加，非口径变更）</strong>：本 Spec 原写「4 类页面 5 处列表」，未含 2026-11-04 后建的<strong>员工端「名下渠道排名」</strong>。该页网点行同样展示渠道名称，现补为<strong>第 6 处</strong>，适用范围由「4 类页面 5 处列表」更正为「<strong>5 类页面 6 处列表</strong>」。原型该行现状已为「最多 2 行 + 省略号」，<strong>无需改动原型</strong>；同步补写员工端 PRD 遗漏的展示规则。</p></blockquote>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：与现有用户一致。员工端＝客户经理；团队长端＝团队长。</p>
+<p><strong>要解决的问题</strong>：真实用户反馈——按网点名称筛选后，部分渠道名称（如「XX银行XX片区支行XX分理处」）超出单行宽度，超出部分被省略号隐藏，用户只能看到片区支行层级，具体网点名称不可见，也没有查看全称的途径（一个片区支行下多个网点时，多行会显示为相同前缀，无法区分）。</p>
+<p><strong>口径澄清（重要）</strong>：长名称属"展示层省略号隐藏"，不是数据缺失——后端已返回完整渠道名称。因此本条为<strong>展示层修复</strong>，不涉及数据口径变更。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用。内部经营工作台，无对外竞品；长文本用"多行 + 末尾省略号"为成熟通用范式。</p>
+<p><strong>AI 能力边界</strong>：不适用。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>用户在任一名单列表中查看渠道名称时，名称最多展示 2 行：1～2 行内完整可见，超过 2 行的第 2 行末尾以省略号收尾；名称与同排右侧元素（状态标签、星级变化图标、数值等）顶部对齐。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>统一展示规则（5 类页面 6 处列表全部适用）</strong>：</li>
+</ul>
+<ol>
+<li>名称最多展示 <strong>2 行</strong>；</li>
+<li>≤ 2 行：完整展示，不出现省略号；</li>
+<li>&gt; 2 行：第 2 行末尾以省略号收尾，不再继续换行；</li>
+<li>名称与同排右侧元素<strong>顶部对齐</strong>（首行对齐）；</li>
+<li>字号 / 行高沿用现状，不因换行改字号；</li>
+<li>名称换行后，与下方副信息（客户经理 / 建码日期 / 已建天数）的间距保持不变；</li>
+<li><strong>长名称完整查看出口</strong>：列表行超过 2 行的名称，在点击行尾箭头、于该行下方展开的「详情信息卡片」内<strong>完整展示</strong>（卡片内名称不设行数限制、不省略），确保用户始终能查看到渠道全称。</li>
+</ol>
+<ul>
+<li><strong>术语约定</strong>：本规范统一使用「省略号隐藏」，不使用"截断"。</li>
+<li><strong>本 Spec 不改点击行为</strong>：本 Spec 只调整名称的展示方式；列表行点击行为的变更（按网点维度改为展开详情卡片、不再跳员工详情）归「详情卡片 Spec」定义。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>状态</strong>：名称 1 行内（与现状一致）/ 名称 2 行（完整展示）/ 名称超 2 行（列表行第 2 行省略号，完整名称在展开的详情信息卡片中展示）</li>
+<li><strong>异常</strong>：名称为空 → 显示占位「—」</li>
+<li><strong>回退</strong>：不适用（无流程变化）</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>受影响页</strong>：</li>
+<li>团队长端 · 过程跟进 · 需求管理（列表行名称）</li>
+<li>团队长端 · 团队总览 · 完整排名详情（<strong>仅"按网点"排名维度</strong>：首页 Top4 排名行 + 完整排名详情页列表行名称；"按员工"维度行名称是员工姓名，不涉及）</li>
+<li>员工端 · 渠道星级详情页（网点行名称）</li>
+<li>团队长端 · 星级渠道详情页（网点行名称）</li>
+<li>员工端 · 名下渠道排名（网点行名称，2026-11-05 追加）</li>
+<li><strong>被动影响</strong>：以上列表行的垂直高度在长名称时变为 2 行，可能影响列表密度，需回归确认不破坏原有布局。</li>
+<li><strong>不涉及</strong>：本页筛选控件内的文字省略号规则（如员工筛选、星级变化筛选控件）不在本次范围。</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<p>无阻塞项。</p>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>渠道星级详情页章节、名下渠道排名章节（网点行展示说明）</td>
+<td>网点行名称展示规则由"单行省略号"改为"最多 2 行、超出第 2 行省略号、与右侧元素顶部对齐"；名下渠道排名为 2026-11-05 追加</td>
+</tr>
+<tr>
+<td><code>./docs/prd/零售团队长看板_PRD_v0_4.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>过程跟进·需求管理、团队总览·完整排名详情（按网点维度）、星级渠道详情</td>
+<td>同上，列表行名称统一展示规则；团队总览排名仅"按网点"维度需改</td>
+</tr>
+</tbody></table>
+<blockquote><p>本轮两份 PRD 的相关章节已按本 Spec 同步更新（涉及章节见上表）；改动落在既有页面的展示层，不触及产品结构与核心流程。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改</td>
+<td>① 团队长端「过程跟进·需求管理」列表行名称（原单行省略号）改为最多 2 行展示、超出省略，行容器垂直对齐改顶部对齐；② 团队长端「团队总览」排名（<strong>按网点维度</strong>）首页 Top4 排名行名称（原单行省略号）同上；③ 团队长端「完整排名详情」页（<strong>按网点维度</strong>）列表行名称（原单行省略号）同上；④ 员工端「渠道星级详情页」网点行名称（原自然换行、无行数限制）改为最多 2 行、超出省略，行容器垂直对齐改顶部对齐；⑤ 团队长端「星级渠道详情页」网点行名称同上；⑥ 员工端「名下渠道排名」网点行名称（2026-11-05 追加；原型现状已为「最多 2 行 + 省略号」，<strong>无需改动</strong>，仅登记为适用范围第 6 处）</td>
+</tr>
+</tbody></table>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>团队长端「过程跟进 · 需求管理」</h4>
+<ul>
+<li>列表行渠道名称：由"单行省略号隐藏"改为"最多 2 行，超出第 2 行省略号"；名称与右侧状态标签顶部对齐</li>
+</ul>
+<h4>团队长端「团队总览 · 完整排名详情」（仅「按网点」排名维度）</h4>
+<ul>
+<li>排名维度＝「按网点」时，行名称取网点名（长）：首页 Top4 排名行名称、完整排名详情页列表行名称规则同上；名称与右侧星级变化、数值顶部对齐</li>
+<li>排名维度＝「按员工」时，行名称取员工姓名（短），不涉及本次改动，保持现状</li>
+</ul>
+<h4>员工端「渠道星级详情页」</h4>
+<ul>
+<li>网点行名称：由"自然换行、无行数限制"改为"最多 2 行，超出第 2 行省略号"；名称与右侧星级变化图标顶部对齐</li>
+</ul>
+<h4>团队长端「星级渠道详情页」</h4>
+<ul>
+<li>网点行名称：规则同员工端</li>
+</ul>
+<h4>员工端「名下渠道排名」（2026-11-05 追加）</h4>
+<ul>
+<li>网点行名称：最多 2 行，超出第 2 行省略号；名称与右侧指标数值顶部对齐</li>
+<li>超 2 行的完整名称在该行下方展开的「渠道详情卡片」内完整展示</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 渠道详情卡片的完整方案（卡片字段、经营/过程指标、展开交互等）——另立 Spec；本 Spec 仅约定其中一条：卡片须完整展示渠道名称（作为超 2 行名称的完整查看出口）</li>
+<li>❌ 页面顶部筛选控件内文字（员工筛选、星级变化筛选等）的省略号规则</li>
+<li>❌ 数据口径：后端已返回完整名称，不改数据结构、不加字段</li>
+<li>❌ 本 Spec 不改点击行为：列表行点击行为的变更（按网点维度展开详情卡片、不跳员工详情）归「详情卡片 Spec」定义</li>
+<li>❌ 团队总览排名的「按员工」维度：行名称为员工姓名，不做改动</li>
+<li>❌ 不改的模块：拜访记录、重点关注、需求详情、员工详情等未点名的列表</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>主路径可完成</strong>：5 类页面 6 处列表的渠道名称均最多展示 2 行；1～2 行完整可见；超 2 行时第 2 行末尾以省略号收尾（其中团队总览排名指「按网点」维度下的行名称）</li>
+<li><strong>对齐正确</strong>：名称在 2 行时，同排右侧元素（状态标签 / 星级变化图标 / 数值）与名称首行顶部对齐</li>
+<li><strong>不破坏既有行为</strong>：各列表行整行点击行为、下钻路径与改动前一致；字号、行高、与副信息间距不变</li>
+<li><strong>长名称可查看全称</strong>：超过 2 行的名称，展开该行下方的详情信息卡片后，卡片内完整展示全部名称字符（不省略）</li>
+<li><strong>状态口径</strong>：名称为空时显示占位「—」</li>
+<li><strong>范围守界</strong>：第四节列出的项均未发生变化</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>依赖</strong>：无数据依赖（后端已提供完整渠道名称）。</li>
+<li><strong>依赖（新）</strong>：超 2 行名称的"完整查看"依赖「详情信息卡片」落地；在卡片上线前，超 2 行名称仍只能看到前 2 行。建议卡片与其展开入口同期排期。</li>
+<li><strong>风险</strong>：长名称占 2 行后，列表单行高度变化会影响列表密度与首屏条数，需在真机回归确认不破坏原布局。</li>
+<li><strong>风险</strong>：名称换行后与右侧元素的顶部对齐为新的对齐口径，需与设计确认视觉是否可接受（尤其含状态标签的需求管理行）。</li>
+<li><strong>跨端一致性</strong>：员工端与团队长端的两处星级详情页（员工端「渠道星级详情页」、团队长端「星级渠道详情页」）结构相似，展示规则应保持一致，避免再次分叉。</li>
+</ul>
+</main>
+</body>
+</html>

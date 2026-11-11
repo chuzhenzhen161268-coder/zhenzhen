@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 银行需求挖掘三维度分类 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-06-银行需求挖掘三维度分类-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>银行需求挖掘三维度分类 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-06（<strong>2026-11-10 就地迭代</strong>） <strong>迭代版本号</strong>：零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code> <strong>流程设计要求</strong>：单版（在既有拜访表单「银行需求挖掘」模块内做控件与布局调整——需求大类上提为外层常驻分组、点类进弹层、每标签可单独选填描述，不新增页面、不改提交链路，无路径决策争议）</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：员工端＝客户经理（拜访时填写「银行需求挖掘」）；团队长端＝团队长（本轮只读展示）。</p>
+<p><strong>要解决的问题</strong>：拜访表单「银行需求挖掘」现状是 <strong>10 项平铺 chip</strong>（三方存管 / AUM·存款 / 信用卡 / 养老金 / 产品销售 / 贷款 / 其它对公需求 / 客户资源 / 渠道关键人赋能 / 其它），只能记录"这次谈了什么业务"，<strong>表达不出需求的性质</strong>。带来两个后果：① 员工自己看不出这次挖掘覆盖的是哪一类需求（是业绩型职业需求，还是家庭/社交类社会需求，还是个人兴趣与健康类个人需求）；② 团队长与统计端拿到的是一条条彼此平行的业务标签，<strong>无法判断员工的能力结构</strong>——谁擅长谈职业需求、谁在社会／个人需求上从未涉及，全靠人工翻记录猜。</p>
+<p><strong>解决方式</strong>：把「银行需求挖掘」改为<strong>两级分类选择 + 大类外提 + 每标签独立描述</strong>——第一级是需求维度（<strong>职业需求 / 社会需求 / 个人需求</strong>），<strong>三个大类直接常驻平铺在表单卡片外层</strong>作为分组容器，点击任一大类即拉起该类的选择弹层；第二级是该维度下的具体<strong>需求指标</strong>（源自《渠道信任经营 · 需求库速查（三维度）》46 项）；库中无对应项时<strong>手工补充</strong>，手工项自动挂靠当前大类、打「自定义」标识，不产生无归属的自由文本。已选需求按所属大类归位展示在外层；<strong>每个已选需求标签可单独、选填地填写「需求描述」</strong>，取消原模块级「需求描述（必填）」单条文本框，让描述与具体需求一一对应、有上下文可读。</p>
+<p><strong>本轮迭代（2026-11-10，就地改写）</strong>：在 11-06 版基础上做三处调整——① 需求大类由半屏内的 tab <strong>上提为表单卡片外层常驻分组</strong>，去掉「＋ 添加需求」按钮，点大类直接进入该类弹层；② 弹层<strong>只显示所点大类</strong>（去掉大类 tab 切换，保留类内搜索与手工补充）；③ 「需求描述」由<strong>模块级单条必填</strong>改为<strong>每个已选需求标签的独立选填描述</strong>（在弹层勾选后即填）。据此，11-06 版第四节"不做每个已选标签的独立需求描述"的边界<strong>作废</strong>。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：本次未做外部调研（既有表单模块内的控件升级），不适用。</p>
+<p><strong>AI 能力边界</strong>：不适用（沿用既有「AI问案例」入口，本 Spec 不改其行为）。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>员工进入拜访表单 → 「银行需求挖掘」模块默认<strong>空态</strong>（职业 / 社会 / 个人三个大类分组常驻平铺，各组下提示"点击添加"）→ 点某个<strong>大类分组</strong>拉起<strong>半屏选择器</strong>（只展示该大类下的二级指标）→ 在二级指标中点选（可跨大类多次点选，每次从一个大类进入）→ 勾选某项后<strong>可即时在选项下方填写该需求的「描述（选填）」</strong> → 点「确定」关闭半屏 → 外层对应大类分组下展示已选标签（带维度色 + 各自描述）→ 提交 → 需求以「维度 + 分组 + 指标名 + 自定义标识 + 需求描述」结构随拜访记录落库。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>分支 1 · 大类外提常驻</strong>：三个大类（职业需求 / 社会需求 / 个人需求）作为<strong>分组容器常驻平铺</strong>在表单卡片外层，<strong>不再有「＋ 添加需求」按钮</strong>；每个大类分组常驻显示（已选标签归到所属大类下，带该维度色圆点与「N 项」计数；暂无已选时显示"点击添加"提示）。点击某大类分组即拉起该大类的选择弹层。</li>
+<li><strong>分支 2 · 大类分组是容器不是互斥筛选</strong>：三个大类可同时存在已选项；进入某大类弹层选择不影响其它大类已选项；先后进入不同大类，各自维护自己的选择。</li>
+<li><strong>分支 3 · 弹层只显示所点大类</strong>：弹层内不再有大类 tab 切换，<strong>只展示从外层点入的那个大类</strong>的二级指标；二级指标按<strong>展示分组</strong>铺开（如"业绩 · 存款 / 账户与产品 / 客户经营 / 对公业务 / 综合管理 / 个人收获 / 合作保障"），分组标题与指标同一屏内顺序罗列，★ 常用项在分组内<strong>置前</strong>并标记。</li>
+<li><strong>分支 4 · 弹层内搜索</strong>：选择器顶部搜索框在<strong>当前大类范围内</strong>匹配（匹配范围＝指标名 + 展示分组 + 大类名）；无命中时展示空态并提示可在下方「手工补充」录入。</li>
+<li><strong>分支 5 · 手工补充</strong>：点「＋ 手工补充（无对应项时使用）」展开输入行 → 输入需求名称 → 添加后<strong>自动挂靠当前大类</strong>（grp 记为"自定义"）、打「自定义」小标；输入为空 → Toast「请输入需求名称」；同大类内重名 → Toast「该需求已选择」，不产生重复项。</li>
+<li><strong>分支 6 · 选择即生效、勾选即可填描述</strong>：半屏内勾选／取消<strong>即时写入</strong>已选集合；<strong>勾选某项后，该选项下方即时出现「描述（选填）」输入框</strong>，可当场填写该需求的独立描述；外层卡片与半屏底部「已选摘要」同步刷新。「确定」按钮只负责<strong>关闭半屏</strong>并回吐已选（不承担"提交草稿"语义），文案为「确定（已选 N 项）」；点遮罩或右上「×」关闭时<strong>保留已选与已填描述</strong>、仅关闭面板。已选为空时「确定」<strong>置灰不可点</strong>。</li>
+<li><strong>分支 7 · 必填规则</strong>：「银行需求挖掘」<strong>至少选 1 项</strong>；<strong>每个需求标签的「需求描述」为选填</strong>（无模块级描述、无描述必填校验）。提交时若一项需求都未选 → 模块卡片加红描边 + Toast「请至少选择一项银行需求」。</li>
+<li><strong>分支 8 · 修改态（拜访记录编辑）</strong>：编辑态复用同一套控件；原记录已选需求按<strong>快照回显</strong>（含维度、所属分组、自定义标识、<strong>每个标签各自的描述</strong>），可继续增删与改描述；保存时按新结构覆盖写回（规则沿用《2026-11-03-拜访记录补充与需求状态同步-spec.md》）。</li>
+<li><strong>分支 9 · 存量记录</strong>：已提交的历史记录保持原文本展示（如"需求：信用卡推广资源"），<strong>不追溯改写、不做数据迁移</strong>；统计端对无维度字段的存量数据归入「<strong>未分类</strong>」桶，不计入三个维度的覆盖率分子。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>状态</strong>：</li>
+<li>空态：职业 / 社会 / 个人三个大类分组常驻平铺，各组下提示"点击添加"。</li>
+<li>已选态：按大类分组展示标签（分组标题＝"维度名 · N 项"，前置该维度色圆点），标签带维度色与「自定义」标识，标签尾部「×」可单个删除；标签下方展示该需求自己的描述（无描述则仅显示标签）。</li>
+<li>错误态：未选任何需求时，提交校验未通过 → 模块卡片描红。</li>
+<li>搜索态：弹层内搜索结果在<strong>当前大类范围内</strong>按展示分组呈现。</li>
+<li>搜索空态：无匹配结果，提示可在「手工补充」中录入。</li>
+<li><strong>校验失败</strong>：未选需求 → 卡片描红 + Toast「请至少选择一项银行需求」。（<strong>描述为选填，不做描红校验。</strong>）</li>
+<li><strong>异常</strong>：手工补充输入为空 → Toast「请输入需求名称」；同大类重名 → Toast「该需求已选择」。其余提交失败提示沿用既有口径（Toast「提交失败，请稍后重试」），表单已填内容不丢失。</li>
+<li><strong>回退</strong>：关闭选择器（遮罩／×）→ 仅关闭，已选与已填描述保留；表单「放弃／取消」→ 本次分类选择与各条描述均不落库。</li>
+<li><strong>已失效指标</strong>：库中某指标下架／更名后，已提交记录不受影响（快照语义）。</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>主改页</strong>：员工端拜访表单（新增态 + 修改态）「银行需求挖掘」模块——三大类上提为外层常驻分组、去掉「＋ 添加需求」按钮与模块级「需求描述（必填）」文本框、每标签可单独选填描述。</li>
+<li><strong>被动影响页</strong>：</li>
+<li>员工端拜访详情页：「需求挖掘」展示改为<strong>按维度分组的标签 + 每条标签后跟其自身描述</strong>（沿用现有满足状态标签结构，名称部分改为带维度色的标签；无描述则仅展示标签）。</li>
+<li>员工端历史拜访记录列表行摘要、首页「渠道拜访」时间轴当日记录卡：需求摘要同步新口径。</li>
+<li>员工端「需求跟进」列表与需求详情：需求跟进与需求项为 1:1，其「需求描述」取对应需求项的<strong>独立描述</strong>（沿用既有 recordId 共享口径，不改同步规则）。</li>
+<li>员工端上报需求详情、团队长端拜访只读详情、员工详情·拜访只读详情：同步展示口径；团队长端维持只读，不新增写入口。</li>
+<li><strong>不涉及</strong>：员工画像 / 团队长看板的需求维度能力结构分析（本轮明确不做，见第四节）；活动表单与活动详情；拜访表单其余 5 个模块；「AI问案例」入口与其检索逻辑；打卡、待补充队列、拜访次数统计。</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<p>无阻塞项。以下两项登记为后续范围：</p>
+<ol>
+<li><strong>二级指标的展示分组口径</strong>：本 Spec 采用《需求库速查·三维度》46 项原始库，但把原始库中 24 个零碎 <code>cat</code>（对私零售-存款／对私零售-账户／合作保障-客户保护…）<strong>归并为 8 个展示分组</strong>（见 §3.4 表）。这是<strong>展示层归并</strong>，不改变 46 项指标本身；后续如需按原始 <code>cat</code> 细分，需重新确认。</li>
+<li>一条拜访记录的需求项与 Demand 的拆分／合并（沿用既有 spec 的口径，本轮不变）。</li>
+</ol>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。<br>本轮改动落在既有拜访表单的「银行需求挖掘」模块与其展示链路上，不触及产品结构与核心流程。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>§5.4 拜访表单（Q2 银行需求挖掘）、§5.6 拜访详情、§7 数据表</td>
+<td>Q2 由 10 项平铺多选改为「一级维度 + 二级指标」两级分类选择：<strong>三个大类上提为表单卡片外层常驻分组、点类进弹层、去掉「＋ 添加需求」按钮</strong>；新增手工补充与「自定义」标识；「需求描述」由<strong>模块级单条必填</strong>改为<strong>每个已选需求标签的独立选填描述</strong>；补充维度三色规范、旧选项到新分类的映射、存量「未分类」口径；数据表补充需求维度 / 分组 / 是否自定义 / <strong>每条需求独立描述</strong>字段</td>
+</tr>
+<tr>
+<td><code>./docs/prd/零售团队长看板_PRD_v0_4.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>§4.2 拜访/活动详情、§7 数据表</td>
+<td>拜访详情「需求挖掘内容」展示口径同步为按维度分组标签 + <strong>每条标签各自的描述</strong>；团队长端维持只读</td>
+</tr>
+</tbody></table>
+<blockquote><p>本轮不新增独立主 PRD 文件；两份 PRD 的页级更新由 <strong>lon-page-design</strong> 产出，craft 不直接改页面正文。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改</td>
+<td>① 「银行需求挖掘」模块外层改为<strong>三个大类常驻平铺</strong>（职业/社会/个人分组容器，各组带维度色圆点与「N 项」计数、无已选时"点击添加"），<strong>去掉「＋ 添加需求」按钮</strong>与<strong>模块级「需求描述（必填）」文本框</strong>；已选标签归到所属大类下、标签下方展示各自描述；② <strong>半屏选择器</strong>改为<strong>只展示所点大类</strong>（去掉大类 tab 切换、保留类内搜索与手工补充），勾选某需求后<strong>该选项下方即时出现「描述（选填）」输入框</strong>；③ 模块卡片空态、错误态（未选需求描红）；④ 提交校验收敛为"至少选 1 项需求"（描述选填、不再校验）；⑤ 拜访详情（员工端 + 上报需求详情 + 团队长端只读 / 员工详情·拜访只读）「需求挖掘」展示改为按维度分组标签 + 每条标签各自描述；⑥ 需求跟进列表/详情的描述取对应需求项独立描述；⑦ 修改态回显已选需求及其各自描述（快照）；⑧ 存量记录保持原文本展示</td>
+</tr>
+<tr>
+<td><code>./docs/pages/零售银行渠道经营工作台_原型.html</code></td>
+<td>修改</td>
+<td>同上（渲染版与源文件保持一致）</td>
+</tr>
+</tbody></table>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>员工端 · 我要拜访（拜访表单 Q2 银行需求挖掘）</h4>
+<ul>
+<li>控件由 10 项平铺 chip 改为<strong>两级分类选择 + 大类外提</strong>：</li>
+<li>表单卡片区：<strong>三个大类（职业需求 / 社会需求 / 个人需求）常驻平铺为「浅底圆角分组卡片」</strong>（每个大类独立一块浅灰底卡片、组间留白分隔，扫览时分组清晰；组头＝维度色圆点 + 大类名 + 「N 项」计数小胶囊 + 右侧「＋ 添加」小按钮，未选时隐藏计数胶囊、按钮降级为灰色描边）；已选时标签归到所属大类卡内（带维度色与「自定义」标识、尾部「×」可删）；<strong>每个标签下方的描述：已有内容时直接显示带内容的描边输入框，为空时收起为浅色「＋ 描述（选填）」入口、点击展开为输入框</strong>（可就地在卡片内填写 / 修改，与弹层内同项描述是同一份数据、双向同步；空态收起以避免标签多时卡片过长）；（2026-11-11）<strong>不再有「＋ 添加需求」按钮</strong>，点击任一大类组头拉起该类弹层。</li>
+<li>半屏选择器：<strong>只展示从外层点入的那个大类</strong>（无大类 tab 切换）→ 搜索框（<strong>限本大类内</strong>匹配）→ 二级指标按展示分组铺开（★ 常用项置前）→ 勾选后该选项下方即时出现「描述（选填）」输入框 →「＋ 手工补充（无对应项时使用）」→ 底部已选摘要 + 「确定（已选 N 项）」（空选置灰）。<strong>弹层内选项的选中态（边框 + 文字 + 底色）按当前大类三色取色</strong>——职业需求蓝 <code>#2B73FF</code>／社会需求紫 <code>#8257E6</code>／个人需求绿 <code>#12A870</code>，（2026-11-11）不再统一为蓝色；顶部「当前大类」标记与底部已选摘要标签同取各自所属大类色。</li>
+<li><strong>取消模块级「需求描述」文本框</strong>；改为<strong>每个已选需求标签可单独、选填地填写描述</strong>（在弹层勾选后即填）；「AI问案例」入口沿用既有位置、本模块内保留。</li>
+<li>提交校验：<strong>至少 1 项需求</strong>；描述<strong>选填</strong>、不做校验（不再有文本框描红与"请填写需求描述"）。</li>
+<li>修改态（拜访记录编辑）：复用同一控件，已选需求及其各自描述按快照回显，可增删与改描述。</li>
+</ul>
+<h4>员工端 · 拜访详情 / 上报需求详情 / 团队长端 · 拜访只读详情</h4>
+<ul>
+<li>「需求挖掘」展示由平铺名称文本改为<strong>按维度分组的标签 + 每条标签后跟其自身描述</strong>（无描述则仅展示标签）；满足状态标签沿用共享值口径不变。</li>
+<li>团队长端维持只读，不新增任何写入口。</li>
+</ul>
+<h4>员工端 · 历史拜访记录列表 / 首页「渠道拜访」时间轴</h4>
+<ul>
+<li>需求摘要同步为分类化口径（维度标签 + 指标名）；已提交的存量记录保持原文本。</li>
+</ul>
+<h4>员工端 · 需求跟进 / 需求详情</h4>
+<ul>
+<li>需求跟进与需求项为 1:1，其需求名称与「需求描述」取对应需求项的<strong>独立描述</strong>；状态双向同步规则沿用既有 spec，不在本轮变更。</li>
+</ul>
+<h3>3.4 需求维度与展示分组（数据口径）</h3>
+<p><strong>一级大类（维度，分组容器）与颜色规范</strong>：</p>
+<table>
+<thead><tr>
+<th>一级大类</th>
+<th>主色</th>
+<th>底色</th>
+<th>语义</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>职业需求</td>
+<td><code>#2B73FF</code>（蓝）</td>
+<td><code>#E9F1FF</code></td>
+<td>与关键人建立信任的主要起点，最该先谈</td>
+</tr>
+<tr>
+<td>社会需求</td>
+<td><code>#8257E6</code>（浅紫）</td>
+<td><code>#F1EBFC</code></td>
+<td>信任积累后浮现的家庭 / 社交角色需求</td>
+</tr>
+<tr>
+<td>个人需求</td>
+<td><code>#12A870</code>（浅绿）</td>
+<td><code>#E4F6EE</code></td>
+<td>个体生存 / 享受 / 发展类需求</td>
+</tr>
+</tbody></table>
+<p><strong>二级指标展示分组（8 组，职业需求下；社会 / 个人需求各 2 组）</strong>：</p>
+<table>
+<thead><tr>
+<th>维度</th>
+<th>展示分组</th>
+<th>说明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>职业需求</td>
+<td>业绩 · 存款</td>
+<td>存款 / AUM 类业绩指标</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>账户与产品</td>
+<td>账户开立与产品销售类指标</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>个贷</td>
+<td>个贷 / 信用贷推荐</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>客户经营</td>
+<td>客户增长、防流失、满意度、面见触达</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>对公业务</td>
+<td>对公存贷、客户新增、同业、托管</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>综合管理</td>
+<td>网点排名、合规风控、员工与资源管理</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>个人收获</td>
+<td>收入、晋升、信息、专业与效率、避险</td>
+</tr>
+<tr>
+<td>职业需求</td>
+<td>合作保障</td>
+<td>归属、形象、风险隔离、利益、服务、流程</td>
+</tr>
+<tr>
+<td>社会需求</td>
+<td>家庭角色 / 社交角色</td>
+<td>父母与子女类、朋友与社交圈类</td>
+</tr>
+<tr>
+<td>个人需求</td>
+<td>生活与爱好 / 投资与发展</td>
+<td>运动减压类、投资传承与学习类</td>
+</tr>
+</tbody></table>
+<p><strong>指标字段结构</strong>：<code>dim</code>（一级维度）／<code>grp</code>（展示分组，手工项固定为"自定义"）／<code>name</code>（指标名）／<code>star</code>（是否★常用项）／<code>custom</code>（是否手工补充项）。<strong>已选集合项结构</strong>：在指标基础上追加 <code>desc</code>（<strong>该需求自己的需求描述，选填</strong>）；取消原模块级单条「需求描述」字段。</p>
+<p><strong>旧选项 → 新分类映射</strong>：</p>
+<table>
+<thead><tr>
+<th>旧平铺选项</th>
+<th>新分类（维度 · 分组 · 指标）</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>三方存管</td>
+<td>职业需求 · 账户与产品 · 三方存管开户数</td>
+</tr>
+<tr>
+<td>AUM/存款</td>
+<td>职业需求 · 业绩 · 存款 · 个人存款 / AUM 增量</td>
+</tr>
+<tr>
+<td>信用卡</td>
+<td>职业需求 · 账户与产品 · 信用卡发卡</td>
+</tr>
+<tr>
+<td>养老金</td>
+<td>职业需求 · 账户与产品 · 个人养老金账户</td>
+</tr>
+<tr>
+<td>产品销售</td>
+<td>职业需求 · 账户与产品 · 理财产品 / 基金 / 保险 / 贵金属销售</td>
+</tr>
+<tr>
+<td>贷款</td>
+<td>职业需求 · 个贷 · 贷款推荐（个贷 / 信用贷）</td>
+</tr>
+<tr>
+<td>其它对公需求</td>
+<td>职业需求 · 对公业务（对公存款 / 对公贷款 / 对公客户新增…）</td>
+</tr>
+<tr>
+<td>客户资源</td>
+<td>职业需求 · 客户经营（客户防流失与拉回 / 客户面见与触达…）</td>
+</tr>
+<tr>
+<td>渠道关键人赋能</td>
+<td>职业需求 · 综合管理（管理赋能 / 资源整合…）</td>
+</tr>
+<tr>
+<td>其它</td>
+<td>无对应指标 → 走<strong>手工补充</strong>（挂靠当前维度，打「自定义」）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ <strong>不做员工需求维度画像 / 团队长端能力结构分析</strong>——本轮<strong>仅落地录入端分类选择器</strong>，如何用这些维度做覆盖度统计与看板呈现，另立需求。</li>
+<li>❌ 不做需求库的后台维护页面（46 项库本轮为前端内置数据，不做增删改的管理端）。</li>
+<li>❌ 不做存量历史记录的数据迁移（保持原文本，统计归入「未分类」）。</li>
+<li>❌ 不做需求描述的必填与字数 / 格式限制（描述全程选填）。</li>
+<li>❌ 不改「AI问案例」入口的位置与检索逻辑（本模块内入口保留）。</li>
+<li>❌ 不改拜访表单其余 5 个模块（拜访对象 / 达成合作内容 / 需求是否满足 / 需求是否紧急与解决方案 / 其它拜访信息）。</li>
+<li>❌ 不改需求跟进、上报需求的<strong>状态规则</strong>（需求名称 / 描述取值口径同步为需求项自身，见 §2.4，不属状态规则变更）。</li>
+<li>❌ 不改团队长端为可编辑；团队长端除拜访详情展示口径外其余页面不动。</li>
+<li>❌ 不新增页面：本模块全部交互在既有表单与半屏选择器内完成。</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>大类外层常驻</strong>：进入拜访表单即可看到职业 / 社会 / 个人三个大类分组常驻平铺（无已选时各组显示"点击添加"）；页面上<strong>不存在「＋ 添加需求」按钮</strong>。</li>
+<li><strong>点类进弹层、分组为容器</strong>：点击某大类分组拉起弹层，弹层<strong>只展示该类需求</strong>；三个大类可同时存在已选项、互不影响；无大类 tab 切换。</li>
+<li><strong>弹层内搜索</strong>：在弹层搜索框输入"信用卡""子女"等关键词，仅在该大类内匹配并返回；无命中时展示空态并引导手工补充。</li>
+<li><strong>手工补充归类正确</strong>：手工录入项自动挂靠当前大类、显示「自定义」标识；输入为空与同大类重名分别给出 Toast 提示且不产生重复项。</li>
+<li><strong>每标签独立描述选填</strong>：勾选某需求后该选项下方即时出现「描述（选填）」框；可不填；已填描述在外层标签下方逐条展示；描述为空不做任何拦截。</li>
+<li><strong>必填生效</strong>：未选任一需求时提交被拦截（卡片描红 + Toast「请至少选择一项银行需求」）；<strong>描述无必填校验、无文本框描红</strong>。</li>
+<li><strong>删除可用</strong>：外层标签与半屏底部已选摘要的「×」均可删除对应项，删除后分组计数同步刷新；全部删完后回到空态。</li>
+<li><strong>口径一致</strong>：员工端拜访详情、历史拜访记录列表、首页时间轴、需求跟进、上报需求详情、团队长端拜访只读详情，需求挖掘均按"维度分组标签 + 每条标签各自描述"展示，三个维度色与本文档 §3.4 一致。</li>
+<li><strong>范围守界</strong>：第四节列出的项均未变化（其余 5 个模块、AI问案例逻辑、需求状态同步规则、团队长端读写边界、存量记录文本）。</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>依赖（数据源）</strong>：《渠道信任经营 · 需求库速查（三维度）》46 项为需求指标的<strong>唯一数据源</strong>，原文件位于工作区根目录（<code>./银行渠道拜访需求库速查_三维度.html</code>）。上线时需由后端提供等价的指标字典接口（含 <code>dim</code>／<code>grp</code>／<code>name</code>／<code>star</code>），原型内为内置常量。</li>
+<li><strong>依赖（原型）</strong>：分类选择器的三色、分组归并口径以本文档 §3.4 为<strong>唯一视觉与交互基准</strong>，原型内就地实现。</li>
+<li><strong>风险（分组口径）</strong>：46 项原始库的 <code>cat</code> 有 24 个（过碎），本 Spec 归并为 8 个展示分组（见 §3.4）。若后续要求按原始 <code>cat</code> 展示，需重新确认并同步调整 <code>grp</code> 取值。</li>
+<li><strong>风险（存量数据）</strong>：新增维度字段后，历史记录无维度值。按本 Spec 归入「未分类」桶，<strong>不计入</strong>三维度覆盖率分子；若产品要求补录历史维度，需另行评估迁移成本。</li>
+<li><strong>风险（描述选填）</strong>：原「需求描述」为模块级必填单条，本次改为<strong>每个标签的独立选填描述</strong>——录入更灵活，但可能出现部分标签无描述；下游详情 / 需求跟进对无描述项仅展示标签本身，不做占位补全。</li>
+<li><strong>风险（编辑态快照）</strong>：修改态的已选需求及其各自描述按快照回显，若指标库后续下架某指标，编辑态需仍能展示该历史项（快照语义），原型演示时需保留一条含自定义项与已填描述的样本。</li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 · 名下渠道排名 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-04-名下渠道排名-spec.md　·　状态：评审中　·　作者：蔡中琴</p>
+<h1>名下渠道排名 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-04 <strong>迭代版本号</strong>：零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code> <strong>流程设计要求</strong>：单版（新增本人员工名下网点的结果排名二级页 + 入口改造，属局部增量，无路径决策争议）</p>
+<hr>
+<h2>修订记录</h2>
+<p><strong>2026-11-09</strong>：本 Spec 中「名下渠道排名」页内<strong>渠道详情卡片的内容口径</strong>被《2026-11-09-渠道详情卡片内容调整-spec.md》<strong>局部覆盖</strong>（本页为该次调整覆盖的两处之一）：</p>
+<table>
+<thead><tr>
+<th>适用范围</th>
+<th>卡片内容口径</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>⛔ 员工端 · 名下渠道排名（本页）</td>
+<td><strong>已调整</strong>为「完整渠道名称 + 渠道建档信息（建码日期·天数、关键人列表、星级 + 变化）」，移除经营 4 项与过程 4 项</td>
+</tr>
+</tbody></table>
+<p>被覆盖口径要点：</p>
+<ul>
+<li>移除经营指标 4 项与过程指标 4 项；</li>
+<li>卡片改为<strong>只读</strong>，不提供「编辑建码信息」入口；</li>
+<li>无建档数据时展示「暂无建档信息」占位；</li>
+<li>原「卡片各项指标随周期刷新」收敛为<strong>仅星级变化随周期刷新</strong>（建码日期·天数与关键人为静态档案）。</li>
+</ul>
+<p>本页其余口径（入口触发 / 范围收敛 / 维度固定按网点 / 排名列表 / 排序切换 / 周期继承与返回不回写）<strong>不变</strong>；同一次调整的另一处为团队长端「团队总览 · 按网点」，详见《2026-11-03-渠道详情卡片-spec.md》修订记录。</p>
+<p><strong>生效依据</strong>：《2026-11-09-渠道详情卡片内容调整-spec.md》。以下 §2.2、§3.3、§五 中涉及本页卡片内容的表述请以该 Spec 为准。</p>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：员工端＝客户经理（本人，查看自己名下网点的经营结果）。</p>
+<p><strong>要解决的问题</strong>：员工在「我的渠道」未选择具体网点（全部网点汇总态）时，只能看到四张经营结果指标卡的<strong>汇总值</strong>（新增资产 / 新增有效户 / 新增开户数 / 经营积分），无法知道这些结果<strong>由名下哪个网点贡献、哪个网点在拖后腿</strong>。缺少从「汇总结果」下钻到「本人员工名下网点维度」的出口。</p>
+<p><strong>解决方式</strong>：在全部网点态下，四张经营结果指标卡变为可点击，进入新增的<strong>「名下渠道排名」二级页</strong>；该页复用团队长端「团队总览」二级页的<strong>按网点排名模式</strong>，把范围收敛到<strong>本人名下网点</strong>，让员工一眼看到名下各网点的结果排名。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用（本次为既有产品内的维度下钻增量，未做外部调研）。</p>
+<p><strong>AI 能力边界</strong>：不适用。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>员工进入「我的渠道」（<strong>全部网点态</strong>）→ 点击四张经营结果指标卡之一（新增资产 / 新增有效户 / 新增开户数 / 经营积分）→ 进入「名下渠道排名」二级页，页面预选该指标并展示<strong>本人名下网点</strong>按该指标的排名列表 → 点击某网点行就地展开该网点的渠道详情卡片 → 返回可回到「我的渠道」并保留原状态。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>入口触发（仅全部网点态）</strong>：未选择具体网点 → 四张指标卡可点击，点击进入详情页并预选被点击的指标；已选中具体网点（单网点态）→ 四张指标卡<strong>不可点击、不提供入口</strong>（卡片保持现状视觉，无跳转）。</li>
+<li><strong>页内切换指标</strong>：详情页中部保留 4 张指标卡（新增资产 / 新增有效户 / 新增开户数 / 经营积分），点击某张卡 → 排名列表按该指标刷新，卡选中态切换。</li>
+<li><strong>范围收敛</strong>：排名列表仅包含<strong>本人名下网点</strong>，不出现他人名下网点；行内不再展示「所属员工」副信息（均为本人，冗余）。</li>
+<li><strong>网点行点击</strong>：点击网点行 → 行下方展开该网点的渠道详情卡片（完整渠道名称 + 经营 4 项 + 过程 4 项）；再次点击 → 收起；同一时刻仅展开一行。　⚠️ 2026-11-09：卡片内容已调整为「完整渠道名称 + 渠道建档信息」，移除经营 4 项与过程 4 项，见修订记录</li>
+<li><strong>时间周期联动</strong>：进入详情页继承「我的渠道」当前时间周期；页内可独立用时间周期下拉（昨日 / 本周 / 自然月 / 本年 / 考核月，2026-11-04 起扩为 5 项，详见《2026-11-04-考核月周期维度-spec.md》）切换，排名与展开卡片内容随之刷新。</li>
+<li><strong>排序</strong>：保留团队总览二级页的排序切换（默认按名次；可切换为按数值升 / 降序）。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>状态</strong>：全部网点态（有入口，可点）／单网点态（无入口，不可点）；详情页内指标卡选中态（4 选 1）。</li>
+<li><strong>空态</strong>：本人名下网点为空 → 详情页展示空态提示，无排名行。</li>
+<li><strong>缺数据</strong>：某网点某指标缺数据 → 该行数值显示占位「—」；展开卡片内缺项同样显示「—」。</li>
+<li><strong>回退</strong>：详情页返回 → 回到「我的渠道」，保留进入前的网点选择、时间周期与滚动位置（不重置）。</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>入口页</strong>：员工端「我的渠道」——四张经营结果指标卡由「无点击」变为「全部网点态可点击进入详情页」。</li>
+<li><strong>结果页（新建）</strong>：员工端「名下渠道排名」二级页。</li>
+<li><strong>被动影响页</strong>：无。团队长端「团队总览」二级页及其按网点排名模式仅被复用、本身不改。</li>
+<li><strong>不涉及</strong>：「名下渠道数」卡无入口；单网点态无入口；团队长端不新增该页。</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<ul>
+<li>无阻塞项。</li>
+</ul>
+<hr>
+<h2>三、改/写的范围</h2>
+<blockquote><p>说明：本产品 PRD 为整份产品级文档（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区（非 <code>prototypes/pages/*.html</code>）。<br>本轮两份 PRD 的相关章节已按本 Spec 同步更新（涉及章节见上表）；改动落在「我的渠道」入口与新增二级页，不触及产品结构与核心流程。</p></blockquote>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>我的渠道 / 名下渠道排名（新建页）</td>
+<td>「我的渠道」四张经营结果指标卡在全部网点态可点击进入新页；新增「名下渠道排名」页规格：仅本人名下网点、按 4 指标排名、复用团队总览二级页按网点排名模式、行点击展开渠道详情卡片、周期与排序</td>
+</tr>
+</tbody></table>
+<blockquote><p>主 PRD（<code>零售员工工作台_PRD_v1_5.md</code>）由 craft 与 page-design 协同；本轮不新增独立主 PRD 文件。团队长端 PRD <code>零售团队长看板_PRD_v0_4.md</code> 仅作为复用来源参考，<strong>不改</strong>。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改</td>
+<td>① 员工端「我的渠道」四张经营结果指标卡：全部网点态可点击 → 进入新增「名下渠道排名」二级页并预选对应指标；单网点态不可点；② 新增「名下渠道排名」二级页：复用团队总览二级页按网点排名结构（时间周期下拉 + 4 张指标卡切换 + 排名列表 + 排序），数据范围限定本人名下网点、行内不展示所属员工副信息、行点击展开渠道详情卡片</td>
+</tr>
+</tbody></table>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>员工端 · 我的渠道</h4>
+<ul>
+<li>四张经营结果指标卡（新增资产 / 新增有效户 / 新增开户数 / 经营积分）在<strong>全部网点态</strong>下支持点击，进入「名下渠道排名」页并预选该指标。</li>
+<li><strong>单网点态</strong>下四张卡不可点击。</li>
+<li>「名下渠道数」卡不提供入口（现状不变）。</li>
+</ul>
+<h4>员工端 · 名下渠道排名（新建）</h4>
+<ul>
+<li>复用团队长端「团队总览」二级页的<strong>按网点排名模式</strong>：时间周期下拉 + 指标卡切换 + 排名列表 + 排序切换。</li>
+<li><strong>维度固定为「按网点」</strong>，不展示「按员工/按网点」维度切换。</li>
+<li>排名数据范围<strong>收敛为本人名下网点</strong>；行内仅展示网点名，<strong>不展示所属员工副信息</strong>。</li>
+<li>排名指标为 4 项经营结果（新增资产 / 新增有效户 / 新增开户数 / 经营积分），由入口指标预选、页内可切换。</li>
+<li>网点行点击 → 行下方展开<strong>渠道详情卡片</strong>（完整渠道名称 + 经营 4 项 + 过程 4 项），再次点击收起，同一时刻仅展开一行。　⚠️ 2026-11-09：卡片内容已调整为「完整渠道名称 + 渠道建档信息（建码日期·天数、关键人列表、星级 + 变化）」，移除经营 4 项与过程 4 项，见修订记录</li>
+<li>页内时间周期可独立切换，排名与展开卡片内容随之刷新。　⚠️ 2026-11-09：展开卡片（建档信息）仅<strong>星级变化</strong>随周期刷新，建码日期·天数与关键人为静态档案，见修订记录</li>
+<li>返回后回到「我的渠道」并保留其原状态。</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 不给「名下渠道数」卡增加入口</li>
+<li>❌ 单网点态（已选具体网点）不提供该详情页入口</li>
+<li>❌ 详情页不做维度切换（固定按网点）、不做「按员工」排名</li>
+<li>❌ 详情页不展示所属员工副信息</li>
+<li>❌ 排名行内不做二次下钻到「渠道星级详情页」等其它页</li>
+<li>❌ 不修改团队长端「团队总览」二级页及其按网点排名模式（仅复用）</li>
+<li>❌ 不新增跨端入口（团队长端不出现该页）</li>
+<li>❌ 排名列表不做筛选、不做指标卡下钻到账户/客户级流水</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>入口正确（全部网点态）</strong>：员工在「我的渠道」全部网点态点击四张经营结果指标卡任一 → 进入「名下渠道排名」页且预选该指标；「名下渠道数」卡无入口。</li>
+<li><strong>入口正确（单网点态）</strong>：已选中具体网点时，四张卡均不可点击、无跳转。</li>
+<li><strong>范围正确</strong>：详情页排名列表仅含本人名下网点，不出现他人网点；行内不展示所属员工副信息。</li>
+<li><strong>模式一致</strong>：详情页具备时间周期下拉、4 张指标卡切换、排名列表与排序切换，形态与团队总览二级页按网点排名一致；无维度切换。</li>
+<li><strong>指标切换</strong>：页内点击不同指标卡，排名列表按该指标刷新。</li>
+<li><strong>行展开</strong>：点击网点行 → 行下方展开渠道详情卡片（完整名称 + 经营 4 项 + 过程 4 项）；再次点击收起；同一时刻仅一行展开。　⚠️ 2026-11-09：卡片内容已调整为「完整渠道名称 + 渠道建档信息」，移除经营 4 项与过程 4 项，见修订记录</li>
+<li><strong>周期联动</strong>：切换页内时间周期，排名与展开卡片内容同步刷新。　⚠️ 2026-11-09：展开卡片仅<strong>星级变化</strong>随周期刷新，建码日期·天数与关键人为静态档案，见修订记录</li>
+<li><strong>状态与回退</strong>：本人名下网点为空时展示空态；指标缺数据展示「—」；返回后回到「我的渠道」并保留原状态。</li>
+<li><strong>范围守界</strong>：第四节列出的项均未变化。</li>
+</ol>
+<hr>
+<h2>六、风险与依赖（可选）</h2>
+<ul>
+<li><strong>前置依赖（阻塞）</strong>：需<strong>本人员工名下网点级</strong>的经营结果指标数据（4 项）。现有口径中「我的渠道」四张卡在全部网点态为员工级汇总、单网点态为单点值，<strong>尚未提供"本人名下网点"的集合及其分网点数值</strong>。<strong>兜底</strong>：数据未到位时，原型按演示数据派生（本人名下网点集合与名下渠道数对齐），研发阶段需补网点级聚合接口。</li>
+<li><strong>依赖</strong>：详情页结构复用团队长端「团队总览」二级页（<code>overview-detail</code>）的按网点排名实现；样式复用各端既有指标卡 / 排名行 / 渠道详情卡片样式，避免二次分叉。</li>
+<li><strong>风险</strong>：「我的渠道」四张卡由不可点变为可点，需回归确认不影响该页其它交互（网点选择、时间周期、过程跟进等）。</li>
+<li><strong>风险</strong>：本人名下网点集合与现有演示数据（网点选择器 5 个网点、名下渠道数 8）口径不一致，原型阶段需明确并统一演示口径。</li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>需求规格 Spec · 渠道详情卡片内容调整 · 零售银行渠道经营工作台</title>
+<style>
+:root{--ink:#1f2937;--muted:#6b7688;--line:#e5e6eb;--bg:#f6f7f9;--brand:#2f6bff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:#fff;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.bar a{color:var(--brand);text-decoration:none;font-weight:600}
+.doc{max-width:900px;margin:22px auto 60px;padding:30px 34px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.doc .meta{color:var(--muted);font-size:13px;margin:0 0 18px;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.doc h1{font-size:24px;margin:0 0 10px}
+.doc h2{font-size:19px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--brand)}
+.doc h3{font-size:16px;margin:20px 0 8px}
+.doc h4,.doc h5{font-size:14.5px;margin:16px 0 6px;color:#374151}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:4px 0}
+.doc code{font-family:Consolas,Menlo,monospace;font-size:12.5px;background:#f3f4f6;padding:1px 5px;border-radius:3px}
+.doc pre{background:#f7f8fa;padding:12px 14px;border-radius:8px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 14px;table-layout:fixed}
+.doc th,.doc td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;word-break:break-word}
+.doc th{background:#f7f8fa;font-weight:600}
+.doc blockquote{margin:0 0 10px;padding:8px 14px;border-left:3px solid #cbd7ea;background:#f8fafc;color:var(--muted)}
+.doc hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.doc a{color:var(--brand)}
+@media (max-width:720px){.doc{margin:12px;padding:20px 16px}.doc table{font-size:12.5px}}
+</style>
+</head>
+<body>
+<header class="bar"><a href="../../../零售银行渠道经营工作台_交付清单.html">← 返回交付清单</a><span>需求规格 Spec</span></header>
+<main class="doc">
+  <p class="meta">来源：docs/specs/2026-11-09-渠道详情卡片内容调整-spec.md　·　日期：2026-11-09　·　产品：零售银行渠道经营工作台</p>
+<h1>渠道详情卡片内容调整 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：零售银行渠道经营工作台 <strong>模式</strong>：迭代 (iterate) <strong>平台类型</strong>：移动端 Web（企微 H5） <strong>日期</strong>：2026-11-09 <strong>迭代版本号</strong>：不升版本号（沿用 零售员工工作台 <code>v1.5</code> / 零售团队长看板 <code>v0.4</code>，仅页级追加修订行） <strong>流程设计要求</strong>：跳过（纯卡片内容替换，不涉及入口、跳转、分支或路径变化）</p>
+<hr>
+<h2>修订记录</h2>
+<table>
+<thead><tr>
+<th>日期</th>
+<th>修订内容</th>
+<th>影响范围</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-11-09</td>
+<td>首版：卡片内容由「完整名称 + 经营 4 项 + 过程 4 项」改为「完整渠道名称 + 渠道建档信息」</td>
+<td>「名下渠道排名」「团队总览 · 按网点」两处卡片</td>
+</tr>
+<tr>
+<td>2026-11-09</td>
+<td>补充关键人区排布规范：默认「每行两个」；单个标签在半宽内放不下时标签内文字自然换行，信息完整、不截断、不溢出</td>
+<td>同上两处卡片的关键人区</td>
+</tr>
+<tr>
+<td>2026-11-09</td>
+<td>补充星级展示规范：网点星级<strong>仅用星形图标展示</strong>（5 星制：实星/空星），不再附「一星／二星／三星」等文字档位</td>
+<td>同上两处卡片的星级区</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：员工端＝零售客户经理（查看本人名下网点排名）；团队长端＝团队长（查看团队网点排名）。与现有用户一致，不新增画像。</p>
+<p><strong>要解决的问题</strong>：员工端「名下渠道排名」与团队长端「团队总览 · 按网点」都是<strong>排名页</strong>，行内已展示当前排名指标的数值；但两页渠道行展开的「渠道详情卡片」内又铺满经营指标 4 项 + 过程指标 4 项，与行内信息重复、信息过载。此次把卡片收敛为「渠道名称 + 渠道建档信息」，让卡片承担「这个渠道是谁、建档底细如何」的就地查看职责，不再重复承载经营/过程指标。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用（本次为既有页面内卡片内容替换，未做外部调研）。内部惯例对齐：建档信息（建码日期 · 已建码天数、关键人列表、星级 + 星级变化）沿用员工端「我的渠道」选中网点后的网点建档卡片表述。</p>
+<p><strong>AI 能力边界</strong>：不适用（纯信息展示，无 AI 参与）。</p>
+<hr>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<ul>
+<li><strong>员工端</strong>：「我的渠道」（全部网点态）→ 点经营结果指标卡 → 进入「名下渠道排名」→ 点某网点行 → 行下方展开渠道详情卡片（完整渠道名称 + 渠道建档信息）→ 再次点击该行收起。</li>
+<li><strong>团队长端</strong>：「团队总览」→ 切换到「按网点」维度 → 点某网点行 → 行下方展开渠道详情卡片（完整渠道名称 + 渠道建档信息）→ 再次点击该行收起。</li>
+</ul>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>展开 / 收起</strong>：整行点击 → 该行下方原地展开 / 收起；同一列表同时仅展开一行（点击另一行时原展开行收起）——沿用现状，本次不改。</li>
+<li><strong>卡片内容</strong>：完整渠道名称（不省略）+ 渠道建档信息三项：①建码日期 · 已建码天数；②关键人列表（职位 + 姓名 + 生日，全部展示、不设条数上限）；③网点星级 + 星级变化——<strong>网点星级仅用星形图标展示</strong>（5 星制：实星表示达级、空星表示未达级），<strong>不再附「一星／二星／三星」等文字档位</strong>；右侧仍为相对上期的星级变化。</li>
+<li><strong>关键人区排布（本次新增规范）</strong>：关键人标签默认<strong>「每行两个」</strong>（各占半宽）；当单个标签的「职位 + 姓名 + 生日」在半宽内放不下时，<strong>标签内文字自然换行</strong>，完整展示、不截断、不溢出；标签较多时逐行自然折行，不设条数上限。</li>
+<li><strong>周期口径</strong>：卡片内<strong>星级变化</strong>随页面当前「时间周期」刷新（页面本就带周期属性）；<strong>建码日期 / 天数与关键人为静态档案</strong>，不随周期变化。</li>
+<li><strong>指标移除</strong>：卡片内不再展示经营指标 4 项（新增资产 / 新增有效户 / 新增开户数 / 经营积分）与过程指标 4 项（拜访次数 / 活动次数 / 需求总数 / 需求未满足）。</li>
+<li><strong>只读</strong>：两端卡片均只读，不提供「编辑建码信息」入口。</li>
+<li><strong>维度区分（团队总览）</strong>：「按网点」维度整行点击 = 展开 / 收起卡片；「按员工」维度无卡片，点击行进员工详情（现状不变）。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li><strong>状态</strong>：收起（默认）/ 展开（同一列表同时仅一行）。</li>
+<li><strong>空态</strong>：某渠道无建档数据（无建码日期、无关键人）→ 展开后仍展示完整渠道名称，并以轻量占位「暂无建档信息」兜底。</li>
+<li><strong>缺项</strong>：建码日期缺失时该行文字以「—」占位；关键人列表为空时不渲染关键人区（由整体空态兜底）。</li>
+<li><strong>回退</strong>：团队总览展开态下切换排名维度 → 卡片收起（「按员工」维度无卡片）。</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>受影响页（2 处）</strong>：员工端「名下渠道排名」；团队长端「团队总览」· 按网点维度（含首页 Top4 预览区与「查看完整排名」完整页）。</li>
+<li><strong>被动影响</strong>：卡片内容由 8 项指标降为建档信息，展开行高整体变小；行点击行为（展开 / 收起）不变。</li>
+<li><strong>不涉及</strong>：员工端 / 团队长端「渠道星级详情页」的渠道行展开卡片（保持原「完整名称 + 经营 4 项 + 过程 4 项」口径，不改）。</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<ul>
+<li>无阻塞项。</li>
+</ul>
+<hr>
+<h2>三、改/写的范围</h2>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>产出者</th>
+<th>涉及章节</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./docs/prd/零售员工工作台_PRD_v1_5.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>名下渠道排名</td>
+<td>渠道行展开的渠道详情卡片内容由「完整渠道名称 + 经营 4 项 + 过程 4 项」改为「完整渠道名称 + 渠道建档信息（建码日期·天数、关键人列表、星级+变化）」；卡片只读、无编辑入口；无建档数据展示占位；原「卡片随周期刷新」改为仅星级变化随周期刷新</td>
+</tr>
+<tr>
+<td><code>./docs/prd/零售团队长看板_PRD_v0_4.md</code></td>
+<td>修改</td>
+<td><strong>lon-page-design</strong></td>
+<td>团队总览 · 查看完整排名（排名渠道详情卡片，按网点维度）</td>
+<td>同上口径调整；明确「按网点」维度卡片承载建档信息、「按员工」维度无卡片</td>
+</tr>
+</tbody></table>
+<blockquote><p>说明：本产品为整份产品级 PRD（非 <code>pages/*.md</code>），原型为单文件 <code>.dc.html</code> 工作区，故不新增独立页 PRD 文件；页级更新由 <strong>lon-page-design</strong> 产出。</p></blockquote>
+<h3>3.2 原型文件清单（proto-builder 的 work-list）</h3>
+<table>
+<thead><tr>
+<th>文件路径</th>
+<th>操作类型</th>
+<th>改动摘要</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>./prototypes/零售银行渠道员工团队工作台/【源】零售银行渠道经营工作台.dc.html</code></td>
+<td>修改</td>
+<td>① 员工端「名下渠道排名」：网点行展开卡片内容由「完整名称 + 经营 4 项 + 过程 4 项」改为「完整渠道名称 + 建档信息（建码日期·天数、关键人列表、星级+变化）」，只读、无编辑入口，无建档数据展示「暂无建档信息」；② 团队长端「团队总览 · 按网点」（首页 Top4 + 查看完整排名页）：同上卡片替换；③ 两端「渠道星级详情页」卡片保持原样不动</td>
+</tr>
+</tbody></table>
+<blockquote><p>内容权威：更新后的两份 PRD。未点名的模块（星级详情页、过程跟进、按员工维度行等）保持原样。</p></blockquote>
+<h3>3.3 各受影响页的功能变化（特性级，按页）</h3>
+<h4>员工端 · 名下渠道排名</h4>
+<ul>
+<li>网点行展开的渠道详情卡片内容替换为：完整渠道名称 + 渠道建档信息（建码日期 · 已建码天数、关键人列表[职位 / 姓名 / 生日]、网点星级 + 星级变化）。其中网点星级<strong>仅以星形图标展示</strong>（5 星制实星/空星），<strong>不附「一星／二星」等文字档位</strong>；右侧为星级变化。</li>
+<li>移除卡片内经营指标 4 项与过程指标 4 项。</li>
+<li>卡片只读，不提供「编辑建码信息」入口。</li>
+<li>星级变化随页内「时间周期」刷新；建码日期 / 天数与关键人为静态档案。</li>
+<li>无建档数据时展示「暂无建档信息」占位，同时仍展示完整渠道名称。</li>
+<li>关键人区默认「每行两个」；单个标签信息在半宽内放不下时标签内自然换行，信息完整、不截断、不溢出。</li>
+</ul>
+<h4>团队长端 · 团队总览（按网点维度：首页 Top4 + 查看完整排名）</h4>
+<ul>
+<li>网点行展开的渠道详情卡片内容替换规则同上（完整渠道名称 + 渠道建档信息；网点星级同样仅用星形图标展示、不附「一星／二星」等文字档位）。</li>
+<li>移除卡片内经营指标 4 项与过程指标 4 项。</li>
+<li>卡片只读，无「编辑建码信息」入口；无建档数据展示「暂无建档信息」占位。</li>
+<li>星级变化随页面「时间周期」刷新。</li>
+<li>「按员工」维度保持无卡片、点击行进员工详情（现状不变）。</li>
+<li>关键人区排布同员工端（每行两个、放不下自然换行、信息完整）。</li>
+</ul>
+<hr>
+<h2>四、不在本次范围内（明确边界）</h2>
+<ul>
+<li>❌ 不改员工端 / 团队长端「渠道星级详情页」的渠道行展开卡片（仍为 完整名称 + 经营 4 项 + 过程 4 项）。</li>
+<li>❌ 不改「按员工」维度的点击行为与「无卡片」规则。</li>
+<li>❌ 不改卡片的展开 / 收起触发方式与「同一列表同时仅一行」互斥规则。</li>
+<li>❌ 不新增任何建档编辑入口（两端均只读）。</li>
+<li>❌ 不新增 / 删除页面；不改排名指标卡、时间周期控件、排序切换、维度切换等既有控件。</li>
+<li>❌ 不改渠道名称在列表行的「最多 2 行、超出省略号」规则（完整名称仍在卡片内展示，不省略）。</li>
+<li>❌ 不改卡片外的其它模块（过程跟进、拜访记录等）。</li>
+<li>❌ 埋点：本轮不新增、不修改任何埋点。</li>
+</ul>
+<hr>
+<h2>五、验收标准</h2>
+<ol>
+<li><strong>主路径可完成</strong>：员工端「名下渠道排名」与团队长端「团队总览 · 按网点」点网点行 → 行下方展开卡片 → 展示完整渠道名称 + 建档信息（建码日期·天数、关键人列表、星级 + 星级变化）→ 再次点击收起。</li>
+<li><strong>指标移除</strong>：两处卡片内不再出现经营指标 4 项与过程指标 4 项。</li>
+<li><strong>只读口径</strong>：两处卡片均无「编辑建码信息」入口。</li>
+<li><strong>周期口径</strong>：切换页面「时间周期」，卡片内星级变化同步刷新；建码日期 / 天数与关键人列表保持不变。</li>
+<li><strong>空态口径</strong>：无建档数据的渠道展开后展示「暂无建档信息」占位，且仍展示完整渠道名称。</li>
+<li><strong>范围守界</strong>：第四节列出的项均未变化（尤其两端「渠道星级详情页」卡片保持原样）。</li>
+<li><strong>关键人区排布</strong>：两端卡片的关键人标签默认每行两个；单个标签的「职位 + 姓名 + 生日」在半宽内放不下时标签内自然换行，展示完整、无截断与溢出。</li>
+</ol>
+<hr>
+<h2>六、风险与依赖</h2>
+<ul>
+<li><strong>前置依赖（阻塞）</strong>：需<strong>网点级建档数据</strong>（建码日期、关键人列表、星级及星级变化）。当前网点主数据仅有 名称 / 银行品牌 / 距离，无建码日期、无关键人；建档数据现仅存在于员工端「我的渠道」上下文。<strong>兜底</strong>：数据未到位时原型按演示数据派生，卡片降级为「完整渠道名称 + 暂无建档信息」；研发阶段需补网点级建档字段与聚合接口。</li>
+<li><strong>推翻既有决策（局部覆盖）</strong>：本 Spec 将「名下渠道排名」「团队总览 · 按网点」两处卡片口径，由《2026-11-03-渠道详情卡片-spec.md》的「完整名称 + 经营 4 项 + 过程 4 项」改为「完整渠道名称 + 渠道建档信息」，属对该 Spec 在<strong>这两处</strong>的局部覆盖；「渠道星级详情页」两处仍沿用原口径。<strong>已于 2026-11-09 在其顶部追加「修订记录」并对其 §2.2 / §五第 4 条逐条标注废除范围</strong>，两 Spec 互相引用。需同步更新两份 PRD 对应章节与 manifest 决策记录。</li>
+<li><strong>卡片长度变化</strong>：卡片内容由 8 项指标降为建档信息，展开行高整体变小；关键人较多时卡片可能变长（已定全部展示、不设条数上限），随列表滚动自然展开，不影响列表排序与滚动位置；关键人标签默认每行两个、长标签自动换行，进一步压缩行高。</li>
+</ul>
+</main>
+</body>
+</html>
