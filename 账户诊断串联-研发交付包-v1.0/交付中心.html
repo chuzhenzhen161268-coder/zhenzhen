@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>账户诊断串联｜研发交付中心</title>
+  <style>
+    :root{--ink:#162033;--muted:#617086;--line:#dce3ed;--canvas:#f4f7fb;--blue:#1e5bb8;--blue-dark:#16468d;--blue-soft:#eef5ff;--green:#087a4b;--amber:#9b5a00}
+    *{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}.hero{padding:42px 0 86px;background:#174c9c;color:#fff}.shell{max-width:1120px;margin:0 auto;padding:0 30px}.top{display:flex;justify-content:space-between;align-items:center;font-size:14px}.brand{font-weight:700}.version{padding:5px 10px;border:1px solid rgba(255,255,255,.45);border-radius:5px;font-size:12px}.hero h1{margin:38px 0 10px;font-size:38px;letter-spacing:0}.hero p{max-width:720px;margin:0;color:#dceaff;line-height:1.7}.content{margin-top:-48px;padding-bottom:68px}.summary{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 12px 30px rgba(26,51,87,.1)}.metric{padding:20px 24px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric small{display:block;color:var(--muted)}.metric b{display:block;margin-top:7px;font-size:19px}.ok{color:var(--green)}section{margin-top:34px}.head h2{margin:0;font-size:22px}.head p{margin:6px 0 14px;color:var(--muted);font-size:13px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{display:flex;min-height:192px;flex-direction:column;padding:22px;border:1px solid var(--line);border-radius:8px;background:#fff;color:inherit;text-decoration:none}.card:hover{border-color:#9bbcf0;box-shadow:0 8px 22px rgba(30,91,184,.1)}.tag{align-self:flex-start;padding:3px 8px;border-radius:4px;background:var(--blue-soft);color:var(--blue);font-size:12px;font-weight:700}.card h3{margin:16px 0 7px;font-size:19px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}.go{margin-top:auto;padding-top:18px;color:var(--blue);font-size:13px;font-weight:700}.notice{margin-top:16px;padding:20px 22px;border:1px solid #f0d7a5;border-radius:8px;background:#fffaf0}.notice h3{margin:0;font-size:16px;color:var(--amber)}.notice p{margin:8px 0 0;color:#665a44;line-height:1.7;font-size:14px}.list{display:grid;grid-template-columns:1fr 1fr;gap:16px}.box{padding:20px 22px;border:1px solid var(--line);border-radius:8px;background:#fff}.box h3{margin:0 0 10px;font-size:16px}.box ul{margin:0;padding-left:20px;color:#445167;line-height:1.9;font-size:14px}.footer{padding:12px 0 0;text-align:center;color:#8a96a8;font-size:12px}@media(max-width:700px){.shell{padding:0 16px}.hero h1{font-size:30px}.summary,.cards,.list{grid-template-columns:1fr}.metric{border-right:0;border-bottom:1px solid var(--line)}.top{align-items:flex-start;gap:10px}.version{white-space:nowrap}}
+  </style>
+</head>
+<body>
+  <header class="hero"><div class="shell"><div class="top"><div class="brand">账户诊断串联</div><div class="version">研发交付版 v1.0 · 2026-11-13</div></div><h1>研发交付中心</h1><p>集中查看账户诊断串联的需求范围、业务流程、权限边界与验收口径。本交付包仅涵盖 GWork 至账户诊断结果页的串联流程。</p></div></header>
+  <main class="shell content">
+    <div class="summary"><div class="metric"><small>交付材料</small><b>Spec + 主 PRD</b></div><div class="metric"><small>页面设计</small><b>复用既有页面</b></div><div class="metric"><small>交付状态</small><b class="ok">可进入技术评审</b></div></div>
+    <section><div class="head"><h2>推荐阅读顺序</h2><p>研发与测试先阅读主 PRD，再追溯需求规格确认范围与验收边界。</p></div><div class="cards">
+      <a class="card" href="文档/主PRD.html"><span class="tag">01 · 产品全貌</span><h3>主 PRD</h3><p>查看业务目标、职责边界、核心流程、复用关系、非目标和页面索引。</p><span class="go">打开主 PRD →</span></a>
+      <a class="card" href="文档/需求规格.html"><span class="tag">02 · 范围依据</span><h3>需求规格 Spec</h3><p>查看主路径、异常分支、跨页影响、范围边界、验收标准与依赖。</p><span class="go">打开需求规格 →</span></a>
+    </div></section>
+    <section><div class="head"><h2>本次交接范围</h2><p>以下业务约束已写入 Spec 与主 PRD，供技术评审和测试设计使用。</p></div><div class="list"><div class="box"><h3>核心串联</h3><ul><li>GWork 输入“账户诊断”触发串联 Skill</li><li>资金账号在浏览器录入，不进入 GWork 或 Skill</li><li>复用投前服务清单的录入与首次关系校验</li><li>十部直接调用四部获取诊断结果</li></ul></div><div class="box"><h3>权限边界</h3><ul><li>首次关系校验失败或异常时，不获取诊断结果</li><li>结果页打开前由四部再次校验基础服务关系</li><li>任一校验失败均不得打开结果页</li><li>诊断不可用或打开失败时，重新发起完整流程</li></ul></div></div></section>
+    <section><div class="notice"><h3>材料范围说明</h3><p>本期不新增或改造页面原型：资金账号录入页复用理财产品投前服务清单既有页面，账户诊断结果页由四部提供。本包不包含页面 PRD、交互原型、接口字段、调用协议、凭证规则或技术架构设计。</p></div></section>
+    <section><div class="head"><h2>源文件</h2><p>保留 Markdown 原文，便于研发与测试在评审中引用和维护。</p></div><div class="cards">
+      <a class="card" href="docs/prd/账户诊断串联/PRD.md" download><span class="tag">源文件</span><h3>下载主 PRD</h3><p>Markdown 原文，包含业务流程图和产品边界。</p><span class="go">下载原文 →</span></a>
+      <a class="card" href="docs/specs/2026-11-13-account-diagnosis-orchestration-spec.md" download><span class="tag">源文件</span><h3>下载 Spec</h3><p>Markdown 原文，包含需求分析与验收口径。</p><span class="go">下载原文 →</span></a>
+    </div></section>
+    <div class="footer">可直接双击打开本文件离线查看。交付包不包含需要启动本地服务的内容。</div>
+  </main>
+</body>
+</html>

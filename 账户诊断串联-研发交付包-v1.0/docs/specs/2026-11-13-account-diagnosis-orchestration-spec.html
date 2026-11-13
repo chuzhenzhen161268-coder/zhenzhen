@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-11-13-account-diagnosis-orchestration-spec</title><style>
+:root{--ink:#172033;--muted:#5d6a7c;--line:#dce3ed;--canvas:#f4f7fb;--brand:#1e5bb8;--brand-soft:#eef5ff}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}
+main{max-width:1024px;margin:32px auto;padding:36px 48px;background:#fff;border:1px solid var(--line);border-radius:8px}h1,h2,h3{line-height:1.35;color:#132647}h1{font-size:29px;margin-top:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}h2{font-size:22px;margin:38px 0 14px}h3{font-size:17px;margin:28px 0 10px}
+table{border-collapse:collapse;width:100%;display:block;overflow:auto;margin:18px 0}th,td{border:1px solid var(--line);padding:9px 11px;vertical-align:top}th{background:#f1f5fb;text-align:left}pre{padding:15px;overflow:auto;background:#f5f7fa;border-radius:5px}code{padding:2px 4px;background:#f1f4f7;border-radius:3px}.mermaid{margin:20px 0;padding:20px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fbfdff}a{color:var(--brand)}.top{display:flex;gap:18px;position:sticky;top:0;margin:-36px -48px 18px;padding:12px 48px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);font-size:13px}.source{display:inline-block;color:var(--muted);font-size:12px}@media(max-width:720px){main{margin:0;padding:22px 18px;border:0;border-radius:0}.top{margin:-22px -18px 16px;padding:10px 18px;flex-wrap:wrap}h1{font-size:25px}}
+</style></head>
+<body><main><nav class="top"><a href="../../交付中心.html">返回交付中心</a><a href="2026-11-13-account-diagnosis-orchestration-spec.md">查看 Markdown 原文</a></nav>
+<span class="source">离线阅读版</span><h1>账户诊断串联 — 需求规格（Spec）</h1>
+<p><strong>产品名称</strong>：账户诊断串联<br />
+<strong>模式</strong>：新需求（greenfield）<br />
+<strong>平台类型</strong>：Web 网页（GWork 入口及浏览器承接）<br />
+<strong>日期</strong>：2026-11-13<br />
+<strong>迭代版本号</strong>：v1.0<br />
+<strong>流程设计要求</strong>：单版。覆盖从 GWork 触发到账户诊断结果页打开的完整流程及权限失败、依赖失败等异常。</p>
+<h2>一、需求背景</h2>
+<p><strong>目标用户</strong>：已登录 GWork、需要为客户查看账户诊断结果的客户经理或投顾。</p>
+<p><strong>要解决的问题</strong>：员工需要通过账户诊断能力查看客户账户诊断结果，但资金账号属于客户敏感信息，不应通过 GWork 对话传递。串联流程需让员工在浏览器安全录入账号，并在获取诊断及打开结果页前完成必要的基础服务关系校验。</p>
+<p><strong>竞品差异 / 品类惯例</strong>：不适用。本需求为内部 GWork 到既有账户诊断能力的场景串联，不涉及面向外部用户的同类产品比较。</p>
+<p><strong>AI 能力边界</strong>：Skill 仅负责识别“账户诊断”请求并编排流程，不负责生成、解释或修改诊断结果；诊断结果由四部提供，十部直接调用。账号、权限校验结果和诊断结果不得由模型推断或补造。</p>
+<h2>二、逻辑补齐摘要</h2>
+<h3>2.1 主成功路径</h3>
+<p>员工在 GWork 输入“账户诊断”，GWork 校验员工登录状态并触发账户诊断串联 Skill；浏览器复用理财产品投前服务清单的资金账号录入与基础服务关系校验页面，员工录入账号并通过校验后，十部直接调用四部获取账户诊断结果；员工回到 GWork 后打开浏览器，由四部再次校验员工与客户基础服务关系并授权展示诊断结果。</p>
+<h3>2.2 关键分支</h3>
+<ul>
+<li><strong>未登录或登录失效</strong>：GWork 不启动账户诊断流程，提示员工完成登录后重试。</li>
+<li><strong>基础服务关系不成立</strong>：复用的投前服务清单页面按既有逻辑拒绝进入下一步，不获取诊断结果。</li>
+<li><strong>关系校验通过</strong>：允许十部直接调用四部获取账户诊断结果，并向 GWork 返回后续打开诊断结果所需的流程状态。</li>
+<li><strong>结果页打开前关系校验不通过</strong>：四部拒绝授权，账户诊断结果页不打开。</li>
+<li><strong>诊断服务或打开过程失败</strong>：向员工反馈失败状态，允许按既有入口重新发起完整流程；不得绕过任一权限校验继续打开结果。</li>
+</ul>
+<h3>2.3 状态与异常</h3>
+<ul>
+<li>登录校验中、浏览器录入中、关系校验中、诊断获取中、等待打开结果、成功打开、无权限、诊断暂不可用、打开失败。</li>
+<li>录入页取消或关闭时，结束当前流程并返回 GWork；重新发起时重新执行登录与权限校验。</li>
+<li>首次关系校验失败或异常时，不调用四部获取诊断结果。</li>
+<li>四部再次校验失败或异常时，不打开结果页。</li>
+<li>诊断获取失败、结果打开失败时提示员工重新发起；不得展示未授权或其他客户的结果。</li>
+</ul>
+<h3>2.4 跨页影响</h3>
+<ul>
+<li><strong>GWork</strong>：新增“账户诊断”意图识别与串联 Skill 触发，承接浏览器打开动作及流程状态反馈。</li>
+<li><strong>理财产品投前服务清单资金账号录入与校验页面</strong>：复用既有页面和基础服务关系校验逻辑，承接账户诊断场景的资金账号录入；原投前服务清单行为不在本次改变范围内。</li>
+<li><strong>账户诊断结果页</strong>：由四部提供诊断结果，十部直接调用；结果页打开前由四部再次校验基础服务关系。本需求不定义结果页内容与呈现规则。</li>
+</ul>
+<h3>2.5 仍未决项</h3>
+<p>无阻塞性产品决策。接口契约、字段、凭证传递与有效期、调用协议、失败码及技术安全实现均交由技术评审确定，不作为本 Spec 的产品定义。</p>
+<h2>三、改/写的范围</h2>
+<h3>3.1 PRD 文件清单</h3>
+<table>
+<thead>
+<tr>
+  <th>文件路径</th>
+  <th>操作类型</th>
+  <th>产出者</th>
+  <th>涉及章节</th>
+  <th>改动摘要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>./docs/prd/账户诊断串联/PRD.md</code></td>
+  <td>新建</td>
+  <td>lon-prd-craft</td>
+  <td>项目概览、产品结构、业务流程、页面索引、范围边界</td>
+  <td>定义 GWork 触发、复用账号录入与校验、十部调用四部获取诊断结果及结果页授权打开的产品流程。</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 原型文件清单</h3>
+<p>本期不新增或修改原型。资金账号录入页面复用理财产品投前服务清单既有页面；账户诊断结果页由四部提供，不在本需求中设计或改造。</p>
+<h3>3.3 各受影响能力的功能变化</h3>
+<h4>GWork 账户诊断入口与串联 Skill</h4>
+<ul>
+<li>新增对员工“账户诊断”输入的识别与串联 Skill 触发。</li>
+<li>在登录有效时发起浏览器录入流程；登录无效时提示重新登录。</li>
+<li>承接诊断流程状态并在结果可打开时触发浏览器打开，不接收资金账号或诊断结果内容。</li>
+</ul>
+<h4>理财产品投前服务清单资金账号录入与校验页面</h4>
+<ul>
+<li>复用既有资金账号录入页面及员工与客户基础服务关系校验逻辑，供账户诊断流程使用。</li>
+<li>关系校验通过后进入账户诊断获取流程；校验不通过时沿用既有拒绝规则并终止本次账户诊断。</li>
+<li>不改变该页面在理财产品投前服务清单原有场景中的行为。</li>
+</ul>
+<h4>账户诊断结果打开流程</h4>
+<ul>
+<li>由十部直接调用四部获取账户诊断结果。</li>
+<li>打开结果页前由四部再次校验员工与客户的基础服务关系；校验未通过时拒绝打开。</li>
+<li>本需求只定义结果获取与受控打开关系，不定义诊断结果内容、页面布局或技术字段。</li>
+</ul>
+<h2>四、不在本次范围内</h2>
+<ul>
+<li>不设计或改造理财产品投前服务清单既有资金账号录入页面，不改变其原场景行为；账户诊断仅复用该页面与既有校验逻辑。</li>
+<li>不设计账户诊断结果页的指标、内容、分析规则、布局或交互。</li>
+<li>不新增独立资金账号录入页面。</li>
+<li>不在 GWork 对话、Skill 或其可见日志中传递资金账号、诊断结果链接或诊断内容。</li>
+<li>不定义接口路径、请求/响应字段、凭证结构与有效期、传输协议、错误码、存储方式或技术架构，均交由技术评审确定。</li>
+<li>不绕过首次基础服务关系校验或结果打开前四部的再次校验。</li>
+</ul>
+<h2>五、验收标准</h2>
+<ol>
+<li>员工登录 GWork 后输入“账户诊断”，系统可触发账户诊断串联 Skill 并进入浏览器录入流程；未登录时不进入后续流程。</li>
+<li>资金账号录入实际复用理财产品投前服务清单既有页面，首次基础服务关系校验复用其既有逻辑。</li>
+<li>非基础服务关系员工无法进入诊断获取步骤；首次校验失败或异常时，十部不调用四部获取诊断结果。</li>
+<li>基础服务关系校验通过后，由十部直接调用四部获取账户诊断结果。</li>
+<li>打开账户诊断结果页前，四部再次校验员工与客户基础服务关系；校验不通过或异常时，结果页不打开。</li>
+<li>成功时员工可从 GWork 返回的打开动作进入浏览器账户诊断结果页；失败时得到明确状态并可重新发起完整流程。</li>
+<li>资金账号不经 GWork 对话或 Skill 传递；诊断结果内容与页面设计不属于本需求范围。</li>
+</ol>
+<h2>六、风险与依赖</h2>
+<ul>
+<li>依赖理财产品投前服务清单既有资金账号录入页面及基础服务关系校验能力可被账户诊断流程复用。</li>
+<li>依赖十部具备直接调用四部获取账户诊断结果的业务链路。</li>
+<li>依赖四部在账户诊断结果页打开前执行独立的基础服务关系再次校验。</li>
+<li>具体接口、字段、凭证传递与安全机制由技术评审确认；若现有能力无法满足上述业务约束，需由技术评审提出实现方案，不由本 PRD 预设。</li>
+</ul>
+</main>
+<script src="../../assets/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,theme:'neutral',flowchart:{useMaxWidth:true,htmlLabels:true}});</script>
+</body></html>

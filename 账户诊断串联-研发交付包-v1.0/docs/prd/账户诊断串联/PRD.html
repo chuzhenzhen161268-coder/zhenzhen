@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRD</title><style>
+:root{--ink:#172033;--muted:#5d6a7c;--line:#dce3ed;--canvas:#f4f7fb;--brand:#1e5bb8;--brand-soft:#eef5ff}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}
+main{max-width:1024px;margin:32px auto;padding:36px 48px;background:#fff;border:1px solid var(--line);border-radius:8px}h1,h2,h3{line-height:1.35;color:#132647}h1{font-size:29px;margin-top:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}h2{font-size:22px;margin:38px 0 14px}h3{font-size:17px;margin:28px 0 10px}
+table{border-collapse:collapse;width:100%;display:block;overflow:auto;margin:18px 0}th,td{border:1px solid var(--line);padding:9px 11px;vertical-align:top}th{background:#f1f5fb;text-align:left}pre{padding:15px;overflow:auto;background:#f5f7fa;border-radius:5px}code{padding:2px 4px;background:#f1f4f7;border-radius:3px}.mermaid{margin:20px 0;padding:20px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fbfdff}a{color:var(--brand)}.top{display:flex;gap:18px;position:sticky;top:0;margin:-36px -48px 18px;padding:12px 48px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);font-size:13px}.source{display:inline-block;color:var(--muted);font-size:12px}@media(max-width:720px){main{margin:0;padding:22px 18px;border:0;border-radius:0}.top{margin:-22px -18px 16px;padding:10px 18px;flex-wrap:wrap}h1{font-size:25px}}
+</style></head>
+<body><main><nav class="top"><a href="../../../交付中心.html">返回交付中心</a><a href="PRD.md">查看 Markdown 原文</a></nav>
+<span class="source">离线阅读版</span><h1>产品需求文档：账户诊断串联</h1>
+<h2>1. 项目概览</h2>
+<p><strong>项目名称</strong>：账户诊断串联<br />
+<strong>平台类型</strong>：Web 网页（GWork 入口及浏览器承接）</p>
+<h3>背景与目标</h3>
+<p>客户经理或投顾需要查看客户的账户诊断结果，但资金账号属于客户敏感信息，不能在 GWork 对话中传递。当前缺少一条从 GWork 发起、在受控页面录入资金账号、完成基础服务关系校验并打开账户诊断结果的标准路径。</p>
+<p>本期新增账户诊断串联能力。员工在 GWork 输入“账户诊断”后，由账户诊断串联 Skill 触发浏览器流程；资金账号录入及首次基础服务关系校验复用理财产品投前服务清单既有页面和逻辑。校验通过后，十部直接调用四部获取账户诊断结果；账户诊断结果页打开前，四部再次校验员工与客户的基础服务关系。任一校验未通过时，员工不得进入结果页。</p>
+<h3>目标用户原型</h3>
+<ul>
+<li><strong>用户特征</strong>：已登录 GWork、日常需要为本人服务关系内客户提供账户服务的客户经理或投顾。</li>
+<li><strong>底层动机</strong>：在不通过 GWork 传递客户资金账号的前提下，快速、合规地查看客户账户诊断结果。</li>
+<li><strong>典型场景</strong>：员工在服务客户前需查看账户诊断，在 GWork 输入“账户诊断”，按流程录入资金账号、完成服务关系校验后打开诊断结果。</li>
+</ul>
+<h3>核心价值主张</h3>
+<p>为需要查看客户账户诊断的客户经理或投顾，提供一条不在 GWork 传递资金账号、并通过两次基础服务关系校验受控打开账户诊断结果的标准流程。</p>
+<h3>成功判定标准</h3>
+<ul>
+<li><strong>用户侧</strong>：具备基础服务关系的员工可从 GWork 发起流程，在浏览器录入资金账号后打开账户诊断结果，无需在 GWork 输入资金账号。</li>
+<li><strong>权限侧</strong>：首次基础服务关系校验或结果页打开前的再次校验未通过时，员工均不能进入账户诊断结果页。</li>
+<li><strong>业务侧</strong>：业务能够区分诊断结果成功打开、诊断暂不可用及权限拒绝三类流程结果，以验证该串联链路是否可用；具体统计方式由技术确定。</li>
+</ul>
+<h2>2. 产品发现结论</h2>
+<h3>价值层级分析</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>表面需求</th>
+  <th>底层动机</th>
+  <th>隐含假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>敏感账号受控录入</td>
+  <td>在浏览器录入资金账号，不发送至 GWork</td>
+  <td>降低客户敏感信息在会话场景中的暴露</td>
+  <td>理财产品投前服务清单既有账号录入及校验页面可复用到账户诊断场景。</td>
+</tr>
+<tr>
+  <td>诊断结果受控打开</td>
+  <td>获取并打开账户诊断结果，阻止越权查看</td>
+  <td>缩短员工服务准备路径，确保只有具备服务关系的员工可查看</td>
+  <td>十部可直接调用四部获取诊断结果，四部可在结果页打开前再次校验服务关系。</td>
+</tr>
+</tbody>
+</table>
+<h3>风险评估</h3>
+<table>
+<thead>
+<tr>
+  <th>价值层级</th>
+  <th>价值风险（要不要）</th>
+  <th>可用性风险（会不会用）</th>
+  <th>可行性风险（做不做得出）</th>
+  <th>商业可行性风险（撑不撑得住）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>敏感账号受控录入</td>
+  <td>低：不在 GWork 传递资金账号是明确约束</td>
+  <td>低：员工使用已有投前服务清单页面录入</td>
+  <td>中：依赖既有页面和校验能力可承接账户诊断场景</td>
+  <td>低：内部服务工具，无新增商业模式</td>
+</tr>
+<tr>
+  <td>诊断结果受控打开</td>
+  <td>低：直接服务员工查看诊断结果的需求</td>
+  <td>中：跨 GWork、浏览器与结果页，失败状态需明确</td>
+  <td>中：依赖十部直连四部及四部再次校验能力</td>
+  <td>低：依赖既有账户诊断能力，无独立商业模式</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 产品结构图</h2>
+<h3>核心功能清单</h3>
+<table>
+<thead>
+<tr>
+  <th>功能</th>
+  <th>优先级</th>
+  <th>一句话说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>GWork 账户诊断触发</td>
+  <td>P0</td>
+  <td>识别员工“账户诊断”输入，校验登录状态并启动串联流程。</td>
+</tr>
+<tr>
+  <td>账号录入与首次关系校验</td>
+  <td>P0</td>
+  <td>复用理财产品投前服务清单的资金账号录入页面和基础服务关系校验逻辑。</td>
+</tr>
+<tr>
+  <td>诊断结果获取</td>
+  <td>P0</td>
+  <td>首次校验通过后，由十部直接调用四部获取账户诊断结果。</td>
+</tr>
+<tr>
+  <td>受控结果页打开</td>
+  <td>P0</td>
+  <td>GWork 发起浏览器打开动作，四部再次校验基础服务关系后展示结果页。</td>
+</tr>
+<tr>
+  <td>流程状态反馈</td>
+  <td>P0</td>
+  <td>向员工反馈登录失效、无权限、诊断暂不可用、打开失败或成功打开等状态。</td>
+</tr>
+</tbody>
+</table>
+<h3>页面组织方式</h3>
+<p>采用无新增全局导航的单任务串联模式。账户诊断不新建独立工作台或账号录入页面，员工从 GWork 指令直接进入浏览器承接的复用流程。</p>
+<pre><code class="language-text">GWork
+└── 账户诊断串联
+    ├── 复用：理财产品投前服务清单资金账号录入与校验页
+    └── 复用：四部账户诊断结果页
+</code></pre>
+<h3>本期不做</h3>
+<table>
+<thead>
+<tr>
+  <th>本期不做</th>
+  <th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>新建独立资金账号录入页面</td>
+  <td>已有投前服务清单页面及校验逻辑可复用。</td>
+</tr>
+<tr>
+  <td>改造投前服务清单原有场景</td>
+  <td>本期仅复用页面与校验能力，不改变其原有业务行为。</td>
+</tr>
+<tr>
+  <td>设计账户诊断结果页内容、指标或交互</td>
+  <td>诊断结果由四部提供，本期只定义受控打开流程。</td>
+</tr>
+<tr>
+  <td>在 GWork 或 Skill 中传递资金账号、诊断结果内容</td>
+  <td>资金账号属于敏感信息，GWork 仅承接触发与状态反馈。</td>
+</tr>
+<tr>
+  <td>定义接口字段、调用协议、凭证规则或技术架构</td>
+  <td>属于技术评审范围，不在本 PRD 定义。</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 业务流程图</h2>
+<p><strong>核心业务流程</strong></p>
+<div class="mermaid">flowchart TD
+    Start([员工在 GWork 输入“账户诊断”]) --> Login{GWork 登录有效？}
+    Login -->|否| Relogin[提示重新登录] --> End([结束])
+    Login -->|是| Trigger[触发账户诊断串联 Skill]
+    Trigger --> Input[浏览器打开投前服务清单账号录入页]
+    Input --> Submit[员工录入并提交资金账号]
+    Submit --> FirstCheck{首次基础服务关系校验通过？}
+    FirstCheck -->|否或异常| Denied1[提示无权限或暂无法核验] --> End
+    FirstCheck -->|是| Fetch[十部直接调用四部获取账户诊断结果]
+    Fetch --> ResultReady{诊断结果可获取？}
+    ResultReady -->|否| Unavailable[提示诊断暂不可用\n员工可重新发起] --> End
+    ResultReady -->|是| Return[返回 GWork，发起浏览器打开结果页]
+    Return --> SecondCheck{四部再次校验基础服务关系通过？}
+    SecondCheck -->|否或异常| Denied2[拒绝打开结果页] --> End
+    SecondCheck -->|是| Open[打开账户诊断结果页]
+    Open --> End
+</div>
+<p><strong>流程关键口径</strong>：资金账号仅在复用的浏览器录入页面中由员工填写，不进入 GWork 对话或账户诊断串联 Skill。首次基础服务关系校验未通过或异常时，不获取诊断结果；结果页打开前四部再次校验未通过或异常时，不打开结果页。诊断暂不可用或结果页打开失败时，员工需重新发起完整流程。</p>
+<h2>5. 页面索引</h2>
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>页面或承接面</th>
+  <th>一句话用途</th>
+  <th>状态/浮层备注</th>
+  <th>设计状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>01</td>
+  <td>GWork 会话</td>
+  <td>发起账户诊断并反馈流程状态</td>
+  <td>登录失效、流程进行中、无权限、诊断暂不可用、打开失败、成功打开</td>
+  <td>复用，不新增独立页面</td>
+</tr>
+<tr>
+  <td>02</td>
+  <td>理财产品投前服务清单资金账号录入与校验页</td>
+  <td>员工录入资金账号并完成首次基础服务关系校验</td>
+  <td>账号录入、校验通过、无权限、校验异常、取消或关闭</td>
+  <td>复用，不改造原页面</td>
+</tr>
+<tr>
+  <td>03</td>
+  <td>四部账户诊断结果页</td>
+  <td>展示账户诊断结果，并在打开前完成再次关系校验</td>
+  <td>二次校验通过、拒绝打开、校验异常</td>
+  <td>四部提供，本期不设计</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>变更记录</h2>
+<table>
+<thead>
+<tr>
+  <th>版本</th>
+  <th>日期</th>
+  <th>变更说明</th>
+  <th>影响范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>v1.0</td>
+  <td>2026-11-13</td>
+  <td>初始版本，定义账户诊断从 GWork 触发到诊断结果页受控打开的串联流程</td>
+  <td>全部</td>
+</tr>
+</tbody>
+</table>
+</main>
+<script src="../../../assets/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,theme:'neutral',flowchart:{useMaxWidth:true,htmlLabels:true}});</script>
+</body></html>
