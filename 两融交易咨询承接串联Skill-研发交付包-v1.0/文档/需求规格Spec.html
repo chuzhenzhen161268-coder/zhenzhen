@@ -1,16 +1,79 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>需求规格 Spec｜两融交易咨询承接串联 Skill</title>
-<style>body{margin:0;background:#f5f7fa;color:#202939;font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.top{display:flex;justify-content:space-between;gap:20px;padding:14px max(20px,calc((100vw - 980px)/2));background:white;border-bottom:1px solid #dce2ea}.doc{max-width:980px;margin:26px auto;padding:32px 40px;background:#fff;border:1px solid #dce2ea;border-radius:8px}h1{margin-top:0}h2{margin-top:26px;border-bottom:1px solid #dce2ea;padding-bottom:7px}li{margin:6px 0}.flow{padding:14px 16px;background:#edf4ff;border-left:3px solid #2468d5;white-space:pre-line}.callout{padding:12px 14px;background:#fff7e7;border-left:3px solid #b96d00}a{color:#2468d5}table{border-collapse:collapse;width:100%;margin:14px 0}th,td{border:1px solid #dce2ea;padding:8px;vertical-align:top}th{background:#f7f9fc;text-align:left}@media(max-width:700px){.doc{margin:0;padding:24px 18px;border:0;border-radius:0}.top{padding:12px 18px;flex-wrap:wrap}}</style></head>
-<body><header class="top"><span>需求规格 · 两融交易咨询承接串联 Skill</span><a href="../docs/specs/2026-11-16-margin-consultation-orchestration-spec.md">查看 Markdown 源文件</a></header><main class="doc">
-<h1>两融交易咨询承接串联 Skill</h1><p><b>首期范围：</b>GWork 单客户咨询承接　｜　<b>平台：</b>PC Web / GWork 对话串联　｜　<b>版本：</b>v1.0</p>
-<h2>一、需求背景</h2><p>客户信用账户交易咨询需要在不输入资金账号明文的前提下，先查询佣金宝两融交易信息；命中时直接拿到错误内容，未命中时通过客户点击“？”或上传截图补充诊断信息。</p>
-<h2>二、已确认范围</h2><ul><li>首期单客户承接，不做批量查询或左侧客户列表。</li><li>不做咨询来源选择；GWork 发起咨询后自动弹出内部资金账号输入页面，所有咨询统一从账号查询开始。</li><li>资金账号仅在内部页面录入，账号明文不进入 GWork。</li><li>内部页面生成的任务码 <code>taskid</code> 即加密资金账号，二者是同一受保护标识，不是两个字段或两种凭据；沿用既有公共能力：10 分钟有效、一次性使用，本期不重复研发、不新增流程节点。</li><li>查询命中约 5% 时，接口直接返回错误内容并进入服务清单，不调用两融试算原子 Skill。</li><li>查询未命中约 95% 时，员工可引导客户点击佣金宝“？”重新查询，或上传交易截图。</li><li>截图候选字段及准确性返回后判断完整性；不完整时通过任务码 <code>taskid</code>（即加密资金账号）补充或人工补录，完整后调用一部两融试算原子 Skill。</li><li>截图不落库；OCR 类型、字段完整性、<code>taskid</code> 可补充信息范围和人工补录细节待技术确认。</li><li>原子 Skill 按业务话术原文输出五段内容；个股诊断由串联 Skill 单独调用，服务清单只提供入口和复制链接。</li></ul>
-<h2>三、端到端主流程</h2><div class="flow">GWork 发起两融交易咨询 → 自动弹出内部资金账号输入页 → 员工录入资金账号 → 账号校验与佣金宝交易信息查询
-命中（约5%）：接口直接返回错误信息 → 串联 Skill 单独调用个股诊断 → 弹出当前客户服务清单
-未命中（约95%）：提示未获取交易信息 → 选择引导客户点击“？”重新查询，或上传交易截图
-截图字段不完整：通过任务码 taskid（即加密资金账号）获取补充信息或人工补录 → 重新校验
-字段完整：调用一部两融试算原子 Skill → 返回五段内容 → 串联 Skill 单独调用个股诊断 → 弹出当前客户服务清单 → 完成服务并按投顾线逻辑回流</div>
-<h2>四、服务清单职责</h2><ul><li>展示上游返回的客户基础信息、信用账户总资产/净资产/总负债、待处理任务、逐笔错误/诊断明细和个股诊断入口。</li><li>多次错误或多张截图按当前明细交互展示，按操作时间倒序，最新记录置顶。</li><li>未得出诊断时展示“暂未识别原因，请通过人工渠道核实”，仍可完成服务。</li><li>固定展示服务记录输入框和完成服务按钮，静态原型不模拟 GWork 交互。</li></ul>
-<h2>五、异常与安全边界</h2><ul><li>账号校验失败、任务码过期或已消费由既有专用页面处理，不进入服务清单。</li><li>截图字段不完整由串联流程通过任务码 <code>taskid</code>（即加密资金账号）补充或人工补录；截图不保存。</li><li>两融试算或个股诊断不可用不阻断服务记录和完成服务。</li><li>资金账号明文不得进入 GWork。</li></ul>
-<h2>六、待技术确认</h2><div class="callout">OCR 支持截图类型、识别字段、字段完整性校验、任务码 <code>taskid</code>（即加密资金账号）可补充信息范围、人工补录字段清单、调用超时与重试策略仍需技术确认；这些事项不改变已确认主流程。</div>
-<p><a href="主PRD.html">继续查看主 PRD</a></p></main></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>需求规格 Spec｜两融交易咨询承接串联 Skill</title>
+  <style>
+    :root{--ink:#202939;--muted:#65748a;--line:#dce2ea;--blue:#2468d5}*{box-sizing:border-box}body{margin:0;background:#f5f7fa;color:var(--ink);font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.top{display:flex;justify-content:space-between;gap:20px;padding:14px max(20px,calc((100vw - 980px)/2));background:#fff;border-bottom:1px solid var(--line)}.doc{max-width:980px;margin:26px auto;padding:32px 40px;background:#fff;border:1px solid var(--line);border-radius:8px}h1{margin-top:0}h2{margin-top:26px;border-bottom:1px solid var(--line);padding-bottom:7px}li{margin:6px 0}a{color:var(--blue)}code{padding:1px 4px;border-radius:3px;background:#f1f4f8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}.callout{padding:12px 14px;background:#fff7e7;border-left:3px solid #b96d00}.flow-scroll{margin:16px 0;overflow-x:auto;border:1px solid #dce2ea;background:#fbfcfe}.flow-svg{display:block;width:100%;min-width:980px;height:auto}.flow-svg .connector{fill:none;stroke:#666;stroke-width:1.7;marker-end:url(#arrow)}.flow-svg .process,.flow-svg .decision-shape,.flow-svg .terminator{fill:#eee;stroke:#999;stroke-width:1.5}.flow-svg .terminator{rx:34}.flow-svg text{fill:#15191f;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;text-anchor:middle;dominant-baseline:middle}.flow-svg .sub{fill:#4f5966;font-size:12px}.flow-svg .branch-label{font-size:13px;font-weight:600}.flow-svg .edge-label{fill:#555;font-size:13px}.flow-caption{padding:13px 16px;border-bottom:1px solid var(--line);color:var(--muted);font-size:12px}.flow-caption b{color:var(--ink);font-size:13px}@media(max-width:700px){.doc{margin:0;padding:24px 18px;border:0;border-radius:0}.top{padding:12px 18px;flex-wrap:wrap}.flow-caption{padding:11px 12px}}
+  </style>
+</head>
+<body>
+  <header class="top"><span>需求规格 · 两融交易咨询承接串联 Skill</span><a href="../docs/specs/2026-11-16-margin-consultation-orchestration-spec.md">查看 Markdown 源文件</a></header>
+  <main class="doc">
+    <h1>两融交易咨询承接串联 Skill</h1>
+    <p><b>首期范围：</b>GWork 单客户咨询承接　｜　<b>平台：</b>PC Web / GWork 对话串联　｜　<b>版本：</b>v1.0</p>
+    <h2>一、需求背景</h2><p>客户信用账户交易咨询需要在不输入资金账号明文的前提下，先查询佣金宝两融交易信息；命中时直接拿到错误内容，未命中时通过客户点击“？”或上传截图补充诊断信息。</p>
+    <h2>二、已确认范围</h2>
+    <ul><li>首期单客户承接，不做批量查询或左侧客户列表。</li><li>不做咨询来源选择；GWork 发起咨询后自动弹出内部资金账号输入页面，所有咨询统一从账号查询开始。</li><li>资金账号仅在内部页面录入，账号明文不进入 GWork。</li><li>内部页面生成的任务码 <code>taskid</code> 即加密资金账号，二者是同一受保护标识，不是两个字段或两种凭据；沿用既有公共能力：10 分钟有效、一次性使用，本期不重复研发、不新增流程节点。</li><li>查询命中约 5% 时，接口直接返回错误内容并进入服务清单，不调用两融试算原子 Skill。</li><li>查询未命中约 95% 时，员工可引导客户点击佣金宝“？”重新查询，或上传交易截图。</li><li>截图候选字段及准确性返回后判断完整性；不完整时通过任务码 <code>taskid</code>（即加密资金账号）补充或人工补录，完整后调用一部两融试算原子 Skill。</li><li>截图不落库；OCR 类型、字段完整性、<code>taskid</code> 可补充信息范围和人工补录细节待技术确认。</li><li>原子 Skill 按业务话术原文输出五段内容；个股诊断由串联 Skill 单独调用，服务清单只提供入口和复制链接。</li></ul>
+    <h2>三、端到端主流程</h2>
+    <div class="flow-caption"><b>两融交易咨询承接主流程</b> · 首期单客户咨询 · 统一账号查询入口</div>
+    <div class="flow-scroll">
+      <svg class="flow-svg" viewBox="0 0 1280 1680" role="img" aria-labelledby="flowTitle flowDesc" xmlns="http://www.w3.org/2000/svg">
+        <title id="flowTitle">两融交易咨询端到端主流程</title>
+        <desc id="flowDesc">员工发起咨询并输入资金账号后查询交易信息。命中时直接调用个股诊断并进入服务清单；未命中时选择引导客户点击问号重查或上传截图。截图字段不完整则补充后重新校验，完整则调用两融试算原子 Skill，再进入服务清单。最后完成服务并按现有投顾线逻辑回流。</desc>
+        <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#666"/></marker></defs>
+        <!-- Main account query path -->
+        <rect class="terminator" x="470" y="32" width="340" height="72"/><text x="640" y="68">GWork 发起“两融交易咨询”</text>
+        <path class="connector" d="M640 104 V150"/>
+        <rect class="process" x="420" y="152" width="440" height="96"/><text x="640" y="184"><tspan x="640">自动弹出内部资金账号输入页</tspan><tspan class="sub" x="640" dy="23">员工录入账号，生成 taskid（加密资金账号）</tspan><tspan class="sub" x="640" dy="19">沿用既有能力：10 分钟有效、一次性使用</tspan></text>
+        <path class="connector" d="M640 248 V292"/>
+        <polygon class="decision-shape" points="640,292 830,392 640,492 450,392"/><text x="640" y="384"><tspan x="640">账号校验与佣金宝</tspan><tspan x="640" dy="22">交易信息查询</tspan></text>
+
+        <!-- Hit branch: left lane -->
+        <path class="connector" d="M450 392 H250 V520"/><text class="edge-label" x="330" y="375">命中 · 约 5%</text>
+        <rect class="process" x="90" y="520" width="320" height="86"/><text x="250" y="552"><tspan x="250">接口直接返回错误信息</tspan><tspan class="sub" x="250" dy="22">不调用两融试算原子 Skill</tspan></text>
+        <path class="connector" d="M250 606 V662"/>
+        <rect class="process" x="90" y="664" width="320" height="86"/><text x="250" y="696"><tspan x="250">串联 Skill 单独调用个股诊断</tspan><tspan class="sub" x="250" dy="22">生成可打开、可复制的诊断入口</tspan></text>
+        <path class="connector" d="M250 750 V1324 H620 V1334"/><text class="edge-label" x="270" y="1305">进入客户服务清单</text>
+
+        <!-- Miss branch: right lane -->
+        <path class="connector" d="M830 392 H1030 V520"/><text class="edge-label" x="916" y="375">未命中 · 约 95%</text>
+        <rect class="process" x="860" y="520" width="340" height="80"/><text x="1030" y="550"><tspan x="1030">GWork 提示未获取交易信息</tspan><tspan class="sub" x="1030" dy="22">员工选择后续操作</tspan></text>
+        <path class="connector" d="M1030 600 V632"/>
+        <polygon class="decision-shape" points="1030,632 1170,704 1030,776 890,704"/><text x="1030" y="704">选择后续操作</text>
+
+        <!-- Re-query loop returns to the account input page -->
+        <path class="connector" d="M890 704 H800 V840 H650"/><text class="edge-label" x="815" y="688">引导客户点击“？”</text>
+        <rect class="process" x="450" y="800" width="400" height="88"/><text x="650" y="832"><tspan x="650">客户点击“？”并上报交易信息</tspan><tspan class="sub" x="650" dy="22">员工确认已成功引导</tspan></text>
+        <path class="connector" d="M450 844 H40 V200 H414"/><text class="edge-label" x="53" y="610" transform="rotate(-90 53 610)">重新弹出账号输入页查询</text>
+
+        <!-- Screenshot and completeness loop -->
+        <path class="connector" d="M1030 776 V820"/><text class="edge-label" x="1070" y="802">上传截图</text>
+        <rect class="process" x="870" y="820" width="320" height="86"/><text x="1030" y="850"><tspan x="1030">识别截图候选字段及准确性</tspan><tspan class="sub" x="1030" dy="22">截图仅当次使用，不落库</tspan></text>
+        <path class="connector" d="M1030 906 V948"/>
+        <polygon class="decision-shape" points="1030,948 1160,1018 1030,1088 900,1018"/><text x="1030" y="1018">字段完整？</text>
+        <path class="connector" d="M900 1018 H760 V1114"/><text class="edge-label" x="820" y="1000">否</text>
+        <rect class="process" x="610" y="1120" width="300" height="84"/><text x="760" y="1150"><tspan x="760">taskid 获取补充信息</tspan><tspan class="sub" x="760" dy="22">或员工按格式人工补录</tspan></text>
+        <path class="connector" d="M760 1204 H500 V930 H1030 V942"/><text class="edge-label" x="765" y="912">补充后重新校验</text>
+        <path class="connector" d="M1030 1088 V1120"/><text class="edge-label" x="1070" y="1104">是</text>
+        <rect class="process" x="910" y="1120" width="240" height="84"/><text x="1030" y="1148"><tspan x="1030">调用一部两融试算</tspan><tspan x="1030" dy="19">原子 Skill，输出五段内容</tspan></text>
+        <path class="connector" d="M1030 1204 V1240"/>
+        <rect class="process" x="890" y="1240" width="280" height="76"/><text x="1030" y="1268"><tspan x="1030">串联 Skill 单独调用个股诊断</tspan><tspan class="sub" x="1030" dy="22">提供诊断素材入口链接</tspan></text>
+        <path class="connector" d="M1030 1316 V1324 H760 V1334"/><text class="edge-label" x="940" y="1310">进入客户服务清单</text>
+
+        <!-- Shared service completion -->
+        <rect class="process" x="520" y="1340" width="320" height="82"/><text x="680" y="1368"><tspan x="680">弹出当前客户服务清单</tspan><tspan class="sub" x="680" dy="22">客户信息、逐笔诊断及个股诊断入口</tspan></text>
+        <path class="connector" d="M680 1422 V1470"/>
+        <rect class="process" x="480" y="1470" width="400" height="82"/><text x="680" y="1498"><tspan x="680">填写服务记录并完成服务</tspan><tspan class="sub" x="680" dy="22">无诊断结果也可完成</tspan></text>
+        <path class="connector" d="M680 1552 V1592"/>
+        <rect class="terminator" x="490" y="1594" width="380" height="68"/><text x="680" y="1628">按现有投顾线逻辑完成上报</text>
+      </svg>
+    </div>
+    <h2>四、服务清单职责</h2><ul><li>展示上游返回的客户基础信息、信用账户总资产/净资产/总负债、待处理任务、逐笔错误/诊断明细和个股诊断入口。</li><li>多次错误或多张截图按当前明细交互展示，按操作时间倒序，最新记录置顶。</li><li>未得出诊断时展示“暂未识别原因，请通过人工渠道核实”，仍可完成服务。</li><li>固定展示服务记录输入框和完成服务按钮，静态原型不模拟 GWork 交互。</li></ul>
+    <h2>五、异常与安全边界</h2><ul><li>账号校验失败、任务码过期或已消费由既有专用页面处理，不进入服务清单。</li><li>截图字段不完整由串联流程通过任务码 <code>taskid</code>（即加密资金账号）补充或人工补录；截图不保存。</li><li>两融试算或个股诊断不可用不阻断服务记录和完成服务。</li><li>资金账号明文不得进入 GWork。</li></ul>
+    <h2>六、待技术确认</h2><div class="callout">OCR 支持截图类型、识别字段、字段完整性校验、任务码 <code>taskid</code>（即加密资金账号）可补充信息范围、人工补录字段清单、调用超时与重试策略仍需技术确认；这些事项不改变已确认主流程。</div>
+    <p><a href="主PRD.html">继续查看主 PRD</a></p>
+  </main>
+</body>
+</html>

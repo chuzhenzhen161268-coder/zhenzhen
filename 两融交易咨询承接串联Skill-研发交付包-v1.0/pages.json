@@ -2,7 +2,7 @@
   "version": "1",
   "project": "两融交易咨询承接串联 Skill",
   "initialPage": "01-两融交易咨询服务",
-  "demoEntry": "demo/demo.html",
+  "demoEntry": "pages/01-两融交易咨询服务.html",
   "pages": [
     {
       "id": "01-两融交易咨询服务",
