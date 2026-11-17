@@ -1,0 +1,34 @@
+{
+  "version": "1",
+  "project": "两融交易咨询承接串联 Skill",
+  "initialPage": "01-两融交易咨询服务",
+  "demoEntry": "demo/demo.html",
+  "pages": [
+    {
+      "id": "01-两融交易咨询服务",
+      "name": "两融交易咨询服务",
+      "order": 1,
+      "sourceFile": "pages/01-两融交易咨询服务.html",
+      "viewport": { "width": 1440, "height": 900 },
+      "mainStates": [
+        { "key": "normal", "label": "服务中" },
+        { "key": "unknown-diagnosis", "label": "暂未识别原因" },
+        { "key": "completed", "label": "已完成" }
+      ],
+      "overlays": [
+        { "key": "complete-modal", "label": "完成服务确认", "kind": "modal" }
+      ]
+    },
+    {
+      "id": "05-个股诊断预览",
+      "name": "个股诊断预览",
+      "order": 2,
+      "sourceFile": "pages/05-个股诊断预览.html",
+      "viewport": { "width": 1280, "height": 900 },
+      "mainStates": [
+        { "key": "normal", "label": "诊断素材预览" }
+      ],
+      "overlays": []
+    }
+  ]
+}
