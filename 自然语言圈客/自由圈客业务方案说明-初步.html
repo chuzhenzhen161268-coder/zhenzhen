@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自由圈客业务方案说明（初步）</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #192631;
+      --muted: #62717a;
+      --line: #d9e1df;
+      --paper: #fbfcfa;
+      --white: #ffffff;
+      --teal: #176c68;
+      --teal-soft: #eaf4f1;
+      --gold: #ad6a20;
+      --gold-soft: #fbf2e6;
+      --coral: #a84c3a;
+      --coral-soft: #f9eeea;
+      --green: #397451;
+      --green-soft: #edf5ef;
+      --shadow: 0 16px 40px rgba(25, 38, 49, .06);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #edf1ef;
+      color: var(--ink);
+      font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    a { color: inherit; }
+    .page { max-width: 1180px; margin: 28px auto; background: var(--paper); box-shadow: var(--shadow); }
+    .masthead { padding: 20px 6.5%; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-size: 14px; font-weight: 600; }
+    .brand-mark { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; color: #fff; background: var(--teal); font-size: 13px; }
+    .doc-meta { color: var(--muted); font-size: 13px; text-align: right; }
+    .hero { padding: 58px 8% 48px; background: linear-gradient(120deg, #f0f6f3, #fbfcfa 62%); border-bottom: 1px solid var(--line); }
+    .eyebrow { color: var(--teal); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+    h1 { max-width: 780px; margin: 12px 0 12px; font-size: clamp(32px, 5vw, 48px); line-height: 1.18; letter-spacing: 0; font-weight: 600; }
+    .hero-copy { max-width: 720px; margin: 0; color: #4f6069; font-size: 18px; }
+    .hero-foot { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 25px; }
+    .tag { border: 1px solid #cbd9d5; padding: 4px 10px; color: #42565c; font-size: 12px; background: rgba(255,255,255,.62); }
+    nav { position: sticky; top: 0; z-index: 4; display: flex; gap: 4px; overflow-x: auto; padding: 11px 6.5%; border-bottom: 1px solid var(--line); background: rgba(251,252,250,.96); backdrop-filter: blur(12px); }
+    nav a { flex: 0 0 auto; padding: 6px 10px; text-decoration: none; color: #52636b; font-size: 13px; }
+    nav a:hover, nav a:focus-visible { color: var(--teal); background: var(--teal-soft); outline: none; }
+    main { padding: 0 8% 64px; }
+    section { padding-top: 54px; scroll-margin-top: 68px; }
+    .section-kicker { color: var(--teal); font-size: 12px; font-weight: 700; }
+    h2 { margin: 5px 0 10px; font-size: 27px; line-height: 1.3; font-weight: 600; letter-spacing: 0; }
+    .lead { max-width: 800px; margin: 0 0 24px; color: var(--muted); }
+    .principle { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .principle-item { padding: 20px 18px 20px 0; }
+    .principle-item + .principle-item { padding-left: 20px; border-left: 1px solid var(--line); }
+    .principle-item strong { display: block; margin-bottom: 5px; font-size: 15px; }
+    .principle-item span { display: block; color: var(--muted); font-size: 14px; }
+    .approved-flow { position: relative; margin: 0 0 26px; padding: 18px 20px 20px; overflow-x: auto; background: var(--white); border: 1px solid var(--line); }
+    .approved-flow-label { display: block; margin-bottom: 11px; color: var(--teal); font-size: 12px; font-weight: 700; }
+    .approved-flow img { display: block; width: 100%; min-width: 760px; height: auto; cursor: zoom-in; }
+    .approved-flow-open { position: sticky; left: calc(100% - 108px); display: block; width: 104px; margin: 12px 0 0 auto; padding: 7px 10px; border: 1px solid #b7cbc5; background: #fff; color: var(--teal); font: inherit; font-size: 13px; cursor: pointer; }
+    .approved-flow-open:hover, .approved-flow-open:focus-visible { background: var(--teal-soft); outline: 2px solid var(--teal); outline-offset: 2px; }
+    .flow-dialog { width: min(1180px, calc(100vw - 32px)); max-width: none; height: min(760px, calc(100vh - 32px)); padding: 0; border: 0; background: var(--white); box-shadow: 0 24px 60px rgba(0, 0, 0, .28); }
+    .flow-dialog::backdrop { background: rgba(18, 30, 34, .72); }
+    .flow-dialog[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+    .flow-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    .flow-dialog-title { font-size: 15px; font-weight: 600; }
+    .flow-dialog-actions { display: flex; align-items: center; gap: 7px; }
+    .flow-dialog-actions button { min-width: 32px; height: 32px; border: 1px solid #c8d4d0; background: #fff; color: var(--ink); font: inherit; cursor: pointer; }
+    .flow-dialog-actions button:hover, .flow-dialog-actions button:focus-visible { border-color: var(--teal); background: var(--teal-soft); outline: 2px solid var(--teal); outline-offset: 1px; }
+    .flow-dialog-actions .flow-close { padding-inline: 10px; color: var(--teal); }
+    .flow-zoom-canvas { overflow: auto; padding: 24px; background: #f2f5f3; }
+    .flow-zoom-canvas img { display: block; width: 100%; max-width: none; height: auto; }
+    .flow-wrap { display: grid; gap: 24px; }
+    .flow-lane { padding: 20px 22px 22px; background: var(--white); border: 1px solid var(--line); }
+    .lane-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 17px; }
+    .lane-title { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .lane-index { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: var(--teal-soft); color: var(--teal); font-size: 12px; }
+    .lane-caption { color: var(--muted); font-size: 13px; }
+    .steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; }
+    .step { position: relative; min-height: 114px; padding: 13px 14px; background: #f6f8f7; border-left: 2px solid #88b6a8; }
+    .step:not(:last-child)::after { content: "→"; position: absolute; right: -19px; top: 37px; color: #768984; font-size: 16px; }
+    .step-label { display: block; margin-bottom: 5px; color: var(--teal); font-size: 11px; font-weight: 700; }
+    .step strong { display: block; font-size: 14px; line-height: 1.45; }
+    .step small { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .branch-note { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+    .branch { padding: 14px 16px; border-top: 2px solid var(--gold); background: var(--gold-soft); }
+    .branch strong { display: block; margin-bottom: 3px; font-size: 14px; }
+    .branch span { color: #6d6255; font-size: 13px; }
+    .common-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; margin-top: 25px; padding: 20px 22px; background: #eaf1ee; }
+    .common-step { position: relative; padding: 8px 4px; }
+    .common-step:not(:last-child)::after { content: "→"; position: absolute; right: -20px; top: 12px; color: #61736d; }
+    .common-step span { display: block; color: var(--green); font-size: 11px; font-weight: 700; }
+    .common-step strong { display: block; margin-top: 3px; font-size: 14px; }
+    .permission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .permission { background: var(--white); border: 1px solid var(--line); }
+    .permission-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+    .permission-head h3 { margin: 0; font-size: 18px; font-weight: 600; }
+    .permission-head p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .permission-badge { padding: 3px 8px; font-size: 11px; white-space: nowrap; }
+    .local .permission-badge { color: var(--green); background: var(--green-soft); }
+    .remote .permission-badge { color: var(--coral); background: var(--coral-soft); }
+    .permission-body { padding: 17px 20px 20px; }
+    .permission-body ul { margin: 0; padding-left: 19px; }
+    .permission-body li { margin: 7px 0; }
+    .permission-body li::marker { color: var(--teal); }
+    .permission-example { margin-top: 15px; padding: 12px 14px; background: #f4f7f5; color: #516169; font-size: 13px; }
+    .shared-note { margin-top: 18px; padding: 15px 18px; border-left: 3px solid var(--teal); background: var(--teal-soft); color: #3d5b57; font-size: 14px; }
+    .service-map { display: grid; grid-template-columns: 1fr 150px 1fr; gap: 18px; align-items: stretch; }
+    .service-input, .service-output { padding: 19px 20px; background: var(--white); border: 1px solid var(--line); }
+    .service-input h3, .service-output h3 { margin: 0 0 13px; font-size: 16px; }
+    .service-list { display: grid; gap: 9px; }
+    .service-option { padding: 10px 12px; border-left: 2px solid var(--teal); background: #f4f7f5; font-size: 14px; }
+    .service-option small { display: block; color: var(--muted); font-size: 12px; }
+    .service-arrow { display: grid; place-items: center; color: var(--teal); font-size: 28px; }
+    .output-box { padding: 12px 14px; margin-bottom: 10px; background: #f1f6f3; border: 1px solid #d7e5dd; }
+    .output-box strong { display: block; font-size: 14px; }
+    .output-box span { color: var(--muted); font-size: 12px; }
+    .priority { margin-top: 17px; padding: 15px 18px; background: #f8f4ec; border-left: 3px solid var(--gold); }
+    .priority strong { display: block; font-size: 14px; }
+    .priority p { margin: 4px 0 0; color: #6d6255; font-size: 13px; }
+    .roadmap { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .phase { padding: 21px 22px; background: var(--white); border-top: 3px solid var(--teal); }
+    .phase.advanced { border-color: var(--gold); }
+    .phase-label { color: var(--teal); font-size: 12px; font-weight: 700; }
+    .advanced .phase-label { color: var(--gold); }
+    .phase h3 { margin: 5px 0 12px; font-size: 20px; font-weight: 600; }
+    .phase ul { margin: 0; padding-left: 19px; }
+    .phase li { margin: 8px 0; color: #46565e; font-size: 14px; }
+    .phase li::marker { color: var(--teal); }
+    .advanced li::marker { color: var(--gold); }
+    .out-scope { margin-top: 18px; padding: 16px 18px; border: 1px solid var(--line); color: #53636b; }
+    .out-scope strong { color: var(--ink); }
+    .questions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; counter-reset: q; }
+    .question { padding: 15px 16px; border-top: 1px solid var(--line); color: #4f6069; font-size: 14px; }
+    .question::before { counter-increment: q; content: "0" counter(q); display: block; margin-bottom: 5px; color: var(--coral); font-size: 11px; font-weight: 700; }
+    footer { display: flex; justify-content: space-between; gap: 20px; padding: 23px 8%; background: #22343a; color: #dbe4e2; font-size: 12px; }
+    footer span:last-child { color: #aebfbb; text-align: right; }
+    @media (max-width: 820px) {
+      .page { margin: 0; }
+      .masthead { padding: 16px 5%; }
+      .hero { padding: 42px 6% 36px; }
+      nav { padding-inline: 5%; }
+      main { padding-inline: 6%; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .step:not(:last-child)::after { display: none; }
+      .common-flow { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .common-step:not(:last-child)::after { display: none; }
+      .service-map { grid-template-columns: 1fr; }
+      .service-arrow { transform: rotate(90deg); }
+      .approved-flow { padding: 14px; }
+      .flow-dialog { width: calc(100vw - 20px); height: calc(100vh - 20px); }
+      .flow-zoom-canvas { padding: 14px; }
+    }
+    @media (max-width: 580px) {
+      body { font-size: 15px; }
+      .doc-meta { max-width: 115px; }
+      .hero-copy { font-size: 16px; }
+      h2 { font-size: 23px; }
+      section { padding-top: 40px; }
+      .principle, .permission-grid, .branch-note, .roadmap, .questions { grid-template-columns: 1fr; }
+      .principle-item { padding: 14px 0; }
+      .principle-item + .principle-item { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+      .lane-head { align-items: start; flex-direction: column; gap: 4px; }
+      .steps { grid-template-columns: 1fr; }
+      .step { min-height: auto; }
+      .flow-lane { padding: 16px; }
+      footer { flex-direction: column; }
+      footer span:last-child { text-align: left; }
+    }
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; margin: 0; box-shadow: none; }
+      nav { position: static; }
+      .hero { background: #f2f6f3; }
+      section { break-inside: avoid; }
+      a { text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark">G</span><span>客户经营 · 业务方案</span></div>
+      <div class="doc-meta">初步沟通稿<br>2026年11月</div>
+    </header>
+
+    <div class="hero">
+      <div class="eyebrow">GWORK · 自由圈客</div>
+      <h1>从找到合适客户，<br>到完成一次有效服务</h1>
+      <p class="hero-copy">一线员工用自然语言表达经营目标，逐步圈准客户、选定服务方案，再进入服务清单完成联系与记录。</p>
+      <div class="hero-foot">
+        <span class="tag">面向一线员工</span>
+        <span class="tag">个人基础服务关系客户</span>
+        <span class="tag">GWork 对话 + 侧边栏结果</span>
+      </div>
+    </div>
+
+    <nav aria-label="方案章节">
+      <a href="#goal">方案定位</a>
+      <a href="#journey">业务使用流程</a>
+      <a href="#display">两种展示版本</a>
+      <a href="#service">服务方案去向</a>
+      <a href="#phases">首版与进阶版</a>
+      <a href="#discussion">业务讨论重点</a>
+    </nav>
+
+    <main>
+      <section id="goal">
+        <div class="section-kicker">01 / 方案定位</div>
+        <h2>把“圈客”变成一线员工可完成的服务起点</h2>
+        <p class="lead">自由圈客既能从员工的经营想法开始，也能直接调用已经上线的固定服务场景。两类入口的圈客方式不同，最终都落到客户联系和服务记录。</p>
+        <div class="principle">
+          <div class="principle-item"><strong>员工说目标</strong><span>用日常表达说明想找什么客户、希望开展什么服务。</span></div>
+          <div class="principle-item"><strong>先看懂客群</strong><span>在 GWork 侧边栏查看圈选规模、共同特征和筛选依据，必要时继续调整。</span></div>
+          <div class="principle-item"><strong>服务有结果</strong><span>进入相应服务清单，完成电话或企微联系，并记录服务结果。</span></div>
+        </div>
+      </section>
+
+      <section id="journey">
+        <div class="section-kicker">02 / 业务使用流程</div>
+        <h2>两种开始方式，一条服务闭环</h2>
+        <p class="lead">自由圈客由员工描述并确认条件；已有串联场景按预设规则直接圈客。员工可在已有场景结果上继续缩圈，也可直接开始服务。</p>
+
+        <figure class="approved-flow">
+          <figcaption class="approved-flow-label">已确认业务主流程</figcaption>
+          <img class="flow-preview" src="自由圈客业务方案说明-初步-assets/业务主流程图.png" alt="自由圈客业务主流程：从 GWork 对话的自由表达或已有场景调用开始，完成圈客、服务方案选择、打开服务清单、客户联系与服务记录回传。" tabindex="0" role="button" aria-label="放大查看自由圈客业务主流程图">
+          <button class="approved-flow-open" type="button">放大查看</button>
+        </figure>
+
+        <div class="flow-wrap">
+          <article class="flow-lane">
+            <div class="lane-head">
+              <div class="lane-title"><span class="lane-index">A</span><span>自由表达经营目标</span></div>
+              <div class="lane-caption">适合临时发现机会、主动寻找目标客群</div>
+            </div>
+            <div class="steps">
+              <div class="step"><span class="step-label">员工提出目标</span><strong>说清想找什么客户</strong><small>例如：找近期未联系、持有科技股且浮亏较多的客户</small></div>
+              <div class="step"><span class="step-label">共同确认</span><strong>GWork 追问条件与服务目的</strong><small>对有歧义或缺少口径的条件进一步确认</small></div>
+              <div class="step"><span class="step-label">查看客群</span><strong>侧边栏呈现圈客结果</strong><small>人数、共同特征、命中与排除理由</small></div>
+              <div class="step"><span class="step-label">调整客群</span><strong>员工决定是否继续缩圈</strong><small>补充或调整条件后查看新的客群结果</small></div>
+              <div class="step"><span class="step-label">选择服务</span><strong>确认客群并选择服务动作</strong><small>采用推荐 SOP、固定方案或自定义服务方向</small></div>
+            </div>
+          </article>
+
+          <article class="flow-lane">
+            <div class="lane-head">
+              <div class="lane-title"><span class="lane-index">B</span><span>直接调用已上线服务场景</span></div>
+              <div class="lane-caption">适合按成熟、固定的服务规则快速启动</div>
+            </div>
+            <div class="steps">
+              <div class="step"><span class="step-label">员工调用场景</span><strong>在 GWork 直接提出场景诉求</strong><small>例如：“给我今天的 AI+ 服务清单”</small></div>
+              <div class="step"><span class="step-label">按固定规则</span><strong>执行场景预设圈客条件</strong><small>使用该服务场景已经确定的规则</small></div>
+              <div class="step"><span class="step-label">生成清单</span><strong>给出该场景对应服务清单</strong><small>沿用该场景已有的服务承接方式</small></div>
+              <div class="step"><span class="step-label">员工选择</span><strong>直接开始服务或继续筛选</strong><small>需要缩小范围时，再提出补充条件</small></div>
+              <div class="step"><span class="step-label">继续承接</span><strong>进入对应服务清单</strong><small>按场景原有流程开展服务</small></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="common-flow" aria-label="共同服务闭环">
+          <div class="common-step"><span>共同后续 01</span><strong>打开服务清单</strong></div>
+          <div class="common-step"><span>共同后续 02</span><strong>电话或企微联系</strong></div>
+          <div class="common-step"><span>共同后续 03</span><strong>记录本次服务结果</strong></div>
+          <div class="common-step"><span>共同后续 04</span><strong>结果回传</strong></div>
+          <div class="common-step"><span>共同后续 05</span><strong>本次服务完成</strong></div>
+        </div>
+      </section>
+
+      <section id="display">
+        <div class="section-kicker">03 / GWork 侧边栏展示</div>
+        <h2>本地化与非本地化，呈现粒度不同</h2>
+        <p class="lead">自由圈客的结果展示发生在 GWork 侧边栏。版本差异只描述 GWork 内客户信息如何呈现，不改变员工最终在内部服务清单开展服务的流程。</p>
+        <div class="permission-grid">
+          <article class="permission local">
+            <div class="permission-head">
+              <div><h3>本地化版</h3><p>GWork 本地化部署环境</p></div>
+              <span class="permission-badge">无需脱敏</span>
+            </div>
+            <div class="permission-body">
+              <ul>
+                <li>可按单个客户呈现圈客结果。</li>
+                <li>可定位到具体客户，展示单客命中理由与客户画像。</li>
+                <li>支持在名单中查看客户级条件命中情况。</li>
+              </ul>
+              <div class="permission-example">侧边栏结果：客户名单 + 单客命中依据 + 客户画像</div>
+            </div>
+          </article>
+          <article class="permission remote">
+            <div class="permission-head">
+              <div><h3>非本地化版</h3><p>GWork 非本地化部署环境</p></div>
+              <span class="permission-badge">需要脱敏</span>
+            </div>
+            <div class="permission-body">
+              <ul>
+                <li>以客群、分群和聚合信息呈现，不展示单个客户。</li>
+                <li>可查看圈选数量、共同特征、条件命中与客群分布。</li>
+                <li>不得出现可定位单个客户的客户卡片或身份信息。</li>
+              </ul>
+              <div class="permission-example">侧边栏结果：客群概览 + 聚合画像 + 条件解释，不展开单客</div>
+            </div>
+          </article>
+        </div>
+        <div class="shared-note"><strong>页面边界：</strong>当员工选择服务动作后，服务清单在浏览器中直接打开，是脱离 GWork 的内部自研页面；该页面无需按 GWork 侧边栏的脱敏展示方式处理。</div>
+      </section>
+
+      <section id="service">
+        <div class="section-kicker">04 / 服务方案与清单去向</div>
+        <h2>圈准客户后，再决定怎么服务</h2>
+        <p class="lead">SOP 推荐结合员工确认的圈客条件、本批客户共同特征和员工输入的服务目的。推荐用于辅助选择，员工确认后再进入服务承接。</p>
+        <div class="service-map">
+          <div class="service-input">
+            <h3>可选服务方案</h3>
+            <div class="service-list">
+              <div class="service-option"><strong>已有 SOP</strong><small>包含已上线串联场景的服务流程</small></div>
+              <div class="service-option"><strong>团队固定服务方案</strong><small>团队提供统一服务方向与固定话术方案</small></div>
+              <div class="service-option"><strong>员工自定义服务</strong><small>员工填写本次服务方向与话术</small></div>
+            </div>
+          </div>
+          <div class="service-arrow" aria-hidden="true">→</div>
+          <div class="service-output">
+            <h3>服务清单去向</h3>
+            <div class="output-box"><strong>已上线 SOP / 串联场景</strong><span>打开对应服务清单</span></div>
+            <div class="output-box"><strong>团队固定方案</strong><span>按方案内容进入通用服务清单</span></div>
+            <div class="output-box"><strong>员工自定义方向与话术</strong><span>进入通用服务清单</span></div>
+          </div>
+        </div>
+        <div class="priority">
+          <strong>多 SOP 默认归属规则</strong>
+          <p>同一客户命中多个 SOP 时，首版按团队维护的主 SOP 归属优先级默认拆分，减少重复触达。多 SOP 汇总进通用服务清单，作为进阶版能力。</p>
+        </div>
+      </section>
+
+      <section id="phases">
+        <div class="section-kicker">05 / 建设节奏</div>
+        <h2>先跑通一线闭环，再扩展多 SOP 协同</h2>
+        <p class="lead">首版优先验证“找到客户—选定服务—完成记录”是否顺畅；更复杂的跨 SOP 组合留到进阶版。</p>
+        <div class="roadmap">
+          <article class="phase">
+            <div class="phase-label">首版 / 一线员工闭环</div>
+            <h3>独立完成个人客户服务</h3>
+            <ul>
+              <li>自然语言圈客，或直接调用已上线服务场景。</li>
+              <li>GWork 追问并确认条件，侧边栏展示客群结果并支持继续缩圈。</li>
+              <li>按本地化版/非本地化版展示单客信息或脱敏客群信息。</li>
+              <li>选择已有 SOP、团队固定方案或员工自定义服务动作。</li>
+              <li>按主 SOP 优先级默认归属；打开服务清单、联系客户并回传记录。</li>
+            </ul>
+          </article>
+          <article class="phase advanced">
+            <div class="phase-label">进阶版 / 多 SOP 协同</div>
+            <h3>处理多服务目的重叠客群</h3>
+            <ul>
+              <li>识别同一批客户适配多个 SOP 的重叠部分。</li>
+              <li>在默认拆分之外，询问员工是否将重叠客户汇总处理。</li>
+              <li>选择汇总后，通过通用服务清单呈现多个 SOP 与服务动作。</li>
+              <li>员工决定本次执行哪些动作；系统不自动把多套服务话术合成一套。</li>
+            </ul>
+          </article>
+        </div>
+        <div class="out-scope"><strong>当前首版范围之外：</strong>团队长圈选团队范围客户、向团队员工下发服务清单、跨员工任务分配与团队进度管理。当前聚焦一线员工及其个人基础服务关系内客户。</div>
+      </section>
+
+      <section id="discussion">
+        <div class="section-kicker">06 / 业务讨论重点</div>
+        <h2>评审时建议优先对齐的三件事</h2>
+        <p class="lead">这些事项决定圈客结果是否可信、SOP 是否适配，适合作为业务评审的下一轮确认点。</p>
+        <div class="questions">
+          <div class="question">主 SOP 归属优先级由谁维护，按什么业务原则排序？</div>
+          <div class="question">首版允许员工使用哪些已确认的数据条件与时间口径？</div>
+          <div class="question">哪些既有服务场景可被 GWork 直接调用，哪些服务方案进入通用清单？</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>自由圈客业务方案说明 · 初步沟通稿</span>
+      <span>本稿用于业务讨论，流程与范围以评审确认结果为准</span>
+    </footer>
+  </div>
+
+  <dialog class="flow-dialog" aria-labelledby="flow-dialog-title">
+    <div class="flow-dialog-head">
+      <div class="flow-dialog-title" id="flow-dialog-title">自由圈客业务主流程</div>
+      <div class="flow-dialog-actions" aria-label="流程图查看控制">
+        <button class="flow-zoom-out" type="button" aria-label="缩小流程图" title="缩小">−</button>
+        <button class="flow-zoom-reset" type="button" aria-label="还原流程图大小" title="还原为适应窗口">1:1</button>
+        <button class="flow-zoom-in" type="button" aria-label="放大流程图" title="放大">+</button>
+        <button class="flow-close" type="button" aria-label="关闭流程图">关闭</button>
+      </div>
+    </div>
+    <div class="flow-zoom-canvas">
+      <img class="flow-zoom-image" src="自由圈客业务方案说明-初步-assets/业务主流程图.png" alt="自由圈客业务主流程：从 GWork 对话的自由表达或已有场景调用开始，完成圈客、服务方案选择、打开服务清单、客户联系与服务记录回传。">
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      const dialog = document.querySelector('.flow-dialog');
+      const preview = document.querySelector('.flow-preview');
+      const openButton = document.querySelector('.approved-flow-open');
+      const closeButton = document.querySelector('.flow-close');
+      const zoomImage = document.querySelector('.flow-zoom-image');
+      const zoomCanvas = document.querySelector('.flow-zoom-canvas');
+      const zoomIn = document.querySelector('.flow-zoom-in');
+      const zoomOut = document.querySelector('.flow-zoom-out');
+      const zoomReset = document.querySelector('.flow-zoom-reset');
+      let zoom = 1;
+
+      const applyZoom = () => { zoomImage.style.width = `${zoom * 100}%`; };
+      const resetZoom = () => { zoom = 1; applyZoom(); };
+      const openDialog = () => { resetZoom(); dialog.showModal(); };
+
+      openButton.addEventListener('click', openDialog);
+      preview.addEventListener('click', openDialog);
+      preview.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openDialog();
+        }
+      });
+      closeButton.addEventListener('click', () => dialog.close());
+      zoomIn.addEventListener('click', () => { zoom = Math.min(3, zoom + .25); applyZoom(); });
+      zoomOut.addEventListener('click', () => { zoom = Math.max(.75, zoom - .25); applyZoom(); });
+      zoomReset.addEventListener('click', resetZoom);
+      zoomCanvas.addEventListener('wheel', (event) => {
+        if (!event.ctrlKey && !event.metaKey) return;
+        event.preventDefault();
+        zoom = Math.min(3, Math.max(.75, zoom + (event.deltaY < 0 ? .15 : -.15)));
+        applyZoom();
+      }, { passive: false });
+    })();
+  </script>
+</body>
+</html>
