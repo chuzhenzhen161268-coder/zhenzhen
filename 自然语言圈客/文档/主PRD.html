@@ -1,0 +1,124 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>主 PRD</title><style>
+  :root{--blue:#2b73ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}.bar{position:sticky;top:0;z-index:2;padding:14px 32px;border-bottom:1px solid var(--line);background:#fff}.bar a{color:var(--blue);text-decoration:none;font-weight:700}.shell{max-width:1120px;margin:0 auto;padding:30px 32px 72px}.paper{padding:34px 44px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(16,24,40,.05)}h1{margin:0 0 24px;font-size:32px;line-height:1.25}h2{margin:36px 0 14px;padding-top:12px;border-top:1px solid #f0f2f5;font-size:24px}h3{margin:28px 0 10px;font-size:18px}h4{margin:22px 0 8px;font-size:15px}p,li{font-size:14px;line-height:1.85;color:#344054}p{margin:10px 0}ul,ol{padding-left:24px}a{color:var(--blue)}code{padding:2px 5px;border-radius:4px;background:#f2f4f7;color:#344054;font-size:.92em}.table-wrap{overflow:auto;margin:16px 0}table{min-width:620px;width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 12px;border:1px solid var(--line);vertical-align:top;text-align:left;line-height:1.6}th{background:#f8fafc;color:#475467;font-weight:700}pre{overflow:auto;padding:16px;border-radius:8px;background:#101828;color:#e4e7ec;line-height:1.6}.mermaid{overflow:auto;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;text-align:center}hr{margin:28px 0;border:0;border-top:1px solid var(--line)}.meta{margin-bottom:24px;color:var(--muted);font-size:12px}@media(max-width:700px){.shell{padding:16px}.paper{padding:22px 18px}.bar{padding:12px 16px}h1{font-size:26px}h2{font-size:21px}}
+  </style></head><body><div class="bar"><a href="../交付中心.html">← 返回交付中心</a><span style="margin-left:18px;color:#667085">docs/prd/自由圈客与通用客户服务清单/PRD.md</span></div><main class="shell"><article class="paper"><h1>自由圈客与通用客户服务清单（阶段一）PRD</h1>
+<h2>1. 项目概览</h2>
+<p><strong>项目名称</strong>：自由圈客与通用客户服务清单（阶段一） <strong>平台类型</strong>：既有 GWork 客户端（Skill 串联）及浏览器服务清单</p>
+<h3>背景与目标</h3>
+<p>一线客户经理 / 投顾的临时客户经营需求无法完全被固定服务场景覆盖。阶段一在既有 GWork 中串联自然语言圈客 Skill、服务内容生成与合规审查能力，将审查通过的服务包交由浏览器端通用客户服务清单执行，并将结果回传 iSMP。</p>
+<h3>目标用户原型</h3>
+<ul><li><strong>用户特征</strong>：服务本人基础服务关系客户的一线客户经理或投顾，日常需要根据市场、客户状态或经营目标发起服务。</li><li><strong>底层动机</strong>：快速将客户经营意图转化为可解释、可执行、可追溯的服务动作。</li><li><strong>典型场景</strong>：员工在 GWork 输入圈客条件和服务目的，确认客群后选择已有 SOP 或自定义服务；自定义服务生成合规内容后，进入浏览器服务清单完成触达。</li></ul>
+<h3>核心价值主张</h3>
+<p>&gt; 为一线客户经理 / 投顾，将临时客户经营意图转化为可解释、合规、可执行且可回传的服务闭环。</p>
+<h3>核心术语</h3>
+<div class="table-wrap"><table><thead><tr><th>术语</th><th>说明</th></tr></thead><tbody><tr><td>GWork</td><td>公司内部私有化部署的既有客户端，承载自然语言圈客 Skill 及服务包生成、合规分流和服务清单跳转。</td></tr><tr><td>自然语言圈客 Skill</td><td>将员工的自然语言条件转化为可执行圈客规则，并返回可解释客群结果的既有能力。</td></tr><tr><td>服务诉求协议</td><td>员工自由描述经 GWork 最少必要补问和确认后形成的结构化生成依据，包含服务目标、期望客户动作、渠道、内容参考和表达要求。</td></tr><tr><td>服务包</td><td>某次自定义服务生成并通过初始合规审查的内容、素材、渠道和客户集合。</td></tr><tr><td>客户分流规则</td><td>员工为本次客群定义的“客户条件—触达渠道”规则，包含规则优先级及未命中客户的兜底去向。</td></tr><tr><td>渠道子清单</td><td>服务包内按电话、企微 RPA 群发、企微一键群发拆分的可执行清单。</td></tr><tr><td>通用客户服务清单</td><td>浏览器端承接服务包、执行触达、留存记录并回传 iSMP 的服务清单。</td></tr></tbody></table></div>
+<h3>成功判定标准</h3>
+<ol><li>首批试点中，发起自由圈客的员工至少 60% 完成“确认客群至生成至少一个可执行渠道子清单”。</li><li>相比试点前的人工准备方式，“圈客至可执行服务清单”的中位耗时下降，并以试点前后同口径数据验证。</li><li>未通过初始合规审查的内容进入服务清单或被执行的情况为 0。</li><li>已执行服务结果回传 iSMP 的成功率不低于 95%，失败记录可见且支持重试。</li></ol>
+<h2>2. 产品发现结论</h2>
+<h3>价值层级分析</h3>
+<div class="table-wrap"><table><thead><tr><th>价值层级</th><th>表面需求</th><th>底层动机</th><th>隐含假设</th></tr></thead><tbody><tr><td>自由圈客与可解释结果</td><td>用自然语言圈选并持续缩圈</td><td>员工能从固定场景外发起可信的客户经营动作</td><td>圈选条件、命中原因和客群特征足以帮助员工判断结果是否可用</td></tr><tr><td>按需服务包</td><td>按员工直接选择渠道，或按员工定义的客户分流规则生成 1-3 种渠道内容</td><td>在业务灵活性与生成成本之间取得平衡</td><td>员工能够判断本次需要哪些渠道、分流条件和数据参考信息</td></tr><tr><td>合规执行与可追溯回传</td><td>仅将初审通过的内容交给服务清单</td><td>在合规约束下完成服务并保留全过程依据</td><td>内容审查、触达结果和 iSMP 回传可稳定串联</td></tr></tbody></table></div>
+<h3>风险评估</h3>
+<div class="table-wrap"><table><thead><tr><th>价值层级</th><th>价值风险（要不要）</th><th>可用性风险（会不会用）</th><th>可行性风险（做不做得出）</th><th>商业可行性风险（撑不撑得住）</th></tr></thead><tbody><tr><td>自由圈客与可解释结果</td><td>中</td><td>中</td><td>中</td><td>中</td></tr><tr><td>按需服务包</td><td>中</td><td>高</td><td>高</td><td>中</td></tr><tr><td>合规执行与可追溯回传</td><td>低</td><td>中</td><td>高</td><td>高</td></tr></tbody></table></div>
+<h2>3. 产品结构图</h2>
+<h3>核心功能清单</h3>
+<div class="table-wrap"><table><thead><tr><th>功能</th><th>优先级</th><th>一句话说明</th></tr></thead><tbody><tr><td>GWork 自然语言圈客 Skill 串联</td><td>P0</td><td>在既有 GWork 中完成条件澄清、圈客、缩圈、结果解释、服务路径选择和服务包交接。</td></tr><tr><td>已有 SOP 直达</td><td>P0</td><td>员工选择已有 SOP 时，直接打开对应既有服务清单；画像、话术、合规和回传均沿用该 SOP 已定义的既有逻辑。</td></tr><tr><td>自定义服务包生成与合规分流</td><td>P0</td><td>员工直接选择 1-3 种渠道，或定义客户分流规则将客户分配到 1-3 种渠道，按需生成并仅交接初审通过的内容。</td></tr><tr><td>服务诉求澄清与确认</td><td>P0</td><td>员工以一句自由描述发起，GWork 仅补问必要信息并回显服务诉求确认卡，确认后才生成三类渠道内容。</td></tr><tr><td>通用客户服务清单</td><td>P0</td><td>承接服务批次，支持电话、RPA 群发和一键群发的执行、素材、记录和回传。</td></tr><tr><td>服务执行与版本追溯</td><td>P0</td><td>电话完成服务或企微发送成功后记录初审版本、人工编辑版本、素材和执行结果。</td></tr><tr><td>iSMP 回传与重试</td><td>P0</td><td>回传既有服务结果及自由圈客补充信息，并展示失败与重试状态。</td></tr></tbody></table></div>
+<h3>页面组织方式</h3>
+<p>采用“既有 GWork 客户端 + 浏览器端列表详情工作台”的组合模式。GWork 仅承接 Skill 串联，不新增页面；浏览器端通用客户服务清单承接服务批次并完成执行。</p>
+<h3>功能/页面层级关系</h3>
+<pre><code>既有 GWork 客户端
+├── 自然语言圈客 Skill
+│   ├── 条件澄清、圈客结果、继续缩圈
+│   ├── 已有 SOP → 对应既有服务清单
+│   └── 自定义服务
+│       ├── 渠道直接选择或客户条件自定义分流
+│       ├── 服务诉求澄清与确认（全局默认 + 渠道覆盖）
+│       ├── 内容参考信息与表达要求确认
+│       ├── 服务包生成与初始合规审查
+│       └── 通过内容 → 浏览器端通用客户服务清单
+浏览器端通用客户服务清单
+├── 电话子清单
+├── 企微 RPA 群发子清单
+├── 企微一键群发子清单
+└── 服务记录与 iSMP 回传</code></pre>
+<h3>本期不做（Non-Goals）</h3>
+<div class="table-wrap"><table><thead><tr><th>本期不做</th><th>理由</th></tr></thead><tbody><tr><td>GWork 页面改造、页面 PRD 或原型</td><td>GWork 是既有客户端，本期只串联其已有能力与相关 Skill。</td></tr><tr><td>团队固定 SOP 配置及团队服务方向管理</td><td>属于阶段二能力。</td></tr><tr><td>管理人员圈选团队客户、下发任务与团队进度管理</td><td>属于阶段三能力。</td></tr><tr><td>服务清单内重新调用模型生成话术、素材或诊断</td><td>内容在 GWork 生成并完成初审后才进入服务清单。</td></tr><tr><td>触达方式智能推荐</td><td>渠道由员工选择，避免在本期引入未经验证的推荐规则。</td></tr><tr><td>全量客户画像模块</td><td>服务清单仅展示基础信息、圈客条件与单客命中原因；详细信息通过既有客户视图查看。</td></tr></tbody></table></div>
+<h2>4. 业务流程图</h2>
+<h3>核心业务流程</h3>
+<div class="mermaid">flowchart TD
+    A([员工在 GWork 发起服务]) --&gt; B{入口类型}
+
+    B --&gt;|已有服务场景| C[按该场景固定规则圈客]
+    C --&gt; D[打开该场景既有服务清单]
+    D --&gt; E[按既有能力执行服务并回传 iSMP]
+    E --&gt; END([完成])
+
+    B --&gt;|自由描述圈客与服务目的| F[GWork 理解并澄清条件]
+    F --&gt; G{条件和服务目的完整？}
+    G --&gt;|否| F
+    G --&gt;|是| H[确认可执行圈客条件]
+
+    H --&gt; I[生成可解释客群结果]
+    I --&gt; J{是否命中客户？}
+    J --&gt;|否| K[展示空结果和已确认条件]
+    K --&gt; F
+    J --&gt;|是| L[展示人数、共同特征、命中/排除原因及近期联系标记]
+    L --&gt; M{继续缩圈？}
+    M --&gt;|是| F
+    M --&gt;|否| N{选择已有 SOP 或自定义服务？}
+
+    N --&gt;|已有 SOP| O[直接跳转对应既有服务清单&lt;br/&gt;不再确认画像或生成话术]
+    O --&gt; E
+
+    N --&gt;|自定义服务| P{选择渠道方式}
+    P --&gt;|直接选择| Q[选择 1-3 种触达方式]
+    P --&gt;|自定义分流| R[输入客户条件与渠道去向]
+    R --&gt; S[回显规则、优先级、兜底去向和预计人数]
+    S --&gt; T{确认分流规则？}
+    T --&gt;|否| R
+    T --&gt;|是| U
+    Q --&gt; U[员工自由描述服务诉求]
+    U --&gt; V[GWork 解析服务目标、期望客户动作、渠道、参考信息与表达要求]
+    V --&gt; W{是否存在缺失、冲突、不可执行或预校验风险？}
+    W --&gt;|是| U1[仅补问必要项或说明不可用原因并要求调整]
+    U1 --&gt; U
+    W --&gt;|否| X[回显服务诉求确认卡：全局默认 + 渠道覆盖]
+    X --&gt; Y{员工确认服务诉求协议？}
+    Y --&gt;|否，修改| U
+    Y --&gt;|是| DEFAULTS[默认使用命中原因及 Workbuddy 客户基础信息]
+    DEFAULTS --&gt; W1{员工是否指定其他画像或诊断素材？}
+    W1 --&gt;|是| X1{数据或技能是否可用、权限和合规是否允许？}
+    X1 --&gt;|否| Y1[说明不可用原因，员工调整指令或按默认信息继续]
+    Y1 --&gt; U
+    X1 --&gt;|是| Z1[调用指定画像数据或诊断素材]
+    W1 --&gt;|否| AA1[标记当日及近 7 日已联系客户]
+    Z1 --&gt; AA1
+
+    AA1 --&gt; AB1{员工是否继续服务已标记客户？}
+    AB1 --&gt;|排除部分客户| AC1[从本次服务客群中排除]
+    AB1 --&gt;|继续服务| AD1[保留在本次服务客群]
+    AC1 --&gt; AE1[生成前复核最新联系状态并记录员工决定]
+    AD1 --&gt; AE1
+    AE1 --&gt; AF1[按已选或已分流渠道生成服务包]
+    AF1 --&gt; AG1[初始合规审查]
+    AG1 --&gt; AH1{是否存在通过内容？}
+    AH1 --&gt;|否，全部未通过| AI1[反馈未通过数量和原因分类]
+    AI1 --&gt; U
+    AH1 --&gt;|是，部分或全部通过| AJ1[创建服务批次和渠道子清单]
+    AJ1 --&gt; AK1[打开浏览器通用客户服务清单]
+
+    AK1 --&gt; AI[员工选择电话、RPA 群发或一键群发子清单]
+    AI --&gt; AL[直接执行电话或企微触达]
+    AL --&gt; AM{是否触达成功？}
+    AM --&gt;|否| AN[记录未接通、发送失败或未发送；保持待处理]
+    AN --&gt; AI
+    AM --&gt;|是| AO[记录成功结果、内容与素材版本]
+    AO --&gt; AQ[回传 iSMP]
+    AQ --&gt; AR{回传成功？}
+    AR --&gt;|否| AS[保留待回传状态并支持重试]
+    AS --&gt; END
+    AR --&gt;|是| END</div>
+<h3>关键业务规则</h3>
+<div class="table-wrap"><table><thead><tr><th>节点</th><th>规则</th></tr></thead><tbody><tr><td>GWork 圈客结果</td><td>本地化与非本地化环境按既有规则展示；非本地化环境仅展示客群聚合信息。</td></tr><tr><td>近期联系</td><td>当日已联系和近 7 日已联系客户均明确标记，不自动排除；由员工决定继续服务或排除，并在生成前再次校验。</td></tr><tr><td>客户分流</td><td>员工可直接多选渠道，也可定义“客户条件—渠道去向”规则；GWork 回显条件、优先级、兜底去向、预计人数及单客分流原因。每位客户按优先级仅进入一个渠道。</td></tr><tr><td>已有 SOP 边界</td><td>自由圈客后选择已有 SOP，或直接发起已有服务场景时，均直接打开对应既有服务清单；不进入本期自定义服务的诉求澄清、客户画像选择、话术生成、初始合规审查或通用客户服务清单。该 SOP 已定义的画像、话术、合规、执行和 iSMP 回传规则保持不变。</td></tr><tr><td>服务诉求协议（仅自定义服务）</td><td>员工可仅输入一句自由描述；GWork 不重复询问已识别信息，只补问无法生成或校验的字段。服务目标、期望客户动作和至少一种触达渠道为生成前必备信息。多渠道先继承全局默认，再允许按渠道覆盖服务目标、期望客户动作、画像/素材及表达要求。</td></tr><tr><td>内容参考信息（仅自定义服务）</td><td>默认使用命中原因及《workbuddy 客户画像数据梳理》中的客户基础信息；近期沟通、风险等级、持仓盈亏等其他客户画像数据仅在员工明确指定，且已接入、权限和合规规则允许时调用。</td></tr><tr><td>话术生成（仅自定义服务）</td><td>电话与 RPA 按单客生成，电话输出沟通提纲、RPA 输出一段个性化企微消息；一键群发只按共同特征生成一段统一文案，不得引用单客画像或个体诊断。所有内容仅使用确认协议中已确认且可用的数据、Skill 结果和素材。</td></tr><tr><td>生成前预校验（仅自定义服务）</td><td>对收益承诺、确定性推荐、不当施压、无权限数据、不可用 Skill 或一键群发引用单客字段等情形，GWork 必须在生成前说明原因并要求调整；不得仅依赖后续合规审查拦截。</td></tr><tr><td>合规分流（仅自定义服务）</td><td>电话与 RPA 按逐客内容审查；一键群发按统一文案与素材组合审查。仅通过内容进入通用客户服务清单。</td></tr><tr><td>服务清单</td><td>服务清单只渲染 GWork 已生成并通过初审的内容，不再次调用模型生成。</td></tr><tr><td>触达成功判定</td><td>电话点击“完成服务”即为成功触达；企微以发送成功回执为成功触达。成功后记录执行结果、内容与素材版本并回传 iSMP，不增加二次触达判断或二次跟进原因。</td></tr><tr><td>状态与素材同步</td><td>每位客户按分流规则仅归属一个渠道子清单；企微以逐客户回执更新成功或失败，失败保留待处理。RPA 按客户、一键群发按批次维护“随企微发送”素材，服务详情与群发编辑使用同一份选择结果。</td></tr><tr><td>人工编辑</td><td>编辑不触发二次合规审查，但须保留初审通过版本、编辑信息、最终执行版本与实际发送素材。</td></tr></tbody></table></div>
+<h2>5. 页面索引</h2>
+<div class="table-wrap"><table><thead><tr><th>序号</th><th>页面名</th><th>一句话用途</th><th>状态/浮层备注</th><th>设计状态</th></tr></thead><tbody><tr><td>02</td><td><a href="页面PRD.html">通用客户服务清单</a></td><td>在浏览器端承接通过初审的服务包，执行电话、RPA 群发和一键群发并回传结果</td><td>多渠道子清单、近期联系标记、触达成功/失败、渠道不可用、回传失败重试</td><td>✅ 已确认</td></tr></tbody></table></div>
+<h2>6. 变更记录</h2>
+<div class="table-wrap"><table><thead><tr><th>版本</th><th>日期</th><th>变更说明</th><th>影响范围</th></tr></thead><tbody><tr><td>v1.0</td><td>2026-11-25</td><td>初始版本</td><td>全部</td></tr><tr><td>v1.1</td><td>2026-11-26</td><td>增加员工自定义客户分流规则；完成通用客户服务清单页面 PRD 和选型</td><td>GWork Skill 串联、通用客户服务清单</td></tr><tr><td>v1.2</td><td>2026-11-26</td><td>服务清单增加“本次服务画像”，完整展示客户基础信息及本次员工补充画像</td><td>通用客户服务清单</td></tr><tr><td>v1.3</td><td>2026-11-26</td><td>调整服务清单右侧布局：服务素材下依次展示话术和服务记录；回传与审计不在页面展示</td><td>通用客户服务清单</td></tr><tr><td>v1.4</td><td>2026-11-26</td><td>群发入口按 RPA / 一键渠道命名，默认选择全部待服务客户；诊断素材默认勾选并统一按“诊断名称-标的名称”展示</td><td>通用客户服务清单</td></tr><tr><td>v1.5</td><td>2026-11-27</td><td>移除服务清单中的二次触达判断与二次跟进原因；电话完成服务或企微发送成功后直接记录并回传</td><td>业务流程、通用客户服务清单</td></tr><tr><td>v1.6</td><td>2026-11-27</td><td>修正渠道归属、企微回执、素材同步与统计口径；搜索时群发默认选择当前搜索结果的规则维持不变</td><td>通用客户服务清单原型与页面 PRD</td></tr><tr><td>v1.7</td><td>2026-11-27</td><td>补充服务诉求协议、最少必要补问、确认卡及电话/RPA/一键群发的话术生成规则</td><td>GWork 自定义服务串联、服务包生成与合规分流</td></tr><tr><td>v1.8</td><td>2026-11-27</td><td>修正画像默认使用范围：默认仅使用命中原因与 Workbuddy 客户基础信息，其他画像须由员工明确指定</td><td>服务诉求协议、话术生成</td></tr><tr><td>v1.9</td><td>2026-11-27</td><td>明确已有 SOP 为独立直达链路，不进入自定义服务的画像、话术、合规和通用清单流程；修正流程图节点复用</td><td>业务流程、关键规则</td></tr></tbody></table></div></article></main><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script><script>if(window.mermaid){mermaid.initialize({startOnLoad:true,theme:'default',securityLevel:'loose'});}</script></body></html>

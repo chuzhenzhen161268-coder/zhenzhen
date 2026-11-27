@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>自定义服务诉求与话术生成规则</title><style>
+  :root{--blue:#2b73ff;--text:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f7fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}.bar{position:sticky;top:0;z-index:2;padding:14px 32px;border-bottom:1px solid var(--line);background:#fff}.bar a{color:var(--blue);text-decoration:none;font-weight:700}.shell{max-width:1120px;margin:0 auto;padding:30px 32px 72px}.paper{padding:34px 44px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(16,24,40,.05)}h1{margin:0 0 24px;font-size:32px;line-height:1.25}h2{margin:36px 0 14px;padding-top:12px;border-top:1px solid #f0f2f5;font-size:24px}h3{margin:28px 0 10px;font-size:18px}h4{margin:22px 0 8px;font-size:15px}p,li{font-size:14px;line-height:1.85;color:#344054}p{margin:10px 0}ul,ol{padding-left:24px}a{color:var(--blue)}code{padding:2px 5px;border-radius:4px;background:#f2f4f7;color:#344054;font-size:.92em}.table-wrap{overflow:auto;margin:16px 0}table{min-width:620px;width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 12px;border:1px solid var(--line);vertical-align:top;text-align:left;line-height:1.6}th{background:#f8fafc;color:#475467;font-weight:700}pre{overflow:auto;padding:16px;border-radius:8px;background:#101828;color:#e4e7ec;line-height:1.6}.mermaid{overflow:auto;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;text-align:center}hr{margin:28px 0;border:0;border-top:1px solid var(--line)}.meta{margin-bottom:24px;color:var(--muted);font-size:12px}@media(max-width:700px){.shell{padding:16px}.paper{padding:22px 18px}.bar{padding:12px 16px}h1{font-size:26px}h2{font-size:21px}}
+  </style></head><body><div class="bar"><a href="../交付中心.html">← 返回交付中心</a><span style="margin-left:18px;color:#667085">docs/specs/2026-11-27-custom-service-message-generation-design.md</span></div><main class="shell"><article class="paper"><h1>自定义服务诉求与三类触达话术生成规则设计</h1>
+<p><strong>日期：</strong> 2026-11-27 <strong>适用范围：</strong> 阶段一 GWork 自定义服务，在圈客确认后、服务包生成前使用 <strong>不适用范围：</strong> 已有 SOP 的既有服务清单及其前置流程；浏览器通用客户服务清单内的二次模型生成。员工选择已有 SOP 后，直接沿用该 SOP 已定义的画像、话术、合规、执行和 iSMP 回传规则，不进入本规则的补问或确认卡。</p>
+<h2>1. 目标与原则</h2>
+<p>员工选择“自定义服务”后，可只输入一句自然语言服务诉求。GWork 负责理解、补问和回显确认，而不是要求员工填写固定表单。确认后的结构化服务诉求协议是生成电话、企微 RPA 群发、企微一键群发内容的唯一业务输入。</p>
+<p>规则不是固定话术模板。模型需在已确认的服务目标、期望客户动作、数据范围、素材和表达要求内按客户或客群生成内容；不得扩展未确认的数据使用范围、服务目的或行动引导。</p>
+<h2>2. 服务诉求协议</h2>
+<h3>2.1 全局默认字段</h3>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead><tbody><tr><td>原始服务诉求</td><td>是</td><td>员工的自由描述，原文留存。</td></tr><tr><td>服务目标</td><td>是</td><td>本次希望达成的服务目的，例如安抚波动、风险提示、邀约沟通、投教说明。</td></tr><tr><td>期望客户动作</td><td>是</td><td>希望客户完成的明确动作，例如回复企微、预约电话、查看诊断素材、确认风险提示。</td></tr><tr><td>触达渠道</td><td>是</td><td>电话、企微 RPA 群发、企微一键群发中的一至三种。</td></tr><tr><td>内容参考信息</td><td>是</td><td>默认使用圈中原因和 Workbuddy 客户基础信息；员工可指定近期沟通、风险等级、持仓盈亏等其他已接入且有权限的数据或 Skill 素材。</td></tr><tr><td>表达要求</td><td>否</td><td>语气、篇幅、禁忌、称谓或员工指定表达，例如“真诚关怀、避免营销感、简短直接”。</td></tr></tbody></table></div>
+<h3>2.2 渠道覆盖字段</h3>
+<p>当员工选择多个渠道时，先生成全局默认值，再允许按渠道覆盖。未覆盖的渠道继承全局默认，不要求重复填写。</p>
+<div class="table-wrap"><table><thead><tr><th>可覆盖字段</th><th>电话</th><th>企微 RPA 群发</th><th>企微一键群发</th></tr></thead><tbody><tr><td>服务目标</td><td>是</td><td>是</td><td>是</td></tr><tr><td>期望客户动作</td><td>是</td><td>是</td><td>是</td></tr><tr><td>画像字段</td><td>是</td><td>是</td><td>是</td></tr><tr><td>诊断/资讯素材</td><td>是，仅供沟通参考</td><td>是，按客户选择</td><td>是，按批次统一选择</td></tr><tr><td>语气、篇幅、禁忌</td><td>是</td><td>是</td><td>是</td></tr></tbody></table></div>
+<p>每位客户仍按已确认的分流规则仅进入一个渠道子清单。渠道覆盖不改变客户分流，只改变该渠道内容的生成依据。</p>
+<h2>3. GWork 对话逻辑</h2>
+<h3>3.1 自由表达与解析</h3>
+<p>员工可输入例如：“帮我安抚近期亏损客户，邀约他们沟通，并把个股诊断一起发出去。”</p>
+<p>GWork 从原句中抽取已知信息：服务目标为安抚与邀约；素材为个股诊断；期望客户动作暂不完整；触达渠道未明确。GWork 不重复询问已识别的信息。</p>
+<h3>3.2 最少必要补问</h3>
+<p>补问遵循“仅询问无法生成、无法分流、无法判断数据权限或无法通过预校验的信息”。每轮优先只提出一个最关键问题；有多个同级缺失项时可合并为一条简短问题并提供可选建议。</p>
+<div class="table-wrap"><table><thead><tr><th>缺失或冲突</th><th>GWork 行为</th></tr></thead><tbody><tr><td>未识别服务目标</td><td>追问本次希望解决什么客户问题或完成什么服务目的。</td></tr><tr><td>未识别期望客户动作</td><td>必须追问，例如希望客户回复、预约、查看素材还是确认提示。</td></tr><tr><td>未选择触达渠道</td><td>询问电话、RPA、一键群发或按客户条件分流；不自动推荐渠道。</td></tr><tr><td>多渠道但诉求可能不同</td><td>先给出继承全局默认的建议，并询问是否按渠道补充差异化目标、动作或表达要求。</td></tr><tr><td>引用画像字段未明确</td><td>仅在该字段影响内容结论或员工表达要求中明确提及时追问；否则使用默认数据范围。</td></tr><tr><td>指定诊断或资讯 Skill</td><td>校验技能可用性、员工权限和标的/主题是否足以调用；缺少标的时追问标的或允许员工取消引用。</td></tr><tr><td>指令含糊、不可执行或存在明显合规风险</td><td>生成前解释无法采用的部分及原因，要求改写或从可执行替代表达中选择；不先生成后再仅依赖合规拦截。</td></tr></tbody></table></div>
+<h3>3.3 对话停止条件</h3>
+<p>以下条件全部满足时停止补问并生成确认卡：</p>
+<ol><li>已明确服务目标、期望客户动作和至少一种触达渠道。</li><li>每个渠道都有可继承或已覆盖的内容参考范围与表达要求。</li><li>员工指定的数据、素材和 Skill 已完成可用性、权限及预校验。</li><li>未保留不可执行或明显不合规的要求。</li></ol>
+<h2>4. 服务诉求确认卡</h2>
+<p>GWork 在生成话术前回显确认卡。员工可在卡片上直接修改任一字段，也可用自然语言继续调整；修改后仅对受影响字段重新解析和校验。</p>
+<div class="table-wrap"><table><thead><tr><th>区域</th><th>必须展示</th></tr></thead><tbody><tr><td>本次理解</td><td>原始服务诉求、GWork 解析出的服务目标与期望客户动作。</td></tr><tr><td>渠道计划</td><td>每个渠道的预计人数、服务目标、期望客户动作及是否继承全局默认。</td></tr><tr><td>生成依据</td><td>本次实际使用的默认画像字段、员工指定字段、引用的 Skill 与素材。</td></tr><tr><td>表达要求</td><td>语气、篇幅、称谓与禁忌；未指定时展示 GWork 的渠道建议。</td></tr><tr><td>风险和排除</td><td>未采用的数据/素材、不可执行原因、预校验风险及调整入口。</td></tr></tbody></table></div>
+<p>员工点击“确认并生成服务包”后，协议版本冻结，才允许调用画像或诊断 Skill、生成内容与发起初始合规审查。</p>
+<h2>5. 三类渠道生成规则</h2>
+<h3>5.1 共同规则</h3>
+<ol><li>仅使用服务诉求协议中已确认且可用的数据、诊断结论和素材。</li><li>将圈中原因转化为服务上下文，不机械罗列内部标签、分流规则或敏感字段。</li><li>仅在与服务目标相关时引用画像；画像字段缺失时忽略该变量并使用不依赖该字段的自然表达，不得补造信息。</li><li>诊断、热点、异动结果必须来自已成功调用的 Skill 或已确认素材，不得自行编造结论、标题、时间或标的。</li><li>每条内容只能表达已确认的服务目标和期望客户动作；不得添加推荐、收益承诺、确定性判断或未确认的营销目标。</li><li>生成完成后进入初始合规审查。电话和 RPA 按单客“文案 + 素材”审查；一键群发按“统一文案 + 统一素材”组合审查。</li></ol>
+<h3>5.2 电话沟通</h3>
+<p><strong>生成粒度：</strong> 一客一份电话沟通提纲，允许员工在服务清单中编辑。</p>
+<div class="table-wrap"><table><thead><tr><th>内容段</th><th>生成要求</th></tr></thead><tbody><tr><td>开场与身份衔接</td><td>使用合适称谓和自然服务开场，不暴露内部圈客条件。</td></tr><tr><td>关怀/背景</td><td>以本次圈中原因、近期市场或沟通情况说明联系缘由；仅引用已确认字段。</td></tr><tr><td>沟通重点</td><td>围绕服务目标给出 1-3 个可交流重点，可结合诊断素材作为沟通参考。</td></tr><tr><td>期望客户动作</td><td>用开放式、可执行的方式引导客户完成确认卡中的动作，例如约定进一步沟通或确认风险提示。</td></tr><tr><td>收尾</td><td>保留继续服务空间，不制造紧迫性或不当承诺。</td></tr></tbody></table></div>
+<p>电话默认建议为“真诚、克制、可交流”，篇幅以员工一次电话可顺畅表达为准。若员工未指定篇幅，输出短提纲而非长篇逐字稿。</p>
+<h3>5.3 企微 RPA 群发</h3>
+<p><strong>生成粒度：</strong> 一客一份千人千面企微文案，每位客户可有不同的画像引用、诊断素材与行动引导。</p>
+<div class="table-wrap"><table><thead><tr><th>内容段</th><th>生成要求</th></tr></thead><tbody><tr><td>称谓与联系缘由</td><td>使用客户可见且自然的称谓与联系理由。</td></tr><tr><td>个性化关怀</td><td>结合已确认的单客圈中原因、画像或近期沟通信息生成，不展示内部判断标签。</td></tr><tr><td>核心信息</td><td>简明传达本次服务重点；诊断结论只引用已生成结果的可发送摘要。</td></tr><tr><td>素材提示</td><td>仅在该客户有已选且可发送素材时说明附件/素材用途；没有素材时不得虚构。</td></tr><tr><td>期望客户动作</td><td>明确且单一，例如“方便时回复我”“可查看附件后与我沟通”。</td></tr></tbody></table></div>
+<p>默认建议为“简洁、服务导向、避免批量群发感”。若未指定篇幅，控制为一段完整企微消息；素材不替代正文，不应只发送素材而没有说明。</p>
+<h3>5.4 企微一键群发</h3>
+<p><strong>生成粒度：</strong> 一个渠道子清单一份统一文案及一组统一素材。不得使用单客差异字段或诊断结论。</p>
+<div class="table-wrap"><table><thead><tr><th>内容段</th><th>生成要求</th></tr></thead><tbody><tr><td>共性服务背景</td><td>使用该子清单已确认的共同特征、服务目的或统一市场背景。</td></tr><tr><td>统一服务重点</td><td>传达适合全体收件人的通用关注事项，不使用个体持仓、盈亏、风险等级或近期沟通信息。</td></tr><tr><td>统一素材提示</td><td>仅说明本批统一选定素材的主题和查看价值。</td></tr><tr><td>期望客户动作</td><td>使用适用于全体客户的单一动作，例如“查看素材后如有疑问可联系我”。</td></tr></tbody></table></div>
+<p>默认建议为“短、清晰、普适”。如果服务诉求依赖单客画像或个体诊断，GWork 必须提示该诉求不适合一键群发，建议改为 RPA 或电话，或要求员工改写为共同特征表达。</p>
+<h2>6. 字段与素材引用规则</h2>
+<div class="table-wrap"><table><thead><tr><th>类型</th><th>可使用方式</th><th>生成限制</th></tr></thead><tbody><tr><td>客户基础信息</td><td>默认可用</td><td>性别仅用于称谓或礼貌表达；不得用于服务优先级、客户判断或内容推荐。</td></tr><tr><td>圈中原因</td><td>默认可用</td><td>转化为客户可理解的服务缘由，不展示规则阈值、内部标签或敏感模型判断。</td></tr><tr><td>近期沟通</td><td>员工明确指定后可用</td><td>仅用于避免重复表达、衔接上次沟通或调整语气；不得杜撰客户反馈。</td></tr><tr><td>风险等级</td><td>员工明确指定后可用</td><td>只在与风险提示或服务目标直接相关时使用，不使用标签化称呼。</td></tr><tr><td>员工指定画像</td><td>须已接入、授权、实际可取</td><td>仅限员工明确指定的字段；字段缺失时不补造。</td></tr><tr><td>热点/异动/诊断 Skill</td><td>须经可用性和权限校验</td><td>结论以 Skill 返回结果为准；可生成可发送摘要及素材引用，不可自行演绎成确定性结论。</td></tr></tbody></table></div>
+<h2>7. 表达要求与默认建议</h2>
+<p>员工可自由描述表达要求，例如“语气真诚、不要营销感、只说重点”。未指定时，GWork 在确认卡中展示但不强制以下默认建议：</p>
+<div class="table-wrap"><table><thead><tr><th>渠道</th><th>默认语气</th><th>默认篇幅</th><th>默认禁忌</th></tr></thead><tbody><tr><td>电话</td><td>真诚、克制、可交流</td><td>简短沟通提纲</td><td>不逐字照读、不承诺收益、不施压。</td></tr><tr><td>RPA</td><td>简洁、个性化、服务导向</td><td>一段完整消息</td><td>不暴露画像标签、不让客户误以为是统一群发。</td></tr><tr><td>一键群发</td><td>清晰、普适、非营销化</td><td>一段统一消息</td><td>不使用个体数据、不制造紧迫性、不暗示个体投资建议。</td></tr></tbody></table></div>
+<p>员工的明确表达要求优先于默认建议，但不能覆盖合规约束。</p>
+<h2>8. 生成前校验、审查与异常处理</h2>
+<div class="table-wrap"><table><thead><tr><th>场景</th><th>GWork 处理</th></tr></thead><tbody><tr><td>诉求包含收益承诺、确定性推荐或不当施压</td><td>指出不可采用的表达，要求员工改写为服务、风险提示或信息沟通目标。</td></tr><tr><td>指定数据无权限、未接入或无返回值</td><td>说明原因；允许移除字段、换用默认数据或结束本次服务包生成。</td></tr><tr><td>Skill 调用失败或素材不可发送</td><td>说明受影响渠道和客户；允许去掉该素材后继续生成，或调整服务诉求。</td></tr><tr><td>一键群发引用单客字段</td><td>阻止按原诉求生成；要求改为共同特征，或改用 RPA/电话。</td></tr><tr><td>电话/RPA 部分客户缺少关键画像</td><td>对缺失客户生成不依赖该字段的降级内容；确认卡和服务包记录覆盖率与降级原因。</td></tr><tr><td>初始合规审查部分未通过</td><td>仅通过内容进入相应渠道子清单；GWork 展示未通过数量及原因分类，不展示未通过的具体内容。</td></tr><tr><td>初始合规审查全部未通过</td><td>不生成服务清单；展示数量及原因分类，员工调整诉求后重新生成。</td></tr></tbody></table></div>
+<h2>9. 版本与可追溯数据</h2>
+<p>每个服务包至少留存：原始服务诉求、每轮补问及答案、确认卡版本、全局默认与渠道覆盖配置、实际使用和未采用的数据/Skill/素材、分流规则版本、初始生成内容、初始合规结果、人工编辑信息、最终执行内容和实际发送素材。</p>
+<p>浏览器服务清单只读取已通过初始合规审查的最终待执行内容；员工在清单内编辑不触发模型再生成或二次合规审查，但必须形成最终执行版本。</p>
+<h2>10. 示例对话</h2>
+<p><strong>员工：</strong> 帮我安抚近期亏损客户，邀请他们沟通，并把个股诊断一起发出去。</p>
+<p><strong>GWork：</strong> 我理解本次服务目标是安抚近期亏损客户并提供持仓关注信息。请确认希望客户完成什么动作：回复企微、预约电话沟通、查看诊断素材后再联系，还是其他？另外，本次计划使用电话、企微 RPA 群发、企微一键群发中的哪些方式？</p>
+<p><strong>员工：</strong> 电话和 RPA。电话希望了解顾虑并约后续沟通；RPA 希望客户看完诊断后回复我。电话用持仓盈亏和最近沟通，RPA 再加个股诊断。语气真诚一点，别太营销。</p>
+<p><strong>GWork：</strong> 回显服务诉求确认卡：电话渠道使用“了解顾虑并约后续沟通”的目标和相应画像；RPA 使用“查看诊断后回复”的目标、相应画像及个股诊断素材。请确认后生成并发起初始合规审查。</p>
+<h2>11. 验收标准</h2>
+<ol><li>员工可仅输入一句服务诉求，GWork 只补问缺失或冲突信息。</li><li>期望客户动作为生成前必填项；未明确时不可跳过补问直接生成。</li><li>多渠道服务支持全局默认与渠道覆盖，且未覆盖渠道继承默认值。</li><li>电话和 RPA 生成逐客内容，一键群发只生成统一内容；一键群发不得引用单客字段。</li><li>生成内容仅使用已确认且可用的数据、素材和 Skill 结果，字段缺失有明确降级规则。</li><li>不可执行、明显不合规或权限不足的诉求在生成前给出解释与调整路径。</li><li>确认卡、初始合规版本、人工编辑版本和最终执行版本均可追溯。</li></ol></article></main><script src="../assets/vendor/mermaid/dist/mermaid.min.js"></script><script>if(window.mermaid){mermaid.initialize({startOnLoad:true,theme:'default',securityLevel:'loose'});}</script></body></html>
